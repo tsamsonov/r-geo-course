@@ -168,6 +168,74 @@
 установите базовые библиотеки языка R. Поэтому обе вышеуказанные
 компоненты ПО обязательны для установки.
 
+\section*{Установка и подключение пакетов}\label{---}
+\addcontentsline{toc}{section}{Установка и подключение пакетов}
+
+Существует \href{https://cran.r-project.org/web/packages/}{множество}
+дополнительных пакетов R (вы тоже можете написать свой) практически на
+все случаи жизни. Как и дистрибутив R, они доступны через
+\href{https://cran.r-project.org}{CRAN (Comprehensive R Archive
+Network)}. Одним из таких пакетов является, например, пакет
+\texttt{openxlsx}, позволяющий читать и записывать файлы в форматах
+\textbf{Microsoft Excel}.
+
+Существует два способа установки пакетов в \textbf{RStudio}.
+
+Во-первых, вы можете сделать это в графическом интерфесе, нажав кнопку
+\emph{Install} на панели \emph{Packages} (по умолчанию эта панель
+расположена в нижней правой четверти окна программы). В появившемся окне
+введите название пакета и нажмите \emph{Install}:
+
+\begin{figure}
+\centering
+\includegraphics{images/InstallPackages.png}
+\caption{\emph{Установка пакета}}
+\end{figure}
+
+Во-вторых, вы можете вызвать \emph{из консоли} команду
+\texttt{install.packages()}, передав ей в качестве параметра название
+пакета, заключенное в кавычки:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{install.packages}\NormalTok{(}\StringTok{"openxlsx"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+Внимание: никогда не включайте команду \texttt{install.packages()} в
+тело скрипта. Это приведет к тому, что каждый раз при запуске программы
+среда \textbf{RStudio} будет пытаться заново установить пакет, который
+уже установлен. Запускайте эту функцию \emph{только из консоли}.
+\end{quote}
+
+\begin{quote}
+Если по каким-то причинам вы не можете установить пакет в стандартную
+системную директорию \textbf{RStudio} (например, из-за политик
+безопасности, запрещающих запись в каталог \emph{Program Files} на ОС
+\textbf{Windows}), то необходимо создать директорию вручную в другом
+месте (куда вы имеете полный доступ) и указать ее адрес в параметре
+\texttt{lib} функции \texttt{install.packages()}. Например:
+\texttt{install.packages("xlsx",\ lib\ =\ "C:/Rlib/")}
+\end{quote}
+
+Подключение пакета осуществляется с помощью функции \texttt{library()},
+при этом название пакета можно в кавычки не заключать:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(openxlsx)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+Если пакет установлен не в стандартный каталог, а в другое место ---
+например, в каталог \texttt{С:/Rlib/} (см. выше) --- то при вызове
+функции \texttt{library()} необходимо указать местоположение пакета в
+дополнительном параметре \texttt{lib.loc}:
+\texttt{library(xlsx,\ lib.loc\ =\ "C:/Rlib")}
+\end{quote}
+
 \section*{Форматы представления материалов}\label{--}
 \addcontentsline{toc}{section}{Форматы представления материалов}
 
@@ -299,6 +367,152 @@
 значениями.
 \end{quote}
 
+\section*{Стандарт оформления кода на R}\label{----r}
+\addcontentsline{toc}{section}{Стандарт оформления кода на R}
+
+Очень важно сразу же приучить себя грамотно, структурированно и красиво
+оформлять код на языке R. Это существенно облегчит чтение и понимание
+ваших программ не только вами, но и другими пользователями и
+разработчиками. Помимо вышеуказанных рекомендаций по написанию
+комментариев существует также определенное количество хорошо
+зарекомендовавших себя и широко используемых практик оформления кода.
+Эти практики есть в каждом языке программирования и их можно найти в
+литературе (и в Интернете) в виде негласных сводов правил (\emph{style
+guides})
+
+Если вы не хотите быть белой вороной в мире R, вам будет полезно
+внимательно ознакомиться со
+\href{https://google.github.io/styleguide/Rguide.xml\#filenames}{стандартом
+оформления кода на R от компании Google}, которая широко использует этот
+язык в своей работе.
+
+\begin{quote}
+Стандарт оформления кода иногда также называют стилем программирования.
+Мы не будем использовать этот термин, поскольку под стилем
+программирования традиционно также понимают фундаментальный подход
+(\emph{парадигму}) к построению программ: процедурный, функциональный,
+логический, объектно-ориентированный и некоторые
+\href{https://ru.wikipedia.org/wiki/Парадигма_программирования}{другие}.
+\end{quote}
+
+К числу негласных правил оформления кода на R можно отнести следующие:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Последовательно используйте знак присвоения \texttt{\textless{}-} или
+  \texttt{=} на протяжении всей программы. Если вы начали использовать
+  \texttt{=} -- применяйте его на протяжении всей программы, не
+  используя \texttt{\textless{}-}.
+\end{enumerate}
+
+\begin{quote}
+Традиционный подход предполагает использование \texttt{\textless{}-},
+однако все больше программистов использует знак \texttt{=} в своих
+программах, что делает R более похожим на другие языки программирования.
+Помните, что использование \texttt{=} официально не рекомендуется,
+поскольку существует много старого кода на R, который может ошибочно
+выполняться в сочетании с кодом, использующим \texttt{=}. Но вы, скорее
+всего, с такими проблемами не столкнетесь. Так что выбор за вами!
+\end{quote}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  После запятой всегда ставьте пробел, перед запятой -- нет:
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Правильно:}
+\NormalTok{a <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{)}
+\NormalTok{m <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(a, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+
+\CommentTok{# Неправильно:}
+\NormalTok{a <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{4}\NormalTok{)}
+\NormalTok{a <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{ ,}\DecValTok{2}\NormalTok{ ,}\DecValTok{3}\NormalTok{ ,}\DecValTok{4}\NormalTok{)}
+\NormalTok{a <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{ , }\DecValTok{2}\NormalTok{ , }\DecValTok{3}\NormalTok{ , }\DecValTok{4}\NormalTok{)}
+\NormalTok{m <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(a,}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{)}
+\NormalTok{m <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(a ,}\DecValTok{2}\NormalTok{ ,}\DecValTok{2}\NormalTok{)}
+\NormalTok{m <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(a , }\DecValTok{2}\NormalTok{ , }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Отделяйте любые бинарные операторы (такие как
+  \texttt{=,\ +,\ -,\ \textless{}-,\ *}) пробелами с двух сторон:
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{a <-}\StringTok{ }\KeywordTok{sin}\NormalTok{(b }\OperatorTok{+}\StringTok{ }\NormalTok{pi }\OperatorTok{*}\StringTok{ }\FloatTok{0.5}\NormalTok{) }\CommentTok{# правильно}
+\NormalTok{a<-}\KeywordTok{sin}\NormalTok{(b}\OperatorTok{+}\NormalTok{pi}\OperatorTok{*}\FloatTok{0.5}\NormalTok{) }\CommentTok{# неправильно}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Между названием функции и открывающей скобкой пробела быть не должно.
+  То же самое касается обращения к элементам вектора, матрицы и т.п.:
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Правильно:}
+\KeywordTok{sin}\NormalTok{(b)}
+\NormalTok{a[}\DecValTok{2}\NormalTok{]}
+
+\CommentTok{# Неправильно:}
+\KeywordTok{sin}\NormalTok{ (b)}
+\NormalTok{a [}\DecValTok{2}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  В то же время, при вызове команд управления выполнением программы
+  (условные операторы и циклы) перед и после скобок пробел
+  \textbf{должен} стоять:
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Правильно:}
+\ControlFlowTok{if}\NormalTok{ (a }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{) \{}
+  \KeywordTok{print}\NormalTok{(a)}
+\NormalTok{\}}
+\NormalTok{i <-}\StringTok{ }\DecValTok{0}
+\ControlFlowTok{while}\NormalTok{ (i }\OperatorTok{<}\StringTok{ }\NormalTok{a) \{}
+  \KeywordTok{print}\NormalTok{(i)}
+\NormalTok{  i <-}\StringTok{ }\NormalTok{i }\OperatorTok{+}\StringTok{ }\DecValTok{1}
+\NormalTok{\}}
+
+\CommentTok{# Неправильно:}
+\ControlFlowTok{if}\NormalTok{(a }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)\{}
+  \KeywordTok{print}\NormalTok{(a)}
+\NormalTok{\}}
+
+\NormalTok{i <-}\StringTok{ }\DecValTok{0}
+\ControlFlowTok{while}\NormalTok{(i }\OperatorTok{<}\StringTok{ }\NormalTok{a)\{}
+  \KeywordTok{print}\NormalTok{(i)}
+\NormalTok{  i <-}\StringTok{ }\NormalTok{i }\OperatorTok{+}\StringTok{ }\DecValTok{1}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
 \section*{Комментарии}
 \addcontentsline{toc}{section}{Комментарии}
 
@@ -367,34 +581,6 @@
 (\texttt{Cmd}+\texttt{Shift}+\texttt{R} для OS X)
 \end{quote}
 
-\section*{Стандарт оформления кода на R}\label{----r}
-\addcontentsline{toc}{section}{Стандарт оформления кода на R}
-
-Очень важно сразу же приучить себя грамотно, структурированно и красиво
-оформлять код на языке R. Это существенно облегчит чтение и понимание
-ваших программ не только вами, но и другими пользователями и
-разработчиками. Помимо вышеуказанных рекомендаций по написанию
-комментариев существует также определенное количество хорошо
-зарекомендовавших себя и широко используемых практик оформления кода.
-Эти практики есть в каждом языке программирования и их можно найти в
-литературе (и в Интернете) в виде негласных сводов правил (\emph{style
-guides})
-
-Если вы не хотите быть белой вороной в мире R, вам будет полезно
-внимательно ознакомиться со
-\href{https://google.github.io/styleguide/Rguide.xml\#filenames}{стандартом
-оформления кода на R от компании Google}, которая широко использует этот
-язык в своей работе.
-
-\begin{quote}
-Стандарт оформления кода иногда также называют стилем программирования.
-Мы не будем использовать этот термин, поскольку под стилем
-программирования традиционно также понимают фундаментальный подход
-(\emph{парадигму}) к построению программ: процедурный, функциональный,
-логический, объектно-ориентированный и некоторые
-\href{https://ru.wikipedia.org/wiki/Парадигма_программирования}{другие}.
-\end{quote}
-
 \section*{Названия специальных символов}\label{--}
 \addcontentsline{toc}{section}{Названия специальных символов}
 
@@ -410,12 +596,12 @@ guides})
 \endhead
 \texttt{\$} & доллар\tabularnewline
 \texttt{\#} & шарп\tabularnewline
-\texttt{\&} & амперсанд\tabularnewline
+\texttt{\&} & амперсанд (решетка)\tabularnewline
 \texttt{/} & прямой слэш\tabularnewline
 \texttt{\textbackslash{}} & обратный слэш\tabularnewline
-\texttt{\textbar{}} & пайп\tabularnewline
-\texttt{\^{}} & циркумфлекс\tabularnewline
-\texttt{@} & эт\tabularnewline
+\texttt{\textbar{}} & пайп (вертикальная черта)\tabularnewline
+\texttt{\^{}} & циркумфлекс (крышечка)\tabularnewline
+\texttt{@} & эт (собачка)\tabularnewline
 \texttt{\textasciitilde{}} & тильда\tabularnewline
 \texttt{\textquotesingle{}\textquotesingle{}} & одинарные
 кавычки\tabularnewline
@@ -424,74 +610,6 @@ guides})
 кавычки\tabularnewline
 \bottomrule
 \end{longtable}
-
-\section*{Установка и подключение пакетов}\label{---}
-\addcontentsline{toc}{section}{Установка и подключение пакетов}
-
-Существует \href{https://cran.r-project.org/web/packages/}{множество}
-дополнительных пакетов R (вы тоже можете написать свой) практически на
-все случаи жизни. Как и дистрибутив R, они доступны через
-\href{https://cran.r-project.org}{CRAN (Comprehensive R Archive
-Network)}. Одним из таких пакетов является, например, пакет
-\texttt{openxlsx}, позволяющий читать и записывать файлы в форматах
-\textbf{Microsoft Excel}.
-
-Существует два способа установки пакетов в \textbf{RStudio}.
-
-Во-первых, вы можете сделать это в графическом интерфесе, нажав кнопку
-\emph{Install} на панели \emph{Packages} (по умолчанию эта панель
-расположена в нижней правой четверти окна программы). В появившемся окне
-введите название пакета и нажмите \emph{Install}:
-
-\begin{figure}
-\centering
-\includegraphics{images/InstallPackages.png}
-\caption{\emph{Установка пакета}}
-\end{figure}
-
-Во-вторых, вы можете вызвать \emph{из консоли} команду
-\texttt{install.packages()}, передав ей в качестве параметра название
-пакета, заключенное в кавычки:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{install.packages}\NormalTok{(}\StringTok{"openxlsx"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{quote}
-Внимание: никогда не включайте команду \texttt{install.packages()} в
-тело скрипта. Это приведет к тому, что каждый раз при запуске программы
-среда \textbf{RStudio} будет пытаться заново установить пакет, который
-уже установлен. Запускайте эту функцию \emph{только из консоли}.
-\end{quote}
-
-\begin{quote}
-Если по каким-то причинам вы не можете установить пакет в стандартную
-системную директорию \textbf{RStudio} (например, из-за политик
-безопасности, запрещающих запись в каталог \emph{Program Files} на ОС
-\textbf{Windows}), то необходимо создать директорию вручную в другом
-месте (куда вы имеете полный доступ) и указать ее адрес в параметре
-\texttt{lib} функции \texttt{install.packages()}. Например:
-\texttt{install.packages("xlsx",\ lib\ =\ "C:/Rlib/")}
-\end{quote}
-
-Подключение пакета осуществляется с помощью функции \texttt{library()},
-при этом название пакета можно в кавычки не заключать:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{library}\NormalTok{(openxlsx)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{quote}
-Если пакет установлен не в стандартный каталог, а в другое место ---
-например, в каталог \texttt{С:/Rlib/} (см. выше) --- то при вызове
-функции \texttt{library()} необходимо указать местоположение пакета в
-дополнительном параметре \texttt{lib.loc}:
-\texttt{library(xlsx,\ lib.loc\ =\ "C:/Rlib")}
-\end{quote}
 
 \section*{Как ссылаться}\label{-}
 \addcontentsline{toc}{section}{Как ссылаться}
