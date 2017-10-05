@@ -1,32 +1,55 @@
 library(openxlsx)
+library(dplyr)
+
 setwd("/Volumes/Data/GitHub/r-geo-course/data")
 tab <- read.table("oxr_vod.csv",
                   sep = ';',
                   dec = ',',
                   header = TRUE,
                   encoding = 'UTF-8')
-## View(tab)
+
+View(tab)
+
 tab2<-read.csv2("oxr_vod.csv", encoding = 'UTF-8')
 ## View(tab2)
 tab[c(5,2,4), ]
+
 indexes<-order(tab$Каспийское)
 head(tab[indexes, ])
 head(tab[order(tab$Каспийское), ])
 condition <- tab$Каспийское > 10
+
 condition  # посмотрим что получилось
 tab[condition, ] # используем его для фильтрации строк таблицы:
+
+
 tab[tab$Каспийское > 10, ]
+filter(tab, Каспийское > 10)
+
 caspian <- data.frame(tab$Год, tab$Всего, tab$Каспийское)
+caspian <- select(tab, Год, Всего, Каспийское)
+
 colnames(caspian)<-c("Year", "Total", "Caspian")
+
 ratio <- caspian$Caspian / caspian$Total
 ratio
 ratio <- round(ratio, digits = 3)
 ratio
+
 caspian$CaspianRatio <- ratio
+mutate(caspian, ratio2 = Caspian / Total)
+
+caspian2 <- caspian %>% 
+                mutate(ratio3 = Caspian / Total) %>% 
+                filter(ratio3 > 0.44) %>% 
+                select(Year, ratio3)
+        
+
 ## View(caspian)
 head(caspian[2])  # второй столбец (фактически — таблица из одного столбца)
 head(caspian[c(1,4)])  # первый и четвертый столбец
 caspian[,2]
+
 sewage<-read.xlsx("sewage.xlsx",1) # Читаем таблицу из первого листа
 ## View(sewage)
 colnames(sewage) <- c("Region", "Year05", "Year10", "Year11", "Year12", "Year13")
