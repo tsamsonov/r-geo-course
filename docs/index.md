@@ -1,11 +1,11 @@
 --- 
 title: "Визуализация и анализ географических данных на языке R"
 author: "Тимофей Самсонов"
-date: "2017-10-06"
+date: "2017-10-07"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
-bibliography: [book.bib, packages.bib]
+bibliography: [articles.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
 github-repo: tsamsonov/r-geo-course

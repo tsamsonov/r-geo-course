@@ -125,7 +125,7 @@
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2017-10-06}
+  \date{2017-10-07}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -1246,7 +1246,7 @@ R, который может ошибочно выполняться в соче
 \begin{Highlighting}[]
 \NormalTok{current <-}\StringTok{ }\KeywordTok{Sys.Date}\NormalTok{()}
 \NormalTok{current}
-\NormalTok{## [1] "2017-10-06"}
+\NormalTok{## [1] "2017-10-07"}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1258,7 +1258,7 @@ R, который может ошибочно выполняться в соче
 \begin{Highlighting}[]
 \NormalTok{livedays <-}\StringTok{ }\NormalTok{current }\OperatorTok{-}\StringTok{ }\NormalTok{birth}
 \NormalTok{livedays}
-\NormalTok{## Time difference of 11553 days}
+\NormalTok{## Time difference of 11554 days}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1268,7 +1268,7 @@ R, который может ошибочно выполняться в соче
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{current }\OperatorTok{+}\StringTok{ }\DecValTok{40}
-\NormalTok{## [1] "2017-11-15"}
+\NormalTok{## [1] "2017-11-16"}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1561,7 +1561,7 @@ R, который может ошибочно выполняться в соче
 \NormalTok{## [1] "2 в степени 10 равно 1024"}
 
 \KeywordTok{print}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\StringTok{"Сегодняшняя дата - "}\NormalTok{, }\KeywordTok{Sys.Date}\NormalTok{()))}
-\NormalTok{## [1] "Сегодняшняя дата -  2017-10-06"}
+\NormalTok{## [1] "Сегодняшняя дата -  2017-10-07"}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1601,7 +1601,7 @@ R, который может ошибочно выполняться в соче
 \NormalTok{## 2 в степени 10 равно 1024}
 
 \KeywordTok{cat}\NormalTok{(}\StringTok{"Сегодняшнаяя дата -"}\NormalTok{, }\KeywordTok{Sys.Date}\NormalTok{())}
-\NormalTok{## Сегодняшнаяя дата - 17445}
+\NormalTok{## Сегодняшнаяя дата - 17446}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1881,7 +1881,7 @@ R, который может ошибочно выполняться в соче
 \NormalTok{## [6] "2016-09-06" "2016-09-07"}
 
 \KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \KeywordTok{Sys.Date}\NormalTok{(), }\DataTypeTok{by =} \DecValTok{7}\NormalTok{, }\DataTypeTok{length.out =} \DecValTok{5}\NormalTok{) }\CommentTok{# Пять дат через неделю, начиная с сегодняшнего дня}
-\NormalTok{## [1] "2017-10-06" "2017-10-13" "2017-10-20" "2017-10-27" "2017-11-03"}
+\NormalTok{## [1] "2017-10-07" "2017-10-14" "2017-10-21" "2017-10-28" "2017-11-04"}
 \end{Highlighting}
 \end{Shaded}
 
@@ -2740,18 +2740,75 @@ Cтроки и столбцы матрицы можно использовать
 
 \textbf{Необходимые пакеты:} \texttt{openxlsx,\ dplyr}
 
-Данный модуль посвящен введению в работу с таблицами. В модуле
-рассмотрены важные процедуры предварительной обработки таблиц, такие как
-фильтрация, исправление ошибок, преобразование типов столбцов ---
-необходимые для дальнейшей визуализации и анализа данных. Показано, как
-одни и те же процедуры могут быть реализованы как стандартными
-средствами R, так и с помощью пакета \texttt{dplyr}.
+Таблица представляет собой один из способов структурирования данных.
+Большинство научных данных представляется именно в виде таблиц. В
+настоящем модуле рассмотрены базовые процедуры обработки таблиц, такие
+как чтение, сортировка, фильтрация, отбор столбцов (переменных),
+добавление и вычисление новых строк и столбцов, поиск и исправление
+ошибок в данных, запись таблиц в файл. Показано, как одни и те же
+процедуры могут быть реализованы стандартными средствами \textbf{R} и с
+помощью пакета \texttt{dplyr}.
 
-\section{Чтение таблиц CSV}\label{reading_csv}
+Напомним, что для представления таблиц в \textbf{R} используются фреймы
+данных. В рамках данной главы мы будем использовать оба понятия как
+взаимозаменяемые, предполагая, что речь идет о таблице, представленной в
+виде фрейма данных.
+
+\section{Чтение таблиц}\label{reading_tables}
+
+Существует множество файловых форматов представления табличных данных.
+Мы рассмотрим одни из наиболее распространенных --- \textbf{CSV} и
+\textbf{Microsoft Excel}.
+
+\subsection{Таблицы CSV}\label{reading_csv}
+
+\textbf{CSV (Comma-separated value)} --- общее название для формата
+представления таблиц в виде текстовых файлов, организованных по
+следующему принципу:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Каждая строка в файле соответствует строке в таблице
+\item
+  Ячейки отделяются друг от друга символом-разделителем.
+\item
+  Если ячейка пустая, то между соседними разделителями не должно быть
+  никаких символов.
+\end{enumerate}
+
+Стандартным разделителем ячеек является запятая (\texttt{,}), а
+десятичным разделителем --- точка (\texttt{.}). Однако это не является
+строгим правилом.
+
+Например, вот так выглядит таблица в формате CSV, с которой мы дальше
+будем работать:
+
+\begin{verbatim}
+Год;Всего;Балтийское;Черное;Азовское;Каспийское;Карское;Белое;Прочие
+1993;27,2;2,5;0,4;4,3;12,1;5,3;1,0;1,6
+1994;24,6;2,3;0,4;3,2;11,0;5,0;0,9;1,8
+1995;24,5;2,3;0,4;3,5;10,4;5,2;0,9;1,8
+1996;22,4;2,2;0,3;3,1;9,8;4,7;0,8;1,5
+1997;23,0;2,2;0,3;3,8;9,8;4,4;0,8;1,7
+\end{verbatim}
+
+Видно, что первая строка в файле занята заголовками столбцов. Формат CSV
+этот момент не обговаривает, поэтому при чтении таблицы нужно явным
+образом указывать, что данные начинаются со второй строки, а первую
+строку следует интерепретировать как заголовочную.
+
+Также следует отметить, что в данном файле в качестве
+символа-разделителя ячеек используется точка с запятой (\texttt{;}),
+поскольку в русской локали запятая (\texttt{,}) зарезервирована под
+десятичный разделитель. Разделитель ячеек и десятичный разделитель также
+должны быть указаны при открытии файла, если они не соответствуют
+стандартным.
 
 Таблицы в формате \textbf{CSV} (Comma-Separated Values) можно прочесть с
-помощью универсальной функции \texttt{read.table()}. Следующие ее
-параметры важно указать:
+помощью универсальной функции \texttt{read.table()}. Ее основные
+параметры следующие:
 
 \begin{itemize}
 \tightlist
@@ -2768,9 +2825,9 @@ Cтроки и столбцы матрицы можно использовать
 \end{itemize}
 
 \begin{quote}
-Стандартной кодировкой для представления текста в UNIX-подобных системах
-(\emph{Ubuntu}, \emph{macOS} и т.д.) является \textbf{UTF-8 (Unicode)},
-в русскоязычных версиях \emph{Windows} --- \textbf{CP1251
+\textbf{Стандартной кодировкой для представления текста} в UNIX-подобных
+системах (\emph{Ubuntu}, \emph{macOS} и т.д.) является \textbf{UTF-8
+(Unicode)}, в русскоязычных версиях \emph{Windows} --- \textbf{CP1251
 (Windows-1251)}. Текстовый файл \textbf{CSV}, созданный в разных
 операционных системах, будет по умолчанию сохраняться в соответствующей
 кодировке, если вы не указали ее явным образом. Если при загрузке
@@ -2792,22 +2849,21 @@ Cтроки и столбцы матрицы можно использовать
                   \DataTypeTok{dec =} \StringTok{','}\NormalTok{,}
                   \DataTypeTok{header =} \OtherTok{TRUE}\NormalTok{,}
                   \DataTypeTok{encoding =} \StringTok{'UTF-8'}\NormalTok{)}
+\KeywordTok{str}\NormalTok{(tab) }\CommentTok{# Посмотрим на структуру таблицы}
+\NormalTok{## 'data.frame':    22 obs. of  9 variables:}
+\NormalTok{##  $ Год       : int  1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 ...}
+\NormalTok{##  $ Всего     : num  27.2 24.6 24.5 22.4 23 22 20.7 20.3 19.8 19.8 ...}
+\NormalTok{##  $ Балтийское: num  2.5 2.3 2.3 2.2 2.2 2.2 2.2 2.2 2.1 2 ...}
+\NormalTok{##  $ Черное    : num  0.4 0.4 0.4 0.3 0.3 0.3 0.3 0.3 0.3 0.2 ...}
+\NormalTok{##  $ Азовское  : num  4.3 3.2 3.5 3.1 3.8 3.2 2.5 2 1.9 2 ...}
+\NormalTok{##  $ Каспийское: num  12.1 11 10.4 9.8 9.8 9.5 9.1 9.2 8.9 9.2 ...}
+\NormalTok{##  $ Карское   : num  5.3 5 5.2 4.7 4.4 4.2 4.1 4.2 4.2 4.1 ...}
+\NormalTok{##  $ Белое     : num  1 0.9 0.9 0.8 0.8 0.8 0.8 0.9 0.9 0.8 ...}
+\NormalTok{##  $ Прочие    : num  1.6 1.8 1.8 1.5 1.7 1.8 1.7 1.5 1.5 1.5 ...}
 \end{Highlighting}
 \end{Shaded}
 
-Для просмотра таблицы в привычном виде воспользуйтесь функцией
-\texttt{View()}. В этом представлении вы можете фильтровать и
-сортировать данные:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{View}\NormalTok{(tab)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-2-1.pdf}
-
-Существуют более специальные функции для чтения таблиц \textbf{CSV}:
+Существуют также специальные функции для чтения таблиц \textbf{CSV}:
 \texttt{read.csv()} и \texttt{read.csv2()}. По сути они являются
 ``обертками'' (\emph{wrappers}) функции \texttt{read.table()} и
 выполняют ее вызов с автоматической подстановкой параметров
@@ -2821,22 +2877,373 @@ Cтроки и столбцы матрицы можно использовать
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{tab2<-}\KeywordTok{read.csv2}\NormalTok{(}\StringTok{"oxr_vod.csv"}\NormalTok{, }\DataTypeTok{encoding =} \StringTok{'UTF-8'}\NormalTok{)}
+\NormalTok{tab <-}\StringTok{ }\KeywordTok{read.csv2}\NormalTok{(}\StringTok{"oxr_vod.csv"}\NormalTok{, }\DataTypeTok{encoding =} \StringTok{'UTF-8'}\NormalTok{)}
+\KeywordTok{str}\NormalTok{(tab) }\CommentTok{# Посмотрим на структуру таблицы}
+\NormalTok{## 'data.frame':    22 obs. of  9 variables:}
+\NormalTok{##  $ Год       : int  1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 ...}
+\NormalTok{##  $ Всего     : num  27.2 24.6 24.5 22.4 23 22 20.7 20.3 19.8 19.8 ...}
+\NormalTok{##  $ Балтийское: num  2.5 2.3 2.3 2.2 2.2 2.2 2.2 2.2 2.1 2 ...}
+\NormalTok{##  $ Черное    : num  0.4 0.4 0.4 0.3 0.3 0.3 0.3 0.3 0.3 0.2 ...}
+\NormalTok{##  $ Азовское  : num  4.3 3.2 3.5 3.1 3.8 3.2 2.5 2 1.9 2 ...}
+\NormalTok{##  $ Каспийское: num  12.1 11 10.4 9.8 9.8 9.5 9.1 9.2 8.9 9.2 ...}
+\NormalTok{##  $ Карское   : num  5.3 5 5.2 4.7 4.4 4.2 4.1 4.2 4.2 4.1 ...}
+\NormalTok{##  $ Белое     : num  1 0.9 0.9 0.8 0.8 0.8 0.8 0.9 0.9 0.8 ...}
+\NormalTok{##  $ Прочие    : num  1.6 1.8 1.8 1.5 1.7 1.8 1.7 1.5 1.5 1.5 ...}
+\end{Highlighting}
+\end{Shaded}
+
+Данная таблица не отличается от предыдущей, но ее чтение с помощью
+функции \texttt{read.csv2()} более компактно.
+
+\subsection{Таблицы Microsoft Excel}\label{excel_reading}
+
+Чтение таблиц \textbf{Microsoft Excel} не входит в возможности
+стандартной библиотеки R. В то же время, для этих целей существует ряд
+пакетов, таких как \texttt{xlsx}, \texttt{readxl} и \texttt{openxlsx}.
+Мы будем пользоваться пакетом \texttt{openxlsx} \citep{R-openxlsx}.
+Подключим его:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(openxlsx)}
+\end{Highlighting}
+\end{Shaded}
+
+Для чтения таблицы воспользуемся функцией \texttt{read.xlsx()} из этого
+пакета. В качестве обязательных параметров она принимает следующие
+аргументы:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{xlsxFile} --- название файла
+\item
+  \texttt{sheet} --- номер листа
+\end{itemize}
+
+Откроем таблицу с данными Росстата по сбросу загрязненных сточных вод в
+поверхностные водные объекты (млн м\(^3\)).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sewage <-}\StringTok{ }\KeywordTok{read.xlsx}\NormalTok{(}\StringTok{"sewage.xlsx"}\NormalTok{, }\DecValTok{1}\NormalTok{) }\CommentTok{# Читаем таблицу из первого листа}
+\KeywordTok{str}\NormalTok{(sewage) }\CommentTok{# Посмотрим на структуру таблицы}
+\NormalTok{## 'data.frame':    97 obs. of  6 variables:}
+\NormalTok{##  $ X1  : chr  "Российская Федерация" "Центральный федеральный округ " "Белгородская область" "Брянская область" ...}
+\NormalTok{##  $ 2005: num  17727 4341 11 89 155 ...}
+\NormalTok{##  $ 2010: num  16516 3761 77 78 129 ...}
+\NormalTok{##  $ 2011: num  15966 3613 72 75 126 ...}
+\NormalTok{##  $ 2012: num  15678 3651 71 71 124 ...}
+\NormalTok{##  $ 2013: num  15189 3570 71 68 120 ...}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Просмотр таблицы}\label{view_table}
+
+Для просмотра фрейма данных в консоли RStudio вы можете использовать
+несколько опций. Пусть наш фрейм данных называется \texttt{tab}. Тогда:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{print(tab)} --- выводит фрейм в консоль целиком (можно
+  написать просто \texttt{tab} в консоли).
+\item
+  \texttt{head(tab,\ n)} --- отбирает первые \(n\) строк фрейма
+\item
+  \texttt{tail(tab,\ n)} --- отбирает последние \(n\) строк фрейма
+\end{enumerate}
+
+По умолчанию для функций \texttt{head()} и \texttt{tail()} \(n=6\).
+Обычно этот параметр опускают, поскольку нужно просмотреть только первые
+несколько строк и шести вполне достаточно. Если вы напечатаете в консоли
+\texttt{head(tab)} или \texttt{tail(tab)}, то для выбранных строк будет
+вызвана функция \texttt{print()}, аналогично выводу всего фрейма:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(tab)}
+\NormalTok{##     Год Всего Балтийское Черное Азовское Каспийское Карское Белое Прочие}
+\NormalTok{## 1  1993  27.2        2.5    0.4      4.3       12.1     5.3   1.0    1.6}
+\NormalTok{## 2  1994  24.6        2.3    0.4      3.2       11.0     5.0   0.9    1.8}
+\NormalTok{## 3  1995  24.5        2.3    0.4      3.5       10.4     5.2   0.9    1.8}
+\NormalTok{## 4  1996  22.4        2.2    0.3      3.1        9.8     4.7   0.8    1.5}
+\NormalTok{## 5  1997  23.0        2.2    0.3      3.8        9.8     4.4   0.8    1.7}
+\NormalTok{## 6  1998  22.0        2.2    0.3      3.2        9.5     4.2   0.8    1.8}
+\NormalTok{## 7  1999  20.7        2.2    0.3      2.5        9.1     4.1   0.8    1.7}
+\NormalTok{## 8  2000  20.3        2.2    0.3      2.0        9.2     4.2   0.9    1.5}
+\NormalTok{## 9  2001  19.8        2.1    0.3      1.9        8.9     4.2   0.9    1.5}
+\NormalTok{## 10 2002  19.8        2.0    0.2      2.0        9.2     4.1   0.8    1.5}
+\NormalTok{## 11 2003  19.0        2.0    0.2      2.1        8.4     4.0   0.8    1.5}
+\NormalTok{## 12 2004  18.5        2.0    0.2      2.1        8.3     3.8   0.8    1.3}
+\NormalTok{## 13 2005  17.7        2.0    0.2      1.6        8.0     3.8   0.8    1.3}
+\NormalTok{## 14 2006  17.5        1.9    0.2      1.7        7.8     3.8   0.8    1.3}
+\NormalTok{## 15 2007  17.2        1.9    0.2      1.7        7.4     3.8   0.8    1.4}
+\NormalTok{## 16 2008  17.1        1.9    0.2      1.6        7.5     3.9   0.8    1.2}
+\NormalTok{## 17 2009  15.9        1.8    0.2      1.5        6.8     3.5   0.7    1.4}
+\NormalTok{## 18 2010  16.5        2.0    0.2      1.6        7.3     3.3   0.7    1.4}
+\NormalTok{## 19 2011  16.0        1.9    0.2      1.6        7.1     3.2   0.7    1.3}
+\NormalTok{## 20 2012  15.7        1.8    0.2      1.6        7.0     3.0   0.7    1.4}
+\NormalTok{## 21 2013  15.2        1.8    0.2      1.6        6.9     3.0   0.6    1.1}
+\NormalTok{## 22 2014  14.8        1.7    0.2      1.5        6.4     3.2   0.6    1.2}
+\KeywordTok{head}\NormalTok{(tab)}
+\NormalTok{##    Год Всего Балтийское Черное Азовское Каспийское Карское Белое Прочие}
+\NormalTok{## 1 1993  27.2        2.5    0.4      4.3       12.1     5.3   1.0    1.6}
+\NormalTok{## 2 1994  24.6        2.3    0.4      3.2       11.0     5.0   0.9    1.8}
+\NormalTok{## 3 1995  24.5        2.3    0.4      3.5       10.4     5.2   0.9    1.8}
+\NormalTok{## 4 1996  22.4        2.2    0.3      3.1        9.8     4.7   0.8    1.5}
+\NormalTok{## 5 1997  23.0        2.2    0.3      3.8        9.8     4.4   0.8    1.7}
+\NormalTok{## 6 1998  22.0        2.2    0.3      3.2        9.5     4.2   0.8    1.8}
+\KeywordTok{tail}\NormalTok{(tab)}
+\NormalTok{##     Год Всего Балтийское Черное Азовское Каспийское Карское Белое Прочие}
+\NormalTok{## 17 2009  15.9        1.8    0.2      1.5        6.8     3.5   0.7    1.4}
+\NormalTok{## 18 2010  16.5        2.0    0.2      1.6        7.3     3.3   0.7    1.4}
+\NormalTok{## 19 2011  16.0        1.9    0.2      1.6        7.1     3.2   0.7    1.3}
+\NormalTok{## 20 2012  15.7        1.8    0.2      1.6        7.0     3.0   0.7    1.4}
+\NormalTok{## 21 2013  15.2        1.8    0.2      1.6        6.9     3.0   0.6    1.1}
+\NormalTok{## 22 2014  14.8        1.7    0.2      1.5        6.4     3.2   0.6    1.2}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{RStudio}, разумеется, имеет ``человеческий'' интерфейс для
+просмотра таблиц, в котором таблицу можно сортировать и фильтровать.
+Чтобы его активировать, надо вызвать функцию \texttt{View()}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{View}\NormalTok{(tab)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+Поскольку функции \texttt{head()} и \texttt{tail()} возвращают строки с
+хвоста или начала фрейма данных, их можно и подать на вход функции
+\texttt{View()}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{View}\NormalTok{(}\KeywordTok{head}\NormalTok{(sewage, }\DecValTok{3}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\begin{quote}
+\textbf{Как правило, не следует оставлять вызовы функции \texttt{View()}
+в тексте законченной программы.} Это приведет к тому, что при запуске
+будут открываться новые вкладки с просмотром таблиц, что может
+раздражать пользователя (в том числе и вас самих). Используйте
+\texttt{View()} для вывода окончательного результата в конце программы
+или при отладке программы. Все вызовы \texttt{View()} в программе можно
+легко закомментировать или раскомментировать, выполнив поиск с заменой
+\texttt{\textquotesingle{}View(\textquotesingle{}} на
+\texttt{\textquotesingle{}\#\ View(\textquotesingle{}} и наоборот.
+\end{quote}
+
+\section{Работа со столбцами}\label{working_with_columns}
+
+\subsection{Названия столбцов}\label{colnames}
+
+Для просмотра и изменения названий столбцов фрейма данных следует
+использовать функцию \texttt{colnames()}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Просмотрим текущие названия}
+\KeywordTok{colnames}\NormalTok{(sewage)}
+\NormalTok{## [1] "X1"   "2005" "2010" "2011" "2012" "2013"}
+\KeywordTok{colnames}\NormalTok{(tab)}
+\NormalTok{## [1] "Год"        "Всего"      "Балтийское" "Черное"     "Азовское"  }
+\NormalTok{## [6] "Каспийское" "Карское"    "Белое"      "Прочие"}
+
+\CommentTok{# Заменим их на новые}
+\KeywordTok{colnames}\NormalTok{(sewage) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Region"}\NormalTok{, }\StringTok{"Year05"}\NormalTok{, }\StringTok{"Year10"}\NormalTok{, }\StringTok{"Year11"}\NormalTok{, }\StringTok{"Year12"}\NormalTok{, }\StringTok{"Year13"}\NormalTok{)}
+\KeywordTok{colnames}\NormalTok{(tab) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Year"}\NormalTok{, }\StringTok{"Total"}\NormalTok{, }\StringTok{"Baltic"}\NormalTok{, }\StringTok{"Black"}\NormalTok{, }\StringTok{"Azov"}\NormalTok{, }\StringTok{"Caspian"}\NormalTok{, }\StringTok{"Kara"}\NormalTok{, }\StringTok{"White"}\NormalTok{, }\StringTok{"Other"}\NormalTok{)}
+
+\CommentTok{# Проверим результат}
+\KeywordTok{colnames}\NormalTok{(sewage)}
+\NormalTok{## [1] "Region" "Year05" "Year10" "Year11" "Year12" "Year13"}
+\KeywordTok{colnames}\NormalTok{(tab)}
+\NormalTok{## [1] "Year"    "Total"   "Baltic"  "Black"   "Azov"    "Caspian" "Kara"   }
+\NormalTok{## [8] "White"   "Other"}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Обращение к столбцам}\label{col_calling}
+
+К столбцу можно обращаться по номеру и названию (с помощью оператора
+\texttt{\$} или в кавычках внутри скобок). Если вы указываете в
+квадратных скобках номер без запятой, он трактуется именно как номер
+столбца, а не строки. Тип возвращаемого значения зависит от синтаксиса:
+
+\begin{itemize}
+\tightlist
+\item
+  обращение через \texttt{\$} возвращает вектор;
+\item
+  обращение в скобках с запятой к одному столбцу возвращает вектор;
+\item
+  обращение в скобках с запятой к нескольким столбцам возвращает фрейм
+  данных;
+\item
+  обращение в скобках без запятой возвращает фрейм данных.
+\end{itemize}
+
+Несколько примеров:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{a <-}\StringTok{ }\KeywordTok{head}\NormalTok{(sewage)}
+
+\CommentTok{# Один столбец - результат зависит от запятой}
+\NormalTok{a}\OperatorTok{$}\NormalTok{Year05      }\CommentTok{# столбец в виде вектора}
+\NormalTok{## [1] 17727  4341    11    89   155   169}
+\NormalTok{a[, }\StringTok{"Year05"}\NormalTok{] }\CommentTok{# столбец в виде вектора}
+\NormalTok{## [1] 17727  4341    11    89   155   169}
+\NormalTok{a[, }\DecValTok{2}\NormalTok{]        }\CommentTok{# столбец в виде вектора}
+\NormalTok{## [1] 17727  4341    11    89   155   169}
+
+\NormalTok{a[}\StringTok{"Year05"}\NormalTok{] }\CommentTok{# столбец в виде фрейма данных}
+\NormalTok{##   Year05}
+\NormalTok{## 1  17727}
+\NormalTok{## 2   4341}
+\NormalTok{## 3     11}
+\NormalTok{## 4     89}
+\NormalTok{## 5    155}
+\NormalTok{## 6    169}
+\NormalTok{a[}\DecValTok{2}\NormalTok{]        }\CommentTok{# столбец в виде фрейма данных}
+\NormalTok{##   Year05}
+\NormalTok{## 1  17727}
+\NormalTok{## 2   4341}
+\NormalTok{## 3     11}
+\NormalTok{## 4     89}
+\NormalTok{## 5    155}
+\NormalTok{## 6    169}
+
+\CommentTok{# Несколько столбцов - всегда фрейм данных}
+\NormalTok{a[, }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{4}\NormalTok{)]              }\CommentTok{# столбцы в виде фрейма данных}
+\NormalTok{##                           Region Year11}
+\NormalTok{## 1           Российская Федерация  15966}
+\NormalTok{## 2 Центральный федеральный округ    3613}
+\NormalTok{## 3           Белгородская область     72}
+\NormalTok{## 4               Брянская область     75}
+\NormalTok{## 5           Владимирская область    126}
+\NormalTok{## 6            Воронежская область    135}
+\NormalTok{a[, }\KeywordTok{c}\NormalTok{(}\StringTok{"Region"}\NormalTok{, }\StringTok{"Year11"}\NormalTok{)]}\CommentTok{# столбцы в виде фрейма данных}
+\NormalTok{##                           Region Year11}
+\NormalTok{## 1           Российская Федерация  15966}
+\NormalTok{## 2 Центральный федеральный округ    3613}
+\NormalTok{## 3           Белгородская область     72}
+\NormalTok{## 4               Брянская область     75}
+\NormalTok{## 5           Владимирская область    126}
+\NormalTok{## 6            Воронежская область    135}
+\NormalTok{a[}\KeywordTok{c}\NormalTok{(}\StringTok{"Region"}\NormalTok{, }\StringTok{"Year11"}\NormalTok{)]  }\CommentTok{# столбцы в виде фрейма данных}
+\NormalTok{##                           Region Year11}
+\NormalTok{## 1           Российская Федерация  15966}
+\NormalTok{## 2 Центральный федеральный округ    3613}
+\NormalTok{## 3           Белгородская область     72}
+\NormalTok{## 4               Брянская область     75}
+\NormalTok{## 5           Владимирская область    126}
+\NormalTok{## 6            Воронежская область    135}
+\NormalTok{a[}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{4}\NormalTok{)]                }\CommentTok{# столбцы в виде фрейма данных}
+\NormalTok{##                           Region Year11}
+\NormalTok{## 1           Российская Федерация  15966}
+\NormalTok{## 2 Центральный федеральный округ    3613}
+\NormalTok{## 3           Белгородская область     72}
+\NormalTok{## 4               Брянская область     75}
+\NormalTok{## 5           Владимирская область    126}
+\NormalTok{## 6            Воронежская область    135}
+\end{Highlighting}
+\end{Shaded}
+
+Использование необходимой формы зависит от контекста и ваших целей.
+
+\subsection{Выбор и исключение столбцов}\label{col_select}
+
+Можно создать новую таблицу, выбрав необходимые столбцы, как это
+показано выше:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Создадим новый фрейм данных из трех необходимых столбцов:}
+\NormalTok{caspian <-}\StringTok{ }\NormalTok{tab[}\KeywordTok{c}\NormalTok{(}\StringTok{"Year"}\NormalTok{, }\StringTok{"Total"}\NormalTok{, }\StringTok{"Caspian"}\NormalTok{)]}
+\KeywordTok{str}\NormalTok{(caspian)}
+\NormalTok{## 'data.frame':    22 obs. of  3 variables:}
+\NormalTok{##  $ Year   : int  1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 ...}
+\NormalTok{##  $ Total  : num  27.2 24.6 24.5 22.4 23 22 20.7 20.3 19.8 19.8 ...}
+\NormalTok{##  $ Caspian: num  12.1 11 10.4 9.8 9.8 9.5 9.1 9.2 8.9 9.2 ...}
+\end{Highlighting}
+\end{Shaded}
+
+Иногда проще создать новый фрейм данных, исключив из оригинала ненужные
+столбцы. Исключение делается с помощью знака `-', который ставится перед
+номером столбца. Например, вот так можно исключить из таблицы
+\texttt{tab} столбцы \texttt{Total} (2-й) и \texttt{Other} (9-й):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cleaned <-}\StringTok{ }\NormalTok{tab[}\KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{2}\NormalTok{, }\OperatorTok{-}\DecValTok{9}\NormalTok{)]}
+\KeywordTok{str}\NormalTok{(cleaned)}
+\NormalTok{## 'data.frame':    22 obs. of  7 variables:}
+\NormalTok{##  $ Year   : int  1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 ...}
+\NormalTok{##  $ Baltic : num  2.5 2.3 2.3 2.2 2.2 2.2 2.2 2.2 2.1 2 ...}
+\NormalTok{##  $ Black  : num  0.4 0.4 0.4 0.3 0.3 0.3 0.3 0.3 0.3 0.2 ...}
+\NormalTok{##  $ Azov   : num  4.3 3.2 3.5 3.1 3.8 3.2 2.5 2 1.9 2 ...}
+\NormalTok{##  $ Caspian: num  12.1 11 10.4 9.8 9.8 9.5 9.1 9.2 8.9 9.2 ...}
+\NormalTok{##  $ Kara   : num  5.3 5 5.2 4.7 4.4 4.2 4.1 4.2 4.2 4.1 ...}
+\NormalTok{##  $ White  : num  1 0.9 0.9 0.8 0.8 0.8 0.8 0.9 0.9 0.8 ...}
+\end{Highlighting}
+\end{Shaded}
+
+Есть также способ \emph{удалить столбец целиком} (им пользуются довольно
+редко). Для этого необходимо записать в него значение \texttt{NULL}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cleaned}\OperatorTok{$}\NormalTok{Azov <-}\StringTok{ }\OtherTok{NULL}
+\KeywordTok{str}\NormalTok{(cleaned)}
+\NormalTok{## 'data.frame':    22 obs. of  6 variables:}
+\NormalTok{##  $ Year   : int  1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 ...}
+\NormalTok{##  $ Baltic : num  2.5 2.3 2.3 2.2 2.2 2.2 2.2 2.2 2.1 2 ...}
+\NormalTok{##  $ Black  : num  0.4 0.4 0.4 0.3 0.3 0.3 0.3 0.3 0.3 0.2 ...}
+\NormalTok{##  $ Caspian: num  12.1 11 10.4 9.8 9.8 9.5 9.1 9.2 8.9 9.2 ...}
+\NormalTok{##  $ Kara   : num  5.3 5 5.2 4.7 4.4 4.2 4.1 4.2 4.2 4.1 ...}
+\NormalTok{##  $ White  : num  1 0.9 0.9 0.8 0.8 0.8 0.8 0.9 0.9 0.8 ...}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Добавление и вычисление столбцов
+\{col\_add\}}\label{----col_add}
+
+Существует простой способ создать новый столбец в таблице --- достаточно
+указать его название после значка \texttt{\$}. Если среда R не
+обнаруживает столбец с таким названием, она его создаст:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{caspian}\OperatorTok{$}\NormalTok{CaspianRatio <-}\StringTok{ }\KeywordTok{round}\NormalTok{(caspian}\OperatorTok{$}\NormalTok{Caspian }\OperatorTok{/}\StringTok{ }\NormalTok{caspian}\OperatorTok{$}\NormalTok{Total, }\DecValTok{3}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{View}\NormalTok{(tab2)}
+\KeywordTok{View}\NormalTok{(caspian)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-5-1.pdf}
-Как видно, данная таблица не отличается от предыдущей, но ее чтение
-более компактно.
+\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-16-1.pdf}
 
-\section{Фильтрация, сортировка, работа с элементами
-таблицы}\label{filtering_sorting}
+\emph{Тем не менее, такой метод добавления столбцов нельзя считать
+правильным}. Главный его недостаток --- из формы записи неочевидно, что
+мы добавляем новый столбец, а не перевычисляем уже существующий. Пакет
+\texttt{dplyr}, который мы рассмотрим в конце настоящей главы, решает
+эту и многие другие стилистические проблемы работы с фреймами данных.
+
+\section{Сортировка и фильтрация}\label{filtering_sorting}
+
+\subsection{Сортировка}\label{table_sorting}
 
 Распространенные операции с таблицами --- это упорядочение по
 определенному столбцу и фильтрация по значениям. Мы уже знаем что из
@@ -2848,10 +3255,10 @@ Cтроки и столбцы матрицы можно использовать
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{tab[}\KeywordTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{4}\NormalTok{), ]}
-\NormalTok{##    Год Всего Балтийское Черное Азовское Каспийское Карское Белое Прочие}
-\NormalTok{## 5 1997  23.0        2.2    0.3      3.8        9.8     4.4   0.8    1.7}
-\NormalTok{## 2 1994  24.6        2.3    0.4      3.2       11.0     5.0   0.9    1.8}
-\NormalTok{## 4 1996  22.4        2.2    0.3      3.1        9.8     4.7   0.8    1.5}
+\NormalTok{##   Year Total Baltic Black Azov Caspian Kara White Other}
+\NormalTok{## 5 1997  23.0    2.2   0.3  3.8     9.8  4.4   0.8   1.7}
+\NormalTok{## 2 1994  24.6    2.3   0.4  3.2    11.0  5.0   0.9   1.8}
+\NormalTok{## 4 1996  22.4    2.2   0.3  3.1     9.8  4.7   0.8   1.5}
 \end{Highlighting}
 \end{Shaded}
 
@@ -2864,39 +3271,35 @@ Cтроки и столбцы матрицы можно использовать
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{indexes<-}\KeywordTok{order}\NormalTok{(tab}\OperatorTok{$}\NormalTok{Каспийское)}
+\NormalTok{indexes<-}\KeywordTok{order}\NormalTok{(tab}\OperatorTok{$}\NormalTok{Caspian)}
 \KeywordTok{head}\NormalTok{(tab[indexes, ])}
-\NormalTok{##     Год Всего Балтийское Черное Азовское Каспийское Карское Белое Прочие}
-\NormalTok{## 22 2014  14.8        1.7    0.2      1.5        6.4     3.2   0.6    1.2}
-\NormalTok{## 17 2009  15.9        1.8    0.2      1.5        6.8     3.5   0.7    1.4}
-\NormalTok{## 21 2013  15.2        1.8    0.2      1.6        6.9     3.0   0.6    1.1}
-\NormalTok{## 20 2012  15.7        1.8    0.2      1.6        7.0     3.0   0.7    1.4}
-\NormalTok{## 19 2011  16.0        1.9    0.2      1.6        7.1     3.2   0.7    1.3}
-\NormalTok{## 18 2010  16.5        2.0    0.2      1.6        7.3     3.3   0.7    1.4}
+\NormalTok{##    Year Total Baltic Black Azov Caspian Kara White Other}
+\NormalTok{## 22 2014  14.8    1.7   0.2  1.5     6.4  3.2   0.6   1.2}
+\NormalTok{## 17 2009  15.9    1.8   0.2  1.5     6.8  3.5   0.7   1.4}
+\NormalTok{## 21 2013  15.2    1.8   0.2  1.6     6.9  3.0   0.6   1.1}
+\NormalTok{## 20 2012  15.7    1.8   0.2  1.6     7.0  3.0   0.7   1.4}
+\NormalTok{## 19 2011  16.0    1.9   0.2  1.6     7.1  3.2   0.7   1.3}
+\NormalTok{## 18 2010  16.5    2.0   0.2  1.6     7.3  3.3   0.7   1.4}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{quote}
-Используйте функцию \texttt{head()}, чтобы отобразить первые несколько
-строк таблицы. Эта возможность особенно полезна при работе с большими
-таблицами
-\end{quote}
 
 Если упорядочение несложное, программист его скорее всего вставит
 непосредственно в инструкцию обращения к таблице:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{head}\NormalTok{(tab[}\KeywordTok{order}\NormalTok{(tab}\OperatorTok{$}\NormalTok{Каспийское), ])}
-\NormalTok{##     Год Всего Балтийское Черное Азовское Каспийское Карское Белое Прочие}
-\NormalTok{## 22 2014  14.8        1.7    0.2      1.5        6.4     3.2   0.6    1.2}
-\NormalTok{## 17 2009  15.9        1.8    0.2      1.5        6.8     3.5   0.7    1.4}
-\NormalTok{## 21 2013  15.2        1.8    0.2      1.6        6.9     3.0   0.6    1.1}
-\NormalTok{## 20 2012  15.7        1.8    0.2      1.6        7.0     3.0   0.7    1.4}
-\NormalTok{## 19 2011  16.0        1.9    0.2      1.6        7.1     3.2   0.7    1.3}
-\NormalTok{## 18 2010  16.5        2.0    0.2      1.6        7.3     3.3   0.7    1.4}
+\KeywordTok{head}\NormalTok{(tab[}\KeywordTok{order}\NormalTok{(tab}\OperatorTok{$}\NormalTok{Caspian), ])}
+\NormalTok{##    Year Total Baltic Black Azov Caspian Kara White Other}
+\NormalTok{## 22 2014  14.8    1.7   0.2  1.5     6.4  3.2   0.6   1.2}
+\NormalTok{## 17 2009  15.9    1.8   0.2  1.5     6.8  3.5   0.7   1.4}
+\NormalTok{## 21 2013  15.2    1.8   0.2  1.6     6.9  3.0   0.6   1.1}
+\NormalTok{## 20 2012  15.7    1.8   0.2  1.6     7.0  3.0   0.7   1.4}
+\NormalTok{## 19 2011  16.0    1.9   0.2  1.6     7.1  3.2   0.7   1.3}
+\NormalTok{## 18 2010  16.5    2.0   0.2  1.6     7.3  3.3   0.7   1.4}
 \end{Highlighting}
 \end{Shaded}
+
+\subsection{Фильтрация}\label{table_filtering}
 
 Схожим образом реализована \emph{фильтрация данных} по значению.
 Например, вы хотите извлечь из таблицы только те года, в которых объем
@@ -2910,15 +3313,15 @@ Cтроки и столбцы матрицы можно использовать
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{condition <-}\StringTok{ }\NormalTok{tab}\OperatorTok{$}\NormalTok{Каспийское }\OperatorTok{>}\StringTok{ }\DecValTok{10}
+\NormalTok{condition <-}\StringTok{ }\NormalTok{tab}\OperatorTok{$}\NormalTok{Caspian }\OperatorTok{>}\StringTok{ }\DecValTok{10}
 \NormalTok{condition  }\CommentTok{# посмотрим что получилось}
 \NormalTok{##  [1]  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE}
 \NormalTok{## [12] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE}
 \NormalTok{tab[condition, ] }\CommentTok{# используем его для фильтрации строк таблицы:}
-\NormalTok{##    Год Всего Балтийское Черное Азовское Каспийское Карское Белое Прочие}
-\NormalTok{## 1 1993  27.2        2.5    0.4      4.3       12.1     5.3   1.0    1.6}
-\NormalTok{## 2 1994  24.6        2.3    0.4      3.2       11.0     5.0   0.9    1.8}
-\NormalTok{## 3 1995  24.5        2.3    0.4      3.5       10.4     5.2   0.9    1.8}
+\NormalTok{##   Year Total Baltic Black Azov Caspian Kara White Other}
+\NormalTok{## 1 1993  27.2    2.5   0.4  4.3    12.1  5.3   1.0   1.6}
+\NormalTok{## 2 1994  24.6    2.3   0.4  3.2    11.0  5.0   0.9   1.8}
+\NormalTok{## 3 1995  24.5    2.3   0.4  3.5    10.4  5.2   0.9   1.8}
 \end{Highlighting}
 \end{Shaded}
 
@@ -2926,168 +3329,106 @@ Cтроки и столбцы матрицы можно использовать
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{tab[tab}\OperatorTok{$}\NormalTok{Каспийское }\OperatorTok{>}\StringTok{ }\DecValTok{10}\NormalTok{, ]}
-\NormalTok{##    Год Всего Балтийское Черное Азовское Каспийское Карское Белое Прочие}
-\NormalTok{## 1 1993  27.2        2.5    0.4      4.3       12.1     5.3   1.0    1.6}
-\NormalTok{## 2 1994  24.6        2.3    0.4      3.2       11.0     5.0   0.9    1.8}
-\NormalTok{## 3 1995  24.5        2.3    0.4      3.5       10.4     5.2   0.9    1.8}
+\NormalTok{tab[tab}\OperatorTok{$}\NormalTok{Caspian }\OperatorTok{>}\StringTok{ }\DecValTok{10}\NormalTok{, ]}
+\NormalTok{##   Year Total Baltic Black Azov Caspian Kara White Other}
+\NormalTok{## 1 1993  27.2    2.5   0.4  4.3    12.1  5.3   1.0   1.6}
+\NormalTok{## 2 1994  24.6    2.3   0.4  3.2    11.0  5.0   0.9   1.8}
+\NormalTok{## 3 1995  24.5    2.3   0.4  3.5    10.4  5.2   0.9   1.8}
 \end{Highlighting}
 \end{Shaded}
 
-Можно создать новую таблицу, выбрав необходимые столбцы:
+Часто бывает необходимо отобрать данные из таблицы, содержащей
+разнородные данные. В частности, в нашей таблице смешаны данные по
+субъектам и федеральным округам. Предположим, необходимо выгрузить в
+отдельную таблицу данные по федеральным округам. Для этого нужно найти
+строки, в которых столбец \texttt{Region} содержит фразу
+\texttt{"федеральный\ округ"}. Для поиска по текстовым эталонам
+импользуется функция \texttt{grep()}, выдающая номера элементов, или ее
+разновидность \texttt{grepl()}, выдающая список логических констант
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{caspian <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(tab}\OperatorTok{$}\NormalTok{Год, tab}\OperatorTok{$}\NormalTok{Всего, tab}\OperatorTok{$}\NormalTok{Каспийское)}
-\end{Highlighting}
-\end{Shaded}
-
-Следует заметить, что не рекомендуется использовать кириллические
-названия столбцов (см. \protect\hyperlink{table_rules}{Правила
-подготовки таблиц для чтения в R} в конце данного модуля), поэтому
-переименуем их:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{colnames}\NormalTok{(caspian)<-}\KeywordTok{c}\NormalTok{(}\StringTok{"Year"}\NormalTok{, }\StringTok{"Total"}\NormalTok{, }\StringTok{"Caspian"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-Предположим, что теперь нам необходимо вычислить долю сбросов в
-Каспийское море в общем объеме и записать ее в новый столбец с точностью
-до 3 знаков после запятой. Для этого сначала произведем вычисления:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{ratio <-}\StringTok{ }\NormalTok{caspian}\OperatorTok{$}\NormalTok{Caspian }\OperatorTok{/}\StringTok{ }\NormalTok{caspian}\OperatorTok{$}\NormalTok{Total}
-\NormalTok{ratio}
-\NormalTok{##  [1] 0.4448529 0.4471545 0.4244898 0.4375000 0.4260870 0.4318182 0.4396135}
-\NormalTok{##  [8] 0.4532020 0.4494949 0.4646465 0.4421053 0.4486486 0.4519774 0.4457143}
-\NormalTok{## [15] 0.4302326 0.4385965 0.4276730 0.4424242 0.4437500 0.4458599 0.4539474}
-\NormalTok{## [22] 0.4324324}
-\end{Highlighting}
-\end{Shaded}
-
-Далее округлим результат с помощью функции \texttt{round()} с параметром
-\texttt{digits}, указывающим число значащих цифр в ответе:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{ratio <-}\StringTok{ }\KeywordTok{round}\NormalTok{(ratio, }\DataTypeTok{digits =} \DecValTok{3}\NormalTok{)}
-\NormalTok{ratio}
-\NormalTok{##  [1] 0.445 0.447 0.424 0.438 0.426 0.432 0.440 0.453 0.449 0.465 0.442}
-\NormalTok{## [12] 0.449 0.452 0.446 0.430 0.439 0.428 0.442 0.444 0.446 0.454 0.432}
-\end{Highlighting}
-\end{Shaded}
-
-Существует простой и элегантный способ создать новый столбец в таблице
---- достаточно указать его название после значка \texttt{\$}. Если среда
-R не обнаруживает столбец с таким названием, она его создаст:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{caspian}\OperatorTok{$}\NormalTok{CaspianRatio <-}\StringTok{ }\NormalTok{ratio}
+\CommentTok{# Первый параметр - искомое выражение, второй параметр - где искть}
+\NormalTok{rows <-}\StringTok{ }\KeywordTok{grep}\NormalTok{(}\StringTok{"федеральный округ"}\NormalTok{,sewage}\OperatorTok{$}\NormalTok{Region)}
+\NormalTok{rows  }\CommentTok{# посмотрим, какие элементы столбца Region ему соответствуют}
+\NormalTok{## [1]  2 21 35 42 49 64 73 86}
+\NormalTok{okruga <-}\StringTok{ }\NormalTok{sewage[rows,] }\CommentTok{# отфильтруем найденные строки}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{View}\NormalTok{(caspian)}
+\KeywordTok{View}\NormalTok{(okruga)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-17-1.pdf}
-К столбцу таблицы можно обращаться по номеру, а не названию. Если вы
-указываете в квадратных скобках номер без запятой, он трактуется как
-номер столбца. При этом возвращаемый столбец имеет тип
-\texttt{data.frame}:
+\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-24-1.pdf}
+
+Наоборот --- для \textbf{исключения} найденных объектов удобнее
+воспользоваться разновидностью \texttt{grepl()}, которая возвращает
+вектор из логических значений:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{head}\NormalTok{(caspian[}\DecValTok{2}\NormalTok{])  }\CommentTok{# второй столбец (фактически — таблица из одного столбца)}
-\NormalTok{##   Total}
-\NormalTok{## 1  27.2}
-\NormalTok{## 2  24.6}
-\NormalTok{## 3  24.5}
-\NormalTok{## 4  22.4}
-\NormalTok{## 5  23.0}
-\NormalTok{## 6  22.0}
-\KeywordTok{head}\NormalTok{(caspian[}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{)])  }\CommentTok{# первый и четвертый столбец}
-\NormalTok{##   Year CaspianRatio}
-\NormalTok{## 1 1993        0.445}
-\NormalTok{## 2 1994        0.447}
-\NormalTok{## 3 1995        0.424}
-\NormalTok{## 4 1996        0.438}
-\NormalTok{## 5 1997        0.426}
-\NormalTok{## 6 1998        0.432}
-\end{Highlighting}
-\end{Shaded}
+\NormalTok{rows2 <-}\StringTok{ }\KeywordTok{grepl}\NormalTok{(}\StringTok{"федеральный округ"}\NormalTok{, sewage}\OperatorTok{$}\NormalTok{Region)}
+\NormalTok{rows2 }\CommentTok{# вот так выглядит результат grepl}
+\NormalTok{##  [1] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE}
+\NormalTok{## [12] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE}
+\NormalTok{## [23] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE}
+\NormalTok{## [34] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE}
+\NormalTok{## [45] FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE}
+\NormalTok{## [56] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE}
+\NormalTok{## [67] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE}
+\NormalTok{## [78] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE}
+\NormalTok{## [89] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE}
 
-В противоположность этому, более привычная форма обращения к двумерным
-данным через запятую приведет к тому, что столбец будет возвращен как
-вектор:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{caspian[,}\DecValTok{2}\NormalTok{]}
-\NormalTok{##  [1] 27.2 24.6 24.5 22.4 23.0 22.0 20.7 20.3 19.8 19.8 19.0 18.5 17.7 17.5}
-\NormalTok{## [15] 17.2 17.1 15.9 16.5 16.0 15.7 15.2 14.8}
-\end{Highlighting}
-\end{Shaded}
-
-Использование той или иной формы зависит от контекста.
-
-\section{Чтение таблиц Microsoft Excel}\label{excel_reading}
-
-Чтение таблиц \textbf{Microsoft Excel} производится с помощью функции
-\texttt{read.xlsx()} из пакета \texttt{openxlsx}. В качестве
-обязательных параметров они принимают следующие аргументы:
-
-\begin{itemize}
-\tightlist
-\item
-  \texttt{xlsxFile} --- название файла
-\item
-  \texttt{sheet} --- номер листа
-\end{itemize}
-
-Убедитесь, что у вас установлена и подключена библиотека
-\texttt{openxlsx}.
-
-Откроем таблицу с данными Росстата по сбросу загрязненных сточных вод в
-поверхностные водные объекты (млн м\(^3\)).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{library}\NormalTok{(openxlsx)}
-\NormalTok{sewage<-}\KeywordTok{read.xlsx}\NormalTok{(}\StringTok{"sewage.xlsx"}\NormalTok{,}\DecValTok{1}\NormalTok{) }\CommentTok{# Читаем таблицу из первого листа}
-\NormalTok{## Warning in read.xlsx.default("sewage.xlsx", 1): '.Random.seed' не является}
-\NormalTok{## целочисленным вектором, он типа 'NULL', и поэтому пропущен}
+\NormalTok{neokruga <-}\StringTok{ }\NormalTok{sewage[}\OperatorTok{!}\NormalTok{rows2, ]}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{View}\NormalTok{(sewage)}
+\KeywordTok{View}\NormalTok{(neokruga)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-22-1.pdf}
-Следует дать адекватные названия столбцам таблицы:
+\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-27-1.pdf}
+
+Обратите внимание на восклицательный знак перед \texttt{rows2}. Он
+меняет все значения \texttt{TRUE} на \texttt{FALSE} и наоборот, что
+позволяет исключить найденные объекты
+
+В полученной таблице все еще содержится текстовая шелуха типа
+\texttt{"в\ том\ числе"}, \texttt{"Данные\ за..."}, а также строка
+\texttt{"Российская\ Федерация"}. К счастью, функция \texttt{grep()}
+достаточо умна и возволяет искать сразу по нескольким образцам строк.
+Для этого их нужно разделить вертикальной чертой --- \emph{пайпом}
+(\texttt{\textbar{}}):
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{colnames}\NormalTok{(sewage) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Region"}\NormalTok{, }\StringTok{"Year05"}\NormalTok{, }\StringTok{"Year10"}\NormalTok{, }\StringTok{"Year11"}\NormalTok{, }\StringTok{"Year12"}\NormalTok{, }\StringTok{"Year13"}\NormalTok{)}
+\NormalTok{rows2 <-}\StringTok{ }\KeywordTok{grepl}\NormalTok{(}\StringTok{"федеральный|числе|Российская|за|ѕ"}\NormalTok{, sewage}\OperatorTok{$}\NormalTok{Region)}
+\NormalTok{rows2}
+\NormalTok{##  [1]  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE}
+\NormalTok{## [12] FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE}
+\NormalTok{## [23] FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE}
+\NormalTok{## [34] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE}
+\NormalTok{## [45] FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE}
+\NormalTok{## [56] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE}
+\NormalTok{## [67] FALSE  TRUE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE}
+\NormalTok{## [78] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE}
+\NormalTok{## [89] FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE}
+\NormalTok{neokruga <-}\StringTok{ }\NormalTok{sewage[}\OperatorTok{!}\NormalTok{rows2, ] }\CommentTok{# обратите внимание на восклицательный знак перед rows2}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{View}\NormalTok{(sewage)}
+\KeywordTok{View}\NormalTok{(neokruga)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-25-1.pdf}
+\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-30-1.pdf}
 
 \section{Пропущенные значения}\label{missed_values}
 
@@ -3109,8 +3450,8 @@ R не обнаруживает столбец с таким названием,
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{max}\NormalTok{(sewage}\OperatorTok{$}\NormalTok{Year13, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
-\NormalTok{## [1] 15189}
+\KeywordTok{max}\NormalTok{(sewage}\OperatorTok{$}\NormalTok{Year12, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{## [1] 15678}
 \end{Highlighting}
 \end{Shaded}
 
@@ -3142,103 +3483,9 @@ R не обнаруживает столбец с таким названием,
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-30-1.pdf}
+\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-35-1.pdf}
 
-\section{Фильтрация по текстовым полям}\label{filtering_text}
-
-Часто бывает необходимо отобрать данные из таблицы, содержащей
-разнородные данные. В частности, в нашей таблице смешаны данные по
-субъектам и федеральным округам. Предположим, необходимо выгрузить в
-отдельную таблицу данные по федеральным округам. Для этого нужно найти
-строки, в которых столбец \texttt{Region} содержит фразу
-\texttt{"федеральный\ округ"}. Для поиска по текстовым эталонам
-импользуется функция \texttt{grep()}, выдающая номера элементов, или ее
-разновидность \texttt{grepl()}, выдающая список логических констант
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# Первый параметр - искомое выражение, второй параметр - где искть}
-\NormalTok{rows <-}\StringTok{ }\KeywordTok{grep}\NormalTok{(}\StringTok{"федеральный округ"}\NormalTok{,sewage}\OperatorTok{$}\NormalTok{Region)}
-\NormalTok{rows  }\CommentTok{# посмотрим, какие элементы столбца Region ему соответствуют}
-\NormalTok{## [1]  2 21 35 42 49 64 73 86}
-\NormalTok{okruga <-}\StringTok{ }\NormalTok{sewage[rows,] }\CommentTok{# отфильтруем найденные строки}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{View}\NormalTok{(okruga)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-33-1.pdf}
-Наоборот --- для \textbf{исключения} найденных объектов удобнее
-воспользоваться разновидностью \texttt{grepl()}, которая возвращает
-вектор из логических значений:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{rows2 <-}\StringTok{ }\KeywordTok{grepl}\NormalTok{(}\StringTok{"федеральный округ"}\NormalTok{,sewage}\OperatorTok{$}\NormalTok{Region)}
-\NormalTok{rows2 }\CommentTok{# вот так выглядит результат grepl}
-\NormalTok{##  [1] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE}
-\NormalTok{## [12] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE}
-\NormalTok{## [23] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE}
-\NormalTok{## [34] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE}
-\NormalTok{## [45] FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE}
-\NormalTok{## [56] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE}
-\NormalTok{## [67] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE}
-\NormalTok{## [78] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE}
-\NormalTok{## [89] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE}
-
-\NormalTok{neokruga <-}\StringTok{ }\NormalTok{sewage[}\OperatorTok{!}\NormalTok{rows2,]}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{View}\NormalTok{(neokruga)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-36-1.pdf}
-Обратите внимание на восклицательный знак перед \texttt{rows2}. Он
-меняет все значения \texttt{TRUE} на \texttt{FALSE} и наоборот, что
-позволяет исключить найденные объекты
-
-В полученной таблице все еще содержится текстовая шелуха типа
-\texttt{"в\ том\ числе"}, \texttt{"Данные\ за..."}, а также строка
-\texttt{"Российская\ Федерация"}. К счастью, функция \texttt{grep()}
-достаточо умна и возволяет искать сразу по нескольким образцам строк.
-Для этого их нужно разделить вертикальной чертой --- \emph{пайпом}
-(\texttt{\textbar{}}):
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{rows2 <-}\StringTok{ }\KeywordTok{grepl}\NormalTok{(}\StringTok{"федеральный|числе|Российская|за|ѕ"}\NormalTok{,sewage}\OperatorTok{$}\NormalTok{Region)}
-\NormalTok{rows2}
-\NormalTok{##  [1]  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE}
-\NormalTok{## [12] FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE}
-\NormalTok{## [23] FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE}
-\NormalTok{## [34] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE}
-\NormalTok{## [45] FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE}
-\NormalTok{## [56] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE}
-\NormalTok{## [67] FALSE  TRUE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE}
-\NormalTok{## [78] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE}
-\NormalTok{## [89] FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE}
-\NormalTok{neokruga <-}\StringTok{ }\NormalTok{sewage[}\OperatorTok{!}\NormalTok{rows2,] }\CommentTok{# обратите внимание на восклицательный знак перед rows2}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{View}\NormalTok{(neokruga)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-39-1.pdf}
-
-\section{Преобразование типов данных и исправление
-ошибок}\label{data_conversion}
+\section{Преобразование типов и поиск ошибок}\label{data_conversion}
 
 Достаточно часто при работе с реальными данными возникает необходимость
 преобразования их типов. Например, вам необходимо перевести строки в
@@ -3289,7 +3536,8 @@ R не обнаруживает столбец с таким названием,
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-42-1.pdf}
+\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-38-1.pdf}
+
 Видно, что все столбцы, кроме двух, хранящих идентификаторы, были
 прочитаны как строки и преобразованы в факторы (номинальные переменные).
 Это означает, что мы не сможем работать привычным образом со столбцами
@@ -3305,40 +3553,8 @@ R не обнаруживает столбец с таким названием,
 преобразовывать номинальные переменные в \textbf{R}.
 
 Чтобы привести столбцы к нужному типу, необходимо использовать
-преобразования типов. Для этого в \textbf{R} существует множество
-функций семейства \texttt{as(object,class)}, где в качестве первого
-параметра \texttt{object} вы указываете преобразуемый объект, а в
-качестве второго параметра \texttt{class} --- тип, к которому вы хотите
-его привести. Например:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{s <-}\StringTok{ "5456.788"}
-\NormalTok{s }\OperatorTok{+}\StringTok{ }\DecValTok{1}
-\NormalTok{## Error in s + 1: нечисловой аргумент для бинарного оператора}
-\NormalTok{n <-}\StringTok{ }\KeywordTok{as}\NormalTok{(s, }\StringTok{"numeric"}\NormalTok{)}
-\NormalTok{## Error in as(s, "numeric"): не могу найти функцию "as"}
-\NormalTok{n }\OperatorTok{+}\StringTok{ }\DecValTok{1}
-\NormalTok{## Error in eval(expr, envir, enclos): объект 'n' не найден}
-\NormalTok{s <-}\StringTok{ }\KeywordTok{as}\NormalTok{(n, }\StringTok{"character"}\NormalTok{)}
-\NormalTok{## Error in as(n, "character"): не могу найти функцию "as"}
-\NormalTok{s}
-\NormalTok{## [1] "5456.788"}
-\KeywordTok{nchar}\NormalTok{(s)}
-\NormalTok{## [1] 8}
-\end{Highlighting}
-\end{Shaded}
-
-На практике обычно пользуются не функцией \texttt{as()}, а ее обертками
-(\emph{wrappers}), которые имеют вид \texttt{as.numeric()},
-\texttt{as.character()}, \texttt{as.Date()} и так далее:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{as.numeric}\NormalTok{(s) }\CommentTok{# то же самое, что и as(s, "numeric")}
-\NormalTok{## [1] 5456.788}
-\end{Highlighting}
-\end{Shaded}
+преобразования типов. Для этого можно воспользоваться функциями
+семейства \texttt{as}, описанными в Главе 1.
 
 Для начала преобразуем столбец \texttt{Comment} к обычному символьному
 представлению:
@@ -3599,7 +3815,7 @@ R не обнаруживает столбец с таким названием,
 Обратите внимание, что строки, интервальные и номинальные (факторы)
 переменные обрабатываются функцией \texttt{summary()} по-разному.
 
-\section{Сохранение таблиц CSV и Microsoft Excel}\label{table_writing}
+\section{Сохранение таблиц}\label{table_writing}
 
 Одной из завершающих стадий анализа данных, помимо графиков и отчетов,
 часто являются новые табличные представления, которые было бы неплохо
@@ -3611,10 +3827,11 @@ R не обнаруживает столбец с таким названием,
 соответственно.
 
 \begin{quote}
-По умолчанию функции \texttt{write.table()}, \texttt{write.csv()} и
-\texttt{write.csv2()} записывают в таблицы в качестве первого столбца
-названия (номера) строк таблиц. Если вы не хотите, чтобы это
-происходило, укажите дополнительный параметр \texttt{row.names=FALSE}.
+\textbf{По умолчанию функции \texttt{write.table()},
+\texttt{write.csv()} и \texttt{write.csv2()} записывают в таблицы в
+качестве первого столбца названия (номера) строк таблиц.} Если вы не
+хотите, чтобы это происходило, укажите дополнительный параметр
+\texttt{row.names=FALSE}.
 \end{quote}
 
 Сохраним таблицы \texttt{okruga} и \texttt{neokruga}, раздельно хранящие
@@ -3663,13 +3880,12 @@ R не обнаруживает столбец с таким названием,
 всегда указывайте параметр \texttt{row.names=FALSE}
 
 \begin{quote}
-Вы можете дать строкам таблицы названия и извлечь их, используя функцию
-\texttt{row.names()} аналогично функции \texttt{colnames()} для
+\textbf{Вы можете дать строкам таблицы названия и извлечь их, используя
+функцию \texttt{row.names()}} аналогично функции \texttt{colnames()} для
 столбцов.
 \end{quote}
 
-\hypertarget{table_rules}{\section{Правила подготовки таблиц для чтения
-в R}\label{table_rules}}
+\section{Правила подготовки таблиц для чтения в R}\label{table_rules}
 
 С таблицами, которые мы использовали в настоящем модуле, все прошло
 гладко, поскольку они были подготовлены специальным образом. Несмотря на
@@ -3683,6 +3899,9 @@ R не обнаруживает столбец с таким названием,
 \item
   В первой строке таблицы должны располагаться названия столбцов.
 \item
+  Во второй строке таблицы должны начинаться данные. Не допускайте
+  многострочных заголовков.
+\item
   В названиях столбцов недопустимы объединенные ячейки, покрывающие
   несколько столбцов. Это может привести к неверному подсчету количества
   столбцов и, как следствие, некорректному чтению таблицы в целом.
@@ -3693,12 +3912,9 @@ R не обнаруживает столбец с таким названием,
   \texttt{Валовый\ внутренний\ продукт\ за\ 2015\ г.}. Хорошее название
   столбца: \texttt{GDP2015}.
 \item
-  Во второй строке таблицы должны начинаться данные. Не допускайте
-  многострочных заголовков.
-\item
   Некоторые ошибки данных в таблицах (такие как неверные десятичные
   разделители), проще найти и исправить в табличном/текстовом редакторе,
-  нежели после загрузки в R.
+  нежели после загрузки в \textbf{R}.
 \end{enumerate}
 
 Следование этим правилам значительно облегчит работу с табличными
@@ -3714,7 +3930,7 @@ R не обнаруживает столбец с таким названием,
 \bottomrule
 \end{longtable}
 
-\bibliography{packages.bib,book.bib}
+\bibliography{packages.bib,articles.bib}
 
 
 \end{document}
