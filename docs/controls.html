@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Визуализация и анализ географических данных на языке R</title>
+  <meta name="description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Визуализация и анализ географических данных на языке R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  <meta name="github-repo" content="tsamsonov/r-geo-course" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Визуализация и анализ географических данных на языке R" />
+  
+  <meta name="twitter:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  
+
+<meta name="author" content="Тимофей Самсонов">
+
+
+<meta name="date" content="2017-10-08">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="graphics.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-0.9/htmlwidgets.js"></script>
+<script src="libs/datatables-binding-0.2/datatables.js"></script>
+<link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Визуализация и анализ географических данных на языке R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Введение</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Программное обеспечение</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#---"><i class="fa fa-check"></i>Установка и подключение пакетов</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i>Выполнение программного кода</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i>Установка рабочей директории</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Диагностические функции</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Получение справки</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#d09ad0bed0bcd0bcd0b5d0bdd182d0b0d180d0b8d0b8"><i class="fa fa-check"></i>Комментарии</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#----r"><i class="fa fa-check"></i>Стандарт оформления кода на R</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Зарезервированные слова</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Названия переменных</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i>Названия специальных символов</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i>Ссылка на пособие</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="data-types.html"><a href="data-types.html"><i class="fa fa-check"></i><b>1</b> Типы данных, ввод и вывод</a><ul>
+<li class="chapter" data-level="1.1" data-path="data-types.html"><a href="data-types.html#numbers"><i class="fa fa-check"></i><b>1.1</b> Числа</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="data-types.html"><a href="data-types.html#number_functions"><i class="fa fa-check"></i><b>1.1.1</b> Числовые функции</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="data-types.html"><a href="data-types.html#strings"><i class="fa fa-check"></i><b>1.2</b> Строки</a></li>
+<li class="chapter" data-level="1.3" data-path="data-types.html"><a href="data-types.html#dates"><i class="fa fa-check"></i><b>1.3</b> Даты</a></li>
+<li class="chapter" data-level="1.4" data-path="data-types.html"><a href="data-types.html#booleans"><i class="fa fa-check"></i><b>1.4</b> Логические</a></li>
+<li class="chapter" data-level="1.5" data-path="data-types.html"><a href="data-types.html#determine_data_type"><i class="fa fa-check"></i><b>1.5</b> Определение типа данных</a></li>
+<li class="chapter" data-level="1.6" data-path="data-types.html"><a href="data-types.html#---conversion"><i class="fa fa-check"></i><b>1.6</b> Преобразование типов данных {conversion}</a></li>
+<li class="chapter" data-level="1.7" data-path="data-types.html"><a href="data-types.html#read_write_console"><i class="fa fa-check"></i><b>1.7</b> Ввод и вывод данных в консоли</a></li>
+<li class="chapter" data-level="1.8" data-path="data-types.html"><a href="data-types.html#questions_tasks_basics"><i class="fa fa-check"></i><b>1.8</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="1.8.1" data-path="data-types.html"><a href="data-types.html#questions_basics"><i class="fa fa-check"></i><b>1.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="1.8.2" data-path="data-types.html"><a href="data-types.html#tasks_basics"><i class="fa fa-check"></i><b>1.8.2</b> Задачи</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-structures.html"><a href="data-structures.html"><i class="fa fa-check"></i><b>2</b> Структуры данных</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-structures.html"><a href="data-structures.html#section-2.1"><i class="fa fa-check"></i><b>2.1</b> Векторы</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="data-structures.html"><a href="data-structures.html#vector_creation"><i class="fa fa-check"></i><b>2.1.1</b> Создание вектора</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-structures.html"><a href="data-structures.html#vector_elements"><i class="fa fa-check"></i><b>2.1.2</b> Работа с элементами вектора</a></li>
+<li class="chapter" data-level="2.1.3" data-path="data-structures.html"><a href="data-structures.html#vector_transform"><i class="fa fa-check"></i><b>2.1.3</b> Анализ и преобразования векторов</a></li>
+<li class="chapter" data-level="2.1.4" data-path="data-structures.html"><a href="data-structures.html#vector_search_sorting"><i class="fa fa-check"></i><b>2.1.4</b> Поиск и сортировка элементов</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-structures.html"><a href="data-structures.html#matrices"><i class="fa fa-check"></i><b>2.2</b> Матрицы</a></li>
+<li class="chapter" data-level="2.3" data-path="data-structures.html"><a href="data-structures.html#arrays"><i class="fa fa-check"></i><b>2.3</b> Массивы</a></li>
+<li class="chapter" data-level="2.4" data-path="data-structures.html"><a href="data-structures.html#data_frames"><i class="fa fa-check"></i><b>2.4</b> Фреймы данных</a></li>
+<li class="chapter" data-level="2.5" data-path="data-structures.html"><a href="data-structures.html#lists"><i class="fa fa-check"></i><b>2.5</b> Списки</a></li>
+<li class="chapter" data-level="2.6" data-path="data-structures.html"><a href="data-structures.html#section-2.6"><i class="fa fa-check"></i><b>2.6</b> Факторы</a></li>
+<li class="chapter" data-level="2.7" data-path="data-structures.html"><a href="data-structures.html#questions_tasks_vectors"><i class="fa fa-check"></i><b>2.7</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="2.7.1" data-path="data-structures.html"><a href="data-structures.html#questions_vectors"><i class="fa fa-check"></i><b>2.7.1</b> Вопросы</a></li>
+<li class="chapter" data-level="2.7.2" data-path="data-structures.html"><a href="data-structures.html#tasks_vectors"><i class="fa fa-check"></i><b>2.7.2</b> Задачи</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="tables.html"><a href="tables.html"><i class="fa fa-check"></i><b>3</b> Работа с таблицами</a><ul>
+<li class="chapter" data-level="3.1" data-path="tables.html"><a href="tables.html#reading_tables"><i class="fa fa-check"></i><b>3.1</b> Чтение таблиц</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="tables.html"><a href="tables.html#reading_csv"><i class="fa fa-check"></i><b>3.1.1</b> Таблицы CSV</a></li>
+<li class="chapter" data-level="3.1.2" data-path="tables.html"><a href="tables.html#excel_reading"><i class="fa fa-check"></i><b>3.1.2</b> Таблицы Microsoft Excel</a></li>
+<li class="chapter" data-level="3.1.3" data-path="tables.html"><a href="tables.html#excel_read_types"><i class="fa fa-check"></i><b>3.1.3</b> Типы данных столбцов</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="tables.html"><a href="tables.html#view_table"><i class="fa fa-check"></i><b>3.2</b> Просмотр таблицы</a></li>
+<li class="chapter" data-level="3.3" data-path="tables.html"><a href="tables.html#working_with_columns"><i class="fa fa-check"></i><b>3.3</b> Работа со столбцами</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="tables.html"><a href="tables.html#colnames"><i class="fa fa-check"></i><b>3.3.1</b> Названия столбцов</a></li>
+<li class="chapter" data-level="3.3.2" data-path="tables.html"><a href="tables.html#col_calling"><i class="fa fa-check"></i><b>3.3.2</b> Обращение к столбцам</a></li>
+<li class="chapter" data-level="3.3.3" data-path="tables.html"><a href="tables.html#col_select"><i class="fa fa-check"></i><b>3.3.3</b> Выбор и исключение столбцов</a></li>
+<li class="chapter" data-level="3.3.4" data-path="tables.html"><a href="tables.html#----col_add"><i class="fa fa-check"></i><b>3.3.4</b> Добавление и вычисление столбцов {col_add}</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="tables.html"><a href="tables.html#filtering_sorting"><i class="fa fa-check"></i><b>3.4</b> Сортировка и фильтрация</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="tables.html"><a href="tables.html#table_sorting"><i class="fa fa-check"></i><b>3.4.1</b> Сортировка</a></li>
+<li class="chapter" data-level="3.4.2" data-path="tables.html"><a href="tables.html#table_filtering"><i class="fa fa-check"></i><b>3.4.2</b> Фильтрация</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="tables.html"><a href="tables.html#missed_values"><i class="fa fa-check"></i><b>3.5</b> Пропущенные значения</a></li>
+<li class="chapter" data-level="3.6" data-path="tables.html"><a href="tables.html#data_conversion"><i class="fa fa-check"></i><b>3.6</b> Преобразование типов и поиск ошибок</a></li>
+<li class="chapter" data-level="3.7" data-path="tables.html"><a href="tables.html#table_writing"><i class="fa fa-check"></i><b>3.7</b> Сохранение таблиц</a></li>
+<li class="chapter" data-level="3.8" data-path="tables.html"><a href="tables.html#dplyr"><i class="fa fa-check"></i><b>3.8</b> Обработка таблиц в dplyr</a></li>
+<li class="chapter" data-level="3.9" data-path="tables.html"><a href="tables.html#table_rules"><i class="fa fa-check"></i><b>3.9</b> Правила подготовки таблиц для чтения в R</a></li>
+<li class="chapter" data-level="3.10" data-path="tables.html"><a href="tables.html#questions_tasks_tables"><i class="fa fa-check"></i><b>3.10</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="3.10.1" data-path="tables.html"><a href="tables.html#questions_tables"><i class="fa fa-check"></i><b>3.10.1</b> Вопросы</a></li>
+<li class="chapter" data-level="3.10.2" data-path="tables.html"><a href="tables.html#tasks_tables"><i class="fa fa-check"></i><b>3.10.2</b> Задачи</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>4</b> Основы графики в R</a><ul>
+<li class="chapter" data-level="4.1" data-path="graphics.html"><a href="graphics.html#barplots"><i class="fa fa-check"></i><b>4.1</b> Столбчатые графики</a></li>
+<li class="chapter" data-level="4.2" data-path="graphics.html"><a href="graphics.html#piecharts"><i class="fa fa-check"></i><b>4.2</b> Круговые (секторные) диаграммы</a></li>
+<li class="chapter" data-level="4.3" data-path="graphics.html"><a href="graphics.html#histograms"><i class="fa fa-check"></i><b>4.3</b> Гистограммы распределения</a></li>
+<li class="chapter" data-level="4.4" data-path="graphics.html"><a href="graphics.html#graphics"><i class="fa fa-check"></i><b>4.4</b> Графики</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="graphics.html"><a href="graphics.html#scatterplots"><i class="fa fa-check"></i><b>4.4.1</b> Диаграммы рассеяния</a></li>
+<li class="chapter" data-level="4.4.2" data-path="graphics.html"><a href="graphics.html#linear_graphs"><i class="fa fa-check"></i><b>4.4.2</b> Линейные графики</a></li>
+<li class="chapter" data-level="4.4.3" data-path="graphics.html"><a href="graphics.html#graph_combining"><i class="fa fa-check"></i><b>4.4.3</b> Совмещение графиков</a></li>
+<li class="chapter" data-level="4.4.4" data-path="graphics.html"><a href="graphics.html#func_parameters"><i class="fa fa-check"></i><b>4.4.4</b> Функциональные параметры</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="graphics.html"><a href="graphics.html#colors"><i class="fa fa-check"></i><b>4.5</b> Цвет и прозрачность</a></li>
+<li class="chapter" data-level="4.6" data-path="graphics.html"><a href="graphics.html#disp_settings"><i class="fa fa-check"></i><b>4.6</b> Настройки отображения</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="graphics.html"><a href="graphics.html#graph_params"><i class="fa fa-check"></i><b>4.6.1</b> Графические параметры</a></li>
+<li class="chapter" data-level="4.6.2" data-path="graphics.html"><a href="graphics.html#axes"><i class="fa fa-check"></i><b>4.6.2</b> Разметка осей, рамка, сетка координат и произвольные линии</a></li>
+<li class="chapter" data-level="4.6.3" data-path="graphics.html"><a href="graphics.html#annotations"><i class="fa fa-check"></i><b>4.6.3</b> Аннотации данных (текст на графике)</a></li>
+</ul></li>
+<li class="chapter" data-level="4.7" data-path="graphics.html"><a href="graphics.html#legend"><i class="fa fa-check"></i><b>4.7</b> Легенда</a></li>
+<li class="chapter" data-level="4.8" data-path="graphics.html"><a href="graphics.html#questions_tasks_graphics"><i class="fa fa-check"></i><b>4.8</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="4.8.1" data-path="graphics.html"><a href="graphics.html#questions_graphics"><i class="fa fa-check"></i><b>4.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="4.8.2" data-path="graphics.html"><a href="graphics.html#tasks_graphics"><i class="fa fa-check"></i><b>4.8.2</b> Задачи</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="controls.html"><a href="controls.html"><i class="fa fa-check"></i><b>5</b> Управление выполнением и векторизованные вычисления</a><ul>
+<li class="chapter" data-level="5.1" data-path="controls.html"><a href="controls.html#cycles"><i class="fa fa-check"></i><b>5.1</b> Циклы</a></li>
+<li class="chapter" data-level="5.2" data-path="controls.html"><a href="controls.html#ifelse"><i class="fa fa-check"></i><b>5.2</b> Условия</a></li>
+<li class="chapter" data-level="5.3" data-path="controls.html"><a href="controls.html#functions"><i class="fa fa-check"></i><b>5.3</b> Функции</a></li>
+<li class="chapter" data-level="5.4" data-path="controls.html"><a href="controls.html#vectorized"><i class="fa fa-check"></i><b>5.4</b> Векторизованые вычисления</a></li>
+<li class="chapter" data-level="5.5" data-path="controls.html"><a href="controls.html#questions_tasks_controls"><i class="fa fa-check"></i><b>5.5</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="5.5.1" data-path="controls.html"><a href="controls.html#questions_controls"><i class="fa fa-check"></i><b>5.5.1</b> Вопросы</a></li>
+<li class="chapter" data-level="5.5.2" data-path="controls.html"><a href="controls.html#tasks_controls"><i class="fa fa-check"></i><b>5.5.2</b> Задачи</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://istina.msu.ru/profile/tsamsonov/" target="blank">Тимофей Самсонов</a></li>
+<li><a href="https://doi.org/10.5281/zenodo.901911"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.901911.svg" title="DOI"></a><li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Визуализация и анализ географических данных на языке R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="controls" class="section level1">
+<h1><span class="header-section-number">Глава 5</span> Управление выполнением и векторизованные вычисления</h1>
+<p><a href="https://github.com/tsamsonov/r-geo-course/blob/master/code/05-Controls.R">Программный код главы</a></p>
+<p>Данный модуль посвящен введению в работу с управлением выполнением команд в R, а также методами их пакетного выполнения в виде векторизованных вычислений. Мы рассмотрим такие полезные конструкции как циклы, условия, функции, функции семейства <code>apply</code>. Вместе они представляют собой мощное средство для организации сложных технологических схем обработки данных, требующих повторения идентичных операций над каждым элементом множества входных данных, ветвления алгоритма в зависимости от значений переменных, а также структурирования программного кода на автономные блоки команд, выполняющие специализированные функции.</p>
+<p>Мы рассмотрим управление командами на примере построения графиков. В качестве исходных данных используем знакомую нам таблицу Росстата по доходам и расходам граждан:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(openxlsx)
+
+<span class="co"># col.classes&lt;-c(&quot;character&quot;,rep(&quot;numeric&quot;,8))</span>
+t &lt;-<span class="st"> </span><span class="kw">read.xlsx</span>(<span class="st">&quot;IncomeConsumption.xlsx&quot;</span>, <span class="dv">1</span>)
+filter &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;федеральный округ&quot;</span>, t<span class="op">$</span>Регион)
+okr &lt;-<span class="st"> </span>t[filter, ]
+
+names &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;федеральный округ&quot;</span>, <span class="st">&quot;&quot;</span>, okr<span class="op">$</span>Регион)
+
+filter&lt;-<span class="kw">grepl</span>(<span class="st">&quot;федеральный округ|Федерация|числе&quot;</span>,t<span class="op">$</span>Регион)
+sub &lt;-<span class="st"> </span>t[<span class="op">!</span>filter, ]</code></pre></div>
+<div id="cycles" class="section level2">
+<h2><span class="header-section-number">5.1</span> Циклы</h2>
+<p>Цикл — это разновидность управляющей конструкции, предназначенная для организации многократного исполнения набора инструкций. В R циклы наиболее часто используются для пакетной обработки данных, ввода и вывода. Типичными примерами использования циклов являются чтение множества файлов входных данных, а также построение серий графиков и карт одного типа по различным данным. При этом обработка множества строк таблиц в R обычно организуется не средствами циклов, а средствами функций семейства <a href="http://stat.ethz.ch/R-manual/R-devel/library/base/html/lapply.html"><code>lapply</code></a>, о которых мы поговорим отдельно.</p>
+<p>В R, как и во многих других языках программирования, существует несколько вариантов циклов. Первый вид циклов — это конструкция <strong>for</strong> с синтаксисом <code>for (x in X) statement</code>. Она означает, что:</p>
+<ul>
+<li>переменная <code>x</code> должна пробежать по всем элементам последовательности <code>X</code>. В качестве последовательности может выступать любой вектор или список.</li>
+<li>каждый раз, когда <code>x</code> будет присвоено значение очередного элемента из <code>X</code>, будет выполнено выражение <code>statement</code>, которое называют <em>телом цикла</em>. Соответственно, цикл выполнится столько раз, сколько элементов содержится в последовательности <code>X</code>.</li>
+</ul>
+<blockquote>
+<p>Выполнение тела цикла на каждом проходе называют <em>итерацией</em>.</p>
+</blockquote>
+<p>Например, с помощью цикла можно вывести на экран числа от 1 до 10, по одному с каждой строки:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) <span class="kw">print</span>(i)
+## [1] 1
+## [1] 2
+## [1] 3
+## [1] 4
+## [1] 5
+## [1] 6
+## [1] 7
+## [1] 8
+## [1] 9
+## [1] 10</code></pre></div>
+<p>Если тело цикла содержит более одной инструкции R, оно должно быть заключено в фигурные скобки, иначе выполнится только первое выражение, а оставшиеся будут запущены один раз после выхода из цикла:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>){
+  a &lt;-<span class="st"> </span><span class="kw">factorial</span>(i) <span class="co"># факториал i</span>
+  b &lt;-<span class="st"> </span><span class="kw">exp</span>(i) <span class="co"># e в степени i</span>
+  <span class="kw">print</span>(a<span class="op">/</span>b) <span class="co"># факториал растет быстрее экспоненты</span>
+}
+## [1] 0.3678794
+## [1] 0.2706706
+## [1] 0.2987224
+## [1] 0.4395753
+## [1] 0.8085536
+## [1] 1.784702
+## [1] 4.595885
+## [1] 13.52585
+## [1] 44.78295
+## [1] 164.7473</code></pre></div>
+<p>Другой вариант цикла организуется с помощью конструкции <code>while</code>, имеющей синтаксис <code>while (condition) statement</code>. Такая конструкция означает, что тело цикла будет выполняться, пока значение выражения <code>condition</code> (условия) равно <code>TRUE</code>. Как правило, в теле цикла обновляется некоторая переменная, которая участвует в проверке условия, и предполагается, что рано или поздно оно станет равным <code>FALSE</code>, что приведет к выходу из цикла. Например, вышеприведенный цикл, печатающий числа от 1 до 10, можно переписать на <code>while</code> следуюшим образом:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i &lt;-<span class="st"> </span><span class="dv">0</span>
+<span class="cf">while</span>(i <span class="op">&lt;</span><span class="st"> </span><span class="dv">10</span>) {
+  i &lt;-<span class="st"> </span>i<span class="op">+</span><span class="dv">1</span>
+  <span class="kw">print</span>(i)
+}
+## [1] 1
+## [1] 2
+## [1] 3
+## [1] 4
+## [1] 5
+## [1] 6
+## [1] 7
+## [1] 8
+## [1] 9
+## [1] 10</code></pre></div>
+<p>Обратите внимание на то, что мы внутри цикла обновляем значение переменной i.</p>
+<blockquote>
+<p>Увеличение значения переменной цикла называется <em>инкрементом</em>, а уменьшение — <em>декрементом</em></p>
+</blockquote>
+<p>Одной из самых распространенных ошибок программистов (особенно начинающих, но и професионалы ее не избегают) является забытая инструкция инкремента (или деккремента) переменной цикла, в результате чего цикл становится бесконечным. В этом плане конструкция <code>for</code> более надежна.</p>
+<p>Перейдем теперь от искусственных примеров к реальной практике. Например, посмотрим как можно построить столбчатые диаграммы по каждому столбцу таблицы <code>okr</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Пакетное рисование графиков</span>
+<span class="cf">for</span>(var <span class="cf">in</span> <span class="kw">colnames</span>(okr)[<span class="op">-</span><span class="dv">1</span>]){
+  <span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">9</span>,<span class="dv">4</span>,<span class="dv">2</span>))
+  <span class="kw">barplot</span>(okr[,var], 
+          <span class="dt">names.arg =</span> names, 
+          <span class="dt">horiz =</span> <span class="ot">TRUE</span>, 
+          <span class="dt">las =</span> <span class="dv">1</span>, 
+          <span class="dt">main =</span> var,
+          <span class="dt">col =</span> <span class="st">&quot;steelblue&quot;</span>)
+}</code></pre></div>
+<p><img src="05-Controls_files/figure-html/unnamed-chunk-5-1.png" width="672" /><img src="05-Controls_files/figure-html/unnamed-chunk-5-2.png" width="672" /><img src="05-Controls_files/figure-html/unnamed-chunk-5-3.png" width="672" /><img src="05-Controls_files/figure-html/unnamed-chunk-5-4.png" width="672" /><img src="05-Controls_files/figure-html/unnamed-chunk-5-5.png" width="672" /><img src="05-Controls_files/figure-html/unnamed-chunk-5-6.png" width="672" /><img src="05-Controls_files/figure-html/unnamed-chunk-5-7.png" width="672" /><img src="05-Controls_files/figure-html/unnamed-chunk-5-8.png" width="672" /></p>
+<p>А теперь усложним тело цикла, добавив рисование гистограммы распределения по тому же показателю, но взятому из таблицы <code>sub</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Пакетное рисование графиков</span>
+<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
+<span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>) <span class="co"># запрещаем использовать экспоненциальную форму записи больших чисел</span>
+
+<span class="cf">for</span>(var <span class="cf">in</span> <span class="kw">colnames</span>(okr)[<span class="op">-</span><span class="dv">1</span>]){
+  <span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">9</span>,<span class="dv">4</span>,<span class="dv">3</span>)) <span class="co"># устанавливаем поля для столбчатой диаграммы</span>
+  <span class="kw">barplot</span>(okr[,var], 
+          <span class="dt">names.arg =</span> names, 
+          <span class="dt">horiz =</span> <span class="ot">TRUE</span>, 
+          <span class="dt">las =</span> <span class="dv">1</span>, 
+          <span class="dt">main =</span> var, 
+          <span class="dt">xlab =</span> <span class="st">&quot;По федеральным округам&quot;</span>,
+          <span class="dt">col =</span> <span class="st">&quot;steelblue&quot;</span>)
+  <span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">1</span>)) <span class="co"># устанавливаем поля для гистограммы</span>
+  <span class="kw">hist</span>(sub[,var], <span class="dt">breaks =</span> <span class="dv">12</span>, <span class="dt">col=</span><span class="st">&quot;green&quot;</span>, <span class="dt">main =</span> var, <span class="dt">xlab =</span> <span class="st">&quot;По субъектам&quot;</span>)
+}</code></pre></div>
+<p><img src="05-Controls_files/figure-html/unnamed-chunk-6-1.png" width="672" /><img src="05-Controls_files/figure-html/unnamed-chunk-6-2.png" width="672" /><img src="05-Controls_files/figure-html/unnamed-chunk-6-3.png" width="672" /><img src="05-Controls_files/figure-html/unnamed-chunk-6-4.png" width="672" /><img src="05-Controls_files/figure-html/unnamed-chunk-6-5.png" width="672" /><img src="05-Controls_files/figure-html/unnamed-chunk-6-6.png" width="672" /><img src="05-Controls_files/figure-html/unnamed-chunk-6-7.png" width="672" /><img src="05-Controls_files/figure-html/unnamed-chunk-6-8.png" width="672" /></p>
+</div>
+<div id="ifelse" class="section level2">
+<h2><span class="header-section-number">5.2</span> Условия</h2>
+<p>Проверка условий позволяет осуществлять так называемое ветвление в программе. Ветвление означает, что при определенных условиях (значениях переменных) будет выполнен один программный код, а при других условиях — другой. В R для проверки условий используется условный оператор <strong>if — else if — else</strong> следующего вида:</p>
+<pre><code>if (condition) {
+  statement1
+} else if (condition) {
+  statement2
+} else {
+  statement3
+}</code></pre>
+<p>Сначала проверяется условие в выражении <code>if (condition)</code>, и если оно истинно, то выполнится вложенный в фигурные скобки программный код <code>statement1</code>, после чего оставшиеся условия не будут проверяться. Если первое условие ложно, программа перейдет к проверке следующего условия <code>else if (condition)</code>. Далее, если оно истинно, то выполнится вложенный код <code>statement2</code>, если нет — проверка переключится на следующее условие и так далее. Заключительный код <code>statement3</code>, следующий за словом <code>else</code>, выполнится только если ложными окажутся все предыдущие условия.</p>
+<blockquote>
+<p>Конструкций <code>else if</code> может быть произвольное количество, конструкции <code>if</code> и <code>else</code> могут встречаться в условном операторе только один раз, в начале и конце соответственно. При этом условный оператор может состоять только из конструкции <code>if</code>, а <code>else if</code> и <code>else</code> не являются обязательными. Операторы, состоящие из одного <code>if</code>,</p>
+</blockquote>
+<p>Например, используя вышеприведенный код с вычислением экспоненты и факториала, можно вывести на экран информацию о том, больше ли экспонента чем факториал на данной итерации цикла:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>){
+  a &lt;-<span class="st"> </span><span class="kw">factorial</span>(i) <span class="co"># факториал i</span>
+  b &lt;-<span class="st"> </span><span class="kw">exp</span>(i) <span class="co"># e в степени i</span>
+  ratio &lt;-<span class="st"> </span>a<span class="op">/</span>b <span class="co"># вычисляем отношение экспоненты и факториала</span>
+  
+  <span class="cf">if</span> (ratio <span class="op">&lt;</span><span class="st"> </span><span class="dv">1</span>){ <span class="co"># если экспонента больше, то...</span>
+    <span class="kw">cat</span>(i,<span class="st">&#39;! &lt; exp(&#39;</span>, i, <span class="st">&#39;)</span><span class="ch">\n</span><span class="st">&#39;</span>, <span class="dt">sep =</span> <span class="st">&#39;&#39;</span>)
+  } <span class="cf">else</span> { <span class="co"># в противном случае</span>
+    <span class="kw">cat</span>(i,<span class="st">&#39;! &gt; exp(&#39;</span>, i, <span class="st">&#39;)</span><span class="ch">\n</span><span class="st">&#39;</span>, <span class="dt">sep =</span> <span class="st">&#39;&#39;</span>)
+  }
+}
+## 1! &lt; exp(1)
+## 2! &lt; exp(2)
+## 3! &lt; exp(3)
+## 4! &lt; exp(4)
+## 5! &lt; exp(5)
+## 6! &gt; exp(6)
+## 7! &gt; exp(7)
+## 8! &gt; exp(8)
+## 9! &gt; exp(9)
+## 10! &gt; exp(10)</code></pre></div>
+<p>Теперь рассмотрим более практическую задачу. В нашем распоряжении имеются данные по среднеклиматическим (за последние 50 лет) температурам на территории юга Европейской части России с разрешением <span class="math inline">\(30&#39;&#39;\)</span> (около 1 км), полученные с портала <a href="http://www.worldclim.org">WorldClim</a>. Необходимо построить гистограммы распределения температур по месяцам года, раскрасив их в различные цвета соответственно среднему значению температуры:</p>
+<ul>
+<li>Если средняя температура ниже <span class="math inline">\(0^\circ C\)</span>, то цвет гистограммы синий</li>
+<li>Если средняя температура от <span class="math inline">\(0^\circ C\)</span> до <span class="math inline">\(10^\circ C\)</span>, то цвет гистограммы желтый</li>
+<li>Если средняя температура выше <span class="math inline">\(10^\circ C\)</span>, то цвет гистограммы оранжевый</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Пакетное чтение данных</span>
+<span class="kw">library</span>(foreign) <span class="co"># для чтения dbf необходима библиотека foreign</span>
+
+files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="st">&quot;dbf&quot;</span>) <span class="co"># прочитаем список файлов в директории dbf</span>
+
+files &lt;-<span class="st"> </span>files[<span class="kw">grep</span>(<span class="st">&quot;.dbf&quot;</span>, files, <span class="dt">fixed =</span> <span class="ot">TRUE</span>)] <span class="co"># отфильтруем файлы с расширением .dbf</span>
+
+names &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;.dbf&quot;</span>,<span class="st">&quot;&quot;</span>,files) <span class="co"># получим названия месяцев, избавившись от расширений</span>
+
+i &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># Создадим дополнительно переменную цикла, чтобы выбирать i-е название месяца</span>
+
+<span class="cf">for</span> (file <span class="cf">in</span> files){ <span class="co"># пройдемся по всем файлам</span>
+  
+  temp &lt;-<span class="st"> </span><span class="kw">read.dbf</span>(<span class="kw">paste</span>(<span class="st">&quot;dbf/&quot;</span>, file, <span class="dt">sep=</span><span class="st">&#39;&#39;</span>)) <span class="co"># прочитаем текущий файл</span>
+  
+  tmean &lt;-<span class="st"> </span><span class="kw">mean</span>(temp<span class="op">$</span>Temp) <span class="co"># вычислим среднюю температуру из столбца Temp</span>
+  
+  hist.col &lt;-<span class="st"> &quot;white&quot;</span> <span class="co"># иницилизируем переменную цвета за пределами условия </span>
+  
+  <span class="co"># Проверим наше условие</span>
+  <span class="cf">if</span> (tmean <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>){ 
+    hist.col &lt;-<span class="st"> &quot;steelblue&quot;</span>
+  } <span class="cf">else</span> <span class="cf">if</span> (tmean <span class="op">&lt;</span><span class="st"> </span><span class="dv">10</span>){
+    hist.col &lt;-<span class="st"> &quot;yellow&quot;</span>
+  } <span class="cf">else</span> {
+    hist.col &lt;-<span class="st"> &quot;orange&quot;</span>
+  }
+  
+  <span class="co"># Построим гистограмму</span>
+  <span class="kw">hist</span>(temp<span class="op">$</span>Temp, 
+       <span class="dt">col =</span> hist.col, 
+       <span class="dt">main =</span> names[i]) <span class="co"># Вот здесь нам нужна дополнительная переменная цикла</span>
+  
+  <span class="co"># Нанесем линию среднего значения</span>
+  <span class="kw">abline</span>(<span class="dt">v =</span> tmean, 
+         <span class="dt">lwd =</span> <span class="dv">2</span>, 
+         <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>) 
+  
+  <span class="co"># Подпишем среднюю температуру</span>
+  <span class="kw">text</span>(tmean, 
+       <span class="dv">1000</span>, 
+       <span class="dt">labels =</span> <span class="kw">round</span>(tmean,<span class="dv">1</span>), 
+       <span class="dt">pos =</span> <span class="dv">4</span>, 
+       <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)
+  
+  i &lt;-<span class="st"> </span>i <span class="op">+</span><span class="st"> </span><span class="dv">1</span> <span class="co"># Не забудем сделать инкремент переменной цикла</span>
+}</code></pre></div>
+<p><img src="05-Controls_files/figure-html/unnamed-chunk-8-1.png" width="672" /><img src="05-Controls_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+</div>
+<div id="functions" class="section level2">
+<h2><span class="header-section-number">5.3</span> Функции</h2>
+<p>Функции в R можно использовать для структурирования кода на логически завершенные, автономные фрагменты кода, каждый из которых выполняет конкретную задачу. Чем сильнее разрастается ваш программный код, тем больше проявляется потребность в наличии функций. Функции позволяют использовать один и тот же код разных местах программы, не повторяя его.</p>
+<p>Синтаксис функции выглядит следующим образом:</p>
+<pre><code>functionName &lt;- function(parameter1, parameter2, ...){
+  ...
+  return(result)
+}</code></pre>
+<p>Функция создается c помощью ключевого слова <code>function</code>, за которым в круглых скобках заключается произвольное количество параметров (столько, сколько вам нужно: от нуля и более). С помощью этих параметров вы сможете передавать внутрь функции значения переменных. Созданной функции необходимо дать имя, используя оператор присвоения <code>&lt;-</code>. После того как выполнится код внутри функции, результат можно вернуть, используя ключевого слово <code>return</code>.</p>
+<blockquote>
+<p><strong>R</strong> не поддерживает возврат множественных результатов. Если вам необходимо вернуть несколько объектов (переменных, векторов, таблиц и т.д.), создайте список (list), включите в него все возвращаемые объекты и верните из функции этот список.</p>
+</blockquote>
+<p>В вышеприведенном примере мы использовали проверку условия для того чтобы вычислить рекомендуемый цвет гистограммы. С одной стороны, это некая вспомогательная процедура, не имеющая непосредственного отношения к построению гистограммы. С другой стороны, это полезная процедура, которой мы захотим воспользоваться в дальнейшем — всегда приятно, когда программа тебе с выбором стилей оформления данных<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>.</p>
+<p>Оформим выбор цвета в виде функции, которая принимает в каестве параметра число (температуру), а возвращает название цвета.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Создадим функцию, возвращающую цвет в зависимости от температуры</span>
+selectColor &lt;-<span class="st"> </span><span class="cf">function</span>(value){ 
+  hist.col &lt;-<span class="st"> &quot;white&quot;</span>
+  <span class="cf">if</span> (tmean <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>){
+    hist.col &lt;-<span class="st"> &quot;steelblue&quot;</span>
+  } <span class="cf">else</span> <span class="cf">if</span> (tmean <span class="op">&lt;</span><span class="st"> </span><span class="dv">10</span>){
+    hist.col &lt;-<span class="st"> &quot;yellow&quot;</span>
+  } <span class="cf">else</span> {
+    hist.col &lt;-<span class="st"> &quot;orange&quot;</span>
+  }
+  <span class="kw">return</span>(hist.col)
+}
+
+i &lt;-<span class="st"> </span><span class="dv">1</span>
+<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))
+<span class="cf">for</span> (file <span class="cf">in</span> files){
+  temp &lt;-<span class="st">  </span><span class="kw">read.dbf</span>(file)
+  tmean &lt;-<span class="st">  </span><span class="kw">mean</span>(temp<span class="op">$</span>Temp)
+  
+  <span class="co"># выберем цвет с помощью нашей функции</span>
+  hist.col &lt;-<span class="st"> </span><span class="kw">selectColor</span>(tmean)
+  
+  <span class="co"># построим гистограмму</span>
+  <span class="kw">hist</span>(temp<span class="op">$</span>Temp, 
+       <span class="dt">col =</span> hist.col, 
+       <span class="dt">main =</span> names[i])
+  
+  <span class="co"># добавим линию среднего</span>
+  <span class="kw">abline</span>(<span class="dt">v =</span> tmean, 
+         <span class="dt">lwd =</span> <span class="dv">2</span>, 
+         <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)
+  <span class="co"># подпишем среднее</span>
+  <span class="kw">text</span>(tmean, 
+       <span class="dv">1000</span>, 
+       <span class="dt">labels =</span> <span class="kw">round</span>(tmean,<span class="dv">1</span>), 
+       <span class="dt">pos =</span> <span class="dv">4</span>, 
+       <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)
+  i &lt;-<span class="st"> </span>i<span class="op">+</span><span class="dv">1</span>
+}</code></pre></div>
+<p><img src="05-Controls_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Усложним задачу, чтобы показать, как работать с несколькими аргументами функции. Например, мы хотим не одноцветные диаграммы, а чтобы цвет менялся плавным градиентом от первого столбика гистограммы до последнего. Соответственно, количество возвращаемых цветов должно быть равно количеству столбиков в гистограмме. Нашей функции не важно, столбики это или нет, но ей надо знать, сколько цветов надо вернуть. Для этого добавим в нее второй параметр <code>ncolors</code>. Это позволит пользователю при желании не задвать этот параметр, если необходим только один цвет.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">selectColor2 &lt;-<span class="st"> </span><span class="cf">function</span>(value, ncolors){ <span class="co"># передаем в качестве дополнительного параметра количество цветов</span>
+  hist.col &lt;-<span class="st"> &quot;white&quot;</span>
+  <span class="co"># генерируем ncolors цветов из соответствующей палитры</span>
+  <span class="cf">if</span> (tmean <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>){
+    hist.col &lt;-<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;darkslateblue&quot;</span>, <span class="st">&quot;steelblue1&quot;</span>))(ncolors)  
+  } <span class="cf">else</span> <span class="cf">if</span> (tmean <span class="op">&lt;</span><span class="st"> </span><span class="dv">10</span>){
+    hist.col &lt;-<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;steelblue1&quot;</span>, <span class="st">&quot;yellow&quot;</span>))(ncolors)
+  } <span class="cf">else</span> {
+    hist.col &lt;-<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;yellow&quot;</span>, <span class="st">&quot;red&quot;</span>))(ncolors)
+  }
+  <span class="kw">return</span>(hist.col)
+}
+
+i &lt;-<span class="st"> </span><span class="dv">1</span>
+
+<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))
+
+ncells &lt;-<span class="st"> </span><span class="dv">25</span> <span class="co"># установим фиксированное количество столбцов гистограммы</span>
+
+<span class="cf">for</span> (file <span class="cf">in</span> files){
+  temp &lt;-<span class="st"> </span><span class="kw">read.dbf</span>(file)
+  tmean &lt;-<span class="st"> </span><span class="kw">mean</span>(temp<span class="op">$</span>Temp)
+  
+  <span class="co"># получим для раскраски требуемое количество цветов</span>
+  hist.col &lt;-<span class="st"> </span><span class="kw">selectColor2</span>(tmean, ncells)
+  
+  <span class="co"># построим гистограмму</span>
+  <span class="kw">hist</span>(temp<span class="op">$</span>Temp, 
+       <span class="dt">col =</span> hist.col, 
+       <span class="dt">main =</span> names[i], 
+       <span class="dt">breaks =</span> ncells)
+  
+  <span class="co"># добавим линию среднего</span>
+  <span class="kw">abline</span>(<span class="dt">v =</span> tmean, 
+         <span class="dt">lwd =</span> <span class="dv">2</span>, 
+         <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)
+  
+  <span class="co"># подпишем среднее</span>
+  <span class="kw">text</span>(tmean, <span class="dv">1000</span>, 
+       <span class="dt">labels =</span> <span class="kw">round</span>(tmean,<span class="dv">1</span>), 
+       <span class="dt">pos =</span> <span class="dv">4</span>, 
+       <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)
+  
+  i &lt;-<span class="st"> </span>i<span class="op">+</span><span class="dv">1</span>
+}</code></pre></div>
+<p><img src="05-Controls_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
+<div id="vectorized" class="section level2">
+<h2><span class="header-section-number">5.4</span> Векторизованые вычисления</h2>
+</div>
+<div id="questions_tasks_controls" class="section level2">
+<h2><span class="header-section-number">5.5</span> Контрольные вопросы и задачи</h2>
+<div id="questions_controls" class="section level3">
+<h3><span class="header-section-number">5.5.1</span> Вопросы</h3>
+</div>
+<div id="tasks_controls" class="section level3">
+<h3><span class="header-section-number">5.5.2</span> Задачи</h3>
+<table>
+<tbody>
+<tr class="odd">
+<td><em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, 2017. DOI: 10.5281/zenodo.901911</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+<div class="footnotes">
+<hr />
+<ol start="2">
+<li id="fn2"><p>в картографии это называется “smart mapping”, что переводят как “умное картографирование”, хотя это и не самый удачный вариант перевода<a href="controls.html#fnref2">↩</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="graphics.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": ["r-geo-course.pdf", "r-geo-course.epub"],
+"toc": {
+"collapse": "section",
+"edit": "https://github.com/tsamsonov/r-geo-course/edit/master/%s"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
