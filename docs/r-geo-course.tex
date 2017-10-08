@@ -125,7 +125,7 @@
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2017-10-07}
+  \date{2017-10-08}
 
 \usepackage{booktabs}
 \usepackage{amsthm}
@@ -794,7 +794,7 @@ R, который может ошибочно выполняться в соче
 \bottomrule
 \end{longtable}
 
-\chapter{Типы данных. Ввод и вывод}\label{data_types}
+\chapter{Типы данных, ввод и вывод}\label{data_types}
 
 Тип данных --- это класс данных, характеризуемый членами класса и
 операциями, которые могут быть к ним применены\footnote{ISO/IEC/IEEE
@@ -1234,6 +1234,8 @@ R, который может ошибочно выполняться в соче
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{birth <-}\StringTok{ }\KeywordTok{as.Date}\NormalTok{(}\StringTok{'1986/02/18'}\NormalTok{)}
+\NormalTok{## Warning in strptime(xx, f <- "%Y-%m-%d", tz = "GMT"): unknown timezone}
+\NormalTok{## 'default/Europe/Moscow'}
 \NormalTok{birth}
 \NormalTok{## [1] "1986-02-18"}
 \end{Highlighting}
@@ -1246,7 +1248,7 @@ R, который может ошибочно выполняться в соче
 \begin{Highlighting}[]
 \NormalTok{current <-}\StringTok{ }\KeywordTok{Sys.Date}\NormalTok{()}
 \NormalTok{current}
-\NormalTok{## [1] "2017-10-07"}
+\NormalTok{## [1] "2017-10-08"}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1258,7 +1260,7 @@ R, который может ошибочно выполняться в соче
 \begin{Highlighting}[]
 \NormalTok{livedays <-}\StringTok{ }\NormalTok{current }\OperatorTok{-}\StringTok{ }\NormalTok{birth}
 \NormalTok{livedays}
-\NormalTok{## Time difference of 11554 days}
+\NormalTok{## Time difference of 11555 days}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1268,7 +1270,7 @@ R, который может ошибочно выполняться в соче
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{current }\OperatorTok{+}\StringTok{ }\DecValTok{40}
-\NormalTok{## [1] "2017-11-16"}
+\NormalTok{## [1] "2017-11-17"}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1561,7 +1563,7 @@ R, который может ошибочно выполняться в соче
 \NormalTok{## [1] "2 в степени 10 равно 1024"}
 
 \KeywordTok{print}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\StringTok{"Сегодняшняя дата - "}\NormalTok{, }\KeywordTok{Sys.Date}\NormalTok{()))}
-\NormalTok{## [1] "Сегодняшняя дата -  2017-10-07"}
+\NormalTok{## [1] "Сегодняшняя дата -  2017-10-08"}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1601,7 +1603,7 @@ R, который может ошибочно выполняться в соче
 \NormalTok{## 2 в степени 10 равно 1024}
 
 \KeywordTok{cat}\NormalTok{(}\StringTok{"Сегодняшнаяя дата -"}\NormalTok{, }\KeywordTok{Sys.Date}\NormalTok{())}
-\NormalTok{## Сегодняшнаяя дата - 17446}
+\NormalTok{## Сегодняшнаяя дата - 17447}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1719,22 +1721,34 @@ R, который может ошибочно выполняться в соче
 \bottomrule
 \end{longtable}
 
-\chapter{Векторы}\label{vectors}
+\chapter{Структуры данных}\label{data_structures}
 
-В это модуле мы познакомимся с векторами -- упорядоченными
-последовательностями объектов одного типа. Вектор является простейшей и
-одновременно базовой структурой данных в R. Понимание принципов работы с
-векторами необходимо для дальнейшего знакомства с более сложными
-структурами данных, такими как матрицы, фреймы данных, списки и массивы
+Структура данных --- это программная единица, позволяющая хранить и
+обрабатывать множество однотипных и/или логически связанных данных.
+Структуры данных также являются типами данных, но не простыми, а
+составными. Поэтому обычно, когда говорят ``тип данных'', подразумевают
+именно простые типы данных, рассмотренные в предыдущей главе. В
+\textbf{R} общеупотребительны следующие структуры данных: векторы,
+матрицы, массивы, фреймы данных, списки и факторы. Последний тип данных
+не всегда относят к структурам, хотя это логично, поскольку факторы
+построены по принципу
+\href{https://ru.wikipedia.org/wiki/Ассоциативный_массив}{ассоциативных
+массивов}.
 
-\section{Создание вектора}\label{vector_creation}
+\section{Векторы}
 
 Вектор представляет собой упорядоченную последовательность объектов
-одного типа. То есть, вектор может состоять \emph{только} из чисел,
-\emph{только} из строк, \emph{только} из дат или \emph{только} из
-логических значений. Числовой вектор легко представить себе в виде
-набора цифр, выстроенных в ряд и пронумерованных согласно порядку их
-расстановки.
+одного типа. Вектор может состоять \emph{только} из чисел, \emph{только}
+из строк, \emph{только} из дат или \emph{только} из логических значений
+и т.д. Числовой вектор легко представить себе в виде набора цифр,
+выстроенных в ряд и пронумерованных согласно порядку их расстановки.
+
+Вектор является простейшей и одновременно базовой структурой данных в
+\textbf{R}. Понимание принципов работы с векторами необходимо для
+дальнейшего знакомства с более сложными структурами данных, такими как
+матрицы, массивы, фреймы данных, списки и факторы.
+
+\subsection{Создание вектора}\label{vector_creation}
 
 Существует множество способов создания векторов. Среди них наиболее
 употребительны:
@@ -1877,15 +1891,17 @@ R, который может ошибочно выполняться в соче
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \KeywordTok{as.Date}\NormalTok{(}\StringTok{'2016/09/01'}\NormalTok{), }\DataTypeTok{by =} \DecValTok{1}\NormalTok{, }\DataTypeTok{length.out =} \DecValTok{7}\NormalTok{) }\CommentTok{# Даты первой недели учебного 2016/2017 года}
+\NormalTok{## Warning in strptime(xx, f <- "%Y-%m-%d", tz = "GMT"): unknown timezone}
+\NormalTok{## 'default/Europe/Moscow'}
 \NormalTok{## [1] "2016-09-01" "2016-09-02" "2016-09-03" "2016-09-04" "2016-09-05"}
 \NormalTok{## [6] "2016-09-06" "2016-09-07"}
 
 \KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \KeywordTok{Sys.Date}\NormalTok{(), }\DataTypeTok{by =} \DecValTok{7}\NormalTok{, }\DataTypeTok{length.out =} \DecValTok{5}\NormalTok{) }\CommentTok{# Пять дат через неделю, начиная с сегодняшнего дня}
-\NormalTok{## [1] "2017-10-07" "2017-10-14" "2017-10-21" "2017-10-28" "2017-11-04"}
+\NormalTok{## [1] "2017-10-08" "2017-10-15" "2017-10-22" "2017-10-29" "2017-11-05"}
 \end{Highlighting}
 \end{Shaded}
 
-\section{Работа с элементами вектора}\label{vector_elements}
+\subsection{Работа с элементами вектора}\label{vector_elements}
 
 К отдельным \textbf{элементам вектора} можно обращаться по их индексам:
 
@@ -1969,7 +1985,7 @@ C\#, Java) и Python, в которых индексы элементов нач
 \end{Highlighting}
 \end{Shaded}
 
-\section{Анализ и преобразования векторов}\label{vector_transform}
+\subsection{Анализ и преобразования векторов}\label{vector_transform}
 
 К числовым векторам можно применять множество функций. Прежде всего,
 нужно знать функции вычисления базовых параметров статистического ряда
@@ -2018,7 +2034,7 @@ C\#, Java) и Python, в которых индексы элементов нач
 \end{Highlighting}
 \end{Shaded}
 
-\section{Поиск и сортировка элементов}\label{vector_search_sorting}
+\subsection{Поиск и сортировка элементов}\label{vector_search_sorting}
 
 К важнейшим преобразованиям векторов относится их \textbf{сортировка}:
 
@@ -2079,61 +2095,6 @@ C\#, Java) и Python, в которых индексы элементов нач
 \NormalTok{## [1] "Красная"}
 \end{Highlighting}
 \end{Shaded}
-
-\section{Контрольные вопросы и задачи}\label{questions_tasks_vectors}
-
-\subsection{Вопросы}\label{questions_vectors}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Что такое вектор в языке R?
-\item
-  Какие способы создания векторов существуют?
-\item
-  Можно ли хранить в векторе данные разных типов?
-\item
-  Как определить длину вектора?
-\item
-  Как извлечь из вектора элемент по его индексу?
-\item
-  Как извлечь из вектора множество элементов по их индексам?
-\item
-  Как извлечь из вектора последний элемент?
-\item
-  С помощью какой функции можно сгенерировать последовательность чисел
-  или дат с заданным шагом?
-\item
-  Как сгенерировать последовательность целых чисел с шагом 1, не
-  прибегая к функциям?
-\item
-  Можно ли применять к векторам арифметические операторы? Что будет
-  результатом их выполнения?
-\item
-  С помощью какой функции можно отсортировать вектор? Как изменить
-  порядок сортировки на противоположный?
-\item
-  С помощью какой функции можно найти индекс элемента вектора по его
-  значению? Что вернет функция, если этот элемент встречается в векторе
-  несколько раз?
-\end{enumerate}
-
-\subsection{Задачи}\label{tasks_vectors}
-
-\begin{longtable}[]{@{}l@{}}
-\toprule
-\emph{Самсонов Т.Е.} \textbf{Визуализация и анализ географических данных
-на языке R.} М.: Географический факультет МГУ, 2017. DOI:
-10.5281/zenodo.901911\tabularnewline
-\bottomrule
-\end{longtable}
-
-\chapter{Матрицы, фреймы данных и списки}\label{matrix_dataframes}
-
-В это модуле мы продвинемся дальше в изучении структур данных языка и
-рассмотрим такие важные его элементы как матрицы, фреймы данных и
-списки.
 
 \section{Матрицы}\label{matrices}
 
@@ -2673,13 +2634,45 @@ Cтроки и столбцы матрицы можно использовать
 
 Использование \emph{двойных скобок} отличает списки от векторов.
 
-\section{Контрольные вопросы и задачи}\label{questions_tasks_matrix}
+\section{Факторы}
 
-\subsection{Вопросы}\label{questions_matrix}
+\section{Контрольные вопросы и задачи}\label{questions_tasks_vectors}
+
+\subsection{Вопросы}\label{questions_vectors}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
+\item
+  Что такое вектор в языке R?
+\item
+  Какие способы создания векторов существуют?
+\item
+  Можно ли хранить в векторе данные разных типов?
+\item
+  Как определить длину вектора?
+\item
+  Как извлечь из вектора элемент по его индексу?
+\item
+  Как извлечь из вектора множество элементов по их индексам?
+\item
+  Как извлечь из вектора последний элемент?
+\item
+  С помощью какой функции можно сгенерировать последовательность чисел
+  или дат с заданным шагом?
+\item
+  Как сгенерировать последовательность целых чисел с шагом 1, не
+  прибегая к функциям?
+\item
+  Можно ли применять к векторам арифметические операторы? Что будет
+  результатом их выполнения?
+\item
+  С помощью какой функции можно отсортировать вектор? Как изменить
+  порядок сортировки на противоположный?
+\item
+  С помощью какой функции можно найти индекс элемента вектора по его
+  значению? Что вернет функция, если этот элемент встречается в векторе
+  несколько раз?
 \item
   Что такое матрица, массив, фрейм данных и список? Чем отличаются эти
   структуры данных?
@@ -2723,7 +2716,7 @@ Cтроки и столбцы матрицы можно использовать
   данных по их значениям?
 \end{enumerate}
 
-\subsection{Задачи}\label{tasks_matrix}
+\subsection{Задачи}\label{tasks_vectors}
 
 \begin{longtable}[]{@{}l@{}}
 \toprule
@@ -2733,7 +2726,7 @@ Cтроки и столбцы матрицы можно использовать
 \bottomrule
 \end{longtable}
 
-\chapter{Чтение и обработка таблиц}\label{tables}
+\chapter{Работа с таблицами}\label{tables}
 
 \href{https://github.com/tsamsonov/r-geo-course/blob/master/code/04-TablesDataReading.R}{Программный
 код главы}
@@ -3016,7 +3009,7 @@ Cтроки и столбцы матрицы можно использовать
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-6-1.pdf}
+\includegraphics{03-TablesDataReading_files/figure-latex/unnamed-chunk-6-1.pdf}
 
 Поскольку функции \texttt{head()} и \texttt{tail()} возвращают строки с
 хвоста или начала фрейма данных, их можно и подать на вход функции
@@ -3028,7 +3021,7 @@ Cтроки и столбцы матрицы можно использовать
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-8-1.pdf}
+\includegraphics{03-TablesDataReading_files/figure-latex/unnamed-chunk-8-1.pdf}
 
 \begin{quote}
 \textbf{Как правило, не следует оставлять вызовы функции \texttt{View()}
@@ -3233,13 +3226,66 @@ Cтроки и столбцы матрицы можно использовать
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-16-1.pdf}
+\includegraphics{03-TablesDataReading_files/figure-latex/unnamed-chunk-16-1.pdf}
 
 \emph{Тем не менее, такой метод добавления столбцов нельзя считать
 правильным}. Главный его недостаток --- из формы записи неочевидно, что
 мы добавляем новый столбец, а не перевычисляем уже существующий. Пакет
 \texttt{dplyr}, который мы рассмотрим в конце настоящей главы, решает
 эту и многие другие стилистические проблемы работы с фреймами данных.
+
+Помимо того что вы можете вычислять столбцы традиционным способом как
+функцию от других столбцов, есть удобные функции-агрегаторы, позволяющие
+сделать вычисления по всем столбцам. Это \texttt{rowSums()} (сумма всех
+столбцов в строке) и \texttt{rowMeans()} (среднее по всем столбцам в
+строке). На тот случай, когда в ячейках есть пропущенные значения, в
+функциях предусмотрен параметр \texttt{na.rm\ =\ TRUE}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{years <-}\StringTok{ }\NormalTok{sewage[}\KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{1}\NormalTok{, }\OperatorTok{-}\DecValTok{2}\NormalTok{)] }\CommentTok{# оставим данные с 2010 по 2013 гг}
+
+\KeywordTok{colSums}\NormalTok{(years)  }\CommentTok{# сколько всего было сброшено в каждом регионе за эти года}
+\NormalTok{## Year10 Year11 Year12 Year13 }
+\NormalTok{##     NA     NA     NA     NA}
+\KeywordTok{rowMeans}\NormalTok{(years) }\CommentTok{# сколько было сброшено в среднем за каждый год}
+\NormalTok{##         1         2         3         4         5         6         7 }
+\NormalTok{## 15837.250  3648.750    72.750    73.000   124.750   132.250    96.500 }
+\NormalTok{##         8         9        10        11        12        13        14 }
+\NormalTok{##    89.250    45.250    37.000    84.000  1234.500    52.750    86.000 }
+\NormalTok{##        15        16        17        18        19        20        21 }
+\NormalTok{##    67.500    25.800    93.000   188.750   224.750   922.000  2906.750 }
+\NormalTok{##        22        23        24        25        26        27        28 }
+\NormalTok{##   190.500   118.000   374.000        NA     0.175   373.750   152.750 }
+\NormalTok{##        29        30        31        32        33        34        35 }
+\NormalTok{##    96.000   260.000   345.750    87.250    44.000  1239.250  1399.250 }
+\NormalTok{##        36        37        38        39        40        41        42 }
+\NormalTok{##    27.750    27.250   878.500    62.000   155.250   248.500   389.000 }
+\NormalTok{##        43        44        45        46        47        48        49 }
+\NormalTok{##    77.750     3.825    31.000    47.000    93.250     0.000  2860.750 }
+\NormalTok{##        50        51        52        53        54        55        56 }
+\NormalTok{##   319.500    55.750    40.500   483.750   115.250    29.250   381.750 }
+\NormalTok{##        57        58        59        60        61        62        63 }
+\NormalTok{##   180.250   477.250   125.250   106.000   376.250    59.500   110.250 }
+\NormalTok{##        64        65        66        67        68        69        70 }
+\NormalTok{##  1745.750    44.750   733.000   184.000        NA    53.250    35.500 }
+\NormalTok{##        71        72        73        74        75        76        77 }
+\NormalTok{##    95.250   784.500  2094.500     0.275    29.000     8.375    34.500 }
+\NormalTok{##        78        79        80        81        82        83        84 }
+\NormalTok{##    10.775    73.500   427.250   582.250   632.750   107.250   166.000 }
+\NormalTok{##        85        86        87        88        89        90        91 }
+\NormalTok{##    22.750   792.250    82.500    36.250   327.500   183.250    79.000 }
+\NormalTok{##        92        93        94        95        96        97 }
+\NormalTok{##    21.500    42.250    15.000     4.975        NA        NA}
+\end{Highlighting}
+\end{Shaded}
+
+Существуют также аналогичные им функции \texttt{colSums()} и
+\texttt{colMeans()}, осуществляющие агрегирование данных по столбцам, а
+не по строкам.
+
+Перечисленные функции являются укороченной версией универсальных функций
+семейства \texttt{apply}, с которыми мы познакомимся далее.
 
 \section{Сортировка и фильтрация}\label{filtering_sorting}
 
@@ -3362,7 +3408,7 @@ Cтроки и столбцы матрицы можно использовать
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-24-1.pdf}
+\includegraphics{03-TablesDataReading_files/figure-latex/unnamed-chunk-25-1.pdf}
 
 Наоборот --- для \textbf{исключения} найденных объектов удобнее
 воспользоваться разновидностью \texttt{grepl()}, которая возвращает
@@ -3392,7 +3438,7 @@ Cтроки и столбцы матрицы можно использовать
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-27-1.pdf}
+\includegraphics{03-TablesDataReading_files/figure-latex/unnamed-chunk-28-1.pdf}
 
 Обратите внимание на восклицательный знак перед \texttt{rows2}. Он
 меняет все значения \texttt{TRUE} на \texttt{FALSE} и наоборот, что
@@ -3428,7 +3474,7 @@ Cтроки и столбцы матрицы можно использовать
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-30-1.pdf}
+\includegraphics{03-TablesDataReading_files/figure-latex/unnamed-chunk-31-1.pdf}
 
 \section{Пропущенные значения}\label{missed_values}
 
@@ -3483,7 +3529,7 @@ Cтроки и столбцы матрицы можно использовать
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-35-1.pdf}
+\includegraphics{03-TablesDataReading_files/figure-latex/unnamed-chunk-36-1.pdf}
 
 \section{Преобразование типов и поиск ошибок}\label{data_conversion}
 
@@ -3536,7 +3582,7 @@ Cтроки и столбцы матрицы можно использовать
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{04-TablesDataReading_files/figure-latex/unnamed-chunk-38-1.pdf}
+\includegraphics{03-TablesDataReading_files/figure-latex/unnamed-chunk-39-1.pdf}
 
 Видно, что все столбцы, кроме двух, хранящих идентификаторы, были
 прочитаны как строки и преобразованы в факторы (номинальные переменные).
@@ -3884,6 +3930,8 @@ Cтроки и столбцы матрицы можно использовать
 функцию \texttt{row.names()}} аналогично функции \texttt{colnames()} для
 столбцов.
 \end{quote}
+
+\section{Обработка таблиц с помощью пакета dplyr}\label{table_rules}
 
 \section{Правила подготовки таблиц для чтения в R}\label{table_rules}
 
