@@ -1,16 +1,7 @@
-library(openxlsx)
+## ЦИКЛЫ
 
-# col.classes<-c("character",rep("numeric",8))
-t <- read.xlsx("IncomeConsumption.xlsx", 1)
-filter <- grep("федеральный округ", t$Регион)
-okr <- t[filter, ]
-
-names <- sub("федеральный округ", "", okr$Регион)
-
-filter<-grepl("федеральный округ|Федерация|числе",t$Регион)
-sub <- t[!filter, ]
 for (i in 1:10) print(i)
-for (i in 1:10){
+for (i in 1:10) {
   a <- factorial(i) # факториал i
   b <- exp(i) # e в степени i
   print(a/b) # факториал растет быстрее экспоненты
@@ -20,8 +11,20 @@ while(i < 10) {
   i <- i+1
   print(i)
 }
+library(openxlsx)
+
+# Чтение данных
+
+tab <- read.xlsx("IncomeConsumption.xlsx", 1)
+filter <- grep("федеральный округ", tab$Регион)
+okr <- tab[filter, ]
+
+names <- sub("федеральный округ", "", okr$Регион)
+
+filter<-grepl("федеральный округ|Федерация|числе", tab$Регион)
+sub <- tab[!filter, ]
 # Пакетное рисование графиков
-for(var in colnames(okr)[-1]){
+for(var in colnames(okr)[-1]) {
   par(mar = c(5,9,4,2))
   barplot(okr[,var], 
           names.arg = names, 
@@ -34,7 +37,7 @@ for(var in colnames(okr)[-1]){
 par(mfrow = c(1,2))
 options(scipen = 999) # запрещаем использовать экспоненциальную форму записи больших чисел
 
-for(var in colnames(okr)[-1]){
+for(var in colnames(okr)[-1]) {
   par(mar = c(5,9,4,3)) # устанавливаем поля для столбчатой диаграммы
   barplot(okr[,var], 
           names.arg = names, 
@@ -46,6 +49,8 @@ for(var in colnames(okr)[-1]){
   par(mar = c(5,3,4,1)) # устанавливаем поля для гистограммы
   hist(sub[,var], breaks = 12, col="green", main = var, xlab = "По субъектам")
 }
+## УСЛОВИЯ
+
 for (i in 1:10){
   a <- factorial(i) # факториал i
   b <- exp(i) # e в степени i
@@ -57,7 +62,8 @@ for (i in 1:10){
     cat(i,'! > exp(', i, ')\n', sep = '')
   }
 }
-# Пакетное чтение данных
+# ПАКЕТНОЕ ЧТЕНИЕ ДАННЫХ
+
 library(foreign) # для чтения dbf необходима библиотека foreign
 
 files <- list.files("dbf") # прочитаем список файлов в директории dbf
@@ -105,8 +111,10 @@ for (file in files){ # пройдемся по всем файлам
   i <- i + 1 # Не забудем сделать инкремент переменной цикла
 }
 
+## ФУНКЦИИ
+
 # Создадим функцию, возвращающую цвет в зависимости от температуры
-selectColor <- function(value){ 
+selectColor <- function(value) { 
   hist.col <- "white"
   if (tmean < 0){
     hist.col <- "steelblue"
@@ -120,7 +128,8 @@ selectColor <- function(value){
 
 i <- 1
 par(mfrow = c(2,2))
-for (file in files){
+
+for (file in files) {
   temp <-  read.dbf(file)
   tmean <-  mean(temp$Temp)
   
@@ -136,6 +145,7 @@ for (file in files){
   abline(v = tmean, 
          lwd = 2, 
          col = "red")
+  
   # подпишем среднее
   text(tmean, 
        1000, 
@@ -144,6 +154,8 @@ for (file in files){
        col = "red")
   i <- i+1
 }
+# ГИСТОГРАММЫ С ГРАДИЕНТОМ
+
 selectColor2 <- function(value, ncolors){ # передаем в качестве дополнительного параметра количество цветов
   hist.col <- "white"
   # генерируем ncolors цветов из соответствующей палитры
@@ -189,3 +201,20 @@ for (file in files){
   
   i <- i+1
 }
+## ВЕКТОРИЗОВАННЫЕ ВЫЧИСЛЕНИЯ 
+
+library(dplyr)
+df <- read.csv2("atm_emissions.csv")
+head(df)
+
+find.max <- function(x) {
+  return(names(x)[which.max(x)])
+}
+
+df$MAXSRC <- apply(df[5:9], 1, find.max)
+df$MINSRC <- apply(df[5:9], 1, function(x) names(x)[which.min(x)])
+
+print(df)
+sapply(okr, mean)
+library(purrr)
+map_dbl(okr, mean)
