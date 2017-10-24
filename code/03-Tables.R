@@ -1,3 +1,6 @@
+
+# Чтение таблиц CSV
+
 tab <- read.table("oxr_vod.csv",
                   sep = ';',
                   dec = ',',
@@ -9,12 +12,18 @@ str(tab) # Посмотрим на структуру таблицы
 library(readr)
 tab <- as.data.frame(read_csv2("oxr_vod.csv"))
 str(tab) # Посмотрим на структуру таблицы
+
+# Чтение таблиц EXCEL
+
 library(openxlsx) # Подключаем библиотеку
 sewage <- read.xlsx("sewage.xlsx", 1) # Читаем таблицу из первого листа
 str(sewage) # Посмотрим на структуру таблицы
 library(readxl)
 sewage <- as.data.frame(read_excel("sewage.xlsx", 1))
 str(sewage)
+
+# ТИПЫ ДАННЫХ СТОЛБЦОВ
+
 tab2 <- read.csv2("SatinoLanduse.csv", dec = '.')
 str(tab2) # посмотрим, какова структура данных
 tab2 <- read.csv2("SatinoLanduse.csv", dec = '.', stringsAsFactors = FALSE)
@@ -26,11 +35,17 @@ tab2 <- read.csv2("SatinoLanduse.csv",
                  dec = '.', 
                  stringsAsFactors = FALSE, 
                  colClasses = classes)
+
+# ПРОСМОТР ТАБЛИЦЫ
+
 print(tab)
 head(tab)
 tail(tab)
 ## View(tab)
 ## View(head(sewage, 3))
+
+# РАБОТА СО СТОЛБЦАМИ
+
 # Просмотрим текущие названия
 colnames(sewage)
 colnames(tab)
@@ -75,6 +90,9 @@ tab[c(5,2,4), ]
 indexes<-order(tab$Caspian)
 head(tab[indexes, ])
 head(tab[order(tab$Caspian), ])
+
+# ФИЛЬТРАЦИЯ
+
 condition <- tab$Caspian > 10
 condition  # посмотрим что получилось
 tab[condition, ] # используем его для фильтрации строк таблицы:
@@ -93,6 +111,9 @@ rows2 <- grepl("федеральный|числе|Российская|за|ѕ",
 rows2
 neokruga <- sewage[!rows2, ] # обратите внимание на восклицательный знак перед rows2
 ## View(neokruga)
+
+# ПРОПУЩЕННЫЕ ЗНАЧЕНИЯ
+
 max(sewage$Year12)
 max(sewage$Year12, na.rm = TRUE)
 filter<-complete.cases(sewage)
@@ -100,6 +121,9 @@ filter  # посмотрим что получилось. Там где види
 
 sewage.complete <- sewage[filter, ] # отфильтруем полные строки
 ## View(sewage.complete)
+
+# ПОИСК ОШИБОК
+
 tab <- read.csv2("SatinoLanduse.csv", encoding = 'UTF-8')
 str(tab) # посмотрим, какова структура данных
 ## View(tab)
@@ -131,6 +155,9 @@ tab[filter, "Administration"] <- "Прочее"
 tab$Administration <- as.factor(tab$Administration)
 levels(tab$Administration)
 summary(tab)
+
+# СОХРАНЕНИЕ ТАБЛИЦ
+
 write.csv2(okruga, "okruga.csv", fileEncoding = 'UTF-8') # Сохраним первую таблицу в CSV в кодировке Unicode
 write.xlsx(neokruga, "neokruga.xlsx") # Сохраним вторую таблицу в XLSX без названий строк
 
@@ -141,6 +168,9 @@ head(okruga.saved)
 
 neokruga.saved <- read.xlsx("neokruga.xlsx",1)
 head(neokruga.saved)
+
+# DPLYR
+
 library(dplyr)
 
 tab <- read.csv2("oxr_vod.csv")
