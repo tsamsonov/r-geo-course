@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Визуализация и анализ географических данных на языке R</title>
+  <meta name="description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Визуализация и анализ географических данных на языке R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  <meta name="github-repo" content="tsamsonov/r-geo-course" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Визуализация и анализ географических данных на языке R" />
+  
+  <meta name="twitter:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  
+
+<meta name="author" content="Тимофей Самсонов">
+
+
+<meta name="date" content="2017-11-03">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="controls.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-0.9/htmlwidgets.js"></script>
+<script src="libs/datatables-binding-0.2/datatables.js"></script>
+<link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Визуализация и анализ географических данных на языке R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Введение</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Программное обеспечение</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#---"><i class="fa fa-check"></i>Установка и подключение пакетов</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i>Выполнение программного кода</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i>Установка рабочей директории</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Диагностические функции</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Получение справки</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#d09ad0bed0bcd0bcd0b5d0bdd182d0b0d180d0b8d0b8"><i class="fa fa-check"></i>Комментарии</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#----r"><i class="fa fa-check"></i>Стандарт оформления кода на R</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Зарезервированные слова</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Названия переменных</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i>Названия специальных символов</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i>Ссылка на пособие</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="data-types.html"><a href="data-types.html"><i class="fa fa-check"></i><b>1</b> Типы данных, ввод и вывод</a><ul>
+<li class="chapter" data-level="1.1" data-path="data-types.html"><a href="data-types.html#numbers"><i class="fa fa-check"></i><b>1.1</b> Числа</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="data-types.html"><a href="data-types.html#number_functions"><i class="fa fa-check"></i><b>1.1.1</b> Числовые функции</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="data-types.html"><a href="data-types.html#strings"><i class="fa fa-check"></i><b>1.2</b> Строки</a></li>
+<li class="chapter" data-level="1.3" data-path="data-types.html"><a href="data-types.html#dates"><i class="fa fa-check"></i><b>1.3</b> Даты</a></li>
+<li class="chapter" data-level="1.4" data-path="data-types.html"><a href="data-types.html#booleans"><i class="fa fa-check"></i><b>1.4</b> Логические</a></li>
+<li class="chapter" data-level="1.5" data-path="data-types.html"><a href="data-types.html#determine_data_type"><i class="fa fa-check"></i><b>1.5</b> Определение типа данных</a></li>
+<li class="chapter" data-level="1.6" data-path="data-types.html"><a href="data-types.html#---conversion"><i class="fa fa-check"></i><b>1.6</b> Преобразование типов данных {conversion}</a></li>
+<li class="chapter" data-level="1.7" data-path="data-types.html"><a href="data-types.html#read_write_console"><i class="fa fa-check"></i><b>1.7</b> Ввод и вывод данных в консоли</a></li>
+<li class="chapter" data-level="1.8" data-path="data-types.html"><a href="data-types.html#questions_tasks_basics"><i class="fa fa-check"></i><b>1.8</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="1.8.1" data-path="data-types.html"><a href="data-types.html#questions_basics"><i class="fa fa-check"></i><b>1.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="1.8.2" data-path="data-types.html"><a href="data-types.html#tasks_basics"><i class="fa fa-check"></i><b>1.8.2</b> Задачи</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-structures.html"><a href="data-structures.html"><i class="fa fa-check"></i><b>2</b> Структуры данных</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-structures.html"><a href="data-structures.html#section-2.1"><i class="fa fa-check"></i><b>2.1</b> Векторы</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="data-structures.html"><a href="data-structures.html#vector_creation"><i class="fa fa-check"></i><b>2.1.1</b> Создание вектора</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-structures.html"><a href="data-structures.html#vector_elements"><i class="fa fa-check"></i><b>2.1.2</b> Работа с элементами вектора</a></li>
+<li class="chapter" data-level="2.1.3" data-path="data-structures.html"><a href="data-structures.html#vector_transform"><i class="fa fa-check"></i><b>2.1.3</b> Анализ и преобразования векторов</a></li>
+<li class="chapter" data-level="2.1.4" data-path="data-structures.html"><a href="data-structures.html#vector_search_sorting"><i class="fa fa-check"></i><b>2.1.4</b> Поиск и сортировка элементов</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-structures.html"><a href="data-structures.html#matrices"><i class="fa fa-check"></i><b>2.2</b> Матрицы</a></li>
+<li class="chapter" data-level="2.3" data-path="data-structures.html"><a href="data-structures.html#arrays"><i class="fa fa-check"></i><b>2.3</b> Массивы</a></li>
+<li class="chapter" data-level="2.4" data-path="data-structures.html"><a href="data-structures.html#data_frames"><i class="fa fa-check"></i><b>2.4</b> Фреймы данных</a></li>
+<li class="chapter" data-level="2.5" data-path="data-structures.html"><a href="data-structures.html#lists"><i class="fa fa-check"></i><b>2.5</b> Списки</a></li>
+<li class="chapter" data-level="2.6" data-path="data-structures.html"><a href="data-structures.html#section-2.6"><i class="fa fa-check"></i><b>2.6</b> Факторы</a></li>
+<li class="chapter" data-level="2.7" data-path="data-structures.html"><a href="data-structures.html#questions_tasks_vectors"><i class="fa fa-check"></i><b>2.7</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="2.7.1" data-path="data-structures.html"><a href="data-structures.html#questions_vectors"><i class="fa fa-check"></i><b>2.7.1</b> Вопросы</a></li>
+<li class="chapter" data-level="2.7.2" data-path="data-structures.html"><a href="data-structures.html#tasks_vectors"><i class="fa fa-check"></i><b>2.7.2</b> Задачи</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="tables.html"><a href="tables.html"><i class="fa fa-check"></i><b>3</b> Работа с таблицами</a><ul>
+<li class="chapter" data-level="3.1" data-path="tables.html"><a href="tables.html#reading_tables"><i class="fa fa-check"></i><b>3.1</b> Чтение таблиц</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="tables.html"><a href="tables.html#reading_csv"><i class="fa fa-check"></i><b>3.1.1</b> Таблицы CSV</a></li>
+<li class="chapter" data-level="3.1.2" data-path="tables.html"><a href="tables.html#excel_reading"><i class="fa fa-check"></i><b>3.1.2</b> Таблицы Microsoft Excel</a></li>
+<li class="chapter" data-level="3.1.3" data-path="tables.html"><a href="tables.html#excel_read_types"><i class="fa fa-check"></i><b>3.1.3</b> Типы данных столбцов</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="tables.html"><a href="tables.html#view_table"><i class="fa fa-check"></i><b>3.2</b> Просмотр таблицы</a></li>
+<li class="chapter" data-level="3.3" data-path="tables.html"><a href="tables.html#working_with_columns"><i class="fa fa-check"></i><b>3.3</b> Работа со столбцами</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="tables.html"><a href="tables.html#colnames"><i class="fa fa-check"></i><b>3.3.1</b> Названия столбцов</a></li>
+<li class="chapter" data-level="3.3.2" data-path="tables.html"><a href="tables.html#col_calling"><i class="fa fa-check"></i><b>3.3.2</b> Обращение к столбцам</a></li>
+<li class="chapter" data-level="3.3.3" data-path="tables.html"><a href="tables.html#col_select"><i class="fa fa-check"></i><b>3.3.3</b> Выбор и исключение столбцов</a></li>
+<li class="chapter" data-level="3.3.4" data-path="tables.html"><a href="tables.html#----col_add"><i class="fa fa-check"></i><b>3.3.4</b> Добавление и вычисление столбцов {col_add}</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="tables.html"><a href="tables.html#filtering_sorting"><i class="fa fa-check"></i><b>3.4</b> Сортировка и фильтрация</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="tables.html"><a href="tables.html#table_sorting"><i class="fa fa-check"></i><b>3.4.1</b> Сортировка</a></li>
+<li class="chapter" data-level="3.4.2" data-path="tables.html"><a href="tables.html#table_filtering"><i class="fa fa-check"></i><b>3.4.2</b> Фильтрация</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="tables.html"><a href="tables.html#missed_values"><i class="fa fa-check"></i><b>3.5</b> Пропущенные значения</a></li>
+<li class="chapter" data-level="3.6" data-path="tables.html"><a href="tables.html#data_conversion"><i class="fa fa-check"></i><b>3.6</b> Преобразование типов и поиск ошибок</a></li>
+<li class="chapter" data-level="3.7" data-path="tables.html"><a href="tables.html#table_writing"><i class="fa fa-check"></i><b>3.7</b> Сохранение таблиц</a></li>
+<li class="chapter" data-level="3.8" data-path="tables.html"><a href="tables.html#dplyr"><i class="fa fa-check"></i><b>3.8</b> Обработка таблиц в dplyr</a></li>
+<li class="chapter" data-level="3.9" data-path="tables.html"><a href="tables.html#table_rules"><i class="fa fa-check"></i><b>3.9</b> Правила подготовки таблиц для чтения в R</a></li>
+<li class="chapter" data-level="3.10" data-path="tables.html"><a href="tables.html#questions_tasks_tables"><i class="fa fa-check"></i><b>3.10</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="3.10.1" data-path="tables.html"><a href="tables.html#questions_tables"><i class="fa fa-check"></i><b>3.10.1</b> Вопросы</a></li>
+<li class="chapter" data-level="3.10.2" data-path="tables.html"><a href="tables.html#tasks_tables"><i class="fa fa-check"></i><b>3.10.2</b> Задачи</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>4</b> Основы графики в R</a><ul>
+<li class="chapter" data-level="4.1" data-path="graphics.html"><a href="graphics.html#yfxcharts"><i class="fa fa-check"></i><b>4.1</b> Стандартные графики</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="graphics.html"><a href="graphics.html#scatterplots"><i class="fa fa-check"></i><b>4.1.1</b> Диаграммы рассеяния</a></li>
+<li class="chapter" data-level="4.1.2" data-path="graphics.html"><a href="graphics.html#linear_graphs"><i class="fa fa-check"></i><b>4.1.2</b> Линейные графики</a></li>
+<li class="chapter" data-level="4.1.3" data-path="graphics.html"><a href="graphics.html#graph_combining"><i class="fa fa-check"></i><b>4.1.3</b> Совмещение графиков</a></li>
+<li class="chapter" data-level="4.1.4" data-path="graphics.html"><a href="graphics.html#func_parameters"><i class="fa fa-check"></i><b>4.1.4</b> Функциональные параметры</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="graphics.html"><a href="graphics.html#histograms"><i class="fa fa-check"></i><b>4.2</b> Гистограммы</a></li>
+<li class="chapter" data-level="4.3" data-path="graphics.html"><a href="graphics.html#barplots"><i class="fa fa-check"></i><b>4.3</b> Столбчатые графики</a></li>
+<li class="chapter" data-level="4.4" data-path="graphics.html"><a href="graphics.html#piecharts"><i class="fa fa-check"></i><b>4.4</b> Круговые (секторные) диаграммы</a></li>
+<li class="chapter" data-level="4.5" data-path="graphics.html"><a href="graphics.html#colors"><i class="fa fa-check"></i><b>4.5</b> Цвет и прозрачность</a></li>
+<li class="chapter" data-level="4.6" data-path="graphics.html"><a href="graphics.html#disp_settings"><i class="fa fa-check"></i><b>4.6</b> Настройки отображения</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="graphics.html"><a href="graphics.html#graph_params"><i class="fa fa-check"></i><b>4.6.1</b> Графические параметры</a></li>
+<li class="chapter" data-level="4.6.2" data-path="graphics.html"><a href="graphics.html#axes"><i class="fa fa-check"></i><b>4.6.2</b> Разметка осей, рамка, сетка координат и произвольные линии</a></li>
+<li class="chapter" data-level="4.6.3" data-path="graphics.html"><a href="graphics.html#annotations"><i class="fa fa-check"></i><b>4.6.3</b> Аннотации данных (текст на графике)</a></li>
+</ul></li>
+<li class="chapter" data-level="4.7" data-path="graphics.html"><a href="graphics.html#legend"><i class="fa fa-check"></i><b>4.7</b> Легенда</a></li>
+<li class="chapter" data-level="4.8" data-path="graphics.html"><a href="graphics.html#questions_tasks_graphics"><i class="fa fa-check"></i><b>4.8</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="4.8.1" data-path="graphics.html"><a href="graphics.html#questions_graphics"><i class="fa fa-check"></i><b>4.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="4.8.2" data-path="graphics.html"><a href="graphics.html#tasks_graphics"><i class="fa fa-check"></i><b>4.8.2</b> Задачи</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="controls.html"><a href="controls.html"><i class="fa fa-check"></i><b>5</b> Управление выполнением и векторизованные вычисления</a><ul>
+<li class="chapter" data-level="5.1" data-path="controls.html"><a href="controls.html#cycles"><i class="fa fa-check"></i><b>5.1</b> Циклы</a></li>
+<li class="chapter" data-level="5.2" data-path="controls.html"><a href="controls.html#ifelse"><i class="fa fa-check"></i><b>5.2</b> Условия</a></li>
+<li class="chapter" data-level="5.3" data-path="controls.html"><a href="controls.html#functions"><i class="fa fa-check"></i><b>5.3</b> Функции</a></li>
+<li class="chapter" data-level="5.4" data-path="controls.html"><a href="controls.html#vectorized"><i class="fa fa-check"></i><b>5.4</b> Векторизованые вычисления</a></li>
+<li class="chapter" data-level="5.5" data-path="controls.html"><a href="controls.html#questions_tasks_controls"><i class="fa fa-check"></i><b>5.5</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="5.5.1" data-path="controls.html"><a href="controls.html#questions_controls"><i class="fa fa-check"></i><b>5.5.1</b> Вопросы</a></li>
+<li class="chapter" data-level="5.5.2" data-path="controls.html"><a href="controls.html#tasks_controls"><i class="fa fa-check"></i><b>5.5.2</b> Задачи</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="spatial-data.html"><a href="spatial-data.html"><i class="fa fa-check"></i><b>6</b> Пространственные данные</a><ul>
+<li class="chapter" data-level="6.1" data-path="spatial-data.html"><a href="spatial-data.html#spatial_models"><i class="fa fa-check"></i><b>6.1</b> Модели пространственных данных</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="spatial-data.html"><a href="spatial-data.html#simple_features"><i class="fa fa-check"></i><b>6.1.1</b> Векторные данные</a></li>
+<li class="chapter" data-level="6.1.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_data"><i class="fa fa-check"></i><b>6.1.2</b> Растровые данные</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="spatial-data.html"><a href="spatial-data.html#spatref"><i class="fa fa-check"></i><b>6.2</b> Пространственная привязка</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="spatial-data.html"><a href="spatial-data.html#spatref_components"><i class="fa fa-check"></i><b>6.2.1</b> Компоненты пространственной привязки</a></li>
+<li class="chapter" data-level="6.2.2" data-path="spatial-data.html"><a href="spatial-data.html#spatref_formats"><i class="fa fa-check"></i><b>6.2.2</b> Форматы описания пространственной привязки</a></li>
+<li class="chapter" data-level="6.2.3" data-path="spatial-data.html"><a href="spatial-data.html#spatref_transform"><i class="fa fa-check"></i><b>6.2.3</b> Преобразование координат</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_r"><i class="fa fa-check"></i><b>6.3</b> Векторные данные</a></li>
+<li class="chapter" data-level="6.4" data-path="spatial-data.html"><a href="spatial-data.html#raster_data_r"><i class="fa fa-check"></i><b>6.4</b> Растровые данные</a></li>
+<li class="chapter" data-level="6.5" data-path="spatial-data.html"><a href="spatial-data.html#questions_tasks_spatial"><i class="fa fa-check"></i><b>6.5</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="spatial-data.html"><a href="spatial-data.html#questions_spatial"><i class="fa fa-check"></i><b>6.5.1</b> Вопросы</a></li>
+<li class="chapter" data-level="6.5.2" data-path="spatial-data.html"><a href="spatial-data.html#tasks_spatial"><i class="fa fa-check"></i><b>6.5.2</b> Задачи</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://istina.msu.ru/profile/tsamsonov/" target="blank">Тимофей Самсонов</a></li>
+<li><a href="https://doi.org/10.5281/zenodo.901911"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.901911.svg" title="DOI"></a><li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Визуализация и анализ географических данных на языке R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="spatial_data" class="section level1">
+<h1><span class="header-section-number">Глава 6</span> Пространственные данные</h1>
+<p><strong>Необходимые пакеты:</strong> <code>sf, raster, dplyr, RColorBrewer</code></p>
+<p>Данный модуль посвящен введению в работу с пространственными данными в R. Рассмотрены общие вопросы моделирования реального мира средствами моделей пространственных данных. Рассматривается чтение векторных и растровых данных, их визуализация стандартными средствами.</p>
+<div id="spatial_models" class="section level2">
+<h2><span class="header-section-number">6.1</span> Модели пространственных данных</h2>
+<p><strong>Пространственные данные</strong> — это данные о пространственных объектах и их наборах. В свою очередь, пространственный объект определяется как <em>цифровая модель материального или абстрактного объекта реального или виртуального мира с указанием его идентификатора, координатных и атрибутивных данных</em>.<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a></p>
+<p>Если говорить по сути, то пространственные данные можно определить как <em>данные о географических объектах или явлениях, фиксирующие их местоположение и/или распределение в системе координат, привязанной к телу Земли или любого другого небесного тела</em>. Таким образом, отличительной особенностью пространственных данных перед непространственными является координатное описание местоположения. Важно знать отличия между векторной и растровой моделью пространственных данных.</p>
+<p><strong>Векторная модель</strong> пространственных данных включает описание координатных данных пространственных объектов и, возможно, топологических отношений между ними. Векторные данные фиксируют местоположение и форму объектов в виде геометрических примитивов, таких как точки, линии, полигоны, объемные тела. Выбор модели объекта (например, представить город точкой или полигоном) зависит от масштаба анализа и целей исследования. Векторная модель данных является объектно-ориентированной.</p>
+<p><strong>Растровая модель</strong> описывает не объекты, а пространственное распределение некоторой (выбранной исследователем) характеристики. Пространство разбивается регулярной сеткой ячеек, в каждой ячейке фиксируется значение исследуемого параметра (путем статистического осреднения, семплирования в центре ячейки и т.п.). Растровые данные могут быть как количественными (например, поле температуры), так и качественными (например, растр классифицированного снимка, каждая ячейка которого фиксирует принадлежность к тому или иному типу объекта). Таким образом, растровая модель является пространственно-ориентированной (или феномен-ориентированной).</p>
+<p>Существуют и другие модели пространственных данных, однако их рассмотрение выходит за рамки настоящей лекции.</p>
+<p>В настоящей лекции мы познакомимся с чтением и визуализацией пространственных данных в векторном и растровом формате, а также рассмотрим вопросы связанные с использованием картографических проекций.</p>
+<div id="simple_features" class="section level3">
+<h3><span class="header-section-number">6.1.1</span> Векторные данные</h3>
+<p><strong>Simple Features</strong> (официально <em>Simple Features Access</em>) — это стандарт <a href="http://www.opengeospatial.org/standards/sfa">OGC 06-103</a>, разработанный Open Geospatial Consortium (OGC) и реализованный также в виде международного стандарта <a href="https://www.iso.org/standard/40114.html">ISO 19125</a>, который определяет общую модель хранения и доступа к векторным объектам (точка, линия, многоугольник, мульти точечные, мультилинии и т. д.), в географических информационных системах.</p>
+<p>Геометрическое представление пространственных объектов базируется на следующих принципах:</p>
+<ul>
+<li>Все геометрии состоят из точек.</li>
+<li>Точки являются координатами в 2-, 3- или 4-мерном пространстве.</li>
+<li>Все точки в геометрии имеют одинаковую размерность.</li>
+</ul>
+<p>В дополнение к координатам <span class="math inline">\(X\)</span> и <span class="math inline">\(Y\)</span> имеются два дополнительных дополнительных параметра:</p>
+<ul>
+<li>координата <span class="math inline">\(Z\)</span>, обозначающая высоту</li>
+<li>координата <span class="math inline">\(M\)</span>, обозначающая некоторую меру, связанную с точкой, а не с признаком в целом (в этом случае это будет атрибут объекта).</li>
+</ul>
+<p>Измерение <span class="math inline">\(M\)</span> может быть использовано, например, для представления времени или линейных координат (для маршрутов).</p>
+<p>Координаты простой геометрии всегда содержат компоненты <span class="math inline">\(X\)</span> и <span class="math inline">\(Y\)</span>, поэтому все разнообразие возможных представлений определяется наличием или отсутствием дополнительных измерений <span class="math inline">\(Z\)</span> и <span class="math inline">\(M\)</span> Таким образом, получаем <strong>четыре</strong> варианта геометрии:</p>
+<ul>
+<li>двумерные точки <span class="math inline">\(XY\)</span></li>
+<li>трехмерные точки <span class="math inline">\(XYZ\)</span></li>
+<li>трехмерные точки <span class="math inline">\(XYM\)</span></li>
+<li>четырехмерные точки <span class="math inline">\(XYZM\)</span></li>
+</ul>
+<p>В случае использования широт и долгот <span class="math inline">\(X\)</span> соответствует долготе, <span class="math inline">\(Y\)</span> соответствует широте.</p>
+<p>Всего стандарт <strong>Simple Features</strong> включает в себя 17 типов геометрий. Из них наиболее употребительными являются следующие 7:</p>
+<table>
+<colgroup>
+<col width="5%" />
+<col width="94%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Тип</th>
+<th>Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>POINT</code></td>
+<td>нуль-мерная геометрия, содержащая одну точку</td>
+</tr>
+<tr class="even">
+<td><code>LINESTRING</code></td>
+<td>последовательность точек, соединенных прямыми, несамопересекающимися отрезками; одномерная геометрия</td>
+</tr>
+<tr class="odd">
+<td><code>POLYGON</code></td>
+<td>геометрия с положительной площадью (двумерная); последовательность точек, отрезки между которыми формируют замкнутое кольцо без самопересечений; первое кольцо является внешним, ноль и более остальных колец представляют дырки внетри полигона</td>
+</tr>
+<tr class="even">
+<td><code>MULTIPOINT</code></td>
+<td>множество точек; геометрия типа <code>MULTIPOINT</code> называется <em>простой</em> если ни одна пара точек в <code>MULTIPOINT</code> не совпадает</td>
+</tr>
+<tr class="odd">
+<td><code>MULTILINESTRING</code></td>
+<td>множество линий</td>
+</tr>
+<tr class="even">
+<td><code>MULTIPOLYGON</code></td>
+<td>множество полигонов</td>
+</tr>
+<tr class="odd">
+<td><code>GEOMETRYCOLLECTION</code></td>
+<td>множество геометрий произвольного типа за исключением <code>GEOMETRYCOLLECTION</code></td>
+</tr>
+</tbody>
+</table>
+<p>Примеры различных видов геометрий представлены на рисунке ниже:</p>
+<pre><code>## Linking to GEOS 3.6.1, GDAL 2.1.3, proj.4 4.9.3</code></pre>
+<p><img src="07-SpatialData_files/figure-html/unnamed-chunk-2-1.png" width="1536" /></p>
+<p>Оставшиеся виды геометрий <em>Simple Features</em> включают: <code>CIRCULARSTRING</code>, <code>COMPOUNDCURVE</code>, <code>CURVEPOLYGON</code>, <code>MULTICURVE</code>, <code>MULTISURFACE</code>, <code>CURVE</code>, <code>SURFACE</code>, <code>POLYHEDRALSURFACE</code>, <code>TIN</code>, <code>TRIANGLE</code>.</p>
+<p>Существует два официально закрепленных формата представления SF: <em>Well-Known Text (WKT)</em> и <em>Well-Known Binary (WKB)</em>, которые необходимы для чтения таких данных человеком и машиной соответственно.</p>
+<p><strong>Well-Known Text (WKT)</strong> — стандарт представления геометрии в виде множества списков координат, в которых координаты вершин разделены пробелами, вершины разделены запятыми, а компоненты полигонов и мультигеометрий заключены в круглые скобки и также разделены запятыми. Вышеприведенной картинке соответствуют следующие строки <em>WKT</em>:</p>
+<pre><code>## MULTIPOINT (3.2 4, 3 4.6, 3.8 4.4, 3.5 3.8, 3.4 3.6, 3.9 4.5)
+## LINESTRING (0 3, 0 4, 1 5, 2 5)
+## MULTILINESTRING ((0 3, 0 4, 1 5, 2 5), (0.2 3, 0.2 4, 1 4.8, 2 4.8), (0 4.4, 0.6 5))
+## POLYGON ((0 0, 1 0, 3 2, 2 4, 1 4, 0 0), (1 1, 1 2, 2 2, 1 1))
+## MULTIPOLYGON (((0 0, 1 0, 3 2, 2 4, 1 4, 0 0), (1 1, 1 2, 2 2, 1 1)), ((3 0, 4 0, 4 1, 3 1, 3 0), (3.3 0.3, 3.3 0.8, 3.8 0.8, 3.8 0.3, 3.3 0.3)), ((3 3, 4 2, 4 3, 3 3)))
+## GEOMETRYCOLLECTION (MULTIPOINT (3.2 4, 3 4.6, 3.8 4.4, 3.5 3.8, 3.4 3.6, 3.9 4.5), MULTIPOLYGON (((0 0, 1 0, 3 2, 2 4, 1 4, 0 0), (1 1, 1 2, 2 2, 1 1)), ((3 0, 4 0, 4 1, 3 1, 3 0), (3.3 0.3, 3.3 0.8, 3.8 0.8, 3.8 0.3, 3.3 0.3)), ((3 3, 4 2, 4 3, 3 3))), LINESTRING (0 3, 0 4, 1 5, 2 5))</code></pre>
+<p><strong>Well-Known Binary (WKB)</strong> — бинарный формат хранения координат. Именно этот формат фактически используется в базах данных, поскольку он обеспечивает высокую скорость чтения и записи данных (в отлиие от текстового). Однако внешний вид данных в формате WKB мало о чем говорит человеку, поскольку он предназначен для чтения компьютером. Например, вышеприведенная строка <code>LINESTRING</code> будет выглядеть так:</p>
+<pre><code>## 01 02 00 00 00 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 08 40 00 00 00 00 00 00 00 00 00 00 00 00 00 00 10 40 00 00 00 00 00 00 f0 3f 00 00 00 00 00 00 14 40 00 00 00 00 00 00 00 40 00 00 00 00 00 00 14 40</code></pre>
+</div>
+<div id="raster_data" class="section level3">
+<h3><span class="header-section-number">6.1.2</span> Растровые данные</h3>
+<p><strong>Растр</strong> представляет из себя матрицу значений. Каждой ячейке матрицы соответствует прямоугольная пространственная область фиксированного размера, которая называется <em>пикселом</em>. Различают растры <em>непрерывные</em> и <em>категориальные (классифицированные)</em>. Также необходимо разделять <em>одноканальные</em> и <em>многоканальные растры</em>. Примером одноканального растра является цифровая модель рельфа. В виде многоканальных растров часто представляют космические снимки.</p>
+<p>В отличие от векторных данных, которые требут указания координат для каждой вершины, регулярно-ячеистый характер растровой модели позволяет вычислять координаты пикселов на основе их индексов. Поэтому фактически растровые данные хранятся в виде линейно упорядоченного списка значений <em>(raster values)</em> и описания геометрии растра <em>(raster geometry)</em>.</p>
+<p><strong>Геометрия растра</strong> определяет, где именно располагаются в пространстве пикселы растра и может быть описана путем указания следующих компонент<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Параметр</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>NCOLS</code></td>
+<td>Количество столбцов</td>
+</tr>
+<tr class="even">
+<td><code>NROWS</code></td>
+<td>Количество строк</td>
+</tr>
+<tr class="odd">
+<td><code>XLLCENTER</code></td>
+<td>Координата <span class="math inline">\(X\)</span> центра левой нижней ячейки растра</td>
+</tr>
+<tr class="even">
+<td><code>YLLCENTER</code></td>
+<td>Координата <span class="math inline">\(Y\)</span> центра левой нижней ячейки растра</td>
+</tr>
+<tr class="odd">
+<td><code>CELLSIZE</code></td>
+<td>Размер ячейки</td>
+</tr>
+</tbody>
+</table>
+<p>Иногда вместо параметров <code>XLLCENTER</code>/<code>YLLCENTER</code> указываются <code>XLLCORNER</code>/<code>YLLCORNER</code>, которые кодируют координаты левого нижнего угла, а не центра левой нижней ячейки растра. Выбор одного из двух этих вариантов определяет тип <em>регистрации растра</em>, а их значения указывают, в какое именно место необходимо “посадить” растр, чтобы его ячейки заняли соответствующие им области в системе координат. Если геометрия растра характеризуется <em>анизотропией</em>, то вместо одного значения <code>CELLSIZE</code> могут быть указаны разные размеры ячеек по осям координат <code>CELLSIZEX</code> и <code>CELLSIZEY</code>.</p>
+<p>В отличие от векторной модели, которая позволяет хранить данные только о нужных географических локациях, растровая модель такой свободы не предоставляет. Матрица ячеек растра всегда покрывает область данных целиком, и за простоту растровой структуры приходится расплачиваться ее неэкономичностью. Поскольку часто данные имеются не на всю территорию, возникает необходимость кодирования ячеек, для которых данные не известны, специальным числом (назовем его условно <code>NODATA_VALUE</code>). Значение этого числа хранится в метаданных растра и позволяет интерпретировать соответствующие ячейки как пустые.</p>
+<p>Координаты точек векторных объектов и координаты пикселов растра, вычисленные в соответствии с описанием его геометрии, не имеют содержательного смысла, покуда не известно, в какой системе координат они заданы. Эта информация берется из описания пространственной привязки данных.</p>
+</div>
+</div>
+<div id="spatref" class="section level2">
+<h2><span class="header-section-number">6.2</span> Пространственная привязка</h2>
+<div id="spatref_components" class="section level3">
+<h3><span class="header-section-number">6.2.1</span> Компоненты пространственной привязки</h3>
+<p><strong>Пространственная привязка</strong> (<em>spatial reference</em> или <em>georeference</em>) — важнейшая составляющая пространственных данных, которая говорит нам о том, как правильно интерпретировать координаты объектов. Пространственная привязка в простейшем случае включает несколько фундаментальных компонент:</p>
+<ol style="list-style-type: decimal">
+<li><em>Эллипсоид вращения</em> — тело, по отношению к которому вычисляются геодезические координаты точек (широты и долготы)</li>
+<li><em>Исходные геодезические даты (датум)</em> — параметры положения эллипсоида в теле Земли</li>
+<li><em>Географическая система координат</em> — включает датум, положение начального меридиана и единицы измерения широт и долгот</li>
+<li><em>Проекция</em> — математический спопоб перехода от географических координат на эллипсоиде к плоским прямоугольным координатам карты.</li>
+<li><em>Плоская прямоугольная система координат</em> — включает проекцию, ее параметры и единицы измерения координат.</li>
+</ol>
+<p>Если точки имеют также координаты <span class="math inline">\(Z\)</span>, то для их правильной интерпретации необходимы дополнительные компоненты пространственной привязки:</p>
+<ol style="list-style-type: decimal">
+<li><em>Система счета высот</em> (геодезические, нормальные, ортометрические) - определяют содержательный смысл и порядок вычисления высот и глубин (координата Z)</li>
+<li><em>Модель геоида, квазигеоида или эллипсоида</em> — определяет поверхность, относительно которой вычисляются высоты точек.</li>
+<li><em>Вертикальная система координат</em> — фактическая реализация системы счета высот относительно конкретной поверхности относимости с заданным положением нулевого уровня. Например, в России это <em>Балтийская система нормальных высот</em> с нулем в г. Кронштадт.</li>
+</ol>
+<p>Аналогичным образом требуется введение системы счета дополнительных координат <span class="math inline">\(M\)</span>, если они используются в представлении координат.</p>
+</div>
+<div id="spatref_formats" class="section level3">
+<h3><span class="header-section-number">6.2.2</span> Форматы описания пространственной привязки</h3>
+<p>Существует три распространенных способа задания (хранения) пространственной привязки:</p>
+<ul>
+<li><em>PROJ.4 String</em> — представление в виде строки.</li>
+<li><em>WKT (Well-Known Text)</em> — представление в виде иерархического списка.</li>
+<li><em>EPSG (European Petroleum Survey Group)</em> — представление в виде числового кода.</li>
+</ul>
+<p>Для поиска проекций в перечисленных форматах представления удобно воспользоваться порталом <a href="spatialreference.org" class="uri">spatialreference.org</a>.</p>
+<p><strong>PROJ.4 String</strong> — строковый формат представления информации о пространственной привязки, используемый в библиотеке <a href="http://proj4.org">PROJ.4</a>. Данная библиотека лежит в основе координатных систем пространственных данных, используется в <strong>R</strong>, <strong>Python</strong>, <strong>QGIS</strong> и прочих средах. Основные параметры строки:</p>
+<pre><code>+datum     Datum name (see `proj -ld`)
++ellps     Ellipsoid name (see `proj -le`)
++lat_0     Latitude of origin
++lat_1     Latitude of first standard parallel
++lat_2     Latitude of second standard parallel
++lat_ts    Latitude of true scale
++lon_0     Central meridian
++proj      Projection name (see `proj -l`)
++units     meters, US survey feet, etc.
++vunits    vertical units.
++x_0       False easting
++y_0       False northing
++zone      UTM zone</code></pre>
+<p>Примеры записи координат в формате PROJ.4:</p>
+<ul>
+<li>Географические координаты в <em>WGS84</em> (без проекции):</li>
+</ul>
+<pre><code>## +proj=longlat +datum=WGS84 +no_defs</code></pre>
+<ul>
+<li>Координаты в проекции <em>Web Mercator</em> (проекция Google Maps, Яндекс.Карт и т.д.):</li>
+</ul>
+<pre><code>## +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs</code></pre>
+<ul>
+<li>Координаты в <em>конической равнопромежуточной проекции</em>:</li>
+</ul>
+<pre><code>## +proj=eqdc +lat_0=0 +lon_0=0 +lat_1=60 +lat_2=60 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs</code></pre>
+<ul>
+<li>Координаты в проекции <em>UTM, зона 37</em>:</li>
+</ul>
+<pre><code>## +proj=utm +zone=37 +datum=WGS84 +units=m +no_defs</code></pre>
+<p>Запись координат в формате WKT предполагает представление вышеуказанных компонент пространственной привязки к виде иерерхического списка. Например, так будет выглядеть информация о <em>полярной стереографической проекции для карт России</em>:</p>
+<pre><code>PROJCS[&quot;WGS 84 / EPSG Russia Polar Stereographic&quot;,
+    GEOGCS[&quot;WGS 84&quot;,
+        DATUM[&quot;WGS_1984&quot;,
+            SPHEROID[&quot;WGS 84&quot;,6378137,298.257223563,
+                AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]],
+            AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]],
+        PRIMEM[&quot;Greenwich&quot;,0,
+            AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]],
+        UNIT[&quot;degree&quot;,0.0174532925199433,
+            AUTHORITY[&quot;EPSG&quot;,&quot;9122&quot;]],
+        AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]],
+    PROJECTION[&quot;Polar_Stereographic&quot;],
+    PARAMETER[&quot;latitude_of_origin&quot;,90],
+    PARAMETER[&quot;central_meridian&quot;,105],
+    PARAMETER[&quot;scale_factor&quot;,0.994],
+    PARAMETER[&quot;false_easting&quot;,2000000],
+    PARAMETER[&quot;false_northing&quot;,2000000],
+    UNIT[&quot;metre&quot;,1,
+        AUTHORITY[&quot;EPSG&quot;,&quot;9001&quot;]],
+    AXIS[&quot;X&quot;,EAST],
+    AXIS[&quot;Y&quot;,NORTH],
+    AUTHORITY[&quot;EPSG&quot;,&quot;5940&quot;]]</code></pre>
+<p><strong>EPSG (European Petroleum Survey Group)</strong> — европейская рабочая группа нефтегазовой области, которая ведет реестр систем координат с уникальными цифровыми кодами вида <code>EPSG:xxxxxx</code>. Коды EPSG оказались настолько удобны, что используются повсеместно для быстрой инициализации проекций со стандартными параметрами. Например, вышеприведенные проекции имеют следующие коды EPSG:</p>
+<ul>
+<li><em>WGS84</em>: <code>EPSG:4326</code></li>
+<li><em>Web Mercator</em>: <code>EPSG:3857</code></li>
+<li><em>UTM</em>: <code>EPSG:326..</code> , например для UTM 37N: <code>EPSG:32637</code></li>
+</ul>
+</div>
+<div id="spatref_transform" class="section level3">
+<h3><span class="header-section-number">6.2.3</span> Преобразование координат</h3>
+<p>Преобразование координат включает три различных операции:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Трансформирование</strong> — пересчет географических координат с одного датума на другой</p></li>
+<li><p><strong>Проецирование</strong> — переход от географических координат к плоским прямоугольным</p></li>
+<li><p><strong>Обратное проецирование</strong> — переход от плоских координат к прямоугольным.</p></li>
+</ol>
+<p>Например, чтобы пересчитать координаты <em>UTM</em> в проекцию <em>Гаусса-Крюгера</em>, необходимо:</p>
+<ol style="list-style-type: decimal">
+<li>Обратно проецировать координаты в географические <em>WGS84</em></li>
+<li>Трансформировать географические координаты c <em>WGS84</em> в <em>ГСК-2011</em></li>
+<li>Проецировать координаты <em>ГСК-2011</em> в проекцию <em>Гаусса-Крюгера</em></li>
+</ol>
+<p><em>Несоответствие датумов часто является причиной того, что данные из разных наборов плохо совмещаются друг с другом</em></p>
+</div>
+</div>
+<div id="vector_data_r" class="section level2">
+<h2><span class="header-section-number">6.3</span> Векторные данные</h2>
+</div>
+<div id="raster_data_r" class="section level2">
+<h2><span class="header-section-number">6.4</span> Растровые данные</h2>
+</div>
+<div id="questions_tasks_spatial" class="section level2">
+<h2><span class="header-section-number">6.5</span> Контрольные вопросы и задачи</h2>
+<div id="questions_spatial" class="section level3">
+<h3><span class="header-section-number">6.5.1</span> Вопросы</h3>
+</div>
+<div id="tasks_spatial" class="section level3">
+<h3><span class="header-section-number">6.5.2</span> Задачи</h3>
+
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+<div class="footnotes">
+<hr />
+<ol start="3">
+<li id="fn3"><p>ГОСТ Р 52438-2005 &lt;<Географические информационные системы. Термины и определения>&gt;. В стандарте поясняется, что объектом может быть неподвижный или движущийся простой или сложный объект, явление, событие, процесс и ситуация. Моделируемый объект может относиться к территории, акватории, недрам и воздушному пространству Земли, околоземному космическому пространству, другим космическим телам и небесной сфере. В широком смысле под пространственным объектом в геоинформатике понимается как сам объект, так и адекватная ему цифровая модель<a href="spatial-data.html#fnref3">↩</a></p></li>
+<li id="fn4"><p>Названия перечисленных компонент геометрии растра укоренились благодаря распространенности стандарта <a href="https://en.wikipedia.org/wiki/Esri_grid">Esri ASCII Grid</a><a href="spatial-data.html#fnref4">↩</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="controls.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": ["r-geo-course.pdf", "r-geo-course.epub"],
+"toc": {
+"collapse": "section",
+"edit": "https://github.com/tsamsonov/r-geo-course/edit/master/%s"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
