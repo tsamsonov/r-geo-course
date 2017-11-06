@@ -99,3 +99,31 @@ plot(ne,
      col = pal(nclasses))
 
 plot(borders, add = TRUE)
+
+## РАЗБОР ГЕОМЕТРИИ
+
+china.cities <- cities %>% filter(adm0name == 'China')
+
+# Содержимое столбца геометрии (sfc):
+china.cities %>% st_geometry() %>% st_as_text()
+
+# Содержимое геометрии объекта (sfg):
+china.cities %>% filter(name == 'Shanghai') %>% 
+  st_geometry() %>% 
+  st_as_text()
+
+georgia <- countries %>% filter(sovereignt == 'Georgia') %>% st_geometry()
+st_as_text(georgia[[1]])
+plot(georgia)
+
+
+
+class(georgia[[1]]) # MULTIPOLYGON
+head(georgia[[1]][[1]]) # Матрица координат внутри объекта MULTIPOLYGON
+
+italy <- countries %>% filter(sovereignt == 'Italy') %>% st_geometry()
+plot(italy)
+
+head(italy[[1]][[1]]) # Матрица координат (Италия)
+head(italy[[1]][[2]]) # Матрица координат (Сицилия)
+head(italy[[1]][[3]]) # Матрица координат (Сардиния)
