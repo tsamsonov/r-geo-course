@@ -25,7 +25,7 @@
 <meta name="author" content="Тимофей Самсонов">
 
 
-<meta name="date" content="2017-11-07">
+<meta name="date" content="2017-11-08">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1113,6 +1113,42 @@ italy.points &lt;-<span class="st"> </span><span class="kw">st_cast</span>(italy
 <span class="kw">plot</span>(italy.points, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p><img src="07-SpatialData_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
 </div>
+<div id="sf_polygonize" class="section level4">
+<h4><span class="header-section-number">6.3.8.5</span> Полигонизация и добавление узлов</h4>
+<p><strong>Полигонизация</strong> — это процесс преобразования мультилинии в полигон(ы). В процессе полигонизации находятся все замкнутые области, образуемые компонентами мультилинии. Для того чтобы такие области образовались, линии должны пересекаться или касаться друг друга. Операция полигонизации требует также, чтобы в местах пересечения или касания двух линий они имели общие (совпадающие) точки. Если таких точек нет, их можно создать с помощью операции <strong>добавления узлов</strong>. Операция добавления узлов бывает также нужна в тех случаях, когда линии представляют собой граф дорожной сети: чтобы можно было поворачивать на перекрестке, обе линии должны иметь точку в месте их пересечения.</p>
+<p>Рассмотрим операции полигонизации и добавления узлов на простом примере трех пересекающихся отрезков:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Создадим три линии</span>
+coords1 =<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">6</span>))
+line1 &lt;-<span class="st"> </span><span class="kw">st_linestring</span>(coords1)
+
+coords2 =<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">1</span>))
+line2 =<span class="st"> </span><span class="kw">st_linestring</span>(coords2)
+
+coords3 =<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">5</span>), <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">0</span>))
+line3 =<span class="st"> </span><span class="kw">st_linestring</span>(coords3)
+
+<span class="co"># Создадим мультилинию</span>
+mls &lt;-<span class="st"> </span><span class="kw">st_multilinestring</span>(<span class="kw">list</span>(line1, line2, line3))
+<span class="kw">plot</span>(mls)
+
+<span class="co"># Посмотрим на ее точки</span>
+points &lt;-<span class="st"> </span><span class="kw">st_cast</span>(mls, <span class="st">&#39;MULTIPOINT&#39;</span>)
+<span class="kw">plot</span>(points, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p><img src="07-SpatialData_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
+<p>Из рисунка видно, что линии образуют треугольную замкнутую область. Также рисунок показывает, что у компонент мультилинии нет вершин в точках пересечения. Мы можем попытаться найти замкнутые области и превратить их в полигоны, используя <code>st_polygonize()</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">st_polygonize</span>(mls)
+## GEOMETRYCOLLECTION EMPTY</code></pre></div>
+<p>Операция завершилась возвратом пустой геометрической коллекции, то есть программа не смогла выделить замкнутые области. Это произошло по причине того, что у линий нет общих точек в местах пересечения. Эти точки можно добавить, используя функцию <code>st_node()</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mls2 &lt;-<span class="st"> </span><span class="kw">st_node</span>(mls)
+poly2 &lt;-<span class="st"> </span><span class="kw">st_polygonize</span>(mls2)
+points2 &lt;-<span class="st"> </span><span class="kw">st_cast</span>(mls2, <span class="st">&#39;MULTIPOINT&#39;</span>)
+
+<span class="kw">plot</span>(mls2)
+<span class="kw">plot</span>(poly2, <span class="dt">col =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)
+<span class="kw">plot</span>(points2, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p><img src="07-SpatialData_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
+<p>Таким образом, после добавления узлов в местах пересечения компонент мультилинии стала возможной операция полигонизации.</p>
+</div>
 </div>
 <div id="sf_geom_attrs" class="section level3">
 <h3><span class="header-section-number">6.3.9</span> Геометрические атрибуты</h3>
@@ -1137,7 +1173,7 @@ italy.points &lt;-<span class="st"> </span><span class="kw">st_cast</span>(italy
 <span class="kw">plot</span>(box, 
      <span class="dt">border =</span> <span class="st">&#39;red&#39;</span>, 
      <span class="dt">add =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<p><img src="07-SpatialData_files/figure-html/unnamed-chunk-47-1.png" width="672" /></p>
+<p><img src="07-SpatialData_files/figure-html/unnamed-chunk-50-1.png" width="672" /></p>
 <!--
 ## Растровые данные {#raster_data_r}
 
