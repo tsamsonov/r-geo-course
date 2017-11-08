@@ -398,7 +398,6 @@ for (file in files){
 ## ВЕКТОРИЗОВАННЫЕ ВЫЧИСЛЕНИЯ 
 
 library(dplyr)
-## Warning: пакет 'dplyr' был собран под R версии 3.4.2
 ## 
 ## Присоединяю пакет: 'dplyr'
 ## Следующие объекты скрыты от 'package:stats':
@@ -504,7 +503,6 @@ sapply(okr, mean)
 
 ```r
 library(purrr)
-## Warning: пакет 'purrr' был собран под R версии 3.4.2
 map_dbl(okr, mean)
 ## Warning in mean.default(.x[[i]], ...): аргумент не является числовым или
 ## логическим: возвращаю NA

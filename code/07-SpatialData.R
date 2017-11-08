@@ -51,6 +51,14 @@ plot(countries)
 plot(outlines, col = 'red')
 plot(countries['sovereignt'], key.pos = NULL) # Здесь легенда не нужна
 plot(countries['gdp_md_est'], graticule = TRUE, axes = TRUE)
+oceans <- st_read('ne/oceans.gpkg')
+rivers <- st_read('ne/rivers.gpkg')
+lakes <- st_read('ne/lakes.gpkg')
+
+plot(countries %>% st_geometry, lwd = 0.5, border = 'gray')
+plot(oceans %>% st_geometry, col = 'steelblue1', border = 'steelblue', add = TRUE)
+plot(lakes %>% st_geometry, col = 'steelblue1', border = 'steelblue', add = TRUE)
+plot(rivers %>% st_geometry, col = 'steelblue', add = TRUE)
 st_crs(countries)    # Координатная система
 st_crs(3857) # Проекция Меркатора для карт мира
 st_crs(54030) # Проекция Робинсона для карт мира
@@ -270,7 +278,7 @@ mpol2 <- st_multipolygon(list(pol2, island))
 
 print(mpol2)
 
-plot(mpol2, col = 'gray')
+plot(mpol2, col = 'darkolivegreen4')
 coords1 <- matrix(c(
   -3, 0,
   -1, 2,
@@ -320,6 +328,31 @@ class(st_geometry(italy.points))
 
 plot(st_geometry(italy.regions), lwd = 0.5)
 plot(italy.points, pch = 20, add = TRUE)
+# Создадим три линии
+coords1 = rbind(c(0, 0), c(0, 6))
+line1 <- st_linestring(coords1)
+
+coords2 = rbind(c(-1,1), c(5,1))
+line2 = st_linestring(coords2)
+
+coords3 = rbind(c(-1,5), c(4,0))
+line3 = st_linestring(coords3)
+
+# Создадим мультилинию
+mls <- st_multilinestring(list(line1, line2, line3))
+plot(mls)
+
+# Посмотрим на ее точки
+points <- st_cast(mls, 'MULTIPOINT')
+plot(points, pch = 20, add = TRUE)
+st_polygonize(mls)
+mls2 <- st_node(mls)
+poly2 <- st_polygonize(mls2)
+points2 <- st_cast(mls2, 'MULTIPOINT')
+
+plot(mls2)
+plot(poly2, col = 'grey', add = TRUE)
+plot(points2, pch = 20, add = TRUE)
 st_bbox(italy)   # Координаты органичивающего прямоугольника
 st_area(italy)   # Площадь
 st_length(italy) # Периметр
@@ -330,3 +363,80 @@ plot(italy %>% st_geometry(),
 plot(box, 
      border = 'red', 
      add = TRUE)
+## st_write(cites.sf, 'mycities.shp') # Шейп-файл
+library(raster)
+
+dem <- raster('world/gebco.tif') # Цифровая модель рельефа
+class(dem)
+
+img <- stack('world/BlueMarbleJuly.tif') # Цветной космический снимок (RGB)
+class(img)
+class(img[[1]])
+ch1 <- raster('world/BlueMarbleJuly.tif', 1)
+ch2 <- raster('world/BlueMarbleJuly.tif', 2)
+ch3 <- raster('world/BlueMarbleJuly.tif', 3)
+
+img <- stack(ch1, ch2, ch3)
+par(mfrow = c(1,1))
+plot(dem)
+brks <- c(-12000, 0, 200, 500, 1000, 2000, 4000, 8000)
+clrs <- c(
+  "steelblue4",
+  "darkseagreen",
+  "lightgoldenrod1",
+  "darkgoldenrod1",
+  "darkorange",
+  "coral2",
+  "firebrick3")
+
+plot(dem, breaks = brks, col = clrs)
+
+plot(ch1, col = colorRampPalette(c("black", "white"))(255))
+
+plot(ch1, col = rainbow(10))
+plotRGB(img)
+par(mfrow = c(3,2))
+plotRGB(img, 1, 2, 3)
+plotRGB(img, 1, 3, 2)
+plotRGB(img, 2, 1, 3)
+plotRGB(img, 2, 3, 1)
+plotRGB(img, 3, 1, 2)
+plotRGB(img, 3, 2, 1)
+par(mfrow = c(1,1))
+plotRGB(img)
+plot(outlines, border = "white", lwd = 0.5, add = TRUE)
+crs(dem) # читаем систему координат
+crs(dem) <- NA # очищаем систему координат
+crs(dem)
+crs(dem) <- st_crs(4326)[[2]] # создаем систему координат
+crs(dem)
+# Проекция Меркатора:
+img.merc <- projectRaster(img, crs = st_crs(3857)[[2]])
+plotRGB(img.merc)
+plot(st_geometry(countries.merc), 
+     border = rgb(1,1,1,0.2), lwd = 0.5, add = TRUE)
+# Проекция Робинсона:
+img.merc <- projectRaster(img, crs = st_crs(54030)[[2]])
+plotRGB(img.merc)
+plot(st_geometry(countries.rob), 
+     border = rgb(1,1,1,0.2), lwd = 0.5, add = TRUE)
+below.zero <- dem < 0
+plot(below.zero)
+
+highlands <- dem > 100 & dem < 500
+plot(highlands)
+
+mountains <- dem > 1000
+plot(mountains)
+bed <- raster('world/etopo1_bed.tif')
+ice <- raster('world/etopo1_ice.tif')
+
+ice.depth <- ice - bed
+
+plot(ice.depth, col = cm.colors(255))
+plot(outlines, border = 'black', lwd = 0.5, add = TRUE)
+values(ice.depth)[values(ice.depth) <= 0] <- NA
+
+plot(ice.depth, col = cm.colors(255))
+plot(outlines, border = 'black', lwd = 0.5, add = TRUE)
+## writeRaster(ice.depth, 'world/ice_depth.tif')
