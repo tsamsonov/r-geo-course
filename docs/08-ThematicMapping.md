@@ -2,9 +2,9 @@
 
 
 
-[Программный код главы](https://github.com/tsamsonov/r-geo-course/blob/master/code/07-SpatialData.R)
+[Программный код главы](https://github.com/tsamsonov/r-geo-course/blob/master/code/08-ThematicMapping.R)
 
-__Необходимые пакеты:__ `sf, sp, raster, dplyr, lattice`
+__Необходимые пакеты:__ `sf, sp, raster, dplyr, lattice, cartography`
 
 В данном модуле мы продвинемся дальше в изучении принципов работы с пространственными данными в R. Рассматривается соединение табличных и пространственных данных на примере статистики по регионам России. Даются базовые представления о построении серий карт средствами пакета lattice.
 
