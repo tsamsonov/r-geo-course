@@ -254,3 +254,264 @@ spplot(spcenters,
        par.strip.text = list(cex = 0.9), 
        as.table = TRUE     # осуществлять прорисовку карт сверху вниз, слева направо
 )
+library(raster)
+# Прочитаем растровый файл
+temp <- raster("tmean_1.tif")
+
+# Проверим, какой он имеет класс:
+class(temp)
+
+# попробуем вывести растр на экран:
+plot(temp)
+temp <- temp/10
+plot(temp)
+# создадим цветовую палитру в синих тонах
+pal <- colorRampPalette(c("dodgerblue4","dodgerblue1"))
+
+# вычислим минимум и маскимум температуры
+min <- cellStats(temp, "min")
+max <- cellStats(temp, "max")
+
+# определим ширину интервала температур равной 2.5 градусам
+step <- 2.5
+
+# вычислим границы равных интервалов, используя функцию fullseq() из пакета scales
+library(scales)
+levels <- fullseq(c(min, max), step)
+
+# определим количество полученных интервалов
+nclasses <- length(levels)-1
+
+# визуализируем данные
+plot(temp, 
+     breaks = levels, # в breaks подставляем границы интервалов
+     col = pal(nclasses))
+# визуализируем данные
+plot(temp, 
+     breaks = levels, # в breaks подставляем границы интервалов
+     col = pal(nclasses))
+plot(spreg, 
+     border = "black", 
+     add = TRUE, 
+     lwd = 0.3)
+plot(sprivers, 
+     col = "midnightblue", 
+     add = TRUE, 
+     lwd = 1)
+plot(splakes, 
+     col = "steelblue1", 
+     add = TRUE, 
+     lwd = 0.5)
+plot(spcities, 
+     add = TRUE, 
+     pch = 20)
+
+pts <- coordinates(spcities)
+text(pts[,1], pts[,2], 
+     labels = spcities$name_2, 
+     cex = 0.8, pos = 3)
+grid(col="grey20")
+colors <- c("dodgerblue4","white","orange","firebrick")
+pal <- colorRampPalette(colors)
+
+# Можно, кстати, визуализировать полученные цвета как пиксельное изображение:
+ncolors <- length(colors)
+image(x = 1:ncolors,
+      y = 1,
+      z = as.matrix(1:ncolors),
+      col = colors)
+# Примем условно, что минимум и максимум содержатся в первом файле
+min <- cellStats(temp, "min")
+max <- cellStats(temp, "max")
+
+# Создадим список для растров, чтобы прочитать их единожды и далее использовать во всех циклах
+rasters <- vector(mode = "list", length = 12)
+
+# Запишем первый растр в список
+rasters[[1]] = temp
+
+# Пройдемся по остальным файлам и сравним их минимумы и максимумы с текущим
+for (i in 2:12){
+  # сформируем имя файла
+  file <- paste("tmean_", i, ".tif", sep="")
+  
+  # прочитаем файл
+  temp <- raster(file)/10
+  
+  # Запишем текущий растр в список
+  rasters[[i]] <- temp
+  
+  # вычислим текущий минимум и максимум
+  vmin <- cellStats(temp, "min")
+  vmax <- cellStats(temp, "max")
+  
+  # выясним, не меньше ли текущее значение, чем тот минимум, что мы храним
+  if(vmin < min){
+    min <- vmin # если да, то заменим минимум на текущее значение
+  }
+  
+  # аналогично для максимума
+  if(vmax > max){
+    max <- vmax
+  }
+}
+
+cat("Минимальная температура - ", min)
+cat("Максимальная температура - ", max)
+
+# Если предположить, что температуры будут визуализироваться
+# с шагом 2.5 градуса, то шкалу сечения можно посчитать автоматически
+
+# Рассчитаем границы классов, покрывающие диапазон данных, 
+# используя удобную функцию fullseq() из пакета scales
+levels <- fullseq(c(min, max), step)
+
+# Количество интервалов в шкале равно количеству граничных значений -1
+nclasses <- length(levels)-1
+
+# Выведем теперь данные на экран
+plot(temp, 
+     breaks = levels, 
+     col = pal(nclasses))
+
+# легенду можно сделать и покрасивее. За ширину шкалы отвечает параметр
+# legend.width, а за ее растяжение по высоте — legend.shrink.
+# Если legend.shrink = 1, то легенда будет по высоте такой же как и карта:
+
+plot(temp, 
+     breaks = levels, 
+     col = pal(nclasses), 
+     legend.shrink = 1, 
+     legend.width = 1.5)
+
+# вы также можете более тонко настроить параметры легенды растрового слоя, используя
+# аргументы legend.args и axis.args. Оба параметра являются списками
+
+# legend.args  отвечает за заголовок легенды,
+# axis.args отвечает за шкалу подписей.
+
+legendargs <- list(text='°С', 
+                   side=3, 
+                   font=2, 
+                   line=0.3, 
+                   cex=0.8)
+
+axisargs <- list(cex.axis=0.7)
+
+# сделаем поля поуже:
+par(mar=c(6,3,5,1)+0.1)
+# и по 2 графика на строку
+par(mfrow = c(1,2))
+
+months<-c("Январь","Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь")
+
+for (i in 1:12){
+  plot(rasters[[i]], 
+       breaks = levels, 
+       col = pal(nclasses), 
+       legend.mar = 4.5, 
+       legend.shrink = 1, 
+       legend.width = 1.5, 
+       legend.args = legendargs, 
+       axis.args = axisargs,
+       main = months[i]
+  )
+  
+  plot(spreg, 
+     border = "black", 
+     add = TRUE, 
+     lwd = 0.3)
+  plot(sprivers, 
+       col = "midnightblue", 
+       add = TRUE, 
+       lwd = 1)
+  plot(splakes, 
+       col = "steelblue1", 
+       add = TRUE, 
+       lwd = 0.5)
+  plot(spcities, 
+       add = TRUE, 
+       pch = 20)
+  
+  pts <- coordinates(spcities)
+  text(pts[,1], pts[,2], 
+       labels = spcities$name_2, 
+       cex = 0.8, pos = 3)
+  grid(col="grey20")
+}
+## png("October.png", width = 500, height = 500)
+## plot(rasters[[10]],
+##      breaks = levels,
+##      col = pal(nclasses),
+##      legend.mar = 4.5,
+##      legend.shrink = 1,
+##      legend.width = 1.5,
+##      legend.args = legendargs,
+##      axis.args = axisargs,
+##      main = months[10]
+## )
+## dev.off() # Важно: завершаем рисование в файл
+## png("Allmonths.png", width = 40, height = 30, units = "cm", res = 300)
+## par(mar=c(5,4,5,6))
+## par(mfrow = c(3,4))
+## for (i in 1:12){
+##   plot(rasters[[i]],
+##        breaks = levels,
+##        col = pal(nclasses),
+##        legend.mar = 4.5,
+##        legend.shrink = 1,
+##        legend.width = 1.5,
+##        legend.args = legendargs,
+##        axis.args = axisargs,
+##        main = months[i]
+##   )
+## }
+## dev.off() # Важно: завершаем рисование в файл
+## # по умолчанию ширина и высота задаются в дюймах
+## CairoPDF("Results.pdf", width = 10, height = 10)
+## par(mfrow=c(2,2))
+## par(mar=c(5,4,5,6))
+## 
+## for(i in 1:12){
+##   plot(rasters[[i]],
+##        breaks = levels,
+##        col=pal(nclasses),
+##        legend.mar=4.5,
+##        legend.shrink = 1,
+##        legend.width = 1.5,
+##        legend.args = legendargs,
+##        axis.args = axisargs,
+##        axes = FALSE
+##   )
+## 
+##   # Далее повторим инструкции по выводу остальных слоев и подписей:
+##   plot(spreg, border="black", add=TRUE, lwd=0.3)
+##   plot(sprivers, col="midnightblue", add=TRUE, lwd=1)
+##   plot(splakes, col="steelblue1", add=TRUE, lwd=0.5)
+##   plot(spcities, add=TRUE, pch=20)
+##   text(pts[,1], pts[,2], labels = cities$name_2, cex = 0.8, pos = 3)
+## 
+##   # Сделаем шаг по оси X равным 5 градусов, а по Y — 4 градуса
+##   xseq = seq(30,55,by=5)
+##   yseq = seq(46,60,by=4)
+## 
+##   # Сформируем подписи координат, включающие значок градуса:
+##   xlabels <- paste(xseq, "°", sep="")
+##   ylabels <- paste(yseq, "°", sep="")
+## 
+##   # Выведем на экран ось X и Y
+##   axis(1, at = xseq, labels = xlabels)
+##   axis(2, at = yseq, labels = ylabels)
+## 
+##   # Нанесем сетку вручную, используя функцию abline():
+## 
+##   abline(h=yseq, lty=3, col="grey20")
+##   abline(v=xseq, lty=3, col="grey20")
+## 
+##   # Нанесем заголовок карты
+##   title(main=months[i], sub="Среднемесячная температура")
+## 
+##   # Нанесем
+##   box("plot", lwd=2)
+## }
+## dev.off() # Важно: завершаем рисование в файл
