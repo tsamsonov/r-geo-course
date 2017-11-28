@@ -216,9 +216,15 @@ breaks <-c(0,1,2.5,5,10,15)
 
 nclasses <- length(breaks) - 1
 
-intervals <- classIntervals(data, nclasses, style = "fixed", fixedBreaks=breaks)
+intervals <- classIntervals(data, 
+                            nclasses, 
+                            style = "fixed", 
+                            fixedBreaks=breaks)
 
-plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Пользовательские интервалы")
+plot(intervals, 
+     pal = ramp(nclasses), 
+     cex=0.5, 
+     main = "Пользовательские интервалы")
 ```
 
 ![](08-ThematicMapping_files/figure-epub3/unnamed-chunk-18-1.png)<!-- -->
@@ -834,6 +840,28 @@ for (i in 1:12){
 ```
 
 ![](08-ThematicMapping_files/figure-epub3/unnamed-chunk-34-3.png)<!-- -->![](08-ThematicMapping_files/figure-epub3/unnamed-chunk-34-4.png)<!-- -->![](08-ThematicMapping_files/figure-epub3/unnamed-chunk-34-5.png)<!-- -->![](08-ThematicMapping_files/figure-epub3/unnamed-chunk-34-6.png)<!-- -->![](08-ThematicMapping_files/figure-epub3/unnamed-chunk-34-7.png)<!-- -->![](08-ThematicMapping_files/figure-epub3/unnamed-chunk-34-8.png)<!-- -->
+
+Еще проще можно сделать карту с серией растров, используя функцию `spplot`, которая доступна в пакетах __sp__ и __raster__ при наличии установленного пакета __lattice__. Здесь для построения серии карт необходимо из множества растров сделать растровый стек (см. раздел по многоканальным растрам в предыдущей лекции):
+
+```r
+library(lattice)
+
+raster.stack <- stack(rasters)
+
+names <- list(at = levels,  labels = levels)
+legend <- list(labels = names)
+
+spplot(raster.stack,
+       at = levels,
+       col.regions = pal(nclasses),
+       names.attr = months,
+       colorkey = legend,
+       main = "Среднемноголетняя температура",
+       sub = "Карта составлена по данным WorldClim.org")
+```
+
+![](08-ThematicMapping_files/figure-epub3/unnamed-chunk-35-1.png)<!-- -->
+
 
 ## Экспорт изображения в графический файл {#export_graphics}
 
