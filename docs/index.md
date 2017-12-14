@@ -1,7 +1,7 @@
 --- 
 title: "Визуализация и анализ географических данных на языке R"
 author: "Тимофей Самсонов"
-date: "2017-11-28"
+date: "2017-12-14"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
