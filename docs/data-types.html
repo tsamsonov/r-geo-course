@@ -25,7 +25,7 @@
 <meta name="author" content="Тимофей Самсонов">
 
 
-<meta name="date" content="2017-12-18">
+<meta name="date" content="2017-12-20">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -305,6 +305,21 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="10.4.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_local"><i class="fa fa-check"></i><b>10.4.2</b> Локальный тренд</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="11" data-path="autocorrelation.html"><a href="autocorrelation.html"><i class="fa fa-check"></i><b>11</b> Пространственная статистика 1. Пространственная автокорреляция</a><ul>
+<li class="chapter" data-level="11.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_intro"><i class="fa fa-check"></i><b>11.1</b> Введение</a></li>
+<li class="chapter" data-level="11.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors"><i class="fa fa-check"></i><b>11.2</b> Пространственное соседство</a><ul>
+<li class="chapter" data-level="11.2.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_contguity"><i class="fa fa-check"></i><b>11.2.1</b> Соседи по смежности</a></li>
+<li class="chapter" data-level="11.2.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_graph"><i class="fa fa-check"></i><b>11.2.2</b> Соседи по графу</a></li>
+<li class="chapter" data-level="11.2.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_metrics"><i class="fa fa-check"></i><b>11.2.3</b> Соседи по метрике</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_weights"><i class="fa fa-check"></i><b>11.3</b> Пространственные веса</a></li>
+<li class="chapter" data-level="11.4" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_measures"><i class="fa fa-check"></i><b>11.4</b> Пространственная автокорреляция</a><ul>
+<li class="chapter" data-level="11.4.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_moran"><i class="fa fa-check"></i><b>11.4.1</b> Индекс Морана (Moran’s I)</a></li>
+<li class="chapter" data-level="11.4.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_permutation"><i class="fa fa-check"></i><b>11.4.2</b> Перестановочный тест Морана</a></li>
+<li class="chapter" data-level="11.4.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_moranscatter"><i class="fa fa-check"></i><b>11.4.3</b> Диаграмма рассеяния Морана</a></li>
+</ul></li>
+<li class="chapter" data-level="11.5" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_autoregression"><i class="fa fa-check"></i><b>11.5</b> Пространственная авторегрессия</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://istina.msu.ru/profile/tsamsonov/" target="blank">Тимофей Самсонов</a></li>
 <li><a href="https://doi.org/10.5281/zenodo.901911"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.901911.svg" title="DOI"></a><li>
@@ -531,14 +546,14 @@ birth
 <p>Сегодняшнюю дату вы можете узнать с помощью специальной функции <code>Sys.Date()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">current &lt;-<span class="st"> </span><span class="kw">Sys.Date</span>()
 current
-## [1] &quot;2017-12-18&quot;</code></pre></div>
+## [1] &quot;2017-12-20&quot;</code></pre></div>
 <p>Даты также можно складывать и вычитать. В зависимости от дискретности данных, вы получите результат в часах, днях, годах и т.д. Например, узнать продолжительность жизни в днях можно так:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">livedays &lt;-<span class="st"> </span>current <span class="op">-</span><span class="st"> </span>birth
 livedays
-## Time difference of 11626 days</code></pre></div>
+## Time difference of 11628 days</code></pre></div>
 <p>Вы также можете прибавить к текущей дате некоторое значение. Например, необходимо узнать, какая дата будет через 40 дней:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">current <span class="op">+</span><span class="st"> </span><span class="dv">40</span>
-## [1] &quot;2018-01-27&quot;</code></pre></div>
+## [1] &quot;2018-01-29&quot;</code></pre></div>
 </div>
 <div id="booleans" class="section level2">
 <h2><span class="header-section-number">1.4</span> Логические</h2>
@@ -699,7 +714,7 @@ b
 ## [1] &quot;2 в степени 10 равно 1024&quot;
 
 <span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;Сегодняшняя дата - &quot;</span>, <span class="kw">Sys.Date</span>()))
-## [1] &quot;Сегодняшняя дата -  2017-12-18&quot;</code></pre></div>
+## [1] &quot;Сегодняшняя дата -  2017-12-20&quot;</code></pre></div>
 <p>Функция <code>cat()</code> отличается от <code>print()</code> следующими особенностями:</p>
 <ul>
 <li><code>cat()</code> выводит значение переменной, и не печатает ее измерения и внешние атрибуты типа двойных кавычек вокруг строки. Это означает, что <code>cat()</code> можно использовать и для записи данных в файл (на практике этим мало кто пользуется, но знать такую возможность надо).</li>
@@ -717,7 +732,7 @@ b
 ## 2 в степени 10 равно 1024
 
 <span class="kw">cat</span>(<span class="st">&quot;Сегодняшнаяя дата -&quot;</span>, <span class="kw">Sys.Date</span>())
-## Сегодняшнаяя дата - 17518</code></pre></div>
+## Сегодняшнаяя дата - 17520</code></pre></div>
 <p>Можно видеть, что в последнем случае <code>cat()</code> напечатала отнюдь не дату в ее привычном представлении, а некое число, которое является внутренним представлением даты в типе данных <code>Date</code>. Такие типы данных являются классами объектов в R, и у них есть своя функция <code>print()</code>, которая и выдает содержимое объекта в виде, который ожидается пользователем. Поэтому пользоваться функцией <code>cat()</code> надо с некоторой осторожностью.</p>
 </div>
 <div id="questions_tasks_basics" class="section level2">
