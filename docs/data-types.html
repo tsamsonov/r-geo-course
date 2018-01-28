@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Визуализация и анализ географических данных на языке R</title>
   <meta name="description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных">
-  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.6 and GitBook 2.6.7">
 
   <meta property="og:title" content="Визуализация и анализ географических данных на языке R" />
   <meta property="og:type" content="book" />
@@ -25,7 +25,7 @@
 <meta name="author" content="Тимофей Самсонов">
 
 
-<meta name="date" content="2017-12-20">
+<meta name="date" content="2018-01-28">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -47,55 +47,84 @@
 
 
 
-<script src="libs/htmlwidgets-0.9/htmlwidgets.js"></script>
-<script src="libs/datatables-binding-0.2/datatables.js"></script>
-<link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
-<script src="libs/plotly-binding-4.7.1/plotly.js"></script>
-<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<script src="libs/htmlwidgets-1.0/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.3/datatables.js"></script>
+<link href="libs/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.16/js/jquery.dataTables.min.js"></script>
 <link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<script src="libs/plotly-binding-4.7.1/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/plotlyjs-1.29.2/plotly-htmlwidgets.css" rel="stylesheet" />
 <script src="libs/plotlyjs-1.29.2/plotly-latest.min.js"></script>
 
 
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -187,138 +216,144 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="3.10.2" data-path="tables.html"><a href="tables.html#tasks_tables"><i class="fa fa-check"></i><b>3.10.2</b> Задачи</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>4</b> Основы графики в R</a><ul>
-<li class="chapter" data-level="4.1" data-path="graphics.html"><a href="graphics.html#yfxcharts"><i class="fa fa-check"></i><b>4.1</b> Стандартные графики</a><ul>
-<li class="chapter" data-level="4.1.1" data-path="graphics.html"><a href="graphics.html#scatterplots"><i class="fa fa-check"></i><b>4.1.1</b> Диаграммы рассеяния</a></li>
-<li class="chapter" data-level="4.1.2" data-path="graphics.html"><a href="graphics.html#linear_graphs"><i class="fa fa-check"></i><b>4.1.2</b> Линейные графики</a></li>
-<li class="chapter" data-level="4.1.3" data-path="graphics.html"><a href="graphics.html#graph_combining"><i class="fa fa-check"></i><b>4.1.3</b> Совмещение графиков</a></li>
-<li class="chapter" data-level="4.1.4" data-path="graphics.html"><a href="graphics.html#func_parameters"><i class="fa fa-check"></i><b>4.1.4</b> Функциональные параметры</a></li>
-</ul></li>
-<li class="chapter" data-level="4.2" data-path="graphics.html"><a href="graphics.html#histograms"><i class="fa fa-check"></i><b>4.2</b> Гистограммы</a></li>
-<li class="chapter" data-level="4.3" data-path="graphics.html"><a href="graphics.html#barplots"><i class="fa fa-check"></i><b>4.3</b> Столбчатые графики</a></li>
-<li class="chapter" data-level="4.4" data-path="graphics.html"><a href="graphics.html#piecharts"><i class="fa fa-check"></i><b>4.4</b> Круговые (секторные) диаграммы</a></li>
-<li class="chapter" data-level="4.5" data-path="graphics.html"><a href="graphics.html#colors"><i class="fa fa-check"></i><b>4.5</b> Цвет и прозрачность</a></li>
-<li class="chapter" data-level="4.6" data-path="graphics.html"><a href="graphics.html#disp_settings"><i class="fa fa-check"></i><b>4.6</b> Настройки отображения</a><ul>
-<li class="chapter" data-level="4.6.1" data-path="graphics.html"><a href="graphics.html#graph_params"><i class="fa fa-check"></i><b>4.6.1</b> Графические параметры</a></li>
-<li class="chapter" data-level="4.6.2" data-path="graphics.html"><a href="graphics.html#axes"><i class="fa fa-check"></i><b>4.6.2</b> Разметка осей, рамка, сетка координат и произвольные линии</a></li>
-<li class="chapter" data-level="4.6.3" data-path="graphics.html"><a href="graphics.html#annotations"><i class="fa fa-check"></i><b>4.6.3</b> Аннотации данных (текст на графике)</a></li>
-</ul></li>
-<li class="chapter" data-level="4.7" data-path="graphics.html"><a href="graphics.html#legend"><i class="fa fa-check"></i><b>4.7</b> Легенда</a></li>
-<li class="chapter" data-level="4.8" data-path="graphics.html"><a href="graphics.html#questions_tasks_graphics"><i class="fa fa-check"></i><b>4.8</b> Контрольные вопросы и задачи</a><ul>
-<li class="chapter" data-level="4.8.1" data-path="graphics.html"><a href="graphics.html#questions_graphics"><i class="fa fa-check"></i><b>4.8.1</b> Вопросы</a></li>
-<li class="chapter" data-level="4.8.2" data-path="graphics.html"><a href="graphics.html#tasks_graphics"><i class="fa fa-check"></i><b>4.8.2</b> Задачи</a></li>
+<li class="chapter" data-level="4" data-path="controls.html"><a href="controls.html"><i class="fa fa-check"></i><b>4</b> Управление выполнением и векторизованные вычисления</a><ul>
+<li class="chapter" data-level="4.1" data-path="controls.html"><a href="controls.html#cycles"><i class="fa fa-check"></i><b>4.1</b> Циклы</a></li>
+<li class="chapter" data-level="4.2" data-path="controls.html"><a href="controls.html#ifelse"><i class="fa fa-check"></i><b>4.2</b> Условия</a></li>
+<li class="chapter" data-level="4.3" data-path="controls.html"><a href="controls.html#functions"><i class="fa fa-check"></i><b>4.3</b> Функции</a></li>
+<li class="chapter" data-level="4.4" data-path="controls.html"><a href="controls.html#vectorized"><i class="fa fa-check"></i><b>4.4</b> Векторизованые вычисления</a></li>
+<li class="chapter" data-level="4.5" data-path="controls.html"><a href="controls.html#questions_tasks_controls"><i class="fa fa-check"></i><b>4.5</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="4.5.1" data-path="controls.html"><a href="controls.html#questions_controls"><i class="fa fa-check"></i><b>4.5.1</b> Вопросы</a></li>
+<li class="chapter" data-level="4.5.2" data-path="controls.html"><a href="controls.html#tasks_controls"><i class="fa fa-check"></i><b>4.5.2</b> Задачи</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="controls.html"><a href="controls.html"><i class="fa fa-check"></i><b>5</b> Управление выполнением и векторизованные вычисления</a><ul>
-<li class="chapter" data-level="5.1" data-path="controls.html"><a href="controls.html#cycles"><i class="fa fa-check"></i><b>5.1</b> Циклы</a></li>
-<li class="chapter" data-level="5.2" data-path="controls.html"><a href="controls.html#ifelse"><i class="fa fa-check"></i><b>5.2</b> Условия</a></li>
-<li class="chapter" data-level="5.3" data-path="controls.html"><a href="controls.html#functions"><i class="fa fa-check"></i><b>5.3</b> Функции</a></li>
-<li class="chapter" data-level="5.4" data-path="controls.html"><a href="controls.html#vectorized"><i class="fa fa-check"></i><b>5.4</b> Векторизованые вычисления</a></li>
-<li class="chapter" data-level="5.5" data-path="controls.html"><a href="controls.html#questions_tasks_controls"><i class="fa fa-check"></i><b>5.5</b> Контрольные вопросы и задачи</a><ul>
-<li class="chapter" data-level="5.5.1" data-path="controls.html"><a href="controls.html#questions_controls"><i class="fa fa-check"></i><b>5.5.1</b> Вопросы</a></li>
-<li class="chapter" data-level="5.5.2" data-path="controls.html"><a href="controls.html#tasks_controls"><i class="fa fa-check"></i><b>5.5.2</b> Задачи</a></li>
+<li class="chapter" data-level="5" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>5</b> Основы графики в R</a><ul>
+<li class="chapter" data-level="5.1" data-path="graphics.html"><a href="graphics.html#yfxcharts"><i class="fa fa-check"></i><b>5.1</b> Стандартные графики</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="graphics.html"><a href="graphics.html#scatterplots"><i class="fa fa-check"></i><b>5.1.1</b> Диаграммы рассеяния</a></li>
+<li class="chapter" data-level="5.1.2" data-path="graphics.html"><a href="graphics.html#linear_graphs"><i class="fa fa-check"></i><b>5.1.2</b> Линейные графики</a></li>
+<li class="chapter" data-level="5.1.3" data-path="graphics.html"><a href="graphics.html#graph_combining"><i class="fa fa-check"></i><b>5.1.3</b> Совмещение графиков</a></li>
+<li class="chapter" data-level="5.1.4" data-path="graphics.html"><a href="graphics.html#func_parameters"><i class="fa fa-check"></i><b>5.1.4</b> Функциональные параметры</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="graphics.html"><a href="graphics.html#histograms"><i class="fa fa-check"></i><b>5.2</b> Гистограммы</a></li>
+<li class="chapter" data-level="5.3" data-path="graphics.html"><a href="graphics.html#barplots"><i class="fa fa-check"></i><b>5.3</b> Столбчатые графики</a></li>
+<li class="chapter" data-level="5.4" data-path="graphics.html"><a href="graphics.html#piecharts"><i class="fa fa-check"></i><b>5.4</b> Круговые (секторные) диаграммы</a></li>
+<li class="chapter" data-level="5.5" data-path="graphics.html"><a href="graphics.html#colors"><i class="fa fa-check"></i><b>5.5</b> Цвет и прозрачность</a></li>
+<li class="chapter" data-level="5.6" data-path="graphics.html"><a href="graphics.html#disp_settings"><i class="fa fa-check"></i><b>5.6</b> Настройки отображения</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="graphics.html"><a href="graphics.html#graph_params"><i class="fa fa-check"></i><b>5.6.1</b> Графические параметры</a></li>
+<li class="chapter" data-level="5.6.2" data-path="graphics.html"><a href="graphics.html#axes"><i class="fa fa-check"></i><b>5.6.2</b> Разметка осей, рамка, сетка координат и произвольные линии</a></li>
+<li class="chapter" data-level="5.6.3" data-path="graphics.html"><a href="graphics.html#annotations"><i class="fa fa-check"></i><b>5.6.3</b> Аннотации данных (текст на графике)</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="graphics.html"><a href="graphics.html#legend"><i class="fa fa-check"></i><b>5.7</b> Легенда</a></li>
+<li class="chapter" data-level="5.8" data-path="graphics.html"><a href="graphics.html#questions_tasks_graphics"><i class="fa fa-check"></i><b>5.8</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="5.8.1" data-path="graphics.html"><a href="graphics.html#questions_graphics"><i class="fa fa-check"></i><b>5.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="5.8.2" data-path="graphics.html"><a href="graphics.html#tasks_graphics"><i class="fa fa-check"></i><b>5.8.2</b> Задачи</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="spatial-data.html"><a href="spatial-data.html"><i class="fa fa-check"></i><b>6</b> Пространственные данные в R</a><ul>
-<li class="chapter" data-level="6.1" data-path="spatial-data.html"><a href="spatial-data.html#spatial_models"><i class="fa fa-check"></i><b>6.1</b> Модели пространственных данных</a><ul>
-<li class="chapter" data-level="6.1.1" data-path="spatial-data.html"><a href="spatial-data.html#simple_features"><i class="fa fa-check"></i><b>6.1.1</b> Векторные данные</a></li>
-<li class="chapter" data-level="6.1.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_data"><i class="fa fa-check"></i><b>6.1.2</b> Растровые данные</a></li>
+<li class="chapter" data-level="6" data-path="circular.html"><a href="circular.html"><i class="fa fa-check"></i><b>6</b> Круговая статистика и визуализация</a><ul>
+<li class="chapter" data-level="6.1" data-path="circular.html"><a href="circular.html#circular-intro"><i class="fa fa-check"></i><b>6.1</b> Введение</a></li>
+<li class="chapter" data-level="6.2" data-path="circular.html"><a href="circular.html#circular-stats"><i class="fa fa-check"></i><b>6.2</b> Вычисление статистических моментов</a></li>
+<li class="chapter" data-level="6.3" data-path="circular.html"><a href="circular.html#circular-modes"><i class="fa fa-check"></i><b>6.3</b> Определение модальных направлений</a></li>
+<li class="chapter" data-level="6.4" data-path="circular.html"><a href="circular.html#circular-stats-vis"><i class="fa fa-check"></i><b>6.4</b> Визуализация круговой статистики</a></li>
 </ul></li>
-<li class="chapter" data-level="6.2" data-path="spatial-data.html"><a href="spatial-data.html#spatref"><i class="fa fa-check"></i><b>6.2</b> Пространственная привязка</a><ul>
-<li class="chapter" data-level="6.2.1" data-path="spatial-data.html"><a href="spatial-data.html#spatref_components"><i class="fa fa-check"></i><b>6.2.1</b> Компоненты пространственной привязки</a></li>
-<li class="chapter" data-level="6.2.2" data-path="spatial-data.html"><a href="spatial-data.html#spatref_formats"><i class="fa fa-check"></i><b>6.2.2</b> Форматы описания пространственной привязки</a></li>
-<li class="chapter" data-level="6.2.3" data-path="spatial-data.html"><a href="spatial-data.html#spatref_transform"><i class="fa fa-check"></i><b>6.2.3</b> Преобразование координат</a></li>
+<li class="chapter" data-level="7" data-path="spatial-data.html"><a href="spatial-data.html"><i class="fa fa-check"></i><b>7</b> Пространственные данные в R</a><ul>
+<li class="chapter" data-level="7.1" data-path="spatial-data.html"><a href="spatial-data.html#spatial_models"><i class="fa fa-check"></i><b>7.1</b> Модели пространственных данных</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="spatial-data.html"><a href="spatial-data.html#simple_features"><i class="fa fa-check"></i><b>7.1.1</b> Векторные данные</a></li>
+<li class="chapter" data-level="7.1.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_data"><i class="fa fa-check"></i><b>7.1.2</b> Растровые данные</a></li>
 </ul></li>
-<li class="chapter" data-level="6.3" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_r"><i class="fa fa-check"></i><b>6.3</b> Векторные данные</a><ul>
-<li class="chapter" data-level="6.3.1" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_packages"><i class="fa fa-check"></i><b>6.3.1</b> Базовые библиотеки</a></li>
-<li class="chapter" data-level="6.3.2" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_reading"><i class="fa fa-check"></i><b>6.3.2</b> Чтение</a></li>
-<li class="chapter" data-level="6.3.3" data-path="spatial-data.html"><a href="spatial-data.html#sf_structure"><i class="fa fa-check"></i><b>6.3.3</b> Внутренняя структура</a></li>
-<li class="chapter" data-level="6.3.4" data-path="spatial-data.html"><a href="spatial-data.html#sf_plotting"><i class="fa fa-check"></i><b>6.3.4</b> Визуализация</a></li>
-<li class="chapter" data-level="6.3.5" data-path="spatial-data.html"><a href="spatial-data.html#sf_crs"><i class="fa fa-check"></i><b>6.3.5</b> Системы координат и проекции</a></li>
-<li class="chapter" data-level="6.3.6" data-path="spatial-data.html"><a href="spatial-data.html#sf_attrs"><i class="fa fa-check"></i><b>6.3.6</b> Атрибутивные операции</a></li>
-<li class="chapter" data-level="6.3.7" data-path="spatial-data.html"><a href="spatial-data.html#sf_spat_selection"><i class="fa fa-check"></i><b>6.3.7</b> Пространственные операции</a></li>
-<li class="chapter" data-level="6.3.8" data-path="spatial-data.html"><a href="spatial-data.html#sf_creation"><i class="fa fa-check"></i><b>6.3.8</b> Создание пространственных объектов</a></li>
-<li class="chapter" data-level="6.3.9" data-path="spatial-data.html"><a href="spatial-data.html#sf_geom_attrs"><i class="fa fa-check"></i><b>6.3.9</b> Геометрические атрибуты</a></li>
-<li class="chapter" data-level="6.3.10" data-path="spatial-data.html"><a href="spatial-data.html#sf_export"><i class="fa fa-check"></i><b>6.3.10</b> Экспорт</a></li>
+<li class="chapter" data-level="7.2" data-path="spatial-data.html"><a href="spatial-data.html#spatref"><i class="fa fa-check"></i><b>7.2</b> Пространственная привязка</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="spatial-data.html"><a href="spatial-data.html#spatref_components"><i class="fa fa-check"></i><b>7.2.1</b> Компоненты пространственной привязки</a></li>
+<li class="chapter" data-level="7.2.2" data-path="spatial-data.html"><a href="spatial-data.html#spatref_formats"><i class="fa fa-check"></i><b>7.2.2</b> Форматы описания пространственной привязки</a></li>
+<li class="chapter" data-level="7.2.3" data-path="spatial-data.html"><a href="spatial-data.html#spatref_transform"><i class="fa fa-check"></i><b>7.2.3</b> Преобразование координат</a></li>
 </ul></li>
-<li class="chapter" data-level="6.4" data-path="spatial-data.html"><a href="spatial-data.html#raster_data_r"><i class="fa fa-check"></i><b>6.4</b> Растровые данные</a><ul>
-<li class="chapter" data-level="6.4.1" data-path="spatial-data.html"><a href="spatial-data.html#raster_read"><i class="fa fa-check"></i><b>6.4.1</b> Чтение</a></li>
-<li class="chapter" data-level="6.4.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_viz"><i class="fa fa-check"></i><b>6.4.2</b> Визуализация</a></li>
-<li class="chapter" data-level="6.4.3" data-path="spatial-data.html"><a href="spatial-data.html#raster_proj"><i class="fa fa-check"></i><b>6.4.3</b> Системы координат и проекции</a></li>
-<li class="chapter" data-level="6.4.4" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i><b>6.4.4</b> Операции со значениями</a></li>
-<li class="chapter" data-level="6.4.5" data-path="spatial-data.html"><a href="spatial-data.html#section-6.4.5"><i class="fa fa-check"></i><b>6.4.5</b> Экспорт</a></li>
+<li class="chapter" data-level="7.3" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_r"><i class="fa fa-check"></i><b>7.3</b> Векторные данные</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_packages"><i class="fa fa-check"></i><b>7.3.1</b> Базовые библиотеки</a></li>
+<li class="chapter" data-level="7.3.2" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_reading"><i class="fa fa-check"></i><b>7.3.2</b> Чтение</a></li>
+<li class="chapter" data-level="7.3.3" data-path="spatial-data.html"><a href="spatial-data.html#sf_structure"><i class="fa fa-check"></i><b>7.3.3</b> Внутренняя структура</a></li>
+<li class="chapter" data-level="7.3.4" data-path="spatial-data.html"><a href="spatial-data.html#sf_plotting"><i class="fa fa-check"></i><b>7.3.4</b> Визуализация</a></li>
+<li class="chapter" data-level="7.3.5" data-path="spatial-data.html"><a href="spatial-data.html#sf_crs"><i class="fa fa-check"></i><b>7.3.5</b> Системы координат и проекции</a></li>
+<li class="chapter" data-level="7.3.6" data-path="spatial-data.html"><a href="spatial-data.html#sf_attrs"><i class="fa fa-check"></i><b>7.3.6</b> Атрибутивные операции</a></li>
+<li class="chapter" data-level="7.3.7" data-path="spatial-data.html"><a href="spatial-data.html#sf_spat_selection"><i class="fa fa-check"></i><b>7.3.7</b> Пространственные операции</a></li>
+<li class="chapter" data-level="7.3.8" data-path="spatial-data.html"><a href="spatial-data.html#sf_creation"><i class="fa fa-check"></i><b>7.3.8</b> Создание пространственных объектов</a></li>
+<li class="chapter" data-level="7.3.9" data-path="spatial-data.html"><a href="spatial-data.html#sf_geom_attrs"><i class="fa fa-check"></i><b>7.3.9</b> Геометрические атрибуты</a></li>
+<li class="chapter" data-level="7.3.10" data-path="spatial-data.html"><a href="spatial-data.html#sf_export"><i class="fa fa-check"></i><b>7.3.10</b> Экспорт</a></li>
 </ul></li>
-</ul></li>
-<li class="chapter" data-level="7" data-path="thematic-mapping.html"><a href="thematic-mapping.html"><i class="fa fa-check"></i><b>7</b> Тематические карты в R</a><ul>
-<li class="chapter" data-level="7.1" data-path="thematic-mapping.html"><a href="thematic-mapping.html#table_join"><i class="fa fa-check"></i><b>7.1</b> Соединение таблиц в R</a></li>
-<li class="chapter" data-level="7.2" data-path="thematic-mapping.html"><a href="thematic-mapping.html#data_classify"><i class="fa fa-check"></i><b>7.2</b> Классификация данных</a></li>
-<li class="chapter" data-level="7.3" data-path="thematic-mapping.html"><a href="thematic-mapping.html#lattice_maps"><i class="fa fa-check"></i><b>7.3</b> Серии карт lattice</a><ul>
-<li class="chapter" data-level="7.3.1" data-path="thematic-mapping.html"><a href="thematic-mapping.html#lattice_choropleth"><i class="fa fa-check"></i><b>7.3.1</b> Картограммы</a></li>
-<li class="chapter" data-level="7.3.2" data-path="thematic-mapping.html"><a href="thematic-mapping.html#lattice_diagrams"><i class="fa fa-check"></i><b>7.3.2</b> Картодиграммы</a></li>
-<li class="chapter" data-level="7.3.3" data-path="thematic-mapping.html"><a href="thematic-mapping.html#lattice_legends"><i class="fa fa-check"></i><b>7.3.3</b> Легенда и компоновка</a></li>
-<li class="chapter" data-level="7.3.4" data-path="thematic-mapping.html"><a href="thematic-mapping.html#lattice_basemap"><i class="fa fa-check"></i><b>7.3.4</b> Элементы картографической основы</a></li>
-</ul></li>
-<li class="chapter" data-level="7.4" data-path="thematic-mapping.html"><a href="thematic-mapping.html#raster_maps"><i class="fa fa-check"></i><b>7.4</b> Карты растров</a><ul>
-<li class="chapter" data-level="7.4.1" data-path="thematic-mapping.html"><a href="thematic-mapping.html#raster_single_map"><i class="fa fa-check"></i><b>7.4.1</b> Одиночный растр</a></li>
-<li class="chapter" data-level="7.4.2" data-path="thematic-mapping.html"><a href="thematic-mapping.html#multiple_raster_map"><i class="fa fa-check"></i><b>7.4.2</b> Серия растров</a></li>
-</ul></li>
-<li class="chapter" data-level="7.5" data-path="thematic-mapping.html"><a href="thematic-mapping.html#export_graphics"><i class="fa fa-check"></i><b>7.5</b> Экспорт изображения в графический файл</a><ul>
-<li class="chapter" data-level="7.5.1" data-path="thematic-mapping.html"><a href="thematic-mapping.html#singlepage_png"><i class="fa fa-check"></i><b>7.5.1</b> Одностраничные файлы PNG</a></li>
-<li class="chapter" data-level="7.5.2" data-path="thematic-mapping.html"><a href="thematic-mapping.html#multipage_pdf"><i class="fa fa-check"></i><b>7.5.2</b> Многостраничные файлы PDF</a></li>
+<li class="chapter" data-level="7.4" data-path="spatial-data.html"><a href="spatial-data.html#raster_data_r"><i class="fa fa-check"></i><b>7.4</b> Растровые данные</a><ul>
+<li class="chapter" data-level="7.4.1" data-path="spatial-data.html"><a href="spatial-data.html#raster_read"><i class="fa fa-check"></i><b>7.4.1</b> Чтение</a></li>
+<li class="chapter" data-level="7.4.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_viz"><i class="fa fa-check"></i><b>7.4.2</b> Визуализация</a></li>
+<li class="chapter" data-level="7.4.3" data-path="spatial-data.html"><a href="spatial-data.html#raster_proj"><i class="fa fa-check"></i><b>7.4.3</b> Системы координат и проекции</a></li>
+<li class="chapter" data-level="7.4.4" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i><b>7.4.4</b> Операции со значениями</a></li>
+<li class="chapter" data-level="7.4.5" data-path="spatial-data.html"><a href="spatial-data.html#section-7.4.5"><i class="fa fa-check"></i><b>7.4.5</b> Экспорт</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="vector-analysis.html"><a href="vector-analysis.html"><i class="fa fa-check"></i><b>8</b> Пространственный анализ 1. Векторные методы</a><ul>
-<li class="chapter" data-level="8.1" data-path="vector-analysis.html"><a href="vector-analysis.html#spatial_queries"><i class="fa fa-check"></i><b>8.1</b> Пространственные запросы</a><ul>
-<li class="chapter" data-level="8.1.1" data-path="vector-analysis.html"><a href="vector-analysis.html#context_objects"><i class="fa fa-check"></i><b>8.1.1</b> Контекстные и целевые объекты</a></li>
-<li class="chapter" data-level="8.1.2" data-path="vector-analysis.html"><a href="vector-analysis.html#zones"><i class="fa fa-check"></i><b>8.1.2</b> Зоны окружения объектов</a></li>
+<li class="chapter" data-level="8" data-path="thematic-mapping.html"><a href="thematic-mapping.html"><i class="fa fa-check"></i><b>8</b> Тематические карты в R</a><ul>
+<li class="chapter" data-level="8.1" data-path="thematic-mapping.html"><a href="thematic-mapping.html#table_join"><i class="fa fa-check"></i><b>8.1</b> Соединение таблиц в R</a></li>
+<li class="chapter" data-level="8.2" data-path="thematic-mapping.html"><a href="thematic-mapping.html#data_classify"><i class="fa fa-check"></i><b>8.2</b> Классификация данных</a></li>
+<li class="chapter" data-level="8.3" data-path="thematic-mapping.html"><a href="thematic-mapping.html#lattice_maps"><i class="fa fa-check"></i><b>8.3</b> Серии карт lattice</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="thematic-mapping.html"><a href="thematic-mapping.html#lattice_choropleth"><i class="fa fa-check"></i><b>8.3.1</b> Картограммы</a></li>
+<li class="chapter" data-level="8.3.2" data-path="thematic-mapping.html"><a href="thematic-mapping.html#lattice_diagrams"><i class="fa fa-check"></i><b>8.3.2</b> Картодиграммы</a></li>
+<li class="chapter" data-level="8.3.3" data-path="thematic-mapping.html"><a href="thematic-mapping.html#lattice_legends"><i class="fa fa-check"></i><b>8.3.3</b> Легенда и компоновка</a></li>
+<li class="chapter" data-level="8.3.4" data-path="thematic-mapping.html"><a href="thematic-mapping.html#lattice_basemap"><i class="fa fa-check"></i><b>8.3.4</b> Элементы картографической основы</a></li>
 </ul></li>
-<li class="chapter" data-level="8.2" data-path="vector-analysis.html"><a href="vector-analysis.html#use_case"><i class="fa fa-check"></i><b>8.2</b> Постановка задач и изучение данных</a></li>
-<li class="chapter" data-level="8.3" data-path="vector-analysis.html"><a href="vector-analysis.html#distance_analysis"><i class="fa fa-check"></i><b>8.3</b> Анализ расстояний</a></li>
-<li class="chapter" data-level="8.4" data-path="vector-analysis.html"><a href="vector-analysis.html#topology_analysis"><i class="fa fa-check"></i><b>8.4</b> Анализ взаимного положения (топологический)</a></li>
-<li class="chapter" data-level="8.5" data-path="vector-analysis.html"><a href="vector-analysis.html#absolute_zones"><i class="fa fa-check"></i><b>8.5</b> Анализ абсолютных зон окружения</a></li>
-<li class="chapter" data-level="8.6" data-path="vector-analysis.html"><a href="vector-analysis.html#conc_zones"><i class="fa fa-check"></i><b>8.6</b> Анализ конкурентных зон окружения</a></li>
-<li class="chapter" data-level="8.7" data-path="vector-analysis.html"><a href="vector-analysis.html#transport_zones"><i class="fa fa-check"></i><b>8.7</b> Анализ зон транспортной доступности</a></li>
-<li class="chapter" data-level="8.8" data-path="vector-analysis.html"><a href="vector-analysis.html#routes"><i class="fa fa-check"></i><b>8.8</b> Построение маршрутов и матриц времени движения</a></li>
+<li class="chapter" data-level="8.4" data-path="thematic-mapping.html"><a href="thematic-mapping.html#raster_maps"><i class="fa fa-check"></i><b>8.4</b> Карты растров</a><ul>
+<li class="chapter" data-level="8.4.1" data-path="thematic-mapping.html"><a href="thematic-mapping.html#raster_single_map"><i class="fa fa-check"></i><b>8.4.1</b> Одиночный растр</a></li>
+<li class="chapter" data-level="8.4.2" data-path="thematic-mapping.html"><a href="thematic-mapping.html#multiple_raster_map"><i class="fa fa-check"></i><b>8.4.2</b> Серия растров</a></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="raster-analysis.html"><a href="raster-analysis.html"><i class="fa fa-check"></i><b>9</b> Пространственный анализ 2. Растровые методы</a><ul>
-<li class="chapter" data-level="9.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_intro"><i class="fa fa-check"></i><b>9.1</b> Введение</a></li>
-<li class="chapter" data-level="9.2" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_local"><i class="fa fa-check"></i><b>9.2</b> Локальные операции</a></li>
-<li class="chapter" data-level="9.3" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal"><i class="fa fa-check"></i><b>9.3</b> Фокальные операции</a><ul>
-<li class="chapter" data-level="9.3.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal_fixed"><i class="fa fa-check"></i><b>9.3.1</b> Фиксированная окрестность</a></li>
-<li class="chapter" data-level="9.3.2" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal_extended"><i class="fa fa-check"></i><b>9.3.2</b> Расширенная окрестность</a></li>
-</ul></li>
-<li class="chapter" data-level="9.4" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_zonal"><i class="fa fa-check"></i><b>9.4</b> Зональные операции</a></li>
-<li class="chapter" data-level="9.5" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_global"><i class="fa fa-check"></i><b>9.5</b> Глобальные операции</a></li>
-</ul></li>
-<li class="chapter" data-level="10" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html"><i class="fa fa-check"></i><b>10</b> Пространственная интерполяция 1. Детерминистические методы</a><ul>
-<li class="chapter" data-level="10.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_intro"><i class="fa fa-check"></i><b>10.1</b> Введение</a></li>
-<li class="chapter" data-level="10.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_grid"><i class="fa fa-check"></i><b>10.2</b> Построение сетки</a></li>
-<li class="chapter" data-level="10.3" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_methods"><i class="fa fa-check"></i><b>10.3</b> Интерполяционные методы</a><ul>
-<li class="chapter" data-level="10.3.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_nn"><i class="fa fa-check"></i><b>10.3.1</b> Метод ближайшего соседа (nearest neighbour)</a></li>
-<li class="chapter" data-level="10.3.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_tin"><i class="fa fa-check"></i><b>10.3.2</b> Интерполяция на основе триангуляции</a></li>
-<li class="chapter" data-level="10.3.3" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_idw"><i class="fa fa-check"></i><b>10.3.3</b> Метод обратно взвешенных расстояний (IDW)</a></li>
-<li class="chapter" data-level="10.3.4" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_rbf"><i class="fa fa-check"></i><b>10.3.4</b> Метод радиальных базисных функций (РБФ)</a></li>
-<li class="chapter" data-level="10.3.5" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_bspline"><i class="fa fa-check"></i><b>10.3.5</b> Метод иерархических базисных сплайнов (B-сплайнов)</a></li>
-</ul></li>
-<li class="chapter" data-level="10.4" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_methods"><i class="fa fa-check"></i><b>10.4</b> Аппроксимационные методы</a><ul>
-<li class="chapter" data-level="10.4.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_global"><i class="fa fa-check"></i><b>10.4.1</b> Глобальный тренд</a></li>
-<li class="chapter" data-level="10.4.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_local"><i class="fa fa-check"></i><b>10.4.2</b> Локальный тренд</a></li>
+<li class="chapter" data-level="8.5" data-path="thematic-mapping.html"><a href="thematic-mapping.html#export_graphics"><i class="fa fa-check"></i><b>8.5</b> Экспорт изображения в графический файл</a><ul>
+<li class="chapter" data-level="8.5.1" data-path="thematic-mapping.html"><a href="thematic-mapping.html#singlepage_png"><i class="fa fa-check"></i><b>8.5.1</b> Одностраничные файлы PNG</a></li>
+<li class="chapter" data-level="8.5.2" data-path="thematic-mapping.html"><a href="thematic-mapping.html#multipage_pdf"><i class="fa fa-check"></i><b>8.5.2</b> Многостраничные файлы PDF</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="autocorrelation.html"><a href="autocorrelation.html"><i class="fa fa-check"></i><b>11</b> Пространственная статистика 1. Пространственная автокорреляция</a><ul>
-<li class="chapter" data-level="11.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_intro"><i class="fa fa-check"></i><b>11.1</b> Введение</a></li>
-<li class="chapter" data-level="11.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors"><i class="fa fa-check"></i><b>11.2</b> Пространственное соседство</a><ul>
-<li class="chapter" data-level="11.2.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_contguity"><i class="fa fa-check"></i><b>11.2.1</b> Соседи по смежности</a></li>
-<li class="chapter" data-level="11.2.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_graph"><i class="fa fa-check"></i><b>11.2.2</b> Соседи по графу</a></li>
-<li class="chapter" data-level="11.2.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_metrics"><i class="fa fa-check"></i><b>11.2.3</b> Соседи по метрике</a></li>
+<li class="chapter" data-level="9" data-path="vector-analysis.html"><a href="vector-analysis.html"><i class="fa fa-check"></i><b>9</b> Пространственный анализ 1. Векторные методы</a><ul>
+<li class="chapter" data-level="9.1" data-path="vector-analysis.html"><a href="vector-analysis.html#spatial_queries"><i class="fa fa-check"></i><b>9.1</b> Пространственные запросы</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="vector-analysis.html"><a href="vector-analysis.html#context_objects"><i class="fa fa-check"></i><b>9.1.1</b> Контекстные и целевые объекты</a></li>
+<li class="chapter" data-level="9.1.2" data-path="vector-analysis.html"><a href="vector-analysis.html#zones"><i class="fa fa-check"></i><b>9.1.2</b> Зоны окружения объектов</a></li>
 </ul></li>
-<li class="chapter" data-level="11.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_weights"><i class="fa fa-check"></i><b>11.3</b> Пространственные веса</a></li>
-<li class="chapter" data-level="11.4" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_measures"><i class="fa fa-check"></i><b>11.4</b> Пространственная автокорреляция</a><ul>
-<li class="chapter" data-level="11.4.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_moran"><i class="fa fa-check"></i><b>11.4.1</b> Индекс Морана (Moran’s I)</a></li>
-<li class="chapter" data-level="11.4.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_permutation"><i class="fa fa-check"></i><b>11.4.2</b> Перестановочный тест Морана</a></li>
-<li class="chapter" data-level="11.4.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_moranscatter"><i class="fa fa-check"></i><b>11.4.3</b> Диаграмма рассеяния Морана</a></li>
+<li class="chapter" data-level="9.2" data-path="vector-analysis.html"><a href="vector-analysis.html#use_case"><i class="fa fa-check"></i><b>9.2</b> Постановка задач и изучение данных</a></li>
+<li class="chapter" data-level="9.3" data-path="vector-analysis.html"><a href="vector-analysis.html#distance_analysis"><i class="fa fa-check"></i><b>9.3</b> Анализ расстояний</a></li>
+<li class="chapter" data-level="9.4" data-path="vector-analysis.html"><a href="vector-analysis.html#topology_analysis"><i class="fa fa-check"></i><b>9.4</b> Анализ взаимного положения (топологический)</a></li>
+<li class="chapter" data-level="9.5" data-path="vector-analysis.html"><a href="vector-analysis.html#absolute_zones"><i class="fa fa-check"></i><b>9.5</b> Анализ абсолютных зон окружения</a></li>
+<li class="chapter" data-level="9.6" data-path="vector-analysis.html"><a href="vector-analysis.html#conc_zones"><i class="fa fa-check"></i><b>9.6</b> Анализ конкурентных зон окружения</a></li>
+<li class="chapter" data-level="9.7" data-path="vector-analysis.html"><a href="vector-analysis.html#transport_zones"><i class="fa fa-check"></i><b>9.7</b> Анализ зон транспортной доступности</a></li>
+<li class="chapter" data-level="9.8" data-path="vector-analysis.html"><a href="vector-analysis.html#routes"><i class="fa fa-check"></i><b>9.8</b> Построение маршрутов и матриц времени движения</a></li>
 </ul></li>
-<li class="chapter" data-level="11.5" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_autoregression"><i class="fa fa-check"></i><b>11.5</b> Пространственная авторегрессия</a></li>
+<li class="chapter" data-level="10" data-path="raster-analysis.html"><a href="raster-analysis.html"><i class="fa fa-check"></i><b>10</b> Пространственный анализ 2. Растровые методы</a><ul>
+<li class="chapter" data-level="10.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_intro"><i class="fa fa-check"></i><b>10.1</b> Введение</a></li>
+<li class="chapter" data-level="10.2" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_local"><i class="fa fa-check"></i><b>10.2</b> Локальные операции</a></li>
+<li class="chapter" data-level="10.3" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal"><i class="fa fa-check"></i><b>10.3</b> Фокальные операции</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal_fixed"><i class="fa fa-check"></i><b>10.3.1</b> Фиксированная окрестность</a></li>
+<li class="chapter" data-level="10.3.2" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal_extended"><i class="fa fa-check"></i><b>10.3.2</b> Расширенная окрестность</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_zonal"><i class="fa fa-check"></i><b>10.4</b> Зональные операции</a></li>
+<li class="chapter" data-level="10.5" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_global"><i class="fa fa-check"></i><b>10.5</b> Глобальные операции</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html"><i class="fa fa-check"></i><b>11</b> Пространственная интерполяция 1. Детерминистические методы</a><ul>
+<li class="chapter" data-level="11.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_intro"><i class="fa fa-check"></i><b>11.1</b> Введение</a></li>
+<li class="chapter" data-level="11.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_grid"><i class="fa fa-check"></i><b>11.2</b> Построение сетки</a></li>
+<li class="chapter" data-level="11.3" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_methods"><i class="fa fa-check"></i><b>11.3</b> Интерполяционные методы</a><ul>
+<li class="chapter" data-level="11.3.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_nn"><i class="fa fa-check"></i><b>11.3.1</b> Метод ближайшего соседа (nearest neighbour)</a></li>
+<li class="chapter" data-level="11.3.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_tin"><i class="fa fa-check"></i><b>11.3.2</b> Интерполяция на основе триангуляции</a></li>
+<li class="chapter" data-level="11.3.3" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_idw"><i class="fa fa-check"></i><b>11.3.3</b> Метод обратно взвешенных расстояний (IDW)</a></li>
+<li class="chapter" data-level="11.3.4" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_rbf"><i class="fa fa-check"></i><b>11.3.4</b> Метод радиальных базисных функций (РБФ)</a></li>
+<li class="chapter" data-level="11.3.5" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_bspline"><i class="fa fa-check"></i><b>11.3.5</b> Метод иерархических базисных сплайнов (B-сплайнов)</a></li>
+</ul></li>
+<li class="chapter" data-level="11.4" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_methods"><i class="fa fa-check"></i><b>11.4</b> Аппроксимационные методы</a><ul>
+<li class="chapter" data-level="11.4.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_global"><i class="fa fa-check"></i><b>11.4.1</b> Глобальный тренд</a></li>
+<li class="chapter" data-level="11.4.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_local"><i class="fa fa-check"></i><b>11.4.2</b> Локальный тренд</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="autocorrelation.html"><a href="autocorrelation.html"><i class="fa fa-check"></i><b>12</b> Пространственная статистика 1. Пространственная автокорреляция</a><ul>
+<li class="chapter" data-level="12.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_intro"><i class="fa fa-check"></i><b>12.1</b> Введение</a></li>
+<li class="chapter" data-level="12.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors"><i class="fa fa-check"></i><b>12.2</b> Пространственное соседство</a><ul>
+<li class="chapter" data-level="12.2.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_contguity"><i class="fa fa-check"></i><b>12.2.1</b> Соседи по смежности</a></li>
+<li class="chapter" data-level="12.2.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_graph"><i class="fa fa-check"></i><b>12.2.2</b> Соседи по графу</a></li>
+<li class="chapter" data-level="12.2.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_metrics"><i class="fa fa-check"></i><b>12.2.3</b> Соседи по метрике</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_weights"><i class="fa fa-check"></i><b>12.3</b> Пространственные веса</a></li>
+<li class="chapter" data-level="12.4" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_measures"><i class="fa fa-check"></i><b>12.4</b> Пространственная автокорреляция</a><ul>
+<li class="chapter" data-level="12.4.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_moran"><i class="fa fa-check"></i><b>12.4.1</b> Индекс Морана (Moran’s I)</a></li>
+<li class="chapter" data-level="12.4.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_permutation"><i class="fa fa-check"></i><b>12.4.2</b> Перестановочный тест Морана</a></li>
+<li class="chapter" data-level="12.4.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_moranscatter"><i class="fa fa-check"></i><b>12.4.3</b> Диаграмма рассеяния Морана</a></li>
+</ul></li>
+<li class="chapter" data-level="12.5" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_autoregression"><i class="fa fa-check"></i><b>12.5</b> Пространственная авторегрессия</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://istina.msu.ru/profile/tsamsonov/" target="blank">Тимофей Самсонов</a></li>
@@ -344,7 +379,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="data_types" class="section level1">
 <h1><span class="header-section-number">Глава 1</span> Типы данных, ввод и вывод</h1>
 <p><a href="https://github.com/tsamsonov/r-geo-course/blob/master/code/01-Basics.R">Программный код главы</a></p>
-<p>Тип данных — это класс данных, характеризуемый членами класса и операциями, которые могут быть к ним применены<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. С помощью типов данных мы можем представлять привычные нам сущности, такие как числа, строки и т.д. В языке R существует 5 базовых типов данных:</p>
+<p>Тип данных — это класс данных, характеризуемый членами класса и операциями, которые могут быть к ним применены<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. С помощью типов данных мы можем представлять привычные нам сущности, такие как числа, строки и т.д. В языке R существует 5 базовых типов данных:</p>
 <table>
 <thead>
 <tr class="header">
@@ -379,181 +414,184 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="numbers" class="section level2">
 <h2><span class="header-section-number">1.1</span> Числа</h2>
 <p>Числа — основной тип данных в R. К ним относятся <em>числа c плавающей точкой</em> и <em>целые числа</em>. В терминологии R такие данные называются <em>интервальными</em>, поскольку к ним применимо понятие интервала на числовой прямой. Целые числа относятся к <em>дискретным интервальным</em>, а числа с плавающей точкой — к <em>непрерывным интервальным</em>. Числа можно складывать, вычитать и умножать:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">3</span>
-## [1] 5
-<span class="dv">2</span> <span class="op">-</span><span class="st"> </span><span class="dv">3</span>
-## [1] -1
-<span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="dv">3</span>
-## [1] 6</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">## [1] 5</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="dv">2</span> <span class="op">-</span><span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">## [1] -1</a>
+<a class="sourceLine" id="cb13-5" data-line-number="5"><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb13-6" data-line-number="6">## [1] 6</a></code></pre></div>
 <p>Разделителем целой и дробной части является точка, а не запятая:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="fl">2.5</span> <span class="op">+</span><span class="st"> </span><span class="fl">3.1</span>
-## [1] 5.6</code></pre></div>
-<p>Существует также специальный оператор для возведения в степень. Для этого вы можете использовать или двойной знак умножения (<code>**</code>) или <em>циркумфлекс</em> (<code>^</code>), который в обиходе называют просто “крышечкой”:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">2</span> <span class="op">^</span><span class="st"> </span><span class="dv">3</span>
-## [1] 8
-<span class="dv">2</span> <span class="op">**</span><span class="st"> </span><span class="dv">3</span>
-## [1] 8</code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="fl">2.5</span> <span class="op">+</span><span class="st"> </span><span class="fl">3.1</span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">## [1] 5.6</a></code></pre></div>
+<p>Существует также специальный оператор для возведения в степень. Для этого вы можете
+использовать или двойной знак умножения (<code>**</code>) или <em>циркумфлекс</em> (<code>^</code>), который в обиходе называют просто “крышечкой”:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="dv">2</span> <span class="op">^</span><span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">## [1] 8</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"><span class="dv">2</span> <span class="op">**</span><span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">## [1] 8</a></code></pre></div>
 <p>Результат деления по умолчанию имеет тип с плавающей точкой:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">5</span> <span class="op">/</span><span class="st"> </span><span class="dv">3</span>
-## [1] 1.666667
-<span class="dv">5</span> <span class="op">/</span><span class="st"> </span><span class="fl">2.5</span>
-## [1] 2</code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="dv">5</span> <span class="op">/</span><span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">## [1] 1.666667</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="dv">5</span> <span class="op">/</span><span class="st"> </span><span class="fl">2.5</span></a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">## [1] 2</a></code></pre></div>
 <p>Если вы хотите чтобы деление производилось целочисленным образом (без дробной части) необходимо использовать оператор <code>%/%</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">5</span> <span class="op">%/%</span><span class="st"> </span><span class="dv">3</span>
-## [1] 1</code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="dv">5</span> <span class="op">%/%</span><span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">## [1] 1</a></code></pre></div>
 <p>Остаток от деления можно получить с помощью оператора <code>%%</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">5</span> <span class="op">%%</span><span class="st"> </span><span class="dv">3</span>
-## [1] 2</code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="dv">5</span> <span class="op">%%</span><span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb18-2" data-line-number="2">## [1] 2</a></code></pre></div>
 <p>Вышеприведенные арифметические операции являются бинарными, то есть требуют наличия двух чисел. Числа называются “операндами”. Отделять операнды от оператора пробелом или нет — дело вкуса. Я предпочитаю отделять, так как это повышает читаемость кода. Следующие два выражения эквивалентны. Однако сравните простоту их восприятия:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">5</span><span class="op">%/%</span><span class="dv">3</span>
-## [1] 1</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">5</span> <span class="op">%/%</span><span class="st"> </span><span class="dv">3</span>
-## [1] 1</code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="dv">5</span><span class="op">%/%</span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb19-2" data-line-number="2">## [1] 1</a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="dv">5</span> <span class="op">%/%</span><span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb20-2" data-line-number="2">## [1] 1</a></code></pre></div>
 <p>Как правило, в настоящих программах числа в явном виде встречаются лишь иногда. Вместо этого для их обозначения используют переменные. В вышеприведенных выражениях мы неоднократно использовали число 3. Теперь представьте, что вы хотите проверить, каковы будут результаты, если вместо 3 использовать 4. Вам придется заменить все тройки на четверки. Если их много, то это будет утомительная работа, и вы наверняка что-то пропустите. Конечно, можно использовать поиск с автозаменой, но что если тройки надо заменить не везде? Одно и то же число может выполнять разные функции в разных выражениях. Чтобы избежать подобных проблем, в программе вводят переменные и присваивают им значения. Оператор присваивания значения выглядит как <code>&lt;-</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="dv">5</span>
-b &lt;-<span class="st"> </span><span class="dv">3</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">a &lt;-<span class="st"> </span><span class="dv">5</span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2">b &lt;-<span class="st"> </span><span class="dv">3</span></a></code></pre></div>
 <p>Чтобы вывести значение переменной на экран, достаточно просто ввести его:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a
-## [1] 5
-b
-## [1] 3</code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">a</a>
+<a class="sourceLine" id="cb22-2" data-line-number="2">## [1] 5</a>
+<a class="sourceLine" id="cb22-3" data-line-number="3">b</a>
+<a class="sourceLine" id="cb22-4" data-line-number="4">## [1] 3</a></code></pre></div>
 <p>Мы можем выполнить над переменными все те же операции что и над константами:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a <span class="op">+</span><span class="st"> </span>b
-## [1] 8
-a <span class="op">-</span><span class="st"> </span>b
-## [1] 2
-a <span class="op">/</span><span class="st"> </span>b
-## [1] 1.666667
-a <span class="op">%/%</span><span class="st"> </span>b
-## [1] 1
-a <span class="op">%%</span><span class="st"> </span>b
-## [1] 2</code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">a <span class="op">+</span><span class="st"> </span>b</a>
+<a class="sourceLine" id="cb23-2" data-line-number="2">## [1] 8</a>
+<a class="sourceLine" id="cb23-3" data-line-number="3">a <span class="op">-</span><span class="st"> </span>b</a>
+<a class="sourceLine" id="cb23-4" data-line-number="4">## [1] 2</a>
+<a class="sourceLine" id="cb23-5" data-line-number="5">a <span class="op">/</span><span class="st"> </span>b</a>
+<a class="sourceLine" id="cb23-6" data-line-number="6">## [1] 1.666667</a>
+<a class="sourceLine" id="cb23-7" data-line-number="7">a <span class="op">%/%</span><span class="st"> </span>b</a>
+<a class="sourceLine" id="cb23-8" data-line-number="8">## [1] 1</a>
+<a class="sourceLine" id="cb23-9" data-line-number="9">a <span class="op">%%</span><span class="st"> </span>b</a>
+<a class="sourceLine" id="cb23-10" data-line-number="10">## [1] 2</a></code></pre></div>
 <p>Легко меняем значение второй переменной с 3 на 4 и выполняем код заново.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">b &lt;-<span class="st"> </span><span class="dv">4</span>
-a <span class="op">+</span><span class="st"> </span>b
-## [1] 9
-a <span class="op">-</span><span class="st"> </span>b
-## [1] 1
-a <span class="op">/</span><span class="st"> </span>b
-## [1] 1.25
-a <span class="op">%/%</span><span class="st"> </span>b
-## [1] 1
-a <span class="op">%%</span><span class="st"> </span>b
-## [1] 1</code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">b &lt;-<span class="st"> </span><span class="dv">4</span></a>
+<a class="sourceLine" id="cb24-2" data-line-number="2">a <span class="op">+</span><span class="st"> </span>b</a>
+<a class="sourceLine" id="cb24-3" data-line-number="3">## [1] 9</a>
+<a class="sourceLine" id="cb24-4" data-line-number="4">a <span class="op">-</span><span class="st"> </span>b</a>
+<a class="sourceLine" id="cb24-5" data-line-number="5">## [1] 1</a>
+<a class="sourceLine" id="cb24-6" data-line-number="6">a <span class="op">/</span><span class="st"> </span>b</a>
+<a class="sourceLine" id="cb24-7" data-line-number="7">## [1] 1.25</a>
+<a class="sourceLine" id="cb24-8" data-line-number="8">a <span class="op">%/%</span><span class="st"> </span>b</a>
+<a class="sourceLine" id="cb24-9" data-line-number="9">## [1] 1</a>
+<a class="sourceLine" id="cb24-10" data-line-number="10">a <span class="op">%%</span><span class="st"> </span>b</a>
+<a class="sourceLine" id="cb24-11" data-line-number="11">## [1] 1</a></code></pre></div>
 <p>Нам пришлось изменить значение переменной только один раз в момент ее создания, все последующие операции остались неизменны, но их результаты обновились!</p>
 <p>Новую переменную можно создать на основе значений существующих переменных:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">c &lt;-<span class="st"> </span>b
-d &lt;-<span class="st"> </span>a<span class="op">+</span>c</code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1">c &lt;-<span class="st"> </span>b</a>
+<a class="sourceLine" id="cb25-2" data-line-number="2">d &lt;-<span class="st"> </span>a<span class="op">+</span>c</a></code></pre></div>
 <p>Посмотрим, что получилось:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">c
-## [1] 4
-d
-## [1] 9</code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">c</a>
+<a class="sourceLine" id="cb26-2" data-line-number="2">## [1] 4</a>
+<a class="sourceLine" id="cb26-3" data-line-number="3">d</a>
+<a class="sourceLine" id="cb26-4" data-line-number="4">## [1] 9</a></code></pre></div>
 <p>Вы можете комбинировать переменные и заданные явным образом константы:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">e &lt;-<span class="st"> </span>d <span class="op">+</span><span class="st"> </span><span class="fl">2.5</span>
-e
-## [1] 11.5</code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">e &lt;-<span class="st"> </span>d <span class="op">+</span><span class="st"> </span><span class="fl">2.5</span></a>
+<a class="sourceLine" id="cb27-2" data-line-number="2">e</a>
+<a class="sourceLine" id="cb27-3" data-line-number="3">## [1] 11.5</a></code></pre></div>
 <p>Противоположное по знаку число получается добавлением унарного оператора <code>-</code> перед константой или переменной:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f &lt;-<span class="st"> </span><span class="op">-</span><span class="dv">2</span>
-f
-## [1] -2
-f &lt;-<span class="st"> </span><span class="op">-</span>e
-f
-## [1] -11.5</code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="dv">-2</span></a>
+<a class="sourceLine" id="cb28-2" data-line-number="2">f</a>
+<a class="sourceLine" id="cb28-3" data-line-number="3">## [1] -2</a>
+<a class="sourceLine" id="cb28-4" data-line-number="4">f &lt;-<span class="st"> </span><span class="op">-</span>e</a>
+<a class="sourceLine" id="cb28-5" data-line-number="5">f</a>
+<a class="sourceLine" id="cb28-6" data-line-number="6">## [1] -11.5</a></code></pre></div>
 <p>Операция взятия остатка от деления бывает полезной, например, когда мы хотим выяснить, является число четным или нет. Для этого достаточно взять остаток от деления на 2. Если число является четным, остаток будет равен нулю. В данном случае c равно 4, <code>d</code> равно 9:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">c <span class="op">%%</span><span class="st"> </span><span class="dv">2</span>
-## [1] 0
-d <span class="op">%%</span><span class="st"> </span><span class="dv">2</span>
-## [1] 1</code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">c <span class="op">%%</span><span class="st"> </span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb29-2" data-line-number="2">## [1] 0</a>
+<a class="sourceLine" id="cb29-3" data-line-number="3">d <span class="op">%%</span><span class="st"> </span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb29-4" data-line-number="4">## [1] 1</a></code></pre></div>
 <div id="number_functions" class="section level3">
 <h3><span class="header-section-number">1.1.1</span> Числовые функции</h3>
 <p>Прежде чем мы перейдем к рассмотрению прочих типов данных и структур данных нам необходимо познакомиться с функциями, поскольку они встречаются буквально на каждом шагу. Понятие функции идентично тому, к чему мы привыкли в математике. Например, функция может называться <code>Z</code>, и принимать 2 аргумента: <code>x</code> и <code>y</code>. В этом случае она записывается как <code>Z(x,y)</code>. Чтобы получить значение функции, необходимо подставить некоторые значения вместо <code>x</code> и <code>y</code> в скобках. Нас даже может не интересовать, как фактически устроена функция внутри, но важно понимать, что именно она должна вычислять. С созданием функций мы познакомимся позднее.</p>
 <p>Важнейшие примеры функций — математические. Это функции взятия корня <code>sqrt(x)</code>, модуля <code>abs(x)</code>, округления <code>round(x, digits)</code>, натурального логарифма <code>abs(x)</code>, тригонометрические функции <code>sin(x)</code>, <code>cos(x)</code>, <code>tan(x)</code>, обратные к ним <code>asin(y)</code>, <code>acos(y)</code>, <code>atan(y)</code> и многие другие. Основные математические функции содержатся в пакете <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/00Index.html"><code>base</code></a>, который по умолчанию доступен в среде R и не требует подключения.</p>
 <p>В качестве аргумента функции можно использовать переменную, константу, а также выражения:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sqrt</span>(a)
-## [1] 2.236068
-<span class="kw">sin</span>(a)
-## [1] -0.9589243
-<span class="kw">tan</span>(<span class="fl">1.5</span>)
-## [1] 14.10142
-<span class="kw">abs</span>(a <span class="op">+</span><span class="st"> </span>b <span class="op">-</span><span class="st"> </span><span class="fl">2.5</span>)
-## [1] 6.5</code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="kw">sqrt</span>(a)</a>
+<a class="sourceLine" id="cb30-2" data-line-number="2">## [1] 2.236068</a>
+<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="kw">sin</span>(a)</a>
+<a class="sourceLine" id="cb30-4" data-line-number="4">## [1] -0.9589243</a>
+<a class="sourceLine" id="cb30-5" data-line-number="5"><span class="kw">tan</span>(<span class="fl">1.5</span>)</a>
+<a class="sourceLine" id="cb30-6" data-line-number="6">## [1] 14.10142</a>
+<a class="sourceLine" id="cb30-7" data-line-number="7"><span class="kw">abs</span>(a <span class="op">+</span><span class="st"> </span>b <span class="op">-</span><span class="st"> </span><span class="fl">2.5</span>)</a>
+<a class="sourceLine" id="cb30-8" data-line-number="8">## [1] 6.5</a></code></pre></div>
 <p>Вы также можете легко вкладывать функции одна в одну, если результат вычисления одной функции нужно подставить в другую:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sin</span>(<span class="kw">sqrt</span>(a))
-## [1] 0.7867491
-<span class="kw">sqrt</span>(<span class="kw">sin</span>(a) <span class="op">+</span><span class="st"> </span><span class="dv">2</span>)
-## [1] 1.020331</code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="kw">sin</span>(<span class="kw">sqrt</span>(a))</a>
+<a class="sourceLine" id="cb31-2" data-line-number="2">## [1] 0.7867491</a>
+<a class="sourceLine" id="cb31-3" data-line-number="3"><span class="kw">sqrt</span>(<span class="kw">sin</span>(a) <span class="op">+</span><span class="st"> </span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb31-4" data-line-number="4">## [1] 1.020331</a></code></pre></div>
 <p>Также как и с арифметическими выражениями, результат вычисления функции можно записать в переменную:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">b &lt;-<span class="st"> </span><span class="kw">sin</span>(<span class="kw">sqrt</span>(a))
-b
-## [1] 0.7867491</code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1">b &lt;-<span class="st"> </span><span class="kw">sin</span>(<span class="kw">sqrt</span>(a))</a>
+<a class="sourceLine" id="cb32-2" data-line-number="2">b</a>
+<a class="sourceLine" id="cb32-3" data-line-number="3">## [1] 0.7867491</a></code></pre></div>
 <p>Если переменной b ранее было присвоено другое значение, оно перезапишется. Вы также можете записать в переменную результат операции, выполненной над ней же. Например, если вы не уверены, что <code>a</code> — неотрицательное число, а вам это необходимо в дальнейших расчетах, вы можете применить к нему операцию взятия модуля:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">b &lt;-<span class="st"> </span><span class="kw">sin</span>(a)
-b
-## [1] -0.9589243
-b &lt;-<span class="st"> </span><span class="kw">abs</span>(b)
-b
-## [1] 0.9589243</code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">b &lt;-<span class="st"> </span><span class="kw">sin</span>(a)</a>
+<a class="sourceLine" id="cb33-2" data-line-number="2">b</a>
+<a class="sourceLine" id="cb33-3" data-line-number="3">## [1] -0.9589243</a>
+<a class="sourceLine" id="cb33-4" data-line-number="4">b &lt;-<span class="st"> </span><span class="kw">abs</span>(b)</a>
+<a class="sourceLine" id="cb33-5" data-line-number="5">b</a>
+<a class="sourceLine" id="cb33-6" data-line-number="6">## [1] 0.9589243</a></code></pre></div>
 </div>
 </div>
 <div id="strings" class="section level2">
 <h2><span class="header-section-number">1.2</span> Строки</h2>
 <p>Строки — также еще один важнейший тип данных. Строки состоят из символов. Чтобы создать строковую переменную, необходимо заключить текст строки в кавычки:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">s &lt;-<span class="st"> &quot;В историю трудно войти, но легко вляпаться (М.Жванецкий)&quot;</span>
-s
-## [1] &quot;В историю трудно войти, но легко вляпаться (М.Жванецкий)&quot;</code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1">s &lt;-<span class="st"> &quot;В историю трудно войти, но легко вляпаться (М.Жванецкий)&quot;</span></a>
+<a class="sourceLine" id="cb34-2" data-line-number="2">s</a>
+<a class="sourceLine" id="cb34-3" data-line-number="3">## [1] &quot;В историю трудно войти, но легко вляпаться (М.Жванецкий)&quot;</a></code></pre></div>
 <p>Длину строки в символах можно узнать с помощью функции <code>nchar()</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nchar</span>(s)
-## [1] 56</code></pre></div>
-<p>Строки можно складывать так же как и числа. Эта операция называется <em>конкатенацией</em>. В результате конкатенации строки состыковываются друг с другом и получается одна строка. В отличие от чисел, конкатенация производится не оператором <code>+</code>, а специальной функцией <code>paste()</code>. Состыковываемые строки нужно перечислить через запятую, их число может быть произвольно</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">s1 &lt;-<span class="st"> &quot;В историю трудно войти,&quot;</span>
-s2 &lt;-<span class="st"> &quot;но легко вляпаться&quot;</span>
-s3 &lt;-<span class="st"> &quot;(М.Жванецкий)&quot;</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw">nchar</span>(s)</a>
+<a class="sourceLine" id="cb35-2" data-line-number="2">## [1] 56</a></code></pre></div>
+<p>Строки можно складывать так же как и числа. Эта операция называется <em>конкатенацией</em>. В результате конкатенации строки состыковываются друг с другом и получается одна строка.
+В отличие от чисел, конкатенация производится не оператором <code>+</code>, а специальной функцией <code>paste()</code>. Состыковываемые строки нужно перечислить через запятую, их число может быть произвольно</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1">s1 &lt;-<span class="st"> &quot;В историю трудно войти,&quot;</span></a>
+<a class="sourceLine" id="cb36-2" data-line-number="2">s2 &lt;-<span class="st"> &quot;но легко вляпаться&quot;</span></a>
+<a class="sourceLine" id="cb36-3" data-line-number="3">s3 &lt;-<span class="st"> &quot;(М.Жванецкий)&quot;</span></a></code></pre></div>
 <p>Посмотрим содержимое подстрок:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">s1
-## [1] &quot;В историю трудно войти,&quot;
-s2
-## [1] &quot;но легко вляпаться&quot;
-s3
-## [1] &quot;(М.Жванецкий)&quot;</code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1">s1</a>
+<a class="sourceLine" id="cb37-2" data-line-number="2">## [1] &quot;В историю трудно войти,&quot;</a>
+<a class="sourceLine" id="cb37-3" data-line-number="3">s2</a>
+<a class="sourceLine" id="cb37-4" data-line-number="4">## [1] &quot;но легко вляпаться&quot;</a>
+<a class="sourceLine" id="cb37-5" data-line-number="5">s3</a>
+<a class="sourceLine" id="cb37-6" data-line-number="6">## [1] &quot;(М.Жванецкий)&quot;</a></code></pre></div>
 <p>А теперь объединим их в одну:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">s &lt;-<span class="st"> </span><span class="kw">paste</span>(s1, s2)
-s
-## [1] &quot;В историю трудно войти, но легко вляпаться&quot;
-s &lt;-<span class="st"> </span><span class="kw">paste</span>(s1, s2, s3)
-s
-## [1] &quot;В историю трудно войти, но легко вляпаться (М.Жванецкий)&quot;</code></pre></div>
-<p>Настоящая сила конкатенации проявляется когда вам необходимо объединить в одной строке некоторое текстовое описание (заранее известное) и значения переменных, которые у вас вычисляются в программе (заранее неизвестные). Предположим, вы нашли в программе что максимальная численность населения в Детройте пришлась на 1950 год и составила 1850 тыс. человек. Найденный год записан у вас в переменную <code>year</code>, а население в переменную <code>pop</code>. Вы их значения пока что не знаете, они вычислены по табличным данным в программе. Как вывести эту информацию на экран “человеческим”&quot; образом? Для этого нужно использовать конкатенацию строк.</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1">s &lt;-<span class="st"> </span><span class="kw">paste</span>(s1, s2)</a>
+<a class="sourceLine" id="cb38-2" data-line-number="2">s</a>
+<a class="sourceLine" id="cb38-3" data-line-number="3">## [1] &quot;В историю трудно войти, но легко вляпаться&quot;</a>
+<a class="sourceLine" id="cb38-4" data-line-number="4">s &lt;-<span class="st"> </span><span class="kw">paste</span>(s1, s2, s3)</a>
+<a class="sourceLine" id="cb38-5" data-line-number="5">s</a>
+<a class="sourceLine" id="cb38-6" data-line-number="6">## [1] &quot;В историю трудно войти, но легко вляпаться (М.Жванецкий)&quot;</a></code></pre></div>
+<p>Настоящая сила конкатенации проявляется когда вам необходимо объединить в одной строке некоторое текстовое описание (заранее известное) и значения переменных, которые у вас вычисляются в программе (заранее неизвестные). Предположим, вы нашли в программе что максимальная численность населения в Детройте пришлась на 1950 год и составила 1850 тыс. человек. Найденный год записан у вас в переменную <code>year</code>, а население в переменную <code>pop</code>. Вы их значения пока что не знаете, они вычислены по табличным данным в программе.
+Как вывести эту информацию на экран “человеческим”&quot; образом? Для этого нужно использовать конкатенацию строк.</p>
 <p>Условно запишем значения переменных, как будто мы их знаем</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">year &lt;-<span class="st"> </span><span class="dv">1950</span>
-pop &lt;-<span class="st"> </span><span class="dv">1850</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">s1 &lt;-<span class="st"> &quot;Максимальная численность населения в Детройте пришлась на&quot;</span>
-s2 &lt;-<span class="st"> &quot;год и составила&quot;</span>
-s3 &lt;-<span class="st"> &quot;тыс. чел&quot;</span>
-s &lt;-<span class="st"> </span><span class="kw">paste</span>(s1, year, s2, pop, s3)
-s
-## [1] &quot;Максимальная численность населения в Детройте пришлась на 1950 год и составила 1850 тыс. чел&quot;</code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1">year &lt;-<span class="st"> </span><span class="dv">1950</span></a>
+<a class="sourceLine" id="cb39-2" data-line-number="2">pop &lt;-<span class="st"> </span><span class="dv">1850</span></a></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1">s1 &lt;-<span class="st"> &quot;Максимальная численность населения в Детройте пришлась на&quot;</span></a>
+<a class="sourceLine" id="cb40-2" data-line-number="2">s2 &lt;-<span class="st"> &quot;год и составила&quot;</span></a>
+<a class="sourceLine" id="cb40-3" data-line-number="3">s3 &lt;-<span class="st"> &quot;тыс. чел&quot;</span></a>
+<a class="sourceLine" id="cb40-4" data-line-number="4">s &lt;-<span class="st"> </span><span class="kw">paste</span>(s1, year, s2, pop, s3)</a>
+<a class="sourceLine" id="cb40-5" data-line-number="5">s</a>
+<a class="sourceLine" id="cb40-6" data-line-number="6">## [1] &quot;Максимальная численность населения в Детройте пришлась на 1950 год и составила 1850 тыс. чел&quot;</a></code></pre></div>
 <p>Обратите внимание на то что мы конкатенировали строки с числами. Конвертация типов осуществилась автоматически. Помимо этого, функция сама вставила пробелы между строками.</p>
 </div>
 <div id="dates" class="section level2">
 <h2><span class="header-section-number">1.3</span> Даты</h2>
 <p>Даты являются необходимыми при работе с временными данными. В географическом анализе подобные задачи возникают сплошь и рядом. Точность указания времени может быть самой различной. От года до долей секунды. Чаще всего используются даты, указанные с точностью до дня. Для создания даты используется функция <code>as.Date()</code>. В данном случае точка — это лишь часть названия функции, а не какой-то особый оператор. В качестве аргумента функции необходимо задать дату, записанную в виде строки. Запишем дату рождения автора (можете заменить ее на свою):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">birth &lt;-<span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;1986/02/18&#39;</span>)
-## Warning in strptime(xx, f &lt;- &quot;%Y-%m-%d&quot;, tz = &quot;GMT&quot;): unknown timezone
-## &#39;zone/tz/2017c.1.0/zoneinfo/Europe/Moscow&#39;
-birth
-## [1] &quot;1986-02-18&quot;</code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1">birth &lt;-<span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;1986/02/18&#39;</span>)</a>
+<a class="sourceLine" id="cb41-2" data-line-number="2">## Warning in strptime(xx, f &lt;- &quot;%Y-%m-%d&quot;, tz = &quot;GMT&quot;): unknown timezone</a>
+<a class="sourceLine" id="cb41-3" data-line-number="3">## &#39;zone/tz/2017c.1.0/zoneinfo/Europe/Moscow&#39;</a>
+<a class="sourceLine" id="cb41-4" data-line-number="4">birth</a>
+<a class="sourceLine" id="cb41-5" data-line-number="5">## [1] &quot;1986-02-18&quot;</a></code></pre></div>
 <p>Сегодняшнюю дату вы можете узнать с помощью специальной функции <code>Sys.Date()</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">current &lt;-<span class="st"> </span><span class="kw">Sys.Date</span>()
-current
-## [1] &quot;2017-12-20&quot;</code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1">current &lt;-<span class="st"> </span><span class="kw">Sys.Date</span>()</a>
+<a class="sourceLine" id="cb42-2" data-line-number="2">current</a>
+<a class="sourceLine" id="cb42-3" data-line-number="3">## [1] &quot;2018-01-28&quot;</a></code></pre></div>
 <p>Даты также можно складывать и вычитать. В зависимости от дискретности данных, вы получите результат в часах, днях, годах и т.д. Например, узнать продолжительность жизни в днях можно так:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">livedays &lt;-<span class="st"> </span>current <span class="op">-</span><span class="st"> </span>birth
-livedays
-## Time difference of 11628 days</code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1">livedays &lt;-<span class="st"> </span>current <span class="op">-</span><span class="st"> </span>birth</a>
+<a class="sourceLine" id="cb43-2" data-line-number="2">livedays</a>
+<a class="sourceLine" id="cb43-3" data-line-number="3">## Time difference of 11667 days</a></code></pre></div>
 <p>Вы также можете прибавить к текущей дате некоторое значение. Например, необходимо узнать, какая дата будет через 40 дней:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">current <span class="op">+</span><span class="st"> </span><span class="dv">40</span>
-## [1] &quot;2018-01-29&quot;</code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1">current <span class="op">+</span><span class="st"> </span><span class="dv">40</span></a>
+<a class="sourceLine" id="cb44-2" data-line-number="2">## [1] &quot;2018-03-09&quot;</a></code></pre></div>
 </div>
 <div id="booleans" class="section level2">
 <h2><span class="header-section-number">1.4</span> Логические</h2>
@@ -568,119 +606,119 @@ livedays
 <li><em>БОЛЬШЕ ИЛИ РАВНО</em> (<code>&gt;=</code>) — первый аргумент больше или равен второму</li>
 </ul>
 <p>Посмотрим, как они работают:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="dv">1</span>
-b &lt;-<span class="st"> </span><span class="dv">2</span>
-a <span class="op">==</span><span class="st"> </span>b
-## [1] FALSE
-a <span class="op">!=</span><span class="st"> </span>b
-## [1] TRUE
-a <span class="op">&gt;</span><span class="st"> </span>b
-## [1] FALSE
-a <span class="op">&lt;</span><span class="st"> </span>b
-## [1] TRUE</code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">a &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb45-2" data-line-number="2">b &lt;-<span class="st"> </span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb45-3" data-line-number="3">a <span class="op">==</span><span class="st"> </span>b</a>
+<a class="sourceLine" id="cb45-4" data-line-number="4">## [1] FALSE</a>
+<a class="sourceLine" id="cb45-5" data-line-number="5">a <span class="op">!=</span><span class="st"> </span>b</a>
+<a class="sourceLine" id="cb45-6" data-line-number="6">## [1] TRUE</a>
+<a class="sourceLine" id="cb45-7" data-line-number="7">a <span class="op">&gt;</span><span class="st"> </span>b</a>
+<a class="sourceLine" id="cb45-8" data-line-number="8">## [1] FALSE</a>
+<a class="sourceLine" id="cb45-9" data-line-number="9">a <span class="op">&lt;</span><span class="st"> </span>b</a>
+<a class="sourceLine" id="cb45-10" data-line-number="10">## [1] TRUE</a></code></pre></div>
 <p>Если необходимо проверить несколько условий одновременно, их можно комбинировать с помощью логических операторов. Наиболее популярные среди них:</p>
 <ul>
 <li><em>И</em> (<code>&amp;&amp;</code>) - проверка истинности обоих условий</li>
 <li><em>ИЛИ</em> (<code>||</code>) - проверка истинности хотя бы одного из условий</li>
 <li><em>НЕ</em> (<code>!</code>) - отрицание операнда (истина меняется на ложь, ложь на истину)</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">c&lt;-<span class="dv">3</span>
-(b<span class="op">&gt;</span>a) <span class="op">&amp;&amp;</span><span class="st"> </span>(c<span class="op">&gt;</span>b)
-## [1] TRUE
-(a<span class="op">&gt;</span>b) <span class="op">&amp;&amp;</span><span class="st"> </span>(c<span class="op">&gt;</span>b)
-## [1] FALSE
-(a<span class="op">&gt;</span>b) <span class="op">||</span><span class="st"> </span>(c<span class="op">&gt;</span>b)
-## [1] TRUE
-<span class="op">!</span>(a<span class="op">&gt;</span>b)
-## [1] TRUE</code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">c&lt;-<span class="dv">3</span></a>
+<a class="sourceLine" id="cb46-2" data-line-number="2">(b<span class="op">&gt;</span>a) <span class="op">&amp;&amp;</span><span class="st"> </span>(c<span class="op">&gt;</span>b)</a>
+<a class="sourceLine" id="cb46-3" data-line-number="3">## [1] TRUE</a>
+<a class="sourceLine" id="cb46-4" data-line-number="4">(a<span class="op">&gt;</span>b) <span class="op">&amp;&amp;</span><span class="st"> </span>(c<span class="op">&gt;</span>b)</a>
+<a class="sourceLine" id="cb46-5" data-line-number="5">## [1] FALSE</a>
+<a class="sourceLine" id="cb46-6" data-line-number="6">(a<span class="op">&gt;</span>b) <span class="op">||</span><span class="st"> </span>(c<span class="op">&gt;</span>b)</a>
+<a class="sourceLine" id="cb46-7" data-line-number="7">## [1] TRUE</a>
+<a class="sourceLine" id="cb46-8" data-line-number="8"><span class="op">!</span>(a<span class="op">&gt;</span>b)</a>
+<a class="sourceLine" id="cb46-9" data-line-number="9">## [1] TRUE</a></code></pre></div>
 <p>Более подробно работу с логическими переменными мы разберем далее при знакомстве с условным оператором <code>if</code>.</p>
 </div>
 <div id="determine_data_type" class="section level2">
 <h2><span class="header-section-number">1.5</span> Определение типа данных</h2>
 <p>Определение типа данных осуществляется с помощью функции <code>class()</code> (см. раздел <em>Диагностические функции</em> во Введении)</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(<span class="dv">1</span>)
-## [1] &quot;numeric&quot;
-<span class="kw">class</span>(<span class="fl">0.5</span>)
-## [1] &quot;numeric&quot;
-<span class="kw">class</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>2i)
-## [1] &quot;complex&quot;
-<span class="kw">class</span>(<span class="st">&quot;sample&quot;</span>)
-## [1] &quot;character&quot;
-<span class="kw">class</span>(<span class="ot">TRUE</span>)
-## [1] &quot;logical&quot;
-<span class="kw">class</span>(<span class="kw">as.Date</span>(<span class="st">&#39;1986-02-18&#39;</span>))
-## [1] &quot;Date&quot;</code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1"><span class="kw">class</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb47-2" data-line-number="2">## [1] &quot;numeric&quot;</a>
+<a class="sourceLine" id="cb47-3" data-line-number="3"><span class="kw">class</span>(<span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb47-4" data-line-number="4">## [1] &quot;numeric&quot;</a>
+<a class="sourceLine" id="cb47-5" data-line-number="5"><span class="kw">class</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>2i)</a>
+<a class="sourceLine" id="cb47-6" data-line-number="6">## [1] &quot;complex&quot;</a>
+<a class="sourceLine" id="cb47-7" data-line-number="7"><span class="kw">class</span>(<span class="st">&quot;sample&quot;</span>)</a>
+<a class="sourceLine" id="cb47-8" data-line-number="8">## [1] &quot;character&quot;</a>
+<a class="sourceLine" id="cb47-9" data-line-number="9"><span class="kw">class</span>(<span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb47-10" data-line-number="10">## [1] &quot;logical&quot;</a>
+<a class="sourceLine" id="cb47-11" data-line-number="11"><span class="kw">class</span>(<span class="kw">as.Date</span>(<span class="st">&#39;1986-02-18&#39;</span>))</a>
+<a class="sourceLine" id="cb47-12" data-line-number="12">## [1] &quot;Date&quot;</a></code></pre></div>
 <p>В вышеприведенном примере видно, что R по умолчанию “повышает” ранг целочисленных данных до более общего типа чисел с плавающей точкой, тем самым закладываясь на возможность точного деления без остатка. Если вы хотите, чтобы данные в явном виде интерпретировались как целочисленные, их нужно принудительно привести к этому типу. Операторы преобразования типов рассмотрены ниже.</p>
 </div>
 <div id="---conversion" class="section level2">
 <h2><span class="header-section-number">1.6</span> Преобразование типов данных {conversion}</h2>
 <p>Преобразование типов данных осуществляется с помощью функций семейства <code>as(d, type)</code>, где <code>d</code> — это входная переменная, а <code>type</code> — название типа данных, к которому эти данные надо преобразовать (см. таблицу в начале главы). Несколько примеров:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">k &lt;-<span class="st"> </span><span class="dv">1</span>
-<span class="kw">print</span>(k)
-## [1] 1
-<span class="kw">class</span>(k)
-## [1] &quot;numeric&quot;
-
-l &lt;-<span class="st"> </span><span class="kw">as</span>(k, <span class="st">&quot;integer&quot;</span>)
-<span class="kw">print</span>(l)
-## [1] 1
-<span class="kw">class</span>(l)
-## [1] &quot;integer&quot;
-
-m &lt;-<span class="st"> </span><span class="kw">as</span>(l, <span class="st">&quot;character&quot;</span>)
-<span class="kw">print</span>(m)
-## [1] &quot;1&quot;
-<span class="kw">class</span>(m)
-## [1] &quot;character&quot;
-
-n &lt;-<span class="st"> </span><span class="kw">as</span>(m, <span class="st">&quot;numeric&quot;</span>)
-<span class="kw">print</span>(n)
-## [1] 1
-<span class="kw">class</span>(n)
-## [1] &quot;numeric&quot;</code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1">k &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb48-2" data-line-number="2"><span class="kw">print</span>(k)</a>
+<a class="sourceLine" id="cb48-3" data-line-number="3">## [1] 1</a>
+<a class="sourceLine" id="cb48-4" data-line-number="4"><span class="kw">class</span>(k)</a>
+<a class="sourceLine" id="cb48-5" data-line-number="5">## [1] &quot;numeric&quot;</a>
+<a class="sourceLine" id="cb48-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb48-7" data-line-number="7">l &lt;-<span class="st"> </span><span class="kw">as</span>(k, <span class="st">&quot;integer&quot;</span>)</a>
+<a class="sourceLine" id="cb48-8" data-line-number="8"><span class="kw">print</span>(l)</a>
+<a class="sourceLine" id="cb48-9" data-line-number="9">## [1] 1</a>
+<a class="sourceLine" id="cb48-10" data-line-number="10"><span class="kw">class</span>(l)</a>
+<a class="sourceLine" id="cb48-11" data-line-number="11">## [1] &quot;integer&quot;</a>
+<a class="sourceLine" id="cb48-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb48-13" data-line-number="13">m &lt;-<span class="st"> </span><span class="kw">as</span>(l, <span class="st">&quot;character&quot;</span>)</a>
+<a class="sourceLine" id="cb48-14" data-line-number="14"><span class="kw">print</span>(m)</a>
+<a class="sourceLine" id="cb48-15" data-line-number="15">## [1] &quot;1&quot;</a>
+<a class="sourceLine" id="cb48-16" data-line-number="16"><span class="kw">class</span>(m)</a>
+<a class="sourceLine" id="cb48-17" data-line-number="17">## [1] &quot;character&quot;</a>
+<a class="sourceLine" id="cb48-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb48-19" data-line-number="19">n &lt;-<span class="st"> </span><span class="kw">as</span>(m, <span class="st">&quot;numeric&quot;</span>)</a>
+<a class="sourceLine" id="cb48-20" data-line-number="20"><span class="kw">print</span>(n)</a>
+<a class="sourceLine" id="cb48-21" data-line-number="21">## [1] 1</a>
+<a class="sourceLine" id="cb48-22" data-line-number="22"><span class="kw">class</span>(n)</a>
+<a class="sourceLine" id="cb48-23" data-line-number="23">## [1] &quot;numeric&quot;</a></code></pre></div>
 <p>Для функции <code>as()</code> существуют обертки (<em>wrappers</em>), которые позволяют записывать такие преобразования более компактно и выглядят как <code>as.&lt;dataype&gt;(d)</code>, где <code>datatype</code> — название типа данных:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">k &lt;-<span class="st"> </span><span class="dv">1</span>
-l &lt;-<span class="st"> </span><span class="kw">as.integer</span>(k)
-<span class="kw">print</span>(l)
-## [1] 1
-<span class="kw">class</span>(l)
-## [1] &quot;integer&quot;
-
-m &lt;-<span class="st"> </span><span class="kw">as.character</span>(l)
-<span class="kw">print</span>(m)
-## [1] &quot;1&quot;
-<span class="kw">class</span>(m)
-## [1] &quot;character&quot;
-
-n &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(m)
-<span class="kw">print</span>(n)
-## [1] 1
-<span class="kw">class</span>(n)
-## [1] &quot;numeric&quot;
-
-d &lt;-<span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;1986-02-18&#39;</span>)
-<span class="kw">print</span>(d)
-## [1] &quot;1986-02-18&quot;
-<span class="kw">class</span>(d)
-## [1] &quot;Date&quot;</code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1">k &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb49-2" data-line-number="2">l &lt;-<span class="st"> </span><span class="kw">as.integer</span>(k)</a>
+<a class="sourceLine" id="cb49-3" data-line-number="3"><span class="kw">print</span>(l)</a>
+<a class="sourceLine" id="cb49-4" data-line-number="4">## [1] 1</a>
+<a class="sourceLine" id="cb49-5" data-line-number="5"><span class="kw">class</span>(l)</a>
+<a class="sourceLine" id="cb49-6" data-line-number="6">## [1] &quot;integer&quot;</a>
+<a class="sourceLine" id="cb49-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb49-8" data-line-number="8">m &lt;-<span class="st"> </span><span class="kw">as.character</span>(l)</a>
+<a class="sourceLine" id="cb49-9" data-line-number="9"><span class="kw">print</span>(m)</a>
+<a class="sourceLine" id="cb49-10" data-line-number="10">## [1] &quot;1&quot;</a>
+<a class="sourceLine" id="cb49-11" data-line-number="11"><span class="kw">class</span>(m)</a>
+<a class="sourceLine" id="cb49-12" data-line-number="12">## [1] &quot;character&quot;</a>
+<a class="sourceLine" id="cb49-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb49-14" data-line-number="14">n &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(m)</a>
+<a class="sourceLine" id="cb49-15" data-line-number="15"><span class="kw">print</span>(n)</a>
+<a class="sourceLine" id="cb49-16" data-line-number="16">## [1] 1</a>
+<a class="sourceLine" id="cb49-17" data-line-number="17"><span class="kw">class</span>(n)</a>
+<a class="sourceLine" id="cb49-18" data-line-number="18">## [1] &quot;numeric&quot;</a>
+<a class="sourceLine" id="cb49-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb49-20" data-line-number="20">d &lt;-<span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;1986-02-18&#39;</span>)</a>
+<a class="sourceLine" id="cb49-21" data-line-number="21"><span class="kw">print</span>(d)</a>
+<a class="sourceLine" id="cb49-22" data-line-number="22">## [1] &quot;1986-02-18&quot;</a>
+<a class="sourceLine" id="cb49-23" data-line-number="23"><span class="kw">class</span>(d)</a>
+<a class="sourceLine" id="cb49-24" data-line-number="24">## [1] &quot;Date&quot;</a></code></pre></div>
 <p>Если преобразовать число c плавающей точкой до целого, то дробная часть будет отброшена:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.integer</span>(<span class="fl">2.7</span>)
-## [1] 2</code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1"><span class="kw">as.integer</span>(<span class="fl">2.7</span>)</a>
+<a class="sourceLine" id="cb50-2" data-line-number="2">## [1] 2</a></code></pre></div>
 <p>После преобразования типа данных, разумеется, к переменной будут применимы только те функции, которые определены для данного типа данных:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="fl">2.5</span>
-b &lt;-<span class="st"> </span><span class="kw">as.character</span>(a)
-b <span class="op">+</span><span class="st"> </span><span class="dv">2</span>
-## Error in b + 2: нечисловой аргумент для бинарного оператора
-<span class="kw">nchar</span>(b)
-## [1] 3</code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1">a &lt;-<span class="st"> </span><span class="fl">2.5</span></a>
+<a class="sourceLine" id="cb51-2" data-line-number="2">b &lt;-<span class="st"> </span><span class="kw">as.character</span>(a)</a>
+<a class="sourceLine" id="cb51-3" data-line-number="3">b <span class="op">+</span><span class="st"> </span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb51-4" data-line-number="4">## Error in b + 2: нечисловой аргумент для бинарного оператора</a>
+<a class="sourceLine" id="cb51-5" data-line-number="5"><span class="kw">nchar</span>(b)</a>
+<a class="sourceLine" id="cb51-6" data-line-number="6">## [1] 3</a></code></pre></div>
 </div>
 <div id="read_write_console" class="section level2">
 <h2><span class="header-section-number">1.7</span> Ввод и вывод данных в консоли</h2>
 <p>Для ввода данных через консоль можно воспользоваться функцией <code>readline()</code>, которая будет ожидать пользовательский ввод и нажатие клавиши <kbd>Enter</kbd>, после чего вернет введенные данные в виде строки. Предположим, пользователь вызывает эту функцию и вводит с клавиатуры <code>1024</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="kw">readline</span>()</code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1">a &lt;-<span class="st"> </span><span class="kw">readline</span>()</a></code></pre></div>
 <p>Выведем результат на экран:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a
-## [1] &quot;1024&quot;</code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" data-line-number="1">a</a>
+<a class="sourceLine" id="cb53-2" data-line-number="2">## [1] &quot;1024&quot;</a></code></pre></div>
 <blockquote>
 <p>Функция <code>readline()</code> всегда возвращает строку, поэтому если вы ожидаете ввод числа, полученное значение необходимо явным образом преобразовать к числовому типу.</p>
 </blockquote>
@@ -698,23 +736,23 @@ b <span class="op">+</span><span class="st"> </span><span class="dv">2</span>
 <li><code>print()</code> работает при любых методах запуска программы, в том числе методом <code>Source</code>.</li>
 </ul>
 <p>Например:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="dv">1024</span>
-a
-## [1] 1024
-<span class="kw">print</span>(a)
-## [1] 1024
-
-b &lt;-<span class="st"> &quot;Fourty winks in progress&quot;</span>
-b
-## [1] &quot;Fourty winks in progress&quot;
-<span class="kw">print</span>(b)
-## [1] &quot;Fourty winks in progress&quot;
-
-<span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;2 в степени 10 равно&quot;</span>, <span class="dv">2</span><span class="op">^</span><span class="dv">10</span>))
-## [1] &quot;2 в степени 10 равно 1024&quot;
-
-<span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;Сегодняшняя дата - &quot;</span>, <span class="kw">Sys.Date</span>()))
-## [1] &quot;Сегодняшняя дата -  2017-12-20&quot;</code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1">a &lt;-<span class="st"> </span><span class="dv">1024</span></a>
+<a class="sourceLine" id="cb54-2" data-line-number="2">a</a>
+<a class="sourceLine" id="cb54-3" data-line-number="3">## [1] 1024</a>
+<a class="sourceLine" id="cb54-4" data-line-number="4"><span class="kw">print</span>(a)</a>
+<a class="sourceLine" id="cb54-5" data-line-number="5">## [1] 1024</a>
+<a class="sourceLine" id="cb54-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb54-7" data-line-number="7">b &lt;-<span class="st"> &quot;Fourty winks in progress&quot;</span></a>
+<a class="sourceLine" id="cb54-8" data-line-number="8">b</a>
+<a class="sourceLine" id="cb54-9" data-line-number="9">## [1] &quot;Fourty winks in progress&quot;</a>
+<a class="sourceLine" id="cb54-10" data-line-number="10"><span class="kw">print</span>(b)</a>
+<a class="sourceLine" id="cb54-11" data-line-number="11">## [1] &quot;Fourty winks in progress&quot;</a>
+<a class="sourceLine" id="cb54-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb54-13" data-line-number="13"><span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;2 в степени 10 равно&quot;</span>, <span class="dv">2</span><span class="op">^</span><span class="dv">10</span>))</a>
+<a class="sourceLine" id="cb54-14" data-line-number="14">## [1] &quot;2 в степени 10 равно 1024&quot;</a>
+<a class="sourceLine" id="cb54-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb54-16" data-line-number="16"><span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;Сегодняшняя дата - &quot;</span>, <span class="kw">Sys.Date</span>()))</a>
+<a class="sourceLine" id="cb54-17" data-line-number="17">## [1] &quot;Сегодняшняя дата -  2018-01-28&quot;</a></code></pre></div>
 <p>Функция <code>cat()</code> отличается от <code>print()</code> следующими особенностями:</p>
 <ul>
 <li><code>cat()</code> выводит значение переменной, и не печатает ее измерения и внешние атрибуты типа двойных кавычек вокруг строки. Это означает, что <code>cat()</code> можно использовать и для записи данных в файл (на практике этим мало кто пользуется, но знать такую возможность надо).</li>
@@ -723,16 +761,16 @@ b
 <li><code>cat()</code> можно использовать только для атомарных типов данных. Для классов (таких как Date) она будет выводит содержимое объекта, которое может не совпадать с тем, что пользователь ожидает вывести</li>
 </ul>
 <p>Например:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cat</span>(a)
-## 1024
-<span class="kw">cat</span>(b)
-## Fourty winks in progress
-
-<span class="kw">cat</span>(<span class="st">&quot;2 в степени 10 равно&quot;</span>, <span class="dv">2</span><span class="op">^</span><span class="dv">10</span>)
-## 2 в степени 10 равно 1024
-
-<span class="kw">cat</span>(<span class="st">&quot;Сегодняшнаяя дата -&quot;</span>, <span class="kw">Sys.Date</span>())
-## Сегодняшнаяя дата - 17520</code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1"><span class="kw">cat</span>(a)</a>
+<a class="sourceLine" id="cb55-2" data-line-number="2">## 1024</a>
+<a class="sourceLine" id="cb55-3" data-line-number="3"><span class="kw">cat</span>(b)</a>
+<a class="sourceLine" id="cb55-4" data-line-number="4">## Fourty winks in progress</a>
+<a class="sourceLine" id="cb55-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb55-6" data-line-number="6"><span class="kw">cat</span>(<span class="st">&quot;2 в степени 10 равно&quot;</span>, <span class="dv">2</span><span class="op">^</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb55-7" data-line-number="7">## 2 в степени 10 равно 1024</a>
+<a class="sourceLine" id="cb55-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb55-9" data-line-number="9"><span class="kw">cat</span>(<span class="st">&quot;Сегодняшнаяя дата -&quot;</span>, <span class="kw">Sys.Date</span>())</a>
+<a class="sourceLine" id="cb55-10" data-line-number="10">## Сегодняшнаяя дата - 17559</a></code></pre></div>
 <p>Можно видеть, что в последнем случае <code>cat()</code> напечатала отнюдь не дату в ее привычном представлении, а некое число, которое является внутренним представлением даты в типе данных <code>Date</code>. Такие типы данных являются классами объектов в R, и у них есть своя функция <code>print()</code>, которая и выдает содержимое объекта в виде, который ожидается пользователем. Поэтому пользоваться функцией <code>cat()</code> надо с некоторой осторожностью.</p>
 </div>
 <div id="questions_tasks_basics" class="section level2">
@@ -788,7 +826,7 @@ b
 <div class="footnotes">
 <hr />
 <ol start="1">
-<li id="fn1"><p>ISO/IEC/IEEE 24765-2010 Systems and software engineering — Vocabulary<a href="data-types.html#fnref1">↩</a></p></li>
+<li id="fn1"><p>ISO/IEC/IEEE 24765-2010 Systems and software engineering — Vocabulary<a href="data-types.html#fnref1" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
             </section>
@@ -843,9 +881,11 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(script.src))
-      script.src  = script.src.replace(/^https?:/, '');
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
