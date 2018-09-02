@@ -25,11 +25,14 @@
 
 ```r
 library(sp)
-## Загрузка требуемого пакета: methods
 library(sf)
 ## Linking to GEOS 3.6.1, GDAL 2.1.3, proj.4 4.9.3
 library(raster)
 library(classInt)
+## Загрузка требуемого пакета: spData
+## To access larger datasets in this package, install the spDataLarge
+## package with: `install.packages('spDataLarge',
+## repos='https://nowosad.github.io/drat/', type='source'))`
 
 # ЛОКАЛЬНЫЕ ОПЕРАЦИИ
 # Вычисление толщины покровного оледенения
@@ -38,7 +41,7 @@ library(classInt)
 bed <- raster('etopo1_bed.tif')
 ice <- raster('etopo1_ice.tif')
 countries <- st_read('countries.gpkg')
-## Reading layer `admin_0_map_units' from data source `/Volumes/Data/GitHub/r-geo-course/data/countries.gpkg' using driver `GPKG'
+## Reading layer `admin_0_map_units' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/countries.gpkg' using driver `GPKG'
 ## Simple feature collection with 183 features and 72 fields
 ## geometry type:  MULTIPOLYGON
 ## dimension:      XY
@@ -59,7 +62,7 @@ plot(bed,
      legend = F)
 ```
 
-![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-1-1.png)<!-- -->
+<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-1-1.png" width="672" />
 
 ```r
 plot(ice, 
@@ -69,7 +72,7 @@ plot(ice,
      legend = F)
 ```
 
-![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-1-2.png)<!-- -->
+<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-1-2.png" width="672" />
 
 ```r
 
@@ -84,7 +87,7 @@ plot(borders,
      add = TRUE)
 ```
 
-![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-1-3.png)<!-- -->
+<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-1-3.png" width="672" />
 
 ```r
 
@@ -100,7 +103,7 @@ plot(borders,
      add = TRUE)
 ```
 
-![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-1-4.png)<!-- -->
+<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-1-4.png" width="672" />
 
 ## Фокальные операции {#raster_focal}
 
@@ -124,7 +127,7 @@ dem <- crop(ice, extent(-120, -75, 10, 40))
 spplot(dem)
 ```
 
-![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-2-1.png)<!-- -->
+<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-2-1.png" width="672" />
 
 ```r
 
@@ -142,7 +145,7 @@ spplot(stack(dem, filtered),
        names.attr=c('Исходный рельеф', 'Сглаживание средним'))
 ```
 
-![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-2-2.png)<!-- -->
+<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-2-2.png" width="672" />
 
 Более мягким эффектом сглаживания, который к тому же не нарушает дифференцируемость поверхности, является гауссово сглаживание. Коэффициенты в матрице Гаусса убывают от центральной ячейки к краям матрицы по закону Гаусса-Лапласа, что позволяет придать центральной ячейке более высокий вес по сравнению с ячейками, располагающимися на краю анализируемой окрестности:
 
@@ -154,7 +157,7 @@ spplot(stack(dem, filtered),
        names.attr=c('Исходный рельеф', 'Гауссово сглаживание'))
 ```
 
-![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-3-1.png)<!-- -->
+<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-3-1.png" width="672" />
 
 Еще одна интересная область применения фильтрации --- это обнаружение границ (change detection). Границы на изображении возникают в тех местах, где его яркость резко меняет свое значение (в одном или нескольких каналах). Например, на фотографии контур лица может быть распознан по перепаду яркости между его изображением и фоном (если он имеет существенно отличный цвет). Поскольку перепад яркости соответствует экстремальным значениям производной поверхности (отрицательным или положительным), его также можно определить путем фокального анализа, а затем отсечь ячейки растра, в которых значение этой производной по модулю превышает заданный порог (то есть, имеет необходимый контраст). 
 
@@ -174,7 +177,7 @@ plot(filtered,
      main = 'Производная поверхности')
 ```
 
-![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-4-1.png)<!-- -->
+<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-4-1.png" width="672" />
 
 ```r
 
@@ -193,7 +196,7 @@ plot(faults,
      add = TRUE)
 ```
 
-![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-4-2.png)<!-- -->
+<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-4-2.png" width="672" />
 
 Еще один распространненый случай использования фокальных операций --- это морфометрический анализ поверхностей. Квадратная окрестность $3\times3$ вокруг каждой ячейки формирует локальную поверхность, производные которой дают представление об уклоне, экспозиции и прочих морфометрических параметрах. Их можно вычислить с помощью функции `terrain()` из пакета `raster`:
 
@@ -204,7 +207,7 @@ dem <- raster('dem_fergana.tif')
 spplot(dem)
 ```
 
-![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-5-1.png)<!-- -->
+<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-5-1.png" width="672" />
 
 ```r
 
@@ -215,7 +218,7 @@ spplot(slope,
        names.attr=c('Углы наклона'))
 ```
 
-![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-5-2.png)<!-- -->
+<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-5-2.png" width="672" />
 
 ```r
 
@@ -226,7 +229,7 @@ spplot(aspect,
        names.attr=c('Экспозиции склона'))
 ```
 
-![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-5-3.png)<!-- -->
+<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-5-3.png" width="672" />
 
 Вычисление производных поверхности позволяет не только исследовать рельеф, но также строить его изображения. Например, хорошо знакомую всем по картам аналитическую отмыку рельефа (_hillshade_). Яркость поверхности в этом способе изображения зависит от угла между направлением на источник освещения (откуда светит Солнце) и нормалью к поверхности. Нормаль можно вычислить как напрямую через производные поверхности, так и восстановить на основе значений угла наклона и экспозиции в точке, что и используется в пакете __raster__. Обратите внимание на то, что для того чтобы повысить наглядность (контрастность) изображения, мы умножаем высоты рельефа на 20. Это стандартная практика для мелкомасштабных карт:
 
@@ -242,7 +245,7 @@ plot(hill,
      main = 'Отмывка рельефа')
 ```
 
-![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-6-1.png)<!-- -->
+<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-6-1.png" width="672" />
 
 ### Расширенная окрестность {#raster_focal_extended}
 
@@ -257,7 +260,7 @@ plot(hill,
 
 # Чтение данных
 roads <- st_read("roads.gpkg") # Дороги
-## Reading layer `roads' from data source `/Volumes/Data/GitHub/r-geo-course/data/roads.gpkg' using driver `GPKG'
+## Reading layer `roads' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/roads.gpkg' using driver `GPKG'
 ## Simple feature collection with 2213 features and 12 fields
 ## geometry type:  MULTILINESTRING
 ## dimension:      XY
@@ -265,7 +268,7 @@ roads <- st_read("roads.gpkg") # Дороги
 ## epsg (SRID):    32637
 ## proj4string:    +proj=utm +zone=37 +datum=WGS84 +units=m +no_defs
 poi <- st_read("poi_point.gpkg") # Точки интереса
-## Reading layer `poi_point' from data source `/Volumes/Data/GitHub/r-geo-course/data/poi_point.gpkg' using driver `GPKG'
+## Reading layer `poi_point' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/poi_point.gpkg' using driver `GPKG'
 ## Simple feature collection with 6623 features and 9 fields
 ## geometry type:  POINT
 ## dimension:      XY
@@ -273,7 +276,7 @@ poi <- st_read("poi_point.gpkg") # Точки интереса
 ## epsg (SRID):    32637
 ## proj4string:    +proj=utm +zone=37 +datum=WGS84 +units=m +no_defs
 rayons <- st_read("boundary_polygon.gpkg") # Границы районов
-## Reading layer `boundary_polygon' from data source `/Volumes/Data/GitHub/r-geo-course/data/boundary_polygon.gpkg' using driver `GPKG'
+## Reading layer `boundary_polygon' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/boundary_polygon.gpkg' using driver `GPKG'
 ## Simple feature collection with 11 features and 5 fields
 ## geometry type:  MULTIPOLYGON
 ## dimension:      XY
@@ -281,7 +284,7 @@ rayons <- st_read("boundary_polygon.gpkg") # Границы районов
 ## epsg (SRID):    32637
 ## proj4string:    +proj=utm +zone=37 +datum=WGS84 +units=m +no_defs
 stations <- st_read("metro_stations.gpkg") # Станции метро
-## Reading layer `metro_stations' from data source `/Volumes/Data/GitHub/r-geo-course/data/metro_stations.gpkg' using driver `GPKG'
+## Reading layer `metro_stations' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/metro_stations.gpkg' using driver `GPKG'
 ## Simple feature collection with 45 features and 3 fields
 ## geometry type:  POINT
 ## dimension:      XY
@@ -289,7 +292,7 @@ stations <- st_read("metro_stations.gpkg") # Станции метро
 ## epsg (SRID):    32637
 ## proj4string:    +proj=utm +zone=37 +datum=WGS84 +units=m +no_defs
 water <- st_read("water_polygon.gpkg") # Водные объекты
-## Reading layer `water_polygon' from data source `/Volumes/Data/GitHub/r-geo-course/data/water_polygon.gpkg' using driver `GPKG'
+## Reading layer `water_polygon' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/water_polygon.gpkg' using driver `GPKG'
 ## Simple feature collection with 8 features and 7 fields
 ## geometry type:  POLYGON
 ## dimension:      XY
@@ -331,7 +334,7 @@ plot(stations,
      add = TRUE)
 ```
 
-![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-7-1.png)<!-- -->
+<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-7-1.png" width="672" />
 
 ## Зональные операции {#raster_zonal}
 

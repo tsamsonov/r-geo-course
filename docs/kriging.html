@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Визуализация и анализ географических данных на языке R</title>
+  <meta name="description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Визуализация и анализ географических данных на языке R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  <meta name="github-repo" content="tsamsonov/r-geo-course" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Визуализация и анализ географических данных на языке R" />
+  
+  <meta name="twitter:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  
+
+<meta name="author" content="Тимофей Самсонов">
+
+
+<meta name="date" content="2018-09-02">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="interpolation-deterministic.html">
+<link rel="next" href="autocorrelation.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.2/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.4/datatables.js"></script>
+<link href="libs/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.16/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<script src="libs/plotly-binding-4.8.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.39.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.39.2/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Визуализация и анализ географических данных на языке R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Введение</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Программное обеспечение</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#---"><i class="fa fa-check"></i>Установка и подключение пакетов</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#---"><i class="fa fa-check"></i>Не получается установить пакет</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i>Выполнение программного кода</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i>Установка рабочей директории</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Диагностические функции</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Получение справки</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#d09ad0bed0bcd0bcd0b5d0bdd182d0b0d180d0b8d0b8"><i class="fa fa-check"></i>Комментарии</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#----r"><i class="fa fa-check"></i>Стандарт оформления кода на R</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Зарезервированные слова</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Названия переменных</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i>Названия специальных символов</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i>Ссылка на пособие</a></li>
+</ul></li>
+<li class="part"><span><b>I Начало работы с R</b></span></li>
+<li class="chapter" data-level="1" data-path="data-types.html"><a href="data-types.html"><i class="fa fa-check"></i><b>1</b> Типы данных, условия, ввод и ввывод</a><ul>
+<li class="chapter" data-level="1.1" data-path="data-types.html"><a href="data-types.html#numbers"><i class="fa fa-check"></i><b>1.1</b> Числа</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="data-types.html"><a href="data-types.html#number_functions"><i class="fa fa-check"></i><b>1.1.1</b> Числовые функции</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="data-types.html"><a href="data-types.html#strings"><i class="fa fa-check"></i><b>1.2</b> Строки</a></li>
+<li class="chapter" data-level="1.3" data-path="data-types.html"><a href="data-types.html#dates"><i class="fa fa-check"></i><b>1.3</b> Даты</a></li>
+<li class="chapter" data-level="1.4" data-path="data-types.html"><a href="data-types.html#booleans"><i class="fa fa-check"></i><b>1.4</b> Логические</a></li>
+<li class="chapter" data-level="1.5" data-path="data-types.html"><a href="data-types.html#determine_data_type"><i class="fa fa-check"></i><b>1.5</b> Определение типа данных</a></li>
+<li class="chapter" data-level="1.6" data-path="data-types.html"><a href="data-types.html#conversion"><i class="fa fa-check"></i><b>1.6</b> Преобразование типов данных</a></li>
+<li class="chapter" data-level="1.7" data-path="data-types.html"><a href="data-types.html#read_write_console"><i class="fa fa-check"></i><b>1.7</b> Ввод и вывод данных в консоли</a></li>
+<li class="chapter" data-level="1.8" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i><b>1.8</b> Условный оператор</a></li>
+<li class="chapter" data-level="1.9" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i><b>1.9</b> Оператор переключения</a></li>
+<li class="chapter" data-level="1.10" data-path="data-types.html"><a href="data-types.html#questions_tasks_basics"><i class="fa fa-check"></i><b>1.10</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="1.10.1" data-path="data-types.html"><a href="data-types.html#questions_basics"><i class="fa fa-check"></i><b>1.10.1</b> Вопросы</a></li>
+<li class="chapter" data-level="1.10.2" data-path="data-types.html"><a href="data-types.html#tasks_basics"><i class="fa fa-check"></i><b>1.10.2</b> Задачи</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-structures.html"><a href="data-structures.html"><i class="fa fa-check"></i><b>2</b> Структуры данных и циклы</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-structures.html"><a href="data-structures.html#section-2.1"><i class="fa fa-check"></i><b>2.1</b> Векторы</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="data-structures.html"><a href="data-structures.html#vector_creation"><i class="fa fa-check"></i><b>2.1.1</b> Создание вектора</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-structures.html"><a href="data-structures.html#vector_elements"><i class="fa fa-check"></i><b>2.1.2</b> Работа с элементами вектора</a></li>
+<li class="chapter" data-level="2.1.3" data-path="data-structures.html"><a href="data-structures.html#vector_transform"><i class="fa fa-check"></i><b>2.1.3</b> Анализ и преобразования векторов</a></li>
+<li class="chapter" data-level="2.1.4" data-path="data-structures.html"><a href="data-structures.html#vector_search_sorting"><i class="fa fa-check"></i><b>2.1.4</b> Поиск и сортировка элементов</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-structures.html"><a href="data-structures.html#matrices"><i class="fa fa-check"></i><b>2.2</b> Матрицы</a></li>
+<li class="chapter" data-level="2.3" data-path="data-structures.html"><a href="data-structures.html#arrays"><i class="fa fa-check"></i><b>2.3</b> Массивы</a></li>
+<li class="chapter" data-level="2.4" data-path="data-structures.html"><a href="data-structures.html#data_frames"><i class="fa fa-check"></i><b>2.4</b> Фреймы данных</a></li>
+<li class="chapter" data-level="2.5" data-path="data-structures.html"><a href="data-structures.html#lists"><i class="fa fa-check"></i><b>2.5</b> Списки</a></li>
+<li class="chapter" data-level="2.6" data-path="data-structures.html"><a href="data-structures.html#section-2.6"><i class="fa fa-check"></i><b>2.6</b> Факторы</a></li>
+<li class="chapter" data-level="2.7" data-path="data-structures.html"><a href="data-structures.html#data_structures"><i class="fa fa-check"></i><b>2.7</b> Векторизованный условный оператор</a></li>
+<li class="chapter" data-level="2.8" data-path="data-structures.html"><a href="data-structures.html#cycles"><i class="fa fa-check"></i><b>2.8</b> Циклы</a></li>
+<li class="chapter" data-level="2.9" data-path="data-structures.html"><a href="data-structures.html#questions_tasks_vectors"><i class="fa fa-check"></i><b>2.9</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="2.9.1" data-path="data-structures.html"><a href="data-structures.html#questions_vectors"><i class="fa fa-check"></i><b>2.9.1</b> Вопросы</a></li>
+<li class="chapter" data-level="2.9.2" data-path="data-structures.html"><a href="data-structures.html#tasks_vectors"><i class="fa fa-check"></i><b>2.9.2</b> Задачи</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="tables.html"><a href="tables.html"><i class="fa fa-check"></i><b>3</b> Таблицы</a><ul>
+<li class="chapter" data-level="3.1" data-path="tables.html"><a href="tables.html#reading_tables"><i class="fa fa-check"></i><b>3.1</b> Чтение таблиц</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="tables.html"><a href="tables.html#reading_csv"><i class="fa fa-check"></i><b>3.1.1</b> Таблицы CSV</a></li>
+<li class="chapter" data-level="3.1.2" data-path="tables.html"><a href="tables.html#excel_reading"><i class="fa fa-check"></i><b>3.1.2</b> Таблицы Microsoft Excel</a></li>
+<li class="chapter" data-level="3.1.3" data-path="tables.html"><a href="tables.html#excel_read_types"><i class="fa fa-check"></i><b>3.1.3</b> Типы данных столбцов</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="tables.html"><a href="tables.html#view_table"><i class="fa fa-check"></i><b>3.2</b> Просмотр таблицы</a></li>
+<li class="chapter" data-level="3.3" data-path="tables.html"><a href="tables.html#working_with_columns"><i class="fa fa-check"></i><b>3.3</b> Работа со столбцами</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="tables.html"><a href="tables.html#colnames"><i class="fa fa-check"></i><b>3.3.1</b> Названия столбцов</a></li>
+<li class="chapter" data-level="3.3.2" data-path="tables.html"><a href="tables.html#col_calling"><i class="fa fa-check"></i><b>3.3.2</b> Обращение к столбцам</a></li>
+<li class="chapter" data-level="3.3.3" data-path="tables.html"><a href="tables.html#col_select"><i class="fa fa-check"></i><b>3.3.3</b> Выбор и исключение столбцов</a></li>
+<li class="chapter" data-level="3.3.4" data-path="tables.html"><a href="tables.html#----col_add"><i class="fa fa-check"></i><b>3.3.4</b> Добавление и вычисление столбцов {col_add}</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="tables.html"><a href="tables.html#filtering_sorting"><i class="fa fa-check"></i><b>3.4</b> Сортировка и фильтрация</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="tables.html"><a href="tables.html#table_sorting"><i class="fa fa-check"></i><b>3.4.1</b> Сортировка</a></li>
+<li class="chapter" data-level="3.4.2" data-path="tables.html"><a href="tables.html#table_filtering"><i class="fa fa-check"></i><b>3.4.2</b> Фильтрация</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="tables.html"><a href="tables.html#missed_values"><i class="fa fa-check"></i><b>3.5</b> Пропущенные значения</a></li>
+<li class="chapter" data-level="3.6" data-path="tables.html"><a href="tables.html#data_conversion"><i class="fa fa-check"></i><b>3.6</b> Преобразование типов и поиск ошибок</a></li>
+<li class="chapter" data-level="3.7" data-path="tables.html"><a href="tables.html#table_writing"><i class="fa fa-check"></i><b>3.7</b> Сохранение таблиц</a></li>
+<li class="chapter" data-level="3.8" data-path="tables.html"><a href="tables.html#table_rules"><i class="fa fa-check"></i><b>3.8</b> Правила подготовки таблиц для чтения в R</a></li>
+<li class="chapter" data-level="3.9" data-path="tables.html"><a href="tables.html#questions_tasks_tables"><i class="fa fa-check"></i><b>3.9</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="3.9.1" data-path="tables.html"><a href="tables.html#questions_tables"><i class="fa fa-check"></i><b>3.9.1</b> Вопросы</a></li>
+<li class="chapter" data-level="3.9.2" data-path="tables.html"><a href="tables.html#tasks_tables"><i class="fa fa-check"></i><b>3.9.2</b> Задачи</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="controls.html"><a href="controls.html"><i class="fa fa-check"></i><b>4</b> Техники программирования</a><ul>
+<li class="chapter" data-level="4.1" data-path="controls.html"><a href="controls.html#controls-functions"><i class="fa fa-check"></i><b>4.1</b> Функциональное программирование</a></li>
+<li class="chapter" data-level="4.2" data-path="controls.html"><a href="controls.html#controls-meta"><i class="fa fa-check"></i><b>4.2</b> Метапрограммирование</a></li>
+<li class="chapter" data-level="4.3" data-path="controls.html"><a href="controls.html#controls-vectorized"><i class="fa fa-check"></i><b>4.3</b> Векторизованые вычисления</a></li>
+<li class="chapter" data-level="4.4" data-path="controls.html"><a href="controls.html#controls-dplyr"><i class="fa fa-check"></i><b>4.4</b> Грамматика табличных преобразований</a></li>
+<li class="chapter" data-level="4.5" data-path="controls.html"><a href="controls.html#controls-pipes"><i class="fa fa-check"></i><b>4.5</b> Пайпирование</a></li>
+<li class="chapter" data-level="4.6" data-path="controls.html"><a href="controls.html#questions_tasks_controls"><i class="fa fa-check"></i><b>4.6</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="controls.html"><a href="controls.html#questions_controls"><i class="fa fa-check"></i><b>4.6.1</b> Вопросы</a></li>
+<li class="chapter" data-level="4.6.2" data-path="controls.html"><a href="controls.html#tasks_controls"><i class="fa fa-check"></i><b>4.6.2</b> Задачи</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>II Графика и статистика</b></span></li>
+<li class="chapter" data-level="5" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>5</b> Базовая графика в R</a><ul>
+<li class="chapter" data-level="5.1" data-path="graphics.html"><a href="graphics.html#yfxcharts"><i class="fa fa-check"></i><b>5.1</b> Стандартные графики</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="graphics.html"><a href="graphics.html#scatterplots"><i class="fa fa-check"></i><b>5.1.1</b> Диаграммы рассеяния</a></li>
+<li class="chapter" data-level="5.1.2" data-path="graphics.html"><a href="graphics.html#linear_graphs"><i class="fa fa-check"></i><b>5.1.2</b> Линейные графики</a></li>
+<li class="chapter" data-level="5.1.3" data-path="graphics.html"><a href="graphics.html#graph_combining"><i class="fa fa-check"></i><b>5.1.3</b> Совмещение графиков</a></li>
+<li class="chapter" data-level="5.1.4" data-path="graphics.html"><a href="graphics.html#func_parameters"><i class="fa fa-check"></i><b>5.1.4</b> Функциональные параметры</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="graphics.html"><a href="graphics.html#histograms"><i class="fa fa-check"></i><b>5.2</b> Гистограммы</a></li>
+<li class="chapter" data-level="5.3" data-path="graphics.html"><a href="graphics.html#barplots"><i class="fa fa-check"></i><b>5.3</b> Столбчатые графики</a></li>
+<li class="chapter" data-level="5.4" data-path="graphics.html"><a href="graphics.html#piecharts"><i class="fa fa-check"></i><b>5.4</b> Круговые (секторные) диаграммы</a></li>
+<li class="chapter" data-level="5.5" data-path="graphics.html"><a href="graphics.html#colors"><i class="fa fa-check"></i><b>5.5</b> Цвет и прозрачность</a></li>
+<li class="chapter" data-level="5.6" data-path="graphics.html"><a href="graphics.html#disp_settings"><i class="fa fa-check"></i><b>5.6</b> Настройки отображения</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="graphics.html"><a href="graphics.html#graph_params"><i class="fa fa-check"></i><b>5.6.1</b> Графические параметры</a></li>
+<li class="chapter" data-level="5.6.2" data-path="graphics.html"><a href="graphics.html#axes"><i class="fa fa-check"></i><b>5.6.2</b> Разметка осей, рамка, сетка координат и произвольные линии</a></li>
+<li class="chapter" data-level="5.6.3" data-path="graphics.html"><a href="graphics.html#annotations"><i class="fa fa-check"></i><b>5.6.3</b> Аннотации данных (текст на графике)</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="graphics.html"><a href="graphics.html#legend"><i class="fa fa-check"></i><b>5.7</b> Легенда</a></li>
+<li class="chapter" data-level="5.8" data-path="graphics.html"><a href="graphics.html#questions_tasks_graphics"><i class="fa fa-check"></i><b>5.8</b> Контрольные вопросы и задачи</a><ul>
+<li class="chapter" data-level="5.8.1" data-path="graphics.html"><a href="graphics.html#questions_graphics"><i class="fa fa-check"></i><b>5.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="5.8.2" data-path="graphics.html"><a href="graphics.html#tasks_graphics"><i class="fa fa-check"></i><b>5.8.2</b> Задачи</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="advgraphics.html"><a href="advgraphics.html"><i class="fa fa-check"></i><b>6</b> Продвинутая графика в R</a></li>
+<li class="chapter" data-level="7" data-path="stat-analysis.html"><a href="stat-analysis.html"><i class="fa fa-check"></i><b>7</b> Основы статистического анализа</a></li>
+<li class="chapter" data-level="8" data-path="circular.html"><a href="circular.html"><i class="fa fa-check"></i><b>8</b> Круговая статистика и визуализация</a><ul>
+<li class="chapter" data-level="8.1" data-path="circular.html"><a href="circular.html#circular-intro"><i class="fa fa-check"></i><b>8.1</b> Введение</a></li>
+<li class="chapter" data-level="8.2" data-path="circular.html"><a href="circular.html#circular-stats"><i class="fa fa-check"></i><b>8.2</b> Вычисление статистических моментов</a></li>
+<li class="chapter" data-level="8.3" data-path="circular.html"><a href="circular.html#circular-modes"><i class="fa fa-check"></i><b>8.3</b> Определение модальных направлений</a></li>
+<li class="chapter" data-level="8.4" data-path="circular.html"><a href="circular.html#circular-stats-vis"><i class="fa fa-check"></i><b>8.4</b> Визуализация круговой статистики</a></li>
+</ul></li>
+<li class="part"><span><b>III Пространственные данные в R</b></span></li>
+<li class="chapter" data-level="9" data-path="spatial-data.html"><a href="spatial-data.html"><i class="fa fa-check"></i><b>9</b> Пространственные данные в R</a><ul>
+<li class="chapter" data-level="9.1" data-path="spatial-data.html"><a href="spatial-data.html#spatial_models"><i class="fa fa-check"></i><b>9.1</b> Модели пространственных данных</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="spatial-data.html"><a href="spatial-data.html#simple_features"><i class="fa fa-check"></i><b>9.1.1</b> Векторные данные</a></li>
+<li class="chapter" data-level="9.1.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_data"><i class="fa fa-check"></i><b>9.1.2</b> Растровые данные</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="spatial-data.html"><a href="spatial-data.html#spatref"><i class="fa fa-check"></i><b>9.2</b> Пространственная привязка</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="spatial-data.html"><a href="spatial-data.html#spatref_components"><i class="fa fa-check"></i><b>9.2.1</b> Компоненты пространственной привязки</a></li>
+<li class="chapter" data-level="9.2.2" data-path="spatial-data.html"><a href="spatial-data.html#spatref_formats"><i class="fa fa-check"></i><b>9.2.2</b> Форматы описания пространственной привязки</a></li>
+<li class="chapter" data-level="9.2.3" data-path="spatial-data.html"><a href="spatial-data.html#spatref_transform"><i class="fa fa-check"></i><b>9.2.3</b> Преобразование координат</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_r"><i class="fa fa-check"></i><b>9.3</b> Векторные данные</a><ul>
+<li class="chapter" data-level="9.3.1" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_packages"><i class="fa fa-check"></i><b>9.3.1</b> Базовые библиотеки</a></li>
+<li class="chapter" data-level="9.3.2" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_reading"><i class="fa fa-check"></i><b>9.3.2</b> Чтение</a></li>
+<li class="chapter" data-level="9.3.3" data-path="spatial-data.html"><a href="spatial-data.html#sf_structure"><i class="fa fa-check"></i><b>9.3.3</b> Внутренняя структура</a></li>
+<li class="chapter" data-level="9.3.4" data-path="spatial-data.html"><a href="spatial-data.html#sf_plotting"><i class="fa fa-check"></i><b>9.3.4</b> Визуализация</a></li>
+<li class="chapter" data-level="9.3.5" data-path="spatial-data.html"><a href="spatial-data.html#sf_crs"><i class="fa fa-check"></i><b>9.3.5</b> Системы координат и проекции</a></li>
+<li class="chapter" data-level="9.3.6" data-path="spatial-data.html"><a href="spatial-data.html#sf_attrs"><i class="fa fa-check"></i><b>9.3.6</b> Атрибутивные операции</a></li>
+<li class="chapter" data-level="9.3.7" data-path="spatial-data.html"><a href="spatial-data.html#sf_spat_selection"><i class="fa fa-check"></i><b>9.3.7</b> Пространственные операции</a></li>
+<li class="chapter" data-level="9.3.8" data-path="spatial-data.html"><a href="spatial-data.html#sf_creation"><i class="fa fa-check"></i><b>9.3.8</b> Создание пространственных объектов</a></li>
+<li class="chapter" data-level="9.3.9" data-path="spatial-data.html"><a href="spatial-data.html#sf_geom_attrs"><i class="fa fa-check"></i><b>9.3.9</b> Геометрические атрибуты</a></li>
+<li class="chapter" data-level="9.3.10" data-path="spatial-data.html"><a href="spatial-data.html#sf_export"><i class="fa fa-check"></i><b>9.3.10</b> Экспорт</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="spatial-data.html"><a href="spatial-data.html#raster_data_r"><i class="fa fa-check"></i><b>9.4</b> Растровые данные</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="spatial-data.html"><a href="spatial-data.html#raster_read"><i class="fa fa-check"></i><b>9.4.1</b> Чтение</a></li>
+<li class="chapter" data-level="9.4.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_viz"><i class="fa fa-check"></i><b>9.4.2</b> Визуализация</a></li>
+<li class="chapter" data-level="9.4.3" data-path="spatial-data.html"><a href="spatial-data.html#raster_proj"><i class="fa fa-check"></i><b>9.4.3</b> Системы координат и проекции</a></li>
+<li class="chapter" data-level="9.4.4" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i><b>9.4.4</b> Операции со значениями</a></li>
+<li class="chapter" data-level="9.4.5" data-path="spatial-data.html"><a href="spatial-data.html#section-9.4.5"><i class="fa fa-check"></i><b>9.4.5</b> Экспорт</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="thematic-mapping.html"><a href="thematic-mapping.html"><i class="fa fa-check"></i><b>10</b> Тематические карты в R</a><ul>
+<li class="chapter" data-level="10.1" data-path="thematic-mapping.html"><a href="thematic-mapping.html#table_join"><i class="fa fa-check"></i><b>10.1</b> Соединение таблиц в R</a></li>
+<li class="chapter" data-level="10.2" data-path="thematic-mapping.html"><a href="thematic-mapping.html#data_classify"><i class="fa fa-check"></i><b>10.2</b> Классификация данных</a></li>
+<li class="chapter" data-level="10.3" data-path="thematic-mapping.html"><a href="thematic-mapping.html#lattice_maps"><i class="fa fa-check"></i><b>10.3</b> Серии карт lattice</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="thematic-mapping.html"><a href="thematic-mapping.html#lattice_choropleth"><i class="fa fa-check"></i><b>10.3.1</b> Картограммы</a></li>
+<li class="chapter" data-level="10.3.2" data-path="thematic-mapping.html"><a href="thematic-mapping.html#lattice_diagrams"><i class="fa fa-check"></i><b>10.3.2</b> Картодиграммы</a></li>
+<li class="chapter" data-level="10.3.3" data-path="thematic-mapping.html"><a href="thematic-mapping.html#lattice_legends"><i class="fa fa-check"></i><b>10.3.3</b> Легенда и компоновка</a></li>
+<li class="chapter" data-level="10.3.4" data-path="thematic-mapping.html"><a href="thematic-mapping.html#lattice_basemap"><i class="fa fa-check"></i><b>10.3.4</b> Элементы картографической основы</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="thematic-mapping.html"><a href="thematic-mapping.html#raster_maps"><i class="fa fa-check"></i><b>10.4</b> Карты растров</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="thematic-mapping.html"><a href="thematic-mapping.html#raster_single_map"><i class="fa fa-check"></i><b>10.4.1</b> Одиночный растр</a></li>
+<li class="chapter" data-level="10.4.2" data-path="thematic-mapping.html"><a href="thematic-mapping.html#multiple_raster_map"><i class="fa fa-check"></i><b>10.4.2</b> Серия растров</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="thematic-mapping.html"><a href="thematic-mapping.html#export_graphics"><i class="fa fa-check"></i><b>10.5</b> Экспорт изображения в графический файл</a><ul>
+<li class="chapter" data-level="10.5.1" data-path="thematic-mapping.html"><a href="thematic-mapping.html#singlepage_png"><i class="fa fa-check"></i><b>10.5.1</b> Одностраничные файлы PNG</a></li>
+<li class="chapter" data-level="10.5.2" data-path="thematic-mapping.html"><a href="thematic-mapping.html#multipage_pdf"><i class="fa fa-check"></i><b>10.5.2</b> Многостраничные файлы PDF</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="vector-analysis.html"><a href="vector-analysis.html"><i class="fa fa-check"></i><b>11</b> Пространственный анализ 1. Векторные методы</a><ul>
+<li class="chapter" data-level="11.1" data-path="vector-analysis.html"><a href="vector-analysis.html#spatial_queries"><i class="fa fa-check"></i><b>11.1</b> Пространственные запросы</a><ul>
+<li class="chapter" data-level="11.1.1" data-path="vector-analysis.html"><a href="vector-analysis.html#context_objects"><i class="fa fa-check"></i><b>11.1.1</b> Контекстные и целевые объекты</a></li>
+<li class="chapter" data-level="11.1.2" data-path="vector-analysis.html"><a href="vector-analysis.html#zones"><i class="fa fa-check"></i><b>11.1.2</b> Зоны окружения объектов</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="vector-analysis.html"><a href="vector-analysis.html#use_case"><i class="fa fa-check"></i><b>11.2</b> Постановка задач и изучение данных</a></li>
+<li class="chapter" data-level="11.3" data-path="vector-analysis.html"><a href="vector-analysis.html#distance_analysis"><i class="fa fa-check"></i><b>11.3</b> Анализ расстояний</a></li>
+<li class="chapter" data-level="11.4" data-path="vector-analysis.html"><a href="vector-analysis.html#topology_analysis"><i class="fa fa-check"></i><b>11.4</b> Анализ взаимного положения (топологический)</a></li>
+<li class="chapter" data-level="11.5" data-path="vector-analysis.html"><a href="vector-analysis.html#absolute_zones"><i class="fa fa-check"></i><b>11.5</b> Анализ абсолютных зон окружения</a></li>
+<li class="chapter" data-level="11.6" data-path="vector-analysis.html"><a href="vector-analysis.html#conc_zones"><i class="fa fa-check"></i><b>11.6</b> Анализ конкурентных зон окружения</a></li>
+<li class="chapter" data-level="11.7" data-path="vector-analysis.html"><a href="vector-analysis.html#transport_zones"><i class="fa fa-check"></i><b>11.7</b> Анализ зон транспортной доступности</a></li>
+<li class="chapter" data-level="11.8" data-path="vector-analysis.html"><a href="vector-analysis.html#routes"><i class="fa fa-check"></i><b>11.8</b> Построение маршрутов и матриц времени движения</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="raster-analysis.html"><a href="raster-analysis.html"><i class="fa fa-check"></i><b>12</b> Пространственный анализ 2. Растровые методы</a><ul>
+<li class="chapter" data-level="12.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_intro"><i class="fa fa-check"></i><b>12.1</b> Введение</a></li>
+<li class="chapter" data-level="12.2" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_local"><i class="fa fa-check"></i><b>12.2</b> Локальные операции</a></li>
+<li class="chapter" data-level="12.3" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal"><i class="fa fa-check"></i><b>12.3</b> Фокальные операции</a><ul>
+<li class="chapter" data-level="12.3.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal_fixed"><i class="fa fa-check"></i><b>12.3.1</b> Фиксированная окрестность</a></li>
+<li class="chapter" data-level="12.3.2" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal_extended"><i class="fa fa-check"></i><b>12.3.2</b> Расширенная окрестность</a></li>
+</ul></li>
+<li class="chapter" data-level="12.4" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_zonal"><i class="fa fa-check"></i><b>12.4</b> Зональные операции</a></li>
+<li class="chapter" data-level="12.5" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_global"><i class="fa fa-check"></i><b>12.5</b> Глобальные операции</a></li>
+</ul></li>
+<li class="part"><span><b>IV Пространственная статистика</b></span></li>
+<li class="chapter" data-level="13" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html"><i class="fa fa-check"></i><b>13</b> Детерминистическая интерполяция</a><ul>
+<li class="chapter" data-level="13.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_intro"><i class="fa fa-check"></i><b>13.1</b> Введение</a></li>
+<li class="chapter" data-level="13.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_grid"><i class="fa fa-check"></i><b>13.2</b> Построение сетки</a></li>
+<li class="chapter" data-level="13.3" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_methods"><i class="fa fa-check"></i><b>13.3</b> Интерполяционные методы</a><ul>
+<li class="chapter" data-level="13.3.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_nn"><i class="fa fa-check"></i><b>13.3.1</b> Метод ближайшего соседа (nearest neighbour)</a></li>
+<li class="chapter" data-level="13.3.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_tin"><i class="fa fa-check"></i><b>13.3.2</b> Интерполяция на основе триангуляции</a></li>
+<li class="chapter" data-level="13.3.3" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_idw"><i class="fa fa-check"></i><b>13.3.3</b> Метод обратно взвешенных расстояний (IDW)</a></li>
+<li class="chapter" data-level="13.3.4" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_rbf"><i class="fa fa-check"></i><b>13.3.4</b> Метод радиальных базисных функций (РБФ)</a></li>
+<li class="chapter" data-level="13.3.5" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_bspline"><i class="fa fa-check"></i><b>13.3.5</b> Метод иерархических базисных сплайнов (B-сплайнов)</a></li>
+</ul></li>
+<li class="chapter" data-level="13.4" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_methods"><i class="fa fa-check"></i><b>13.4</b> Аппроксимационные методы</a><ul>
+<li class="chapter" data-level="13.4.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_global"><i class="fa fa-check"></i><b>13.4.1</b> Глобальный тренд</a></li>
+<li class="chapter" data-level="13.4.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_local"><i class="fa fa-check"></i><b>13.4.2</b> Локальный тренд</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="kriging.html"><a href="kriging.html"><i class="fa fa-check"></i><b>14</b> Геостатистическая интерполяция</a></li>
+<li class="chapter" data-level="15" data-path="autocorrelation.html"><a href="autocorrelation.html"><i class="fa fa-check"></i><b>15</b> Пространственная автокорреляция</a><ul>
+<li class="chapter" data-level="15.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_intro"><i class="fa fa-check"></i><b>15.1</b> Введение</a></li>
+<li class="chapter" data-level="15.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors"><i class="fa fa-check"></i><b>15.2</b> Пространственное соседство</a><ul>
+<li class="chapter" data-level="15.2.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_contguity"><i class="fa fa-check"></i><b>15.2.1</b> Соседи по смежности</a></li>
+<li class="chapter" data-level="15.2.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_graph"><i class="fa fa-check"></i><b>15.2.2</b> Соседи по графу</a></li>
+<li class="chapter" data-level="15.2.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_metrics"><i class="fa fa-check"></i><b>15.2.3</b> Соседи по метрике</a></li>
+</ul></li>
+<li class="chapter" data-level="15.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_weights"><i class="fa fa-check"></i><b>15.3</b> Пространственные веса</a></li>
+<li class="chapter" data-level="15.4" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_measures"><i class="fa fa-check"></i><b>15.4</b> Пространственная автокорреляция</a><ul>
+<li class="chapter" data-level="15.4.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_moran"><i class="fa fa-check"></i><b>15.4.1</b> Индекс Морана (Moran’s I)</a></li>
+<li class="chapter" data-level="15.4.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_permutation"><i class="fa fa-check"></i><b>15.4.2</b> Перестановочный тест Морана</a></li>
+<li class="chapter" data-level="15.4.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_moranscatter"><i class="fa fa-check"></i><b>15.4.3</b> Диаграмма рассеяния Морана</a></li>
+</ul></li>
+<li class="chapter" data-level="15.5" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_autoregression"><i class="fa fa-check"></i><b>15.5</b> Пространственная авторегрессия</a></li>
+<li class="chapter" data-level="15.6" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_lisa"><i class="fa fa-check"></i><b>15.6</b> Локальные показатели пространственной ассоциации (LISA)</a></li>
+<li class="chapter" data-level="15.7" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_gwr"><i class="fa fa-check"></i><b>15.7</b> Географически взвешенная реграссия (GWR)</a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="point-patterns.html"><a href="point-patterns.html"><i class="fa fa-check"></i><b>16</b> Анализ точечных процессов</a></li>
+<li class="divider"></li>
+<li><a href="https://istina.msu.ru/profile/tsamsonov/" target="blank">Тимофей Самсонов</a></li>
+<li><a href="https://doi.org/10.5281/zenodo.901911"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.901911.svg" title="DOI"></a><li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Визуализация и анализ географических данных на языке R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="kriging" class="section level1">
+<h1><span class="header-section-number">Глава 14</span> Геостатистическая интерполяция</h1>
+<p><a href="https://github.com/tsamsonov/r-geo-course/blob/master/code/14-InterpolationGeostatistics.R">Программный код главы</a></p>
+<p>Раздел посвящен геостатистической интерполяции в R.</p>
+<p>[To be written…]</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="interpolation-deterministic.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="autocorrelation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": ["r-geo-course.epub"],
+"toc": {
+"collapse": "section",
+"edit": "https://github.com/tsamsonov/r-geo-course/edit/master/%s"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -75,8 +75,6 @@ library(classInt)
 library(osrm) # Использование онлайн-сервиса маршрутизации OSRM
 library(cartography) # Удобное построение тематических карт средствами plot()
 
-setwd("/Volumes/Data/GitHub/r-geo-course/data")
-
 # Чтение данных
 roads <- st_read("roads.gpkg") # Дороги
 poi <- st_read("poi_point.gpkg") # Точки интереса
@@ -502,7 +500,7 @@ text(zones %>% st_coordinates(),
 
 Поскольку данные, используемые в настоящем модуле, предварительно были конвертированы в проекцию [UTM](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system) и хранятся в метрах, а OSRM решает все задачи в географических координатах (широте и долготе относительно эллипсоида [WGS84](https://en.wikipedia.org/wiki/World_Geodetic_System)), нам необходимо научиться работать с проекциями данных и преобразовывать системы координат между собой.
 
-```{r, collapse=TRUE, results=FALSE}
+```{r, collapse=TRUE, results=FALSE, eval=FALSE}
 
 ## АНАЛИЗ ЗОН ТРАНСПОРТНОЙ ДОСТУПНОСТИ -------------------------------------
 
@@ -520,23 +518,23 @@ psel.wgs <- st_transform(psel, WGS84)
 
 # Получаем 5-минутную зону транспортной доступности
 # с помощью пакета osrm
-service.area <- osrmIsochrone(psel.wgs %>% st_coordinates() %>% as.vector(), breaks = 5)
+service_area <- osrmIsochrone(loc = psel.wgs %>% st_coordinates() %>% as.vector(), breaks = 5)
 
 # Преобразуем зону обратно в UTM для дальнейших операций
-service.area.utm <- st_transform(st_as_sf(service.area), UTM)
+service_area_utm <- st_transform(st_as_sf(service_area), UTM)
 
 # Отбираем точки
-selected.poi <- poi.food[service.area.utm, ]
+selected_poi <- poi.food[service_area_utm, ]
 
 # Визуализируем результат
 plotBasemap()
 
-plot(service.area.utm %>% st_geometry(),
+plot(service_area_utm %>% st_geometry(),
      col = adjustcolor("violetred3", alpha.f = 0.2),
      border = "violetred3",
      add = TRUE)
 
-plot(selected.poi  %>% st_geometry(), 
+plot(selected_poi  %>% st_geometry(), 
      col = "violetred3", 
      pch = 20, 
      cex = 0.5, 
@@ -559,21 +557,21 @@ plot(psel %>% st_geometry(),
 * `osrmTable(loc)` --- строит матрицу времени движения между всеми парами точек в `loc`
 
 Так же, как и в предвдущем разделе, нам понадобятся преобразования координат. Построим оптимальный маршрут между книжным магазином "Молодая Гвардия" на Полянке и чебуречной "Дружба" на метро Сухаревская:
-```{r, collapse = TRUE}
+```{r, collapse = TRUE, eval=FALSE}
 
 ## ПОСТРОЕНИЕ МАРШРУТОВ -------------------------------------
 
 # Выбираем и проецируем начальную точку
 origin <- poi %>% filter(NAME == 'Молодая Гвардия')
-origin.wgs <- st_transform(origin, WGS84)
+origin_wgs <- st_transform(origin, WGS84)
   
 # Выбираем и проецируем конечную точку
 destination <- poi %>% filter(NAME == 'Чебуречная "Дружба"')
-destination.wgs <- st_transform(destination, WGS84)
+destination_wgs <- st_transform(destination, WGS84)
 
 # Строим маршрут
-route <- osrmRoute(origin.wgs %>% as('Spatial'), 
-                   destination.wgs %>% as('Spatial'), 
+route <- osrmRoute(origin_wgs %>% as('Spatial'), 
+                   destination_wgs %>% as('Spatial'), 
                    overview = "full", # запретить генерализацию линий
                    sp = TRUE) # вернуть результат в виде объекта класса Spatial
 
