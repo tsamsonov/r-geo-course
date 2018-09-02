@@ -15,6 +15,9 @@ header-includes:
    - \usepackage[utf8]{inputenc}
    - \usepackage[russian]{babel}
 mainfont: Open Sans
+toc_float:
+  collapse: section
+  smooth_scroll: true
 always_allow_html: yes
 ---
 
