@@ -584,9 +584,9 @@ cat("Сегодняшнаяя дата -", Sys.Date())
 
 ```r
 (a = rnorm(5)) # сгенерируем 5 случайных чисел, запишем их в переменную a и выведем на экран
-## [1] -0.9019549 -0.8939112 -0.6612632  0.2912446 -1.3146358
+## [1]  0.7920927 -0.3209197 -1.3688753  0.2988678  0.5250666
 (b = 2 * a) # переменная a доступна, ее можно использовать и далее для вычислений
-## [1] -1.8039099 -1.7878224 -1.3225264  0.5824893 -2.6292715
+## [1]  1.5841854 -0.6418394 -2.7377507  0.5977357  1.0501333
 ```
 
 ## Условный оператор
@@ -609,7 +609,7 @@ if (condition) {
 
 ```r
 (a = round(rnorm(1), 1))
-## [1] 0.9
+## [1] 0.3
 
 if (a < 0){
   cat('Получилось отрицательное число!')
@@ -677,15 +677,6 @@ capital = switch(name,
 print(capital)
 ## [1] "Нижний Новгород"
 ```
-
-## Краткий обзор
-
-```r
-knitr::include_url('https://github.com/tsamsonov/r-geo-course/blob/master/slides/01-Basics_slides.html')
-## PhantomJS not found. You can install it with webshot::install_phantomjs(). If it is installed, please make sure the phantomjs executable can be found via the PATH variable.
-```
-
-<iframe src="https://github.com/tsamsonov/r-geo-course/blob/master/slides/01-Basics_slides.html" width="100%" height="400px"></iframe>
 
 ## Контрольные вопросы и упражнения {#questions_tasks_basics}
 
