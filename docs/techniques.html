@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="interpolation-deterministic.html">
-<link rel="next" href="autocorrelation.html">
+<link rel="prev" href="tables.html">
+<link rel="next" href="graphics.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -370,20 +370,492 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="kriging" class="section level1">
-<h1><span class="header-section-number">Глава 14</span> Геостатистическая интерполяция</h1>
-<p><a href="https://github.com/tsamsonov/r-geo-course/blob/master/code/14-InterpolationGeostatistics.R">Программный код главы</a></p>
-<p>Раздел посвящен геостатистической интерполяции в R.</p>
-<p>[To be written…]</p>
+<div id="techniques" class="section level1">
+<h1><span class="header-section-number">Глава 4</span> Техники программирования</h1>
+<p><a href="https://github.com/tsamsonov/r-geo-course/blob/master/code/05-Controls.R">Программный код главы</a></p>
+<p>В предыдущих разделах мы обходились базовыми средствами языка R и применяли стандартные функции для решения простых задач (аналогичных тем, что традиционно решаются в табличных редакторах типа Excel). В данном модуле рассматриваются техники программирования, которые упрощают решение вычислительных задач, такие как:</p>
+<ul>
+<li>Функциональное программирование</li>
+<li>Метапрограммирование</li>
+<li>Трансляция переменных (пайп-оператор)</li>
+</ul>
+<div id="controls-functions" class="section level2">
+<h2><span class="header-section-number">4.1</span> Функциональное программирование</h2>
+<p>Функции в R можно использовать для структурирования кода на логически завершенные, автономные фрагменты кода, каждый из которых выполняет конкретную задачу. Чем сильнее разрастается ваш программный код, тем больше проявляется потребность в наличии функций. Функции позволяют использовать один и тот же код в разных местах программы, не повторяя его.</p>
+<p>Синтаксис функции выглядит следующим образом:</p>
+<pre><code>functionName &lt;- function(parameter1, parameter2, ...){
+  ...
+  return(result)
+}</code></pre>
+<p>Функция создается c помощью ключевого слова <code>function</code>, за которым в круглых скобках заключается произвольное количество параметров (столько, сколько вам нужно: от нуля и более). С помощью этих параметров вы сможете передавать внутрь функции значения переменных. Созданной функции необходимо дать имя, используя оператор присвоения <code>&lt;-</code>. После того как выполнится код внутри функции, результат можно вернуть, используя ключевого слово <code>return</code>.</p>
+<blockquote>
+<p><strong>R</strong> не поддерживает возврат множественных результатов. Если вам необходимо вернуть несколько объектов (переменных, векторов, таблиц и т.д.), создайте список (list), включите в него все возвращаемые объекты и верните из функции этот список.</p>
+</blockquote>
+<p>В вышеприведенном примере мы использовали проверку условия для того чтобы вычислить рекомендуемый цвет гистограммы. С одной стороны, это некая вспомогательная процедура, не имеющая непосредственного отношения к построению гистограммы. С другой стороны, это полезная процедура, которой мы захотим воспользоваться в дальнейшем — всегда приятно, когда программа тебе с выбором стилей оформления данных<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>.</p>
+<p>Оформим выбор цвета в виде функции, которая принимает в каестве параметра число (температуру), а возвращает название цвета.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## ФУНКЦИИ
+ 
+<span class="kw">library</span>(foreign) <span class="co"># для чтения dbf необходима библиотека foreign</span>
 
+files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="st">&quot;dbf&quot;</span>) <span class="co"># прочитаем список файлов в директории dbf</span>
+
+files &lt;-<span class="st"> </span>files[<span class="kw">grep</span>(<span class="st">&quot;.dbf&quot;</span>, files, <span class="dt">fixed =</span> <span class="ot">TRUE</span>)] <span class="co"># отфильтруем файлы с расширением .dbf</span>
+
+names &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;.dbf&quot;</span>,<span class="st">&quot;&quot;</span>,files) <span class="co"># получим названия месяцев, избавившись от расширений</span>
+
+i &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># Создадим дополнительно переменную цикла, чтобы выбирать i-е название месяца</span>
+
+<span class="co"># Создадим функцию, возвращающую цвет в зависимости от температуры</span>
+selectColor &lt;-<span class="st"> </span><span class="cf">function</span>(value) { 
+  hist.col &lt;-<span class="st"> &quot;white&quot;</span>
+  <span class="cf">if</span> (tmean <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>){
+    hist.col &lt;-<span class="st"> &quot;steelblue&quot;</span>
+  } <span class="cf">else</span> <span class="cf">if</span> (tmean <span class="op">&lt;</span><span class="st"> </span><span class="dv">10</span>){
+    hist.col &lt;-<span class="st"> &quot;yellow&quot;</span>
+  } <span class="cf">else</span> {
+    hist.col &lt;-<span class="st"> &quot;orange&quot;</span>
+  }
+  <span class="kw">return</span>(hist.col)
+}
+
+i &lt;-<span class="st"> </span><span class="dv">1</span>
+<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))
+
+<span class="cf">for</span> (file <span class="cf">in</span> files) {
+  temp &lt;-<span class="st">  </span><span class="kw">read.dbf</span>(file)
+  tmean &lt;-<span class="st">  </span><span class="kw">mean</span>(temp<span class="op">$</span>Temp)
+  
+  <span class="co"># выберем цвет с помощью нашей функции</span>
+  hist.col &lt;-<span class="st"> </span><span class="kw">selectColor</span>(tmean)
+  
+  <span class="co"># построим гистограмму</span>
+  <span class="kw">hist</span>(temp<span class="op">$</span>Temp, 
+       <span class="dt">col =</span> hist.col, 
+       <span class="dt">main =</span> names[i])
+  
+  <span class="co"># добавим линию среднего</span>
+  <span class="kw">abline</span>(<span class="dt">v =</span> tmean, 
+         <span class="dt">lwd =</span> <span class="dv">2</span>, 
+         <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)
+  
+  <span class="co"># подпишем среднее</span>
+  <span class="kw">text</span>(tmean, 
+       <span class="dv">1000</span>, 
+       <span class="dt">labels =</span> <span class="kw">round</span>(tmean,<span class="dv">1</span>), 
+       <span class="dt">pos =</span> <span class="dv">4</span>, 
+       <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)
+  i &lt;-<span class="st"> </span>i<span class="op">+</span><span class="dv">1</span>
+}</code></pre></div>
+<p><img src="04-Controls_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Усложним задачу, чтобы показать, как работать с несколькими аргументами функции. Например, мы хотим не одноцветные диаграммы, а чтобы цвет менялся плавным градиентом от первого столбика гистограммы до последнего. Соответственно, количество возвращаемых цветов должно быть равно количеству столбиков в гистограмме. Нашей функции не важно, столбики это или нет, но ей надо знать, сколько цветов надо вернуть. Для этого добавим в нее второй параметр <code>ncolors</code>. Это позволит пользователю при желании не задвать этот параметр, если необходим только один цвет.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ГИСТОГРАММЫ С ГРАДИЕНТОМ</span>
+
+selectColor2 &lt;-<span class="st"> </span><span class="cf">function</span>(value, ncolors){ <span class="co"># передаем в качестве дополнительного параметра количество цветов</span>
+  hist.col &lt;-<span class="st"> &quot;white&quot;</span>
+  <span class="co"># генерируем ncolors цветов из соответствующей палитры</span>
+  <span class="cf">if</span> (tmean <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>){
+    hist.col &lt;-<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;darkslateblue&quot;</span>, <span class="st">&quot;steelblue1&quot;</span>))(ncolors)  
+  } <span class="cf">else</span> <span class="cf">if</span> (tmean <span class="op">&lt;</span><span class="st"> </span><span class="dv">10</span>){
+    hist.col &lt;-<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;steelblue1&quot;</span>, <span class="st">&quot;yellow&quot;</span>))(ncolors)
+  } <span class="cf">else</span> {
+    hist.col &lt;-<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;yellow&quot;</span>, <span class="st">&quot;red&quot;</span>))(ncolors)
+  }
+  <span class="kw">return</span>(hist.col)
+}
+
+i &lt;-<span class="st"> </span><span class="dv">1</span>
+
+<span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))
+
+ncells &lt;-<span class="st"> </span><span class="dv">25</span> <span class="co"># установим фиксированное количество столбцов гистограммы</span>
+
+<span class="cf">for</span> (file <span class="cf">in</span> files){
+  temp &lt;-<span class="st"> </span><span class="kw">read.dbf</span>(file)
+  tmean &lt;-<span class="st"> </span><span class="kw">mean</span>(temp<span class="op">$</span>Temp)
+  
+  <span class="co"># получим для раскраски требуемое количество цветов</span>
+  hist.col &lt;-<span class="st"> </span><span class="kw">selectColor2</span>(tmean, ncells)
+  
+  <span class="co"># построим гистограмму</span>
+  <span class="kw">hist</span>(temp<span class="op">$</span>Temp, 
+       <span class="dt">col =</span> hist.col, 
+       <span class="dt">main =</span> names[i], 
+       <span class="dt">breaks =</span> ncells)
+  
+  <span class="co"># добавим линию среднего</span>
+  <span class="kw">abline</span>(<span class="dt">v =</span> tmean, 
+         <span class="dt">lwd =</span> <span class="dv">2</span>, 
+         <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)
+  
+  <span class="co"># подпишем среднее</span>
+  <span class="kw">text</span>(tmean, <span class="dv">1000</span>, 
+       <span class="dt">labels =</span> <span class="kw">round</span>(tmean,<span class="dv">1</span>), 
+       <span class="dt">pos =</span> <span class="dv">4</span>, 
+       <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)
+  
+  i &lt;-<span class="st"> </span>i<span class="op">+</span><span class="dv">1</span>
+}</code></pre></div>
+<p><img src="04-Controls_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+</div>
+<div id="controls-meta" class="section level2">
+<h2><span class="header-section-number">4.2</span> Метапрограммирование</h2>
+</div>
+<div id="controls-vectorized" class="section level2">
+<h2><span class="header-section-number">4.3</span> Векторизованые вычисления</h2>
+<p>Данные (в том числе географические) практически всегда носят множественный характер и организованы в определенные структуры (см. главу 2). Эта особенность данных выдвигает логичное желание иметь процедуры, которые можно применять к полному набору данных, а не к его отдельным компонентам. Это и есть процедуры векторизованных высчислений.</p>
+<p>Предположим, вам необходимо что-то вычислить для каждой строки таблицы, при этом порядок вычисления зависит от содержимого ячеек данной строки. Вы можете организовать подобные вычисления с помощью циклов, однако в <strong>R</strong> существуют специальные функции семейста <code>apply</code>, которые позволяют решать подобные задачи более элегантно и с высокой скоростью. Это достигается за счет того, что функции <code>apply</code> написаны на языке <strong>C</strong> (как и многие другие функции <strong>R</strong>), в то время как при организации цикла ваши данные будут обрабатываться стандартными средствами языка.</p>
+<table>
+<colgroup>
+<col width="13%" />
+<col width="86%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Функция</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>apply()</code></td>
+<td>применить функцию ко всем строкам или столбцам матрицы</td>
+</tr>
+<tr class="even">
+<td><code>lapply()</code></td>
+<td>применить функцию к каждому компоненту вектора или списка и получить результат также в виде списка (<em>l — list</em>)</td>
+</tr>
+<tr class="odd">
+<td><code>sapply()</code></td>
+<td>применить функцию к каждому компоненту вектора или списка и получить результат в виде вектора (<em>s — simplify</em>)</td>
+</tr>
+<tr class="even">
+<td><code>vapply()</code></td>
+<td>аналогична vapply, но требует явного задания типа данных возвращаемого вектора, за счет чего работает быстрее (<em>v — velocity</em>)</td>
+</tr>
+<tr class="odd">
+<td><code>mapply()</code></td>
+<td>применить функцию к каждому компоненту нескольких векторов или списков и вернуть результат в виде списка (<em>m — multivariate</em>)</td>
+</tr>
+<tr class="even">
+<td><code>rapply()</code></td>
+<td>применить функцию рекурсивно ко всем элементам переданного списка и вернуть результат в аналогичной структур (<em>r — recursive</em>)</td>
+</tr>
+<tr class="odd">
+<td><code>tapply()</code></td>
+<td>применить функцию ко всем компонентам вектора или списка, сгруппировав их по значению переданного фактора</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Функции семейства <code>apply</code>, принимающие на вход списки, могут работать и с фреймами данных. В этом случае фрейм внутри функции будет преобразован с помощью функции <code>as.list()</code> в список, элементами которого являются столбцы (переменные) входного фрейма данных. Данные при этом не потеряются, их типы тоже не изменятся.</p>
+</blockquote>
+<p>Базовая функция <code>apply()</code> имеет следующие аргументы:</p>
+<ul>
+<li><code>X</code> — массив любой размерности (включая вектор)</li>
+<li><code>MARGIN</code> — измерения по которым необходимо вести вычисления. Для матрицы <code>1</code> означает строку, <code>2</code> означает столбец, <code>c(1, 2)</code> будет означать, что вычисления производятся по всем комбинациям строк и столбцов</li>
+<li><code>FUN</code> — функция, которая будет применяться к каждому элементу указанных измерений</li>
+</ul>
+<p>Рассмотрим, как можно вычислять значения по строкам. У нас есть подготовленная таблица Росстата <a href="http://www.gks.ru/free_doc/new_site/oxrana/tabl/oxr_vibr3.xls">Выбросы в атмосферу загрязняющих веществ, отходящих от стационарных источников, по видам экономической деятельности</a>. Рассчитаем, какой тип источника занимает максимальное и минимальное место среди газообразных и жидких. Обратите внимание, что в первом случае используется заранее созданная функция, а во втором мы определяем анонимную функцию непосредственно при вызове <code>apply()</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## ВЕКТОРИЗОВАННЫЕ ВЫЧИСЛЕНИЯ 
+
+<span class="kw">library</span>(dplyr)
+## 
+## Присоединяю пакет: &#39;dplyr&#39;
+## Следующие объекты скрыты от &#39;package:stats&#39;:
+## 
+##     filter, lag
+## Следующие объекты скрыты от &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union
+df &lt;-<span class="st"> </span><span class="kw">read.csv2</span>(<span class="st">&quot;atm_emissions.csv&quot;</span>)
+<span class="kw">head</span>(df)
+##   YEAR   TOTAL  SOLID   FLGAS     SO     NO     CO     CH    ORG
+## 1 1992 28207.6 5609.1 22598.5 8171.3 2718.1 6813.0 2583.9 1608.9
+## 2 1993 24788.3 4746.1 20042.2 7217.9 2462.0 5894.0 2386.7 1604.8
+## 3 1994 21929.1 3870.2 18058.9 6512.5 2085.2 5140.8 2609.3 1238.0
+## 4 1995 21269.6 3600.4 17669.2 6424.8 1996.6 5005.6 2735.7 1110.9
+## 5 1996 20274.1 3233.4 17040.8 6156.7 1920.4 4876.6 2531.3 1161.8
+## 6 1997 19332.9 3041.8 16291.1 5991.1 1799.7 4653.0 2554.2  989.9
+
+find.max &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
+  <span class="kw">return</span>(<span class="kw">names</span>(x)[<span class="kw">which.max</span>(x)])
+}
+
+df<span class="op">$</span>MAXSRC &lt;-<span class="st"> </span><span class="kw">apply</span>(df[<span class="dv">5</span><span class="op">:</span><span class="dv">9</span>], <span class="dv">1</span>, find.max)
+df<span class="op">$</span>MINSRC &lt;-<span class="st"> </span><span class="kw">apply</span>(df[<span class="dv">5</span><span class="op">:</span><span class="dv">9</span>], <span class="dv">1</span>, <span class="cf">function</span>(x) <span class="kw">names</span>(x)[<span class="kw">which.min</span>(x)])
+
+<span class="kw">print</span>(df)
+##    YEAR   TOTAL  SOLID   FLGAS     SO     NO     CO     CH    ORG MAXSRC
+## 1  1992 28207.6 5609.1 22598.5 8171.3 2718.1 6813.0 2583.9 1608.9     SO
+## 2  1993 24788.3 4746.1 20042.2 7217.9 2462.0 5894.0 2386.7 1604.8     SO
+## 3  1994 21929.1 3870.2 18058.9 6512.5 2085.2 5140.8 2609.3 1238.0     SO
+## 4  1995 21269.6 3600.4 17669.2 6424.8 1996.6 5005.6 2735.7 1110.9     SO
+## 5  1996 20274.1 3233.4 17040.8 6156.7 1920.4 4876.6 2531.3 1161.8     SO
+## 6  1997 19332.9 3041.8 16291.1 5991.1 1799.7 4653.0 2554.2  989.9     SO
+## 7  1998 18661.8 2864.4 15797.4 5679.3 1753.3 4562.9 2571.6  921.9     SO
+## 8  1999 18539.7 2768.4 15771.2 5505.5 1716.4 4663.9 2767.7  831.0     SO
+## 9  2000 18819.8 2972.2 15847.6 5407.1 1698.4 4997.9 2685.4  850.4     SO
+## 10 2001 19123.6 2973.2 16150.4 5254.0 1678.9 5148.1 2723.6 1130.8     SO
+## 11 2002 19481.2 2882.8 16598.4 4987.4 1646.2 5857.5 2733.2 1164.8     CO
+## 12 2003 19829.4 2868.0 16961.4 4959.6 1661.8 5929.4 2834.1 1356.5     CO
+## 13 2004 20491.3 2855.7 17635.6 4768.4 1628.9 6774.4 2786.8 1448.2     CO
+## 14 2005 20425.4 2802.0 17623.3 4675.0 1666.8 6521.2 2868.1 1650.6     CO
+## 15 2006 20568.4 2842.8 17725.6 4764.7 1703.1 6338.3 2815.0 1863.1     CO
+## 16 2007 20636.9 2743.4 17893.5 4573.1 1732.8 6448.4 2992.4 1908.6     CO
+## 17 2008 20103.3 2704.2 17399.0 4534.1 1816.6 6091.5 3217.5 1532.0     CO
+## 18 2009 19021.2 2341.1 16680.1 4370.6 1730.5 5500.5 3347.3 1546.0     CO
+## 19 2010 19115.6 2381.2 16734.4 4385.3 1855.2 5565.1 3135.9 1605.3     CO
+## 20 2011 19162.3 2283.1 16879.2 4342.7 1880.0 5753.5 3105.8 1622.8     CO
+## 21 2012 19630.3 2249.4 17380.9 4340.9 1937.5 6001.8 3293.3 1638.2     CO
+## 22 2013 18446.5 2008.5 16438.0 4173.3 1874.2 5350.9 3424.8 1455.8     CO
+## 23 2014 17451.9 1922.2 15529.7 4036.3 1805.5 4938.4 3251.0 1340.0     CO
+## 24 2015 17295.7 1820.4 15475.3 4099.4 1787.4 4799.6 3323.0 1294.5     CO
+## 25 2016 17349.3 1723.9 15625.4 4011.4 1830.1 4907.1 3406.1 1304.6     CO
+##    MINSRC
+## 1     ORG
+## 2     ORG
+## 3     ORG
+## 4     ORG
+## 5     ORG
+## 6     ORG
+## 7     ORG
+## 8     ORG
+## 9     ORG
+## 10    ORG
+## 11    ORG
+## 12    ORG
+## 13    ORG
+## 14    ORG
+## 15     NO
+## 16     NO
+## 17    ORG
+## 18    ORG
+## 19    ORG
+## 20    ORG
+## 21    ORG
+## 22    ORG
+## 23    ORG
+## 24    ORG
+## 25    ORG</code></pre></div>
+<p>Другие функции семейства <code>apply</code> в приложении к фреймам данных будут работать со столбцами (переменными), интерпретируя их как элементы списка. Наиболее часто из них используются <code>lapply()</code>, <code>sapply()</code> и <code>vapply()</code>.В отличие от <code>apply()</code>, они уже не принимаеют номера измерений и работают только с элементами переданного списка. Например, мы можем посчитать среднее значение объема выбросов по каждому источнику. Поскольку функция среднего уже есть в составе базовых средств <code>R</code>, достаточно указать ее при вызове <code>sapply()</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sapply</span>(df, mean)
+## Warning in mean.default(X[[i]], ...): аргумент не является числовым или
+## логическим: возвращаю NA
+
+## Warning in mean.default(X[[i]], ...): аргумент не является числовым или
+## логическим: возвращаю NA
+##      YEAR     TOTAL     SOLID     FLGAS        SO        NO        CO 
+##  2004.000 19998.208  2884.316 17113.884  5173.696  1855.424  5541.336 
+##        CH       ORG    MAXSRC    MINSRC 
+##  2907.348  1367.176        NA        NA</code></pre></div>
+<p>В данном случае для первого столбца было возвращено значение <code>NA</code>, что логично, поскольку он имеет строковый тип.</p>
+<p>В качестве альтернативы функциям <code>apply</code> можно также воспользоваться вычислениями посредством функций семейства <code>map</code> из пакета <code>purrr</code> (еще один пакет из <a href="https://www.tidyverse.org/packages/">tidyverse</a>). Эти функции работают аналогично <code>lapply()</code> и поддерживают последовательности с помощью пайп-оператора:</p>
+<ul>
+<li><code>map()</code> возвращает список.</li>
+<li><code>map_lgl()</code> возвращает вектор логических значений.</li>
+<li><code>map_int()</code> возвращает вектор целочисленных значений.</li>
+<li><code>map_dbl()</code> возвращает вектор чисел с плавающей точкой.</li>
+<li><code>map_chr()</code> возвращает вектор строк.</li>
+</ul>
+<p>Например, предыдущая задача с помощью <code>purrr</code> решались бы так:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(purrr)
+<span class="kw">map_dbl</span>(df, mean)
+## Warning in mean.default(.x[[i]], ...): аргумент не является числовым или
+## логическим: возвращаю NA
+
+## Warning in mean.default(.x[[i]], ...): аргумент не является числовым или
+## логическим: возвращаю NA
+##      YEAR     TOTAL     SOLID     FLGAS        SO        NO        CO 
+##  2004.000 19998.208  2884.316 17113.884  5173.696  1855.424  5541.336 
+##        CH       ORG    MAXSRC    MINSRC 
+##  2907.348  1367.176        NA        NA</code></pre></div>
+</div>
+<div id="controls-dplyr" class="section level2">
+<h2><span class="header-section-number">4.4</span> Грамматика табличных преобразований</h2>
+<p>Пакет <strong>dplyr</strong> был разработан для того чтобы сделать стандартные операции обработки фреймов данных, такие как сортировка, фильтрация, выбор и добавление переменных (столбцов), агрегирование данных более простым и наглядным.</p>
+<p>Пакет очень включает в себя 5 базовых функций:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Функция</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>mutate()</code></td>
+<td>Вычисление новых переменных</td>
+</tr>
+<tr class="even">
+<td><code>select()</code></td>
+<td>Выбор переменных по их названиям</td>
+</tr>
+<tr class="odd">
+<td><code>filter()</code></td>
+<td>Выбор строк по заданному критерию (запросу)</td>
+</tr>
+<tr class="even">
+<td><code>summarise()</code></td>
+<td>Агрегирование значений переменных</td>
+</tr>
+<tr class="odd">
+<td><code>arrange()</code></td>
+<td>Упорядочение фрейма данных по указанным переменным</td>
+</tr>
+</tbody>
+</table>
+<p>Данные функции можно комбинировать также с функцией <code>group_by()</code> чтобы выполнять операции не надо всеми строками сразу, а над их группами, сгруппированными по значению выбранной переменной.</p>
+<p>Предположим, нам необходимо отобрать из уже знакомой нам таблицы <code>tab</code> столбцы <code>Year</code>, <code>Total</code>, <code>Caspian</code>, далее вычислить долю Каспийского моря в суммарном объеме сточных вод, отобрать строки, в которых эта доля больше <span class="math inline">\(0.45\)</span> и упорядочить получившуюся таблицу по возрастанию этой доли. Дополнительно еще посчитаем суммарный сброс и среднюю долю Каспийского мор:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
+
+tab &lt;-<span class="st"> </span><span class="kw">read.csv2</span>(<span class="st">&quot;oxr_vod.csv&quot;</span>)
+<span class="kw">colnames</span>(tab) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Year&quot;</span>, <span class="st">&quot;Total&quot;</span>, <span class="st">&quot;Baltic&quot;</span>, <span class="st">&quot;Black&quot;</span>, <span class="st">&quot;Azov&quot;</span>, <span class="st">&quot;Caspian&quot;</span>, <span class="st">&quot;Kara&quot;</span>, <span class="st">&quot;White&quot;</span>, <span class="st">&quot;Other&quot;</span>)
+
+<span class="co"># Выбор переменных Year, Total, Caspian</span>
+caspian &lt;-<span class="st"> </span><span class="kw">select</span>(tab, Year, Total, Caspian)
+<span class="kw">head</span>(caspian)
+##   Year Total Caspian
+## 1 1993  27.2    12.1
+## 2 1994  24.6    11.0
+## 3 1995  24.5    10.4
+## 4 1996  22.4     9.8
+## 5 1997  23.0     9.8
+## 6 1998  22.0     9.5
+
+<span class="co"># Вычисление нового столбца caspianRatio</span>
+caspian &lt;-<span class="st"> </span><span class="kw">mutate</span>(caspian, <span class="dt">caspianRatio =</span> <span class="kw">round</span>(Caspian <span class="op">/</span><span class="st"> </span>Total, <span class="dv">3</span>))
+<span class="kw">head</span>(caspian)
+##   Year Total Caspian caspianRatio
+## 1 1993  27.2    12.1        0.445
+## 2 1994  24.6    11.0        0.447
+## 3 1995  24.5    10.4        0.424
+## 4 1996  22.4     9.8        0.438
+## 5 1997  23.0     9.8        0.426
+## 6 1998  22.0     9.5        0.432
+
+<span class="co"># Фильтрация по значению caspianRatio</span>
+caspian &lt;-<span class="st"> </span><span class="kw">filter</span>(caspian, caspianRatio <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.445</span>)
+<span class="kw">head</span>(caspian)
+##   Year Total Caspian caspianRatio
+## 1 1994  24.6    11.0        0.447
+## 2 2000  20.3     9.2        0.453
+## 3 2001  19.8     8.9        0.449
+## 4 2002  19.8     9.2        0.465
+## 5 2004  18.5     8.3        0.449
+## 6 2005  17.7     8.0        0.452
+
+<span class="co"># Сортировка по значению caspianRatio</span>
+caspian &lt;-<span class="st"> </span><span class="kw">arrange</span>(caspian, caspianRatio)
+<span class="kw">head</span>(caspian)
+##   Year Total Caspian caspianRatio
+## 1 2006  17.5     7.8        0.446
+## 2 2012  15.7     7.0        0.446
+## 3 1994  24.6    11.0        0.447
+## 4 2001  19.8     8.9        0.449
+## 5 2004  18.5     8.3        0.449
+## 6 2005  17.7     8.0        0.452
+
+<span class="co"># Агрегирование данных</span>
+stats &lt;-<span class="st"> </span><span class="kw">summarise</span>(caspian, <span class="dt">total.sum =</span> <span class="kw">sum</span>(Total), <span class="dt">mean.ratio =</span> <span class="kw">mean</span>(caspianRatio))
+<span class="kw">print</span>(stats)
+##   total.sum mean.ratio
+## 1     169.1  0.4512222</code></pre></div>
+<p>Обратите внимание на то, что названия столбцов указываются без кавычек! Использование <strong>dplyr</strong> целым обладает рядом преимуществ по сравнению с применением стандартных средств <strong>R</strong>:</p>
+<ul>
+<li>вызов функций с говорящими названиями операции более понятными;</li>
+<li>код выглядит более чистым и легко читаемым за счет отсутствия обращений к фреймам данных через квадратные скобки и доллары;</li>
+<li>код с использованием функций <strong>dplyr</strong> часто оказывается короче, чем его традиционные аналоги;</li>
+<li>операции dplyr можно выстраивать в последовательности с помощью пайп-оператора <code>%&gt;%</code>, доступного в <strong>R</strong> через пакет <strong>magrittr</strong> (устанавливается вмете с <strong>dplyr</strong>.</li>
+</ul>
+</div>
+<div id="controls-pipes" class="section level2">
+<h2><span class="header-section-number">4.5</span> Пайпирование</h2>
+<p><strong>Пайп-оператор <code>%&gt;%</code></strong> предназначен для компактной и наглядной записи <em>последовательностей</em> обработки данных. Например, выше мы применили целых 4 операции к исходной таблице (<em>select, mutate, filter, arrange</em>), прежде чем получить искомый результат. Промежуточные результаты нас мало интересовали, при этом мы каждый раз перезаписывали исходную таблицу (могли и новую делать каждый раз, что сделало бы код еще более громоздким). С помощью пайп-оператора <code>%&gt;%</code> вышеприведенный код можно записать так:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result &lt;-<span class="st"> </span>tab <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">          </span><span class="kw">select</span>(Year, Total, Caspian) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">          </span><span class="kw">mutate</span>(<span class="dt">caspianRatio =</span> <span class="kw">round</span>(Caspian <span class="op">/</span><span class="st"> </span>Total, <span class="dv">3</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">          </span><span class="kw">filter</span>(caspianRatio <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.445</span>) <span class="op">%&gt;%</span>
+<span class="st">          </span><span class="kw">arrange</span>(caspianRatio)
+<span class="kw">head</span>(result)
+##   Year Total Caspian caspianRatio
+## 1 2006  17.5     7.8        0.446
+## 2 2012  15.7     7.0        0.446
+## 3 1994  24.6    11.0        0.447
+## 4 2001  19.8     8.9        0.449
+## 5 2004  18.5     8.3        0.449
+## 6 2005  17.7     8.0        0.452</code></pre></div>
+<p>Обратите внимание, что мы уже не подставляли исходный фрейм данных в качестве первого параметра при вызове функций <strong>dplyr</strong>, а направляли его посредством пайп-оператора. Этот оператор работает следующим образом:</p>
+<ul>
+<li><code>x %&gt;% f</code> эквивалентно <code>f(x)</code></li>
+<li><code>x %&gt;% f(y)</code> эквивалентно <code>f(x, y)</code></li>
+<li><code>x %&gt;% f %&gt;% g %&gt;% h</code> эквивалентно <code>h(g(f(x)))</code></li>
+</ul>
+<p>В частности, первая операция <code>select(tab, Year, Total, Caspian)</code> была нами переписана в виде <code>tab %&gt;% select(Year, Total, Caspian)</code>. Если бы мы попытались написать ту же последовательность операций одним выражением в традиционной парадигме, это выглядело бы вот так:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result &lt;-<span class="st"> </span><span class="kw">arrange</span>(
+            <span class="kw">filter</span>(
+              <span class="kw">mutate</span>(
+                <span class="kw">select</span>(tab, Year, Total, Caspian),
+                <span class="dt">caspianRatio =</span> <span class="kw">round</span>(Caspian <span class="op">/</span><span class="st"> </span>Total, <span class="dv">3</span>)
+              ),
+              caspianRatio <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.445</span>
+            ),
+            caspianRatio
+          )</code></pre></div>
+<p>Согласитесь, ненаглядно и несколько устрашающе? К тому же, читать такой код надо задом наперед (изнутри наружу), чтобы понять последовательность действий. Синтаксис с использованием пайп-оператора позволяет:</p>
+<ul>
+<li>упорядочить операции по обработке данных слева направо (в противоположность направлению изнутри наружу);</li>
+<li>избежать вложенных вызовов функций (матрёшки);</li>
+<li>минимизировать количество переменных для храненния промежуточных результатов;</li>
+<li>упростить добавление новых операций по обработке данных в любое место последовательности.</li>
+</ul>
+<p>Таким образом, можно рекомендовать пакет <strong>dplyr</strong> в качестве стандартного средства манипуляции фреймами данных, особенно когда речь идет о большом количестве преобразований. При этом последовательности преобразований, в которых промежуточные результаты нигде больше не используются, следует оформлять одним выражением с использованием пайп-оператора <code>%&gt;%</code>.</p>
+<blockquote>
+<p><strong>Пайп-оператор <code>%&gt;%</code> можно быстро набрать в RStudio</strong>, нажав клавиатурное сочетание <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> на компьютерах Mac)</p>
+</blockquote>
+</div>
+<div id="questions_tasks_controls" class="section level2">
+<h2><span class="header-section-number">4.6</span> Контрольные вопросы и задачи</h2>
+<ol style="list-style-type: decimal">
+<li>Что такое функция и для каких сценариев обработки данных могут быть полезны функции?</li>
+<li>Может ли функция возвращать более одного значения? Что необходимо сделать, чтобы реализовать такую возможность?</li>
+<li>Что такое векторизованные вычисления?</li>
+<li>Перечислите функции семейства <code>apply</code> и задачи, которые они позволяют решить.</li>
+<li>Какая функция семейства <code>apply</code> позволяет выполнять вычисления не только по столбцам, но и по строкам?</li>
+<li>Можно ли передавать в функции семейства <code>apply</code> фреймы данных? Если да, то как интерпретируются такие данные?</li>
+<li>Какой пакет <strong>R</strong> позволяет выполнять векторизованные вычисления в более простой и быстрой форме, чем функции семейства <code>apply</code>? Можно ли с помощью него выполнять вычисления по строкам?</li>
+</ol>
+<div id="questions_controls" class="section level3">
+<h3><span class="header-section-number">4.6.1</span> Вопросы</h3>
+</div>
+<div id="tasks_controls" class="section level3">
+<h3><span class="header-section-number">4.6.2</span> Задачи</h3>
+<table>
+<tbody>
+<tr class="odd">
+<td><em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, 2017. DOI: 10.5281/zenodo.901911</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+
+
+
+<div class="footnotes">
+<hr />
+<ol start="2">
+<li id="fn2"><p>в картографии это называется “smart mapping”, что переводят как “умное картографирование”, хотя это и не самый удачный вариант перевода<a href="techniques.html#fnref2">↩</a></p></li>
+</ol>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="interpolation-deterministic.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="autocorrelation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="tables.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="graphics.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
