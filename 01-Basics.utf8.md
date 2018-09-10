@@ -590,9 +590,9 @@ cat("Сегодняшнаяя дата -", Sys.Date())
 
 ```r
 (a = rnorm(5)) # сгенерируем 5 случайных чисел, запишем их в переменную a и выведем на экран
-## [1] -1.4587680 -1.4628358 -2.1180070 -0.6230252 -1.6183864
+## [1] -0.2473860  2.1447547  0.8551909 -0.1387771 -1.5917095
 (b = 2 * a) # переменная a доступна, ее можно использовать и далее для вычислений
-## [1] -2.917536 -2.925672 -4.236014 -1.246050 -3.236773
+## [1] -0.4947719  4.2895094  1.7103818 -0.2775543 -3.1834191
 ```
 
 ## Условный оператор {#ifelse}
@@ -615,7 +615,7 @@ if (condition) {
 
 ```r
 (a = round(rnorm(1), 1))
-## [1] -1.5
+## [1] -0.2
 
 if (a < 0){
   cat('Получилось отрицательное число!')
@@ -687,7 +687,12 @@ print(capital)
 ## Краткий обзор {#review}
 
 Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
-<iframe src="https://tsamsonov.github.io/r-geo-course/slides/01-Basics_slides.html#1" width="672" height="500px"></iframe>
+
+```
+## PhantomJS not found. You can install it with webshot::install_phantomjs(). If it is installed, please make sure the phantomjs executable can be found via the PATH variable.
+```
+
+<iframe src="https://tsamsonov.github.io/r-geo-course/slides/01-Basics_slides.html#1" width="100%" height="500px"></iframe>
 
 > Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.
 
