@@ -329,13 +329,27 @@ class(countries)
 
 ```r
 head(countries[tail(colnames(countries))])
+## Simple feature collection with 6 features and 5 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -73.41544 ymin: -55.25 xmax: 75.15803 ymax: 42.68825
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+##   tiny homepart min_zoom min_label max_label
+## 1  -99        1        0         3         7
+## 2  -99        1        0         3         7
+## 3  -99        1        0         5        10
+## 4  -99        1        0         4         9
+## 5  -99        1        0         2         7
+## 6  -99        1        0         5        10
+##                         geometry
+## 1 MULTIPOLYGON (((61.21082 35...
+## 2 MULTIPOLYGON (((23.90415 -1...
+## 3 MULTIPOLYGON (((21.02004 40...
+## 4 MULTIPOLYGON (((51.57952 24...
+## 5 MULTIPOLYGON (((-66.95992 -...
+## 6 MULTIPOLYGON (((43.58275 41...
 ```
-
-<div data-pagedtable="false">
-  <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["tiny"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["homepart"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["min_zoom"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["min_label"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["max_label"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["geometry"],"name":[6],"type":["S3: sfc_MULTIPOLYGON"],"align":["right"]}],"data":[{"1":"-99","2":"1","3":"0","4":"3","5":"7","6":"<S3: sfc_MULTIPOLYGON>","_rn_":"1"},{"1":"-99","2":"1","3":"0","4":"3","5":"7","6":"<S3: sfc_MULTIPOLYGON>","_rn_":"2"},{"1":"-99","2":"1","3":"0","4":"5","5":"10","6":"<S3: sfc_MULTIPOLYGON>","_rn_":"3"},{"1":"-99","2":"1","3":"0","4":"4","5":"9","6":"<S3: sfc_MULTIPOLYGON>","_rn_":"4"},{"1":"-99","2":"1","3":"0","4":"2","5":"7","6":"<S3: sfc_MULTIPOLYGON>","_rn_":"5"},{"1":"-99","2":"1","3":"0","4":"5","5":"10","6":"<S3: sfc_MULTIPOLYGON>","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
 
 Видно, что геометрия пространственных объектов хранится в заключительном столбце с названием `geometry`. Данный столбец можно быстро извлечь, применив функцию `st_geometry()`. Полученный объект будет иметь тип __sfc__ (Simple Feature Geometry Column)
 

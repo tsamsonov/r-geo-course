@@ -185,15 +185,13 @@ library(dplyr)
 ##     intersect, setdiff, setequal, union
 df <- read.csv2("atm_emissions.csv")
 head(df)
-```
-
-<div data-pagedtable="false">
-  <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["YEAR"],"name":[1],"type":["int"],"align":["right"]},{"label":["TOTAL"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["SOLID"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["FLGAS"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["SO"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["NO"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["CO"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["CH"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["ORG"],"name":[9],"type":["dbl"],"align":["right"]}],"data":[{"1":"1992","2":"28207.6","3":"5609.1","4":"22598.5","5":"8171.3","6":"2718.1","7":"6813.0","8":"2583.9","9":"1608.9","_rn_":"1"},{"1":"1993","2":"24788.3","3":"4746.1","4":"20042.2","5":"7217.9","6":"2462.0","7":"5894.0","8":"2386.7","9":"1604.8","_rn_":"2"},{"1":"1994","2":"21929.1","3":"3870.2","4":"18058.9","5":"6512.5","6":"2085.2","7":"5140.8","8":"2609.3","9":"1238.0","_rn_":"3"},{"1":"1995","2":"21269.6","3":"3600.4","4":"17669.2","5":"6424.8","6":"1996.6","7":"5005.6","8":"2735.7","9":"1110.9","_rn_":"4"},{"1":"1996","2":"20274.1","3":"3233.4","4":"17040.8","5":"6156.7","6":"1920.4","7":"4876.6","8":"2531.3","9":"1161.8","_rn_":"5"},{"1":"1997","2":"19332.9","3":"3041.8","4":"16291.1","5":"5991.1","6":"1799.7","7":"4653.0","8":"2554.2","9":"989.9","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-
-```r
+##   YEAR   TOTAL  SOLID   FLGAS     SO     NO     CO     CH    ORG
+## 1 1992 28207.6 5609.1 22598.5 8171.3 2718.1 6813.0 2583.9 1608.9
+## 2 1993 24788.3 4746.1 20042.2 7217.9 2462.0 5894.0 2386.7 1604.8
+## 3 1994 21929.1 3870.2 18058.9 6512.5 2085.2 5140.8 2609.3 1238.0
+## 4 1995 21269.6 3600.4 17669.2 6424.8 1996.6 5005.6 2735.7 1110.9
+## 5 1996 20274.1 3233.4 17040.8 6156.7 1920.4 4876.6 2531.3 1161.8
+## 6 1997 19332.9 3041.8 16291.1 5991.1 1799.7 4653.0 2554.2  989.9
 
 find.max <- function(x) {
   return(names(x)[which.max(x)])
@@ -324,54 +322,46 @@ colnames(tab) <- c("Year", "Total", "Baltic", "Black", "Azov", "Caspian", "Kara"
 # Выбор переменных Year, Total, Caspian
 caspian <- select(tab, Year, Total, Caspian)
 head(caspian)
-```
-
-<div data-pagedtable="false">
-  <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Year"],"name":[1],"type":["int"],"align":["right"]},{"label":["Total"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Caspian"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"1993","2":"27.2","3":"12.1","_rn_":"1"},{"1":"1994","2":"24.6","3":"11.0","_rn_":"2"},{"1":"1995","2":"24.5","3":"10.4","_rn_":"3"},{"1":"1996","2":"22.4","3":"9.8","_rn_":"4"},{"1":"1997","2":"23.0","3":"9.8","_rn_":"5"},{"1":"1998","2":"22.0","3":"9.5","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-
-```r
+##   Year Total Caspian
+## 1 1993  27.2    12.1
+## 2 1994  24.6    11.0
+## 3 1995  24.5    10.4
+## 4 1996  22.4     9.8
+## 5 1997  23.0     9.8
+## 6 1998  22.0     9.5
 
 # Вычисление нового столбца caspianRatio
 caspian <- mutate(caspian, caspianRatio = round(Caspian / Total, 3))
 head(caspian)
-```
-
-<div data-pagedtable="false">
-  <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Year"],"name":[1],"type":["int"],"align":["right"]},{"label":["Total"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Caspian"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["caspianRatio"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"1993","2":"27.2","3":"12.1","4":"0.445","_rn_":"1"},{"1":"1994","2":"24.6","3":"11.0","4":"0.447","_rn_":"2"},{"1":"1995","2":"24.5","3":"10.4","4":"0.424","_rn_":"3"},{"1":"1996","2":"22.4","3":"9.8","4":"0.438","_rn_":"4"},{"1":"1997","2":"23.0","3":"9.8","4":"0.426","_rn_":"5"},{"1":"1998","2":"22.0","3":"9.5","4":"0.432","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-
-```r
+##   Year Total Caspian caspianRatio
+## 1 1993  27.2    12.1        0.445
+## 2 1994  24.6    11.0        0.447
+## 3 1995  24.5    10.4        0.424
+## 4 1996  22.4     9.8        0.438
+## 5 1997  23.0     9.8        0.426
+## 6 1998  22.0     9.5        0.432
 
 # Фильтрация по значению caspianRatio
 caspian <- filter(caspian, caspianRatio > 0.445)
 head(caspian)
-```
-
-<div data-pagedtable="false">
-  <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Year"],"name":[1],"type":["int"],"align":["right"]},{"label":["Total"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Caspian"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["caspianRatio"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"1994","2":"24.6","3":"11.0","4":"0.447","_rn_":"1"},{"1":"2000","2":"20.3","3":"9.2","4":"0.453","_rn_":"2"},{"1":"2001","2":"19.8","3":"8.9","4":"0.449","_rn_":"3"},{"1":"2002","2":"19.8","3":"9.2","4":"0.465","_rn_":"4"},{"1":"2004","2":"18.5","3":"8.3","4":"0.449","_rn_":"5"},{"1":"2005","2":"17.7","3":"8.0","4":"0.452","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-
-```r
+##   Year Total Caspian caspianRatio
+## 1 1994  24.6    11.0        0.447
+## 2 2000  20.3     9.2        0.453
+## 3 2001  19.8     8.9        0.449
+## 4 2002  19.8     9.2        0.465
+## 5 2004  18.5     8.3        0.449
+## 6 2005  17.7     8.0        0.452
 
 # Сортировка по значению caspianRatio
 caspian <- arrange(caspian, caspianRatio)
 head(caspian)
-```
-
-<div data-pagedtable="false">
-  <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Year"],"name":[1],"type":["int"],"align":["right"]},{"label":["Total"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Caspian"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["caspianRatio"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"2006","2":"17.5","3":"7.8","4":"0.446","_rn_":"1"},{"1":"2012","2":"15.7","3":"7.0","4":"0.446","_rn_":"2"},{"1":"1994","2":"24.6","3":"11.0","4":"0.447","_rn_":"3"},{"1":"2001","2":"19.8","3":"8.9","4":"0.449","_rn_":"4"},{"1":"2004","2":"18.5","3":"8.3","4":"0.449","_rn_":"5"},{"1":"2005","2":"17.7","3":"8.0","4":"0.452","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-
-```r
+##   Year Total Caspian caspianRatio
+## 1 2006  17.5     7.8        0.446
+## 2 2012  15.7     7.0        0.446
+## 3 1994  24.6    11.0        0.447
+## 4 2001  19.8     8.9        0.449
+## 5 2004  18.5     8.3        0.449
+## 6 2005  17.7     8.0        0.452
 
 # Агрегирование данных
 stats <- summarise(caspian, total.sum = sum(Total), mean.ratio = mean(caspianRatio))
@@ -398,13 +388,14 @@ result <- tab %>%
           filter(caspianRatio > 0.445) %>%
           arrange(caspianRatio)
 head(result)
+##   Year Total Caspian caspianRatio
+## 1 2006  17.5     7.8        0.446
+## 2 2012  15.7     7.0        0.446
+## 3 1994  24.6    11.0        0.447
+## 4 2001  19.8     8.9        0.449
+## 5 2004  18.5     8.3        0.449
+## 6 2005  17.7     8.0        0.452
 ```
-
-<div data-pagedtable="false">
-  <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Year"],"name":[1],"type":["int"],"align":["right"]},{"label":["Total"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Caspian"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["caspianRatio"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"2006","2":"17.5","3":"7.8","4":"0.446","_rn_":"1"},{"1":"2012","2":"15.7","3":"7.0","4":"0.446","_rn_":"2"},{"1":"1994","2":"24.6","3":"11.0","4":"0.447","_rn_":"3"},{"1":"2001","2":"19.8","3":"8.9","4":"0.449","_rn_":"4"},{"1":"2004","2":"18.5","3":"8.3","4":"0.449","_rn_":"5"},{"1":"2005","2":"17.7","3":"8.0","4":"0.452","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
 
 Обратите внимание, что мы уже не подставляли исходный фрейм данных в качестве первого параметра при вызове функций __dplyr__, а направляли его посредством пайп-оператора. Этот оператор работает следующим образом:
 
