@@ -62,7 +62,7 @@ plot(bed,
      legend = F)
 ```
 
-<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-1-1.png" width="672" />
+![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-1-1.png)<!-- -->
 
 ```r
 plot(ice, 
@@ -72,7 +72,7 @@ plot(ice,
      legend = F)
 ```
 
-<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-1-2.png" width="672" />
+![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-1-2.png)<!-- -->
 
 ```r
 
@@ -87,7 +87,7 @@ plot(borders,
      add = TRUE)
 ```
 
-<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-1-3.png" width="672" />
+![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-1-3.png)<!-- -->
 
 ```r
 
@@ -103,7 +103,7 @@ plot(borders,
      add = TRUE)
 ```
 
-<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-1-4.png" width="672" />
+![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-1-4.png)<!-- -->
 
 ## Фокальные операции {#raster_focal}
 
@@ -127,7 +127,7 @@ dem <- crop(ice, extent(-120, -75, 10, 40))
 spplot(dem)
 ```
 
-<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-2-1.png" width="672" />
+![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-2-1.png)<!-- -->
 
 ```r
 
@@ -145,7 +145,7 @@ spplot(stack(dem, filtered),
        names.attr=c('Исходный рельеф', 'Сглаживание средним'))
 ```
 
-<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-2-2.png" width="672" />
+![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-2-2.png)<!-- -->
 
 Более мягким эффектом сглаживания, который к тому же не нарушает дифференцируемость поверхности, является гауссово сглаживание. Коэффициенты в матрице Гаусса убывают от центральной ячейки к краям матрицы по закону Гаусса-Лапласа, что позволяет придать центральной ячейке более высокий вес по сравнению с ячейками, располагающимися на краю анализируемой окрестности:
 
@@ -157,7 +157,7 @@ spplot(stack(dem, filtered),
        names.attr=c('Исходный рельеф', 'Гауссово сглаживание'))
 ```
 
-<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-3-1.png)<!-- -->
 
 Еще одна интересная область применения фильтрации --- это обнаружение границ (change detection). Границы на изображении возникают в тех местах, где его яркость резко меняет свое значение (в одном или нескольких каналах). Например, на фотографии контур лица может быть распознан по перепаду яркости между его изображением и фоном (если он имеет существенно отличный цвет). Поскольку перепад яркости соответствует экстремальным значениям производной поверхности (отрицательным или положительным), его также можно определить путем фокального анализа, а затем отсечь ячейки растра, в которых значение этой производной по модулю превышает заданный порог (то есть, имеет необходимый контраст). 
 
@@ -177,7 +177,7 @@ plot(filtered,
      main = 'Производная поверхности')
 ```
 
-<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-4-1.png)<!-- -->
 
 ```r
 
@@ -196,7 +196,7 @@ plot(faults,
      add = TRUE)
 ```
 
-<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-4-2.png" width="672" />
+![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-4-2.png)<!-- -->
 
 Еще один распространненый случай использования фокальных операций --- это морфометрический анализ поверхностей. Квадратная окрестность $3\times3$ вокруг каждой ячейки формирует локальную поверхность, производные которой дают представление об уклоне, экспозиции и прочих морфометрических параметрах. Их можно вычислить с помощью функции `terrain()` из пакета `raster`:
 
@@ -207,7 +207,7 @@ dem <- raster('dem_fergana.tif')
 spplot(dem)
 ```
 
-<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-5-1.png)<!-- -->
 
 ```r
 
@@ -218,7 +218,7 @@ spplot(slope,
        names.attr=c('Углы наклона'))
 ```
 
-<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-5-2.png" width="672" />
+![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-5-2.png)<!-- -->
 
 ```r
 
@@ -229,7 +229,7 @@ spplot(aspect,
        names.attr=c('Экспозиции склона'))
 ```
 
-<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-5-3.png" width="672" />
+![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-5-3.png)<!-- -->
 
 Вычисление производных поверхности позволяет не только исследовать рельеф, но также строить его изображения. Например, хорошо знакомую всем по картам аналитическую отмыку рельефа (_hillshade_). Яркость поверхности в этом способе изображения зависит от угла между направлением на источник освещения (откуда светит Солнце) и нормалью к поверхности. Нормаль можно вычислить как напрямую через производные поверхности, так и восстановить на основе значений угла наклона и экспозиции в точке, что и используется в пакете __raster__. Обратите внимание на то, что для того чтобы повысить наглядность (контрастность) изображения, мы умножаем высоты рельефа на 20. Это стандартная практика для мелкомасштабных карт:
 
@@ -245,7 +245,7 @@ plot(hill,
      main = 'Отмывка рельефа')
 ```
 
-<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-6-1.png)<!-- -->
 
 ### Расширенная окрестность {#raster_focal_extended}
 
@@ -334,7 +334,7 @@ plot(stations,
      add = TRUE)
 ```
 
-<img src="12-SpatialAnalysisRaster_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+![](12-SpatialAnalysisRaster_files/figure-epub3/unnamed-chunk-7-1.png)<!-- -->
 
 ## Зональные операции {#raster_zonal}
 
