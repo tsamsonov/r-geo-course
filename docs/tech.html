@@ -1423,7 +1423,7 @@ d12 =<span class="st"> </span><span class="kw">sqrt</span>((x[<span class="dv">1
 d23 =<span class="st"> </span><span class="kw">sqrt</span>((x[<span class="dv">2</span>] <span class="op">-</span><span class="st"> </span>x[<span class="dv">3</span>]) <span class="op">^</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>(y[<span class="dv">2</span>] <span class="op">-</span><span class="st"> </span>y[<span class="dv">3</span>]) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>)
 d31 =<span class="st"> </span><span class="kw">sqrt</span>((x[<span class="dv">3</span>] <span class="op">-</span><span class="st"> </span>x[<span class="dv">4</span>]) <span class="op">^</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>(y[<span class="dv">3</span>] <span class="op">-</span><span class="st"> </span>y[<span class="dv">4</span>]) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>)
 <span class="kw">cat</span>(d12, d23, d31)
-## 3.296665 2.733922 1.999364</code></pre></div>
+## 2.073931 1.46541 1.458514</code></pre></div>
 <p>В правой части этих выражений стоит один и тот же код, который я скопировал и вставил, а далее заменил названия переменных. Это плохо сразу по двум причинам: дублирование фрагментов программы и возрастание вероятности опечаток в скопированой копии. Улучшить код можно, введя функцию вычисления расстояний:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">distance =<span class="st"> </span><span class="cf">function</span>(x1, y1, x2, y2) {
   <span class="kw">sqrt</span>((x1 <span class="op">-</span><span class="st"> </span>x2) <span class="op">^</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>(y1 <span class="op">-</span><span class="st"> </span>y2) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>)
@@ -1433,7 +1433,7 @@ d12 =<span class="st"> </span><span class="kw">distance</span>(x[<span class="dv
 d23 =<span class="st"> </span><span class="kw">distance</span>(x[<span class="dv">2</span>], y[<span class="dv">2</span>], x[<span class="dv">3</span>], y[<span class="dv">3</span>])
 d31 =<span class="st"> </span><span class="kw">distance</span>(x[<span class="dv">3</span>], y[<span class="dv">3</span>], x[<span class="dv">4</span>], y[<span class="dv">4</span>])
 <span class="kw">cat</span>(d12, d23, d31)
-## 3.296665 2.733922 1.999364</code></pre></div>
+## 2.073931 1.46541 1.458514</code></pre></div>
 <p>Функция всегда возвращает один объект: значение, вектор, список и т.д. Например, мы можем сделать функцию следующего уровня, рассчитывающая сразу все расстояния для множества точек:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">distances =<span class="st"> </span><span class="cf">function</span>(x, y) {
   n =<span class="st"> </span><span class="kw">length</span>(x)
@@ -1441,14 +1441,14 @@ d31 =<span class="st"> </span><span class="kw">distance</span>(x[<span class="dv
 }
 
 <span class="kw">distances</span>(x, y)
-## [1] 3.296665 2.733922 1.999364</code></pre></div>
+## [1] 2.073931 1.465410 1.458514</code></pre></div>
 <p>Можно пойти еще дальше, и сделать функцию, выполняющую вычисление длины линии, заданной координатами:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">line_length =<span class="st"> </span><span class="cf">function</span>(x, y) {
   <span class="kw">sum</span>(<span class="kw">distances</span>(x, y))
 }
 
 <span class="kw">line_length</span>(x, y)
-## [1] 8.02995</code></pre></div>
+## [1] 4.997855</code></pre></div>
 <p>Обратите внимание на то, как мы используем одну ранее написанную функцию при создании другой функции! Это весьма распространенная практика: одна и та же функция может быть как самостоятельно полезной (вызываться непосредственно в программе полтьзователя), так и применяться для решения задач внутри других функций. При этом иногда даже относительно простые фрагменты кода имеет смысл оформлять в виде функций, так как это может улучшить читаемость программы и пояснить смысл выполняемых операций. Так, например, <code>line_length(x, y)</code> в более явном виде обозначает операцию вычисления длины по координатам, нежели <code>sum(distances(x, y))</code>. В то же время, здесь важно не переусердствовать и оформлять короткие фрагменты кода в виде функций только если они будут применяться вами неоднократно.</p>
 <p>Если вам нужно вернуть из функции несколько объектов, имеющих разный тип или смысл, заключите их в список и дайте каждому элементу списка “говорящее” имя. Например, помимо периметра, мы можем вернуть также извилистость линии (отношение длины линии к длине отрезка, соединяющего ее первую и последнюю точку):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">line_params =<span class="st"> </span><span class="cf">function</span>(x, y) {
@@ -1462,9 +1462,9 @@ d31 =<span class="st"> </span><span class="kw">distance</span>(x[<span class="dv
 
 result =<span class="st"> </span><span class="kw">line_params</span>(x, y)
 result<span class="op">$</span>length
-## [1] 8.02995
+## [1] 4.997855
 result<span class="op">$</span>sinuosity
-## [1] 10.56656</code></pre></div>
+## [1] 1.673084</code></pre></div>
 </div>
 <div id="tech-fun-functionals" class="section level3">
 <h3><span class="header-section-number">4.1.2</span> Функционалы</h3>
@@ -1526,12 +1526,12 @@ result<span class="op">$</span>sinuosity
 <p>Рассмотрим применение функций данного семейства на примере анализа основных социально-экономических характеристик столиц субъектов Северо-Западного округа за 2015 год:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Функционалы</span>
 <span class="kw">library</span>(tidyverse)
-## ── Attaching packages ───────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+## ── Attaching packages ───────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 ## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ## ✔ readr   1.1.1     ✔ forcats 0.3.0
-## ── Conflicts ──────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ── Conflicts ──────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
 <span class="kw">library</span>(readxl)
@@ -1778,8 +1778,41 @@ f <span class="op">+</span><span class="st"> </span><span class="dv">17</span> <
 <blockquote>
 <p>Когда функция применяет квотацию аргументов, говорят что осуществляется <strong>нестандартная оценка</strong> <em>(NSE – non-standard evaluation)</em>. Если аргументы функции оцениваются, то происходит <strong>стандартная оценка</strong> <em>(SE – standard evaluation)</em></p>
 </blockquote>
-<p>Иногда бывает необходимо использовать строковые названия столбцов (например, если они записаны у вас в отдельный вектор). В таком случае можно использовать функцию <code>select_()</code> (с подчеркиванием в конце), которая будет выполнять оценку ее аргументов вместо квотации:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select_</span>(df, <span class="st">&#39;salary&#39;</span>, <span class="st">&#39;birth&#39;</span>)
+<p>Иногда бывает необходимо использовать строковые названия столбцов (например, если они записаны у вас в переменные). В таком случае можно использовать функцию <code>select_()</code> (с подчеркиванием в конце), которая будет выполнять оценку ее аргументов вместо квотации:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f1 =<span class="st"> &#39;salary&#39;</span>
+f2 =<span class="st"> &#39;birth&#39;</span>
+<span class="kw">select_</span>(df, f1, f2)        <span class="co"># ОК</span>
+## # A tibble: 10 x 2
+##    salary birth
+##     &lt;dbl&gt; &lt;dbl&gt;
+##  1 36268.  13  
+##  2 39790   14.5
+##  3 40303.  11.8
+##  4 69884.  18.1
+##  5 31483   16.2
+##  6 34142   13.3
+##  7 53240.  12.4
+##  8 32377.  13.8
+##  9 27405.  13.2
+## 10 44187   13.6
+<span class="kw">select_</span>(df, salary, birth) <span class="co"># ошибка: функция пыьтается оценить несуществующие объекты salary и birth</span>
+## Error in compat_lazy_dots(.dots, caller_env(), ...): объект &#39;salary&#39; не найден</code></pre></div>
+<p>Однако кавычки в данном случае усложняют внешний вид программы и затрудняют написание ее текста. Если вы передаете <em>константы</em> в качестве аргументов, они будут работать в обоих случаях:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(df, <span class="st">&#39;salary&#39;</span>, <span class="st">&#39;birth&#39;</span>)
+## # A tibble: 10 x 2
+##    salary birth
+##     &lt;dbl&gt; &lt;dbl&gt;
+##  1 36268.  13  
+##  2 39790   14.5
+##  3 40303.  11.8
+##  4 69884.  18.1
+##  5 31483   16.2
+##  6 34142   13.3
+##  7 53240.  12.4
+##  8 32377.  13.8
+##  9 27405.  13.2
+## 10 44187   13.6
+<span class="kw">select_</span>(df, <span class="st">&#39;salary&#39;</span>, <span class="st">&#39;birth&#39;</span>) 
 ## # A tibble: 10 x 2
 ##    salary birth
 ##     &lt;dbl&gt; &lt;dbl&gt;
@@ -1793,7 +1826,9 @@ f <span class="op">+</span><span class="st"> </span><span class="dv">17</span> <
 ##  8 32377.  13.8
 ##  9 27405.  13.2
 ## 10 44187   13.6</code></pre></div>
-<p>Однако кавычки в данном случае усложняют внешний вид программы и затрудняют написание ее текста.</p>
+<blockquote>
+<p>Функции <em>dplyr</em> имеют парные к ним функции с символом подчеркивания на конце, которые производят оценку, а не квотацию аргументов.</p>
+</blockquote>
 <p>Иногда выражения бывает необходимо создать, а оценивать уже потом. Для этого существуеют <strong>объекты выражений</strong>, которые создаются с помощью функции <code>expression()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">d =</span> <span class="kw">expression</span>(b<span class="op">^</span><span class="dv">2</span> <span class="op">-</span><span class="st"> </span><span class="dv">4</span><span class="op">*</span>a)) <span class="co"># создаем выражение</span>
 ## expression(b^2 - 4 * a)
@@ -1811,6 +1846,28 @@ b =<span class="st"> </span><span class="dv">7</span>
 </div>
 <div id="tech_questions" class="section level2">
 <h2><span class="header-section-number">4.4</span> Контрольные вопросы и упражнения</h2>
+<ol style="list-style-type: decimal">
+<li>Что такое функция?</li>
+<li>Какое ключевое слово ипользуется для создания функции?</li>
+<li>В каких случаях целесообразно применение функций?</li>
+<li>Сколько аргументов может принимать функция?</li>
+<li>Можно ли из одной функции вызывать другую функцию?</li>
+<li>Как осуществить принудительный выход из функции с возвратом результата?</li>
+<li>Что необходимо сделать, если надо передать несколько объектов из функции?</li>
+<li>Для чего нужны функционалы семейства <em>apply</em>? В каких задачах они бывают полезны?</li>
+<li>Перечислите функции семейства <em>apply</em>, назовите их отличия и сферы применения.</li>
+<li>Какая функция семейства <em>apply</em> позволяет обабатывать заданные измерения?</li>
+<li>Какой объект первым передается в функцию, подставляемую в параметр <code>FUN</code>, если применяется <em>lapply</em> к фрейму данных?</li>
+<li>Назовите аналоги функций <em>apply</em> из пакета <strong>purrr</strong></li>
+<li>Что такое метапрограммирование?</li>
+<li>Из каких объектов состоят выражения в R?</li>
+<li>Что из себя по на самом деле представляют бинарные операторы в R?</li>
+<li>Как обратиться к объекту, символ которого не является допустимым именем переменной?</li>
+<li>Что такое оценка и квотация выражения? Для чего они используются?</li>
+<li>Как понять, будет ли используемая вами функция квотрировать или оценивать ее аргументы?</li>
+<li>Как называются функции <strong>dplyr</strong>, осуществляющие оценку, а не квотацию аргументов?</li>
+<li>Как создать и оценить объект выражения в R?</li>
+</ol>
 <div id="tech_questions_questions" class="section level3">
 <h3><span class="header-section-number">4.4.1</span> Вопросы</h3>
 </div>
