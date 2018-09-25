@@ -1423,7 +1423,7 @@ d12 =<span class="st"> </span><span class="kw">sqrt</span>((x[<span class="dv">1
 d23 =<span class="st"> </span><span class="kw">sqrt</span>((x[<span class="dv">2</span>] <span class="op">-</span><span class="st"> </span>x[<span class="dv">3</span>]) <span class="op">^</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>(y[<span class="dv">2</span>] <span class="op">-</span><span class="st"> </span>y[<span class="dv">3</span>]) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>)
 d31 =<span class="st"> </span><span class="kw">sqrt</span>((x[<span class="dv">3</span>] <span class="op">-</span><span class="st"> </span>x[<span class="dv">4</span>]) <span class="op">^</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>(y[<span class="dv">3</span>] <span class="op">-</span><span class="st"> </span>y[<span class="dv">4</span>]) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>)
 <span class="kw">cat</span>(d12, d23, d31)
-## 2.073931 1.46541 1.458514</code></pre></div>
+## 2.688253 3.036271 3.393806</code></pre></div>
 <p>В правой части этих выражений стоит один и тот же код, который я скопировал и вставил, а далее заменил названия переменных. Это плохо сразу по двум причинам: дублирование фрагментов программы и возрастание вероятности опечаток в скопированой копии. Улучшить код можно, введя функцию вычисления расстояний:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">distance =<span class="st"> </span><span class="cf">function</span>(x1, y1, x2, y2) {
   <span class="kw">sqrt</span>((x1 <span class="op">-</span><span class="st"> </span>x2) <span class="op">^</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>(y1 <span class="op">-</span><span class="st"> </span>y2) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>)
@@ -1433,7 +1433,7 @@ d12 =<span class="st"> </span><span class="kw">distance</span>(x[<span class="dv
 d23 =<span class="st"> </span><span class="kw">distance</span>(x[<span class="dv">2</span>], y[<span class="dv">2</span>], x[<span class="dv">3</span>], y[<span class="dv">3</span>])
 d31 =<span class="st"> </span><span class="kw">distance</span>(x[<span class="dv">3</span>], y[<span class="dv">3</span>], x[<span class="dv">4</span>], y[<span class="dv">4</span>])
 <span class="kw">cat</span>(d12, d23, d31)
-## 2.073931 1.46541 1.458514</code></pre></div>
+## 2.688253 3.036271 3.393806</code></pre></div>
 <p>Функция всегда возвращает один объект: значение, вектор, список и т.д. Например, мы можем сделать функцию следующего уровня, рассчитывающая сразу все расстояния для множества точек:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">distances =<span class="st"> </span><span class="cf">function</span>(x, y) {
   n =<span class="st"> </span><span class="kw">length</span>(x)
@@ -1441,14 +1441,14 @@ d31 =<span class="st"> </span><span class="kw">distance</span>(x[<span class="dv
 }
 
 <span class="kw">distances</span>(x, y)
-## [1] 2.073931 1.465410 1.458514</code></pre></div>
+## [1] 2.688253 3.036271 3.393806</code></pre></div>
 <p>Можно пойти еще дальше, и сделать функцию, выполняющую вычисление длины линии, заданной координатами:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">line_length =<span class="st"> </span><span class="cf">function</span>(x, y) {
   <span class="kw">sum</span>(<span class="kw">distances</span>(x, y))
 }
 
 <span class="kw">line_length</span>(x, y)
-## [1] 4.997855</code></pre></div>
+## [1] 9.11833</code></pre></div>
 <p>Обратите внимание на то, как мы используем одну ранее написанную функцию при создании другой функции! Это весьма распространенная практика: одна и та же функция может быть как самостоятельно полезной (вызываться непосредственно в программе полтьзователя), так и применяться для решения задач внутри других функций. При этом иногда даже относительно простые фрагменты кода имеет смысл оформлять в виде функций, так как это может улучшить читаемость программы и пояснить смысл выполняемых операций. Так, например, <code>line_length(x, y)</code> в более явном виде обозначает операцию вычисления длины по координатам, нежели <code>sum(distances(x, y))</code>. В то же время, здесь важно не переусердствовать и оформлять короткие фрагменты кода в виде функций только если они будут применяться вами неоднократно.</p>
 <p>Если вам нужно вернуть из функции несколько объектов, имеющих разный тип или смысл, заключите их в список и дайте каждому элементу списка “говорящее” имя. Например, помимо периметра, мы можем вернуть также извилистость линии (отношение длины линии к длине отрезка, соединяющего ее первую и последнюю точку):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">line_params =<span class="st"> </span><span class="cf">function</span>(x, y) {
@@ -1462,9 +1462,9 @@ d31 =<span class="st"> </span><span class="kw">distance</span>(x[<span class="dv
 
 result =<span class="st"> </span><span class="kw">line_params</span>(x, y)
 result<span class="op">$</span>length
-## [1] 4.997855
+## [1] 9.11833
 result<span class="op">$</span>sinuosity
-## [1] 1.673084</code></pre></div>
+## [1] 3.403391</code></pre></div>
 </div>
 <div id="tech-fun-functionals" class="section level3">
 <h3><span class="header-section-number">4.1.2</span> Функционалы</h3>
@@ -1526,12 +1526,12 @@ result<span class="op">$</span>sinuosity
 <p>Рассмотрим применение функций данного семейства на примере анализа основных социально-экономических характеристик столиц субъектов Северо-Западного округа за 2015 год:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Функционалы</span>
 <span class="kw">library</span>(tidyverse)
-## ── Attaching packages ───────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+## ── Attaching packages ─────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 ## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ## ✔ readr   1.1.1     ✔ forcats 0.3.0
-## ── Conflicts ──────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ── Conflicts ────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
 <span class="kw">library</span>(readxl)
@@ -1846,6 +1846,8 @@ b =<span class="st"> </span><span class="dv">7</span>
 </div>
 <div id="tech_questions" class="section level2">
 <h2><span class="header-section-number">4.4</span> Контрольные вопросы и упражнения</h2>
+<div id="tech_questions_questions" class="section level3">
+<h3><span class="header-section-number">4.4.1</span> Вопросы</h3>
 <ol style="list-style-type: decimal">
 <li>Что такое функция?</li>
 <li>Какое ключевое слово ипользуется для создания функции?</li>
@@ -1868,11 +1870,27 @@ b =<span class="st"> </span><span class="dv">7</span>
 <li>Как называются функции <strong>dplyr</strong>, осуществляющие оценку, а не квотацию аргументов?</li>
 <li>Как создать и оценить объект выражения в R?</li>
 </ol>
-<div id="tech_questions_questions" class="section level3">
-<h3><span class="header-section-number">4.4.1</span> Вопросы</h3>
 </div>
 <div id="tech_questions_tasks" class="section level3">
 <h3><span class="header-section-number">4.4.2</span> Упражнения</h3>
+<ol style="list-style-type: decimal">
+<li><p>Напишите функцию <code>is_leap(year)</code>, которая определяет, является ли указанный год високосным. Протестируйте ее в вашем скрипте.</p>
+<blockquote>
+<p><strong>Подсказка</strong>: високосным считается год, кратный 400 или 4</p>
+</blockquote></li>
+<li><p><a href="https://en.wikipedia.org/wiki/Tobler%27s_hiking_function"><strong>Функция Тоблера</strong></a> показывает зависимость скорости пешего маршрута (в км/ч) от угла наклона на местности. Предположим, в вашем распоряжении имеется матрица профиля рельефа, в которой в одном столбце указано расстояние от начала маршрута, а во втором — абсолютная отметка точки. Напишите функцию <code>hiking_speed(profile)</code>, которая вычисляет время прохождения маршрута на основе переданной ей матрицы. Используйте для тестирования функции маршрут из 10 точек с шагом в 1 км и случайным разбросом высот в диапазоне от 500 до 1000 метров (равномерное распределение).</p>
+<blockquote>
+<p><strong>Подсказка:</strong> угол наклона на каждом участке считается постоянным. Для вычисления экспоненты используйте встроенную функцию <code>exp()</code>.</p>
+</blockquote></li>
+<li><p>В текущей лекции мы работали с <a href="https://github.com/tsamsonov/r-geo-course/blob/master/data/sevzap.xlsx"><strong>данными</strong></a> по характеристикам центров субъектов СЗФО. Напишите функцию <code>get_extremes(df)</code>, которая определяет названия переменных, по которым каждая строчка фрейма данных (в нашем случае — город) занимает максимальное и минимальное положение относительно среднего значения по всем городам. Например, Петрозаводск имеет максимальный рейтинг по показателю <em>doctors</em> (1.05) — количество врачей на 10000 чел и минимальный по показателю <em>manufact</em> (0.05) — продукции обрабатывающей промышленность (в млн руб). Результирующая таблица должна содержать первое по счету поле, а также поля <em>minvar</em> и <em>maxvar</em>:</p>
+<pre><code>Region        minvar    maxvar
+Петрозаводск doctors  manufact
+...
+...</code></pre>
+<blockquote>
+<p><strong>Подсказка:</strong> для начала вам надо нормировать значения всех переменных с помощью <code>lapply()</code>. Затем нужно определить номер столбца, имеющего максимальное и минимальное значений для каждой строки таблицы. Используйте для этого функции <code>which.min()</code> и <code>which.max()</code> возвращающие индекс максимального и минимального элемента вектора, в комбинации с функцией <code>colnames()</code>, возвращающей названия переменных. Применяйте функцию <code>apply()</code>, которая умеет ходить по строкам.</p>
+</blockquote></li>
+</ol>
 <table>
 <tbody>
 <tr class="odd">
