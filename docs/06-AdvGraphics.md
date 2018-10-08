@@ -2,8 +2,354 @@
 
 
 
-[Программный код главы](https://github.com/tsamsonov/r-geo-course/blob/master/code/06-AdvGraphics.R)
+## Предварительные требования {#advgraphics_prerequisites}
 
-Раздел посвящен продвинутой графике в R с использованием системы grid и грамматик. 
+Для работы по теме текущей лекции вам понадобятся пакеты __ggplot2__ и __dplyr__ из __tidyverse__. Помимо этого, мы будем работать напрямую с данными [__Евростата__](https://ec.europa.eu/eurostat/web/main/home), к которым можно обращаться напрямую с использованием пакета [__eurostat__](https://ropengov.github.io/eurostat/):
 
-[To be written...]
+```r
+library('eurostat')
+library('dplyr')
+library('tidyr')
+library('ggplot2')
+```
+
+В настоящей главе мы кратко познакомимся с системой [__ggplot2__](https://ggplot2.tidyverse.org/). __gg__ расшифровывается как _grammar of graphics_. Под этим понимается определенная (какая — мы узнаем далее) система правил, позволяющих описывать и строить графики. ggplot довольно сильно отличается от стандартной графической подсистемы R. Прежде всего — модульным подходом к построению изображений. В ggplot вы собираете графики «по кирпичикам», отдельно определяя источник данных, способы изображения, параметры системы координат и т.д. -- путем вызова и _сложения_ результатов соответствующих функций. 
+
+При построении элементарных графиков __ggplot__ может показаться (и по факту так и есть) сложнее, чем стандартная графическая подсистема. Однако при усложнении требований к внешнему виду и информационному насыщению графика сложность ggplot оказывается преимуществом, и с ее помощью _относительно просто_ можно получать элегантные и информативные визуализации, на создание которых с помощью стандартной подсистемы пришлось бы затратить невероятные усилия! В этой главе мы кратко познакомимся с ggplot, а далее на протяжении курса будем регулярно ее использовать, осваивая новые возможности.
+
+## Загрузка данных Евростата {#advgraphics_eurostat}
+
+Таблицы данных Евростата имеют уникальные коды, по которым их можно загружать, используя API (Application programming interface). В этой лекции мы будем работать с данными о крупнейших международных партнерах Евросоюза по импорту и экспорту основны видов товаров. Например, [таблица данных по продуктам питания, напиткам и табаку](https://ec.europa.eu/eurostat/tgm/table.do?tab=table&init=1&language=en&pcode=tet00034&plugin=1) имеет код __tet00034__. 
+
+Для чтения таблиц по кодам в пакете eurostat имеется функция `get_eurostat()`. Чтобы год измерения получить в виде числа, а не объекта типа `Date`, используем второй параметр `time_format = num`. Для перехода от кодов продукции и стран к их полным наименованиям, дополнительно вызовем функцию `label_eurostat()` из того же пакета:
+
+```r
+library(eurostat)
+
+tables = c('tet00034', 'tet00033', 'tet00032', 'tet00031','tet00030', 'tet00029')
+
+trades = lapply(tables, function(X) { # прочтем несколько таблиц в список
+  get_eurostat(X) %>% label_eurostat()
+}) %>% 
+  bind_rows() %>% # объединим прочитанные таблицы в одну
+  select(-geo) %>% # убираем столбец с территорией торговли, т.к. там только Евросоюз
+  filter(stringr::str_detect(indic_et, 'Exports in|Imports in')) %>% # оставим только экспорт и импорт
+  spread(indic_et, values) %>%  # вынесем данные по экспорту и импорту в отдельные переменные
+  rename(export = `Exports in million of ECU/EURO`, # дадим им краткие названия
+         import = `Imports in million of ECU/EURO`) %>% 
+  mutate(partner = as.factor(partner))
+```
+
+## Базовый шаблон ggplot {#advgraphics_template}
+
+Для начала посмотрим, как можно показать суммарный экспорт по годам:
+
+```r
+trades_total = trades %>% 
+  group_by(time) %>% 
+  summarise(export = sum(export),
+            import = sum(import))
+  
+ggplot(data = trades_total) +
+  geom_point(mapping = aes(x = time, y = export))
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+
+Базовый (минимально необходимый) шаблон построения графика через __ggplot__ выглядит следующим образом:
+
+```r
+ggplot(data = <DATA>) + 
+  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
+```
+где:
+
+- `DATA` --- источник данных (фрейм, тиббл)
+- `GEOM_FUNCTION` --- функция, отвечающая за геометрический тип графика (точки, линии, гистограммы и т.д.)
+- `MAPPINGS` --- перечень соответствий между переменными данных (содержащихся в `DATA`) и графическими переменными (координатами, размерами, цветами и т.д.)
+
+## Геометрические типы и преобразования {#advgraphics_geoms}
+
+ggplot предлагает несколько десятков различных видов геометрий для отображения данных. С их полным перечнем пожно познакомиться [тут](https://ggplot2.tidyverse.org/reference/). Мы рассмотрим несколько наиболее употребительных, а геометрии, связанные со статистическими преобразованиями, оставим для следующей темы.
+
+В первом примере мы отображали данные по экспорту за разные года, однако точечный тип не очень подходит для данного типа графика, поскольку он показывает динамику изменения. А это означает, что желательно соединить точки линиями. Для этого используем геометрию `geom_line()`:
+
+
+```r
+ggplot(data = trades_total) +
+  geom_line(mapping = aes(x = time, y = export))
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+
+Поскольку в данном случае величина является агрегированной за год, более правильным может быть показ ее изменений в виде ступенчатого линейного графика, который получается через геометрию `geom_step()`:
+
+
+```r
+ggplot(data = trades_total) +
+  geom_step(mapping = aes(x = time, y = export))
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+
+Можно совместить несколко геометрий, добавив их последовательно на график:
+
+```r
+ggplot(data = trades_total) +
+  geom_line(mapping = aes(x = time, y = export)) +
+  geom_point(mapping = aes(x = time, y = export))
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+
+Если у нескольких геометрий одинаковые отображения, их можно вынести в вызов функции `ggplot()` (чтобы не дублировать):
+
+```r
+ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
+  geom_line() +
+  geom_point()
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-8-1.png" width="672" />
+
+Наглядность линейного графика можно усилить, добавив "заливку" области с использованием `geom_area()`:
+
+```r
+ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
+  geom_area(alpha = 0.5) + # полигон с прозрачностью 0,5
+  geom_line() +
+  geom_point()
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+
+Для построения столбчатой диаграммы следует использовать геометрию `geom_col()`. Например, вот так выглядит структура экспорта продукции машиностроения из Евросоюза по ведущим партнерам:
+
+```r
+trades %>% 
+  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) %>% 
+  ggplot(mapping = aes(x = partner, y = export)) +
+  geom_col()
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+
+Развернуть диаграмму можно, используя функцию `coord_flip()`:
+
+```r
+trades %>% 
+  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) %>% 
+  ggplot(mapping = aes(x = partner, y = export)) +
+  geom_col() +
+  coord_flip()
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+
+## Графические переменные и группировки {#advgraphics_aes}
+
+Графические переменные --- это параметры, определяющие внешний вид символов. К ним относятся цвет (тон, насыщенность и светлота), размер, форма, ориентировка, внутренняя структура символа. В ggplot значения графических переменных могут быть едиными для всех измерений, а могут зависеть от величины измерений. С точки зрения управления здесь все просто: если вы хотите, чтобы какой-то графический параметр зависел от значения показателя, он должен быть указан внутри конструкции `mapping = aes(...)`. Если необходимо, чтобы этот параметр был одинаковым для всех измерений, вы должны его указать внутри `<GEOM_FUNCTION>(...)`, то есть не передавать в `mapping`.
+
+Для управления цветом, формой и размером (толщиной) графического примитива следует использовать параметры _color_, _shape_ и _size_ соответственно. Посмотрим, как они работают внутри и за пределами функции `aes()`:
+
+
+```r
+# один цвет для графика (параметр за пределами aes)
+ggplot(trades_total) + 
+    geom_line(mapping = aes(x = time, y = export), color = 'blue')
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-12-1.png" width="672" />
+
+```r
+
+trade_russia = trades %>% filter(partner == 'Russia')
+
+ggplot(trade_russia) + # у каждой группы данных свой цвет (параметр внутри aes)
+  geom_line(mapping = aes(x = time, y = export, color = sitc06))
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-12-2.png" width="672" />
+
+```r
+
+ggplot(trade_russia, mapping = aes(x = time, y = export, color = sitc06)) + # а теперь и с точками
+  geom_line() +
+  geom_point()
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-12-3.png" width="672" />
+
+Аналогичным образом работает параметр формы значка:
+
+```r
+# один значок для графика
+ggplot(trades_total) + 
+    geom_point(mapping = aes(x = time, y = export), shape = 15)
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+
+```r
+    
+
+ggplot(trade_russia) + # у каждой группы данных свой значок
+    geom_point(mapping = aes(x = time, y = export, shape = sitc06))
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-13-2.png" width="672" />
+
+Для изменения размера значка или линии используйте переметр `size`:
+
+```r
+# изменение размера значка и линии
+ggplot(trades_total, mapping = aes(x = time, y = export)) + 
+    geom_point(size = 5) +
+    geom_line(size = 2)
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-14-1.png" width="672" />
+
+Если вы используете зависимые от значений графические переменные и при этом хотите добавить на график еще одну геометрию (c постоянными параметрами), то вам необходимо сгруппировать объекты второй геометрии по той же переменной, по которой вы осуществляете разбиение в первой геометрии. Для этого используйте параметр `group`:
+
+```r
+ggplot(trade_russia, aes(x = time, y = export)) + 
+    geom_point(aes(shape = sitc06)) +
+    geom_line(aes(group = sitc06))
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-15-1.png" width="672" />
+
+Для изменения цвета столбчатых диаграмм следует использовать параметр `fill`, а цвет и толщина обводки определяются параметрами `color` и `size`:
+
+```r
+trades %>% 
+  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) %>% 
+  ggplot(mapping = aes(x = partner, y = export)) +
+  geom_col(fill = 'plum4', color = 'black', size = 0.2) +
+  coord_flip()
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-16-1.png" width="672" />
+
+Цвет на столбчатых диаграммах можно использовать для отображения дополнительных переменных, например типа экспортируемой продукции. По умолчанию столбики будут образовывать стек
+
+```r
+trades %>% 
+  dplyr::filter(time == as.Date('2017-01-01')) %>% 
+  ggplot(mapping = aes(x = partner, y = export, fill = sitc06)) +
+  geom_col(color = 'black', size = 0.2) +
+  coord_flip()
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-17-1.png" width="672" />
+
+Если вам важно не абсолютное количество, а процентное соотношение величин, вы можете применить вид группировки `position == 'fill`:
+
+```r
+trades %>% 
+  dplyr::filter(time == as.Date('2017-01-01')) %>% 
+  ggplot(mapping = aes(x = partner, y = export, fill = sitc06)) +
+    geom_col(color = 'black', size = 0.2, position = 'fill') +
+    coord_flip()
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-18-1.png" width="672" />
+
+Еще один вид группировки — это группировка по соседству. Чтобы использовать ее, применить метод `position == 'dodge`:
+
+```r
+trade_russia %>% 
+  filter(time >= as.Date('2013-01-01')) %>% 
+  ggplot(mapping = aes(x = time, y = export, fill = sitc06)) +
+    geom_col(color = 'black', size = 0.2, position = 'dodge')
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-19-1.png" width="672" />
+
+## Системы координат {#advgraphics_coords}
+
+__ggplot__ поддерживает множество полезных преобразований координат, таких как смена осей X и Y, переход к логарифимическим координатам и использование полярной системы вместо декартовой прямоугольной. 
+
+Смена переменных происходит благодаря уже знакомой нам функции `coord_flip()`. Рассмотрим, например, как изменилась структура эспорта/импорта по годам:
+
+```r
+trades_type = trades %>% 
+  group_by(sitc06, time) %>% 
+  summarise(export = sum(export),
+            import = sum(import))
+
+ggplot(trades_type) + 
+    geom_point(mapping = aes(x = export, y = import, color = sitc06, size = time), alpha = 0.5)
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-20-1.png" width="672" />
+
+```r
+
+ggplot(trades_type) + 
+    geom_point(mapping = aes(x = export, y = import, color = sitc06, size = time), alpha = 0.5) +
+    coord_flip()
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-20-2.png" width="672" />
+
+Поскольку объемы продукции различаются _на порядки_, для различимости малых объемов целесообразно перейти к логарифмической шкале. Для этого используем `scale_log_x()` и `scale_log_y()`:
+
+```r
+ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size = time)) + 
+  geom_point(alpha = 0.5) +
+  scale_x_log10() +
+  scale_y_log10()
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-21-1.png" width="672" />
+
+Преобразование в полярную систему координат используется для того чтобы получить круговую секторную диаграмму Найтингейл (_coxcomb chart_):
+
+```r
+trades %>% 
+  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) %>% 
+  ggplot(mapping = aes(x = partner, y = export, fill = partner)) +
+  geom_col() +
+  coord_polar()
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-22-1.png" width="672" />
+ 
+Разумеется, здесь тоже можно использовать преобразование шкалы по оси _Y_ (которая теперь отвечает за радиус). Применим правило квадратного корня, добавив вызов функции `scale_y_sqrt()`:
+
+```r
+trades %>% 
+  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) %>% 
+  ggplot(mapping = aes(x = partner, y = export, fill = partner)) +
+  geom_col() +
+  coord_polar() +
+  scale_y_sqrt()
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-23-1.png" width="672" />
+
+Чтобы построить классическую секторную диаграмму, необходимо, чтобы угол поворота соответствовал величине показателя (оси _Y_), а не названию категории (оси _X_). Для этого при вызове функции `coord_polar()` следует указать параметр `theta = 'y'`, а при вызове `geom_col()` оставить параметр `x` пустым:
+
+```r
+trades %>% 
+  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) %>% 
+  ggplot(mapping = aes(x = '', y = export, fill = partner), color = 'black', size = 0.2) +
+  geom_col() +
+  coord_polar(theta = 'y')
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-24-1.png" width="672" />
+
+## Разметка осей и подписи {#advgraphics_labels}
+
+## Фасеты {#advgraphics_facets}
+
+## Темы {#advgraphics_themes}
+
+## Контрольные вопросы и упражнения {#questions_tasks_advgraphics}
+
+### Вопросы {#questions_advgraphics}
+
+### Упражнения {#tasks_advgraphics}
