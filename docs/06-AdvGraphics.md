@@ -342,11 +342,238 @@ trades %>%
 
 <img src="06-AdvGraphics_files/figure-html/unnamed-chunk-24-1.png" width="672" />
 
-## Разметка осей и подписи {#advgraphics_labels}
+## Названия осей и легенды {#advgraphics_titles}
+
+ggplot предоставляет ряд функций для аннотирования осей и легенды. Для этого можно использовать одну из следующих функций:
+
+- `labs(...)` модифицирует заголовок легенды для соответствующей графической переменной, либо заголовок/подзаголовок графика
+- `xlab(label)` модифицирует подпись оси X
+- `ylab(label)` модифицирует подпись оси Н
+- `ggtitle(label, subtitle = NULL)` модифицирует заголовок и подзаголовок графика
+
+Создадиим подписи легенд, отвечающих за цвет и размер значка на графике соотношения импорта и экспорта разных видов продукции:
+
+```r
+ggplot(trades_type) + 
+  geom_point(mapping = aes(x = export, y = import, color = sitc06, size = time), alpha = 0.5) +
+  labs(color = "Вид продукции", size = 'Год')
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-25-1.png" width="672" />
+Добавим заголовок и подзаголовок графика:
+
+```r
+ggplot(trades_type) + 
+  geom_point(mapping = aes(x = export, y = import, color = sitc06, size = time), alpha = 0.5) +
+  labs(color = "Вид продукции", size = 'Год') +
+  ggtitle('Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)',
+          subtitle = 'Данные по ключевым партнерам')
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-26-1.png" width="672" />
+
+Изменим подписи осей:
+
+```r
+ggplot(trades_type) + 
+  geom_point(mapping = aes(x = export, y = import, color = sitc06, size = time), alpha = 0.5) +
+  labs(color = "Вид продукции", size = 'Год') +
+  ggtitle('Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)',
+          subtitle = 'Данные по ключевым партнерам') +
+  xlab('Экспорт') +
+  ylab('Импорт')
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-27-1.png" width="672" />
+
+## Разметка осей {#advgraphics_axes}
+
+Первое, что вам скорее всего захочется убрать — это экспоненциальная запись чисел. На самом деле, эта запись не является параметром __ggplot__ или стандартной системы __graphics__. Количество значащих цифр, после которых число автоматически представляется в экспоненциальном виде, управляется параметром `scipen`. Мы можем задать его достаточно большим, чтобы запретить переводить лююбые разумные числа в экспоненциальный вид:
+
+```r
+options(scipen = 999)
+ggplot(trades_type) + 
+  geom_point(mapping = aes(x = export, y = import, color = sitc06, size = time), alpha = 0.5) +
+  labs(color = "Вид продукции", size = 'Год') +
+  ggtitle('Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)',
+          subtitle = 'Данные по ключевым партнерам') +
+  xlab('Экспорт') +
+  ylab('Импорт')
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-28-1.png" width="672" />
+
+Для управления разметкой осей необходимо использовать функции `scale_x_continuous()`, `scale_x_continuous()`, `scale_x_log10(...)`, `scale_y_log10(...)`, `scale_x_reverse(...)`, `scale_y_reverse(...)`, `scale_x_sqrt(...)`, `scale_y_sqrt(...)`, которые, с одной стороны, указывают тип оси, а с другой стороны — позволяют управлять параметрами сетки координат и подписями.
+
+Для изменения координат линий сетки и подписей необходимо использовать, соответственно, параметры `breaks` и `labels`:
+
+```r
+ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size = time)) + 
+  geom_point(alpha = 0.5) +
+  scale_x_log10(breaks = seq(0, 500000, 100000)) +
+  scale_y_log10(breaks = seq(0, 500000, 100000))
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-29-1.png" width="672" />
+
+В данном случае, как раз, будет достаточно полезным параметр `labels`, поскольку метки можно сделать более компактными, поделив их на 1000 (и не забыть потом указать, что объемы теперь указаны не в миллионах, а в миллиардах долларов):
+
+```r
+brks = seq(0, 500000, 100000)
+ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size = time)) + 
+  geom_point(alpha = 0.5) +
+  scale_x_log10(breaks = brks, labels = brks / 1000) +
+  scale_y_log10(breaks = brks, labels = brks / 1000)
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-30-1.png" width="672" />
+
+Для обычной шкалы используйте функции `scale_x_continuous()` и `scale_x_continuous()`:
+
+```r
+ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size = time)) + 
+  geom_point(alpha = 0.5) +
+  scale_x_continuous(breaks = brks, labels = brks / 1000) +
+  scale_y_continuous(breaks = brks, labels = brks / 1000)
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-31-1.png" width="672" />
+
+Для того чтобы принудительно указать диапазоны осей и графических переменных, следует использовать функции `lims(...)`, `xlim(...)` и `ylim(...)`. Например, мы можем приблизиться в левый нижний угол графика, задав диапазон 0-200000 по обеим осям:
+
+```r
+ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size = time)) + 
+  geom_point(alpha = 0.5) +
+  xlim(0, 75000) +
+  ylim(0, 75000)
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-32-1.png" width="672" />
+
+Функция `lims()` работает еще хитрее: она позволяет применять графические переменные только к ограниченному набору значений исходных данных. Например, таким путем я могу выделить на графике продукцию машиностроения:
+
+```r
+ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size = time)) + 
+  geom_point(alpha = 0.5) +
+  lims(color = 'Machinery and transport equipment')
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-33-1.png" width="672" />
+
+## Подписи и аннотации {#advgraphics_labels}
+
+С точки зрения __ggplot__ текст на графике, отображающий входные данные, является одной из разновидностей геометрии. Размещается он с помощью функции `geom_text()`. Как и в случае с другими геометриями, параметры, зависящие от исходных данных, должны быть переданы внутри `mapping = aes(...)`:
+
+```r
+ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
+  geom_area(alpha = 0.5) + # полигон с прозрачностью 0,5
+  geom_line() +
+  geom_point() +
+  geom_text(aes(label = floor(export / 1000))) # добавляем подписи
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-34-1.png" width="672" />
+
+Выравнивание подписи относительно якорной точки (снизу, сверху, справа, слева) по горизонтали и вертикали управляется параметрами `hjust` и `vjust`, а смещения по осям X (в координатах графика) — параметрами `nudge_x` и `nudge_y`:
+
+```r
+ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
+  geom_area(alpha = 0.5) + # полигон с прозрачностью 0,5
+  geom_line() +
+  geom_point() +
+  geom_text(aes(label = floor(export / 1000)), 
+            vjust = 0, nudge_y = 40000) # добавляем подписи
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-35-1.png" width="672" />
+
+Подписи с фоновой плашкой добавляются через функцию `geom_label()`, которая имеет аналогичный синтаксис:
+
+```r
+trades %>% 
+  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) %>% 
+  ggplot(mapping = aes(x = partner, y = export)) +
+  geom_col(fill = 'plum4', color = 'black', size = 0.2) +
+  coord_flip() +
+  geom_label(aes(y = export / 2, label = floor(export / 1000))) # добавляем подписи
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-36-1.png" width="672" />
+
+__Аннотации__ представляют собой объекты, размещаемые на графике вручную, и используемые, как правило, для выделения объектов и областей. Для размещения аннотаций используется функция `annotate()`:
+
+```r
+ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
+  geom_area(alpha = 0.5) + # полигон с прозрачностью 0,5
+  geom_line() +
+  geom_point() +
+  geom_text(aes(label = floor(export / 1000)), 
+            vjust = 0, nudge_y = 40000) +
+  annotate("text", x = as.Date('2009-01-01'), y = 550000, label = "Это провал", color = 'red')
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-37-1.png" width="672" />
+
+Аннотировать можно не только подписями, но и регионами. Например, мы можем выделить область, которая соответствует импорту/экспорту продукции химической промышленности:
+
+```r
+ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size = time)) + 
+  annotate("rect", xmin = 100000, xmax = 250000, ymin = 75000, ymax = 175000,  alpha = .2, color = 'black', size = 0.1) +
+  geom_point(alpha = 0.5) +
+  annotate("text", x = 175000, y = 190000, label = "Chemicals", color = 'coral')
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-38-1.png" width="672" />
+
 
 ## Фасеты {#advgraphics_facets}
 
+Фасеты представляют собой множество графиков, каждый из которых отображает свою переменную или набор значений. Для разбиения на фасеты используется функция facet_wrap(), которой необходимо передать переменную разбиения с _тильдой_. Например, рассмотрим изменение структуры импорта по годам:
+
+```r
+brks = c(0, 50, 100, 150, 200)
+trades %>% 
+  dplyr::filter(sitc06 == 'Machinery and transport equipment') %>% 
+  ggplot(mapping = aes(x = partner, y = import)) +
+  geom_col() +
+  scale_y_continuous(breaks = brks * 1e3, labels = brks) +
+  ggtitle('Импорт продукции машиностроения (мдрд долл. США)',
+        subtitle = 'Данные по ключевым партнерам') +
+  coord_flip() +
+  facet_wrap(~time)
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-39-1.png" width="672" />
+
 ## Темы {#advgraphics_themes}
+
+Система __ggplot__ интересна также тем, что для нее существует множество предопределенных "тем" или скинов для оформления графиков. [Часть из них](https://ggplot2.tidyverse.org/reference/ggtheme.html) входит в состав самой библиотеки. Дополнительные темы можно установить через пакет [__ggthemes__](https://cran.r-project.org/web/packages/ggthemes/index.html). Чтобы изменить тему оформления ggplot, достаточно прибавить в конце построения графика соответствующую функцию. Например, классическая черно-белая тема получается прибавлением функции `theme_bw()`:
+
+```r
+ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
+  geom_area(alpha = 0.5) + # полигон с прозрачностью 0,5
+  geom_line() +
+  geom_point() +
+  geom_text(aes(label = floor(export / 1000)), 
+            vjust = 0, nudge_y = 40000) +
+  theme_bw()
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-40-1.png" width="672" />
+
+```r
+
+ggplot(trades_type) + 
+  geom_point(mapping = aes(x = export, y = import, color = sitc06, size = time), alpha = 0.5) +
+  labs(color = "Вид продукции", size = 'Год') +
+  ggtitle('Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)',
+          subtitle = 'Данные по ключевым партнерам') +
+  xlab('Экспорт') +
+  ylab('Импорт') +
+  theme_bw()
+```
+
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-40-2.png" width="672" />
 
 ## Контрольные вопросы и упражнения {#questions_tasks_advgraphics}
 

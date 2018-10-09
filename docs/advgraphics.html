@@ -1167,12 +1167,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.4" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_geoms"><i class="fa fa-check"></i><b>6.4</b> Геометрические типы и преобразования</a></li>
 <li class="chapter" data-level="6.5" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_aes"><i class="fa fa-check"></i><b>6.5</b> Графические переменные и группировки</a></li>
 <li class="chapter" data-level="6.6" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_coords"><i class="fa fa-check"></i><b>6.6</b> Системы координат</a></li>
-<li class="chapter" data-level="6.7" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_labels"><i class="fa fa-check"></i><b>6.7</b> Разметка осей и подписи</a></li>
-<li class="chapter" data-level="6.8" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_facets"><i class="fa fa-check"></i><b>6.8</b> Фасеты</a></li>
-<li class="chapter" data-level="6.9" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_themes"><i class="fa fa-check"></i><b>6.9</b> Темы</a></li>
-<li class="chapter" data-level="6.10" data-path="advgraphics.html"><a href="advgraphics.html#questions_tasks_advgraphics"><i class="fa fa-check"></i><b>6.10</b> Контрольные вопросы и упражнения</a><ul>
-<li class="chapter" data-level="6.10.1" data-path="advgraphics.html"><a href="advgraphics.html#questions_advgraphics"><i class="fa fa-check"></i><b>6.10.1</b> Вопросы</a></li>
-<li class="chapter" data-level="6.10.2" data-path="advgraphics.html"><a href="advgraphics.html#tasks_advgraphics"><i class="fa fa-check"></i><b>6.10.2</b> Упражнения</a></li>
+<li class="chapter" data-level="6.7" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_titles"><i class="fa fa-check"></i><b>6.7</b> Названия осей и легенды</a></li>
+<li class="chapter" data-level="6.8" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_axes"><i class="fa fa-check"></i><b>6.8</b> Разметка осей</a></li>
+<li class="chapter" data-level="6.9" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_labels"><i class="fa fa-check"></i><b>6.9</b> Подписи и аннотации</a></li>
+<li class="chapter" data-level="6.10" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_facets"><i class="fa fa-check"></i><b>6.10</b> Фасеты</a></li>
+<li class="chapter" data-level="6.11" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_themes"><i class="fa fa-check"></i><b>6.11</b> Темы</a></li>
+<li class="chapter" data-level="6.12" data-path="advgraphics.html"><a href="advgraphics.html#questions_tasks_advgraphics"><i class="fa fa-check"></i><b>6.12</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="6.12.1" data-path="advgraphics.html"><a href="advgraphics.html#questions_advgraphics"><i class="fa fa-check"></i><b>6.12.1</b> Вопросы</a></li>
+<li class="chapter" data-level="6.12.2" data-path="advgraphics.html"><a href="advgraphics.html#tasks_advgraphics"><i class="fa fa-check"></i><b>6.12.2</b> Упражнения</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="stat-analysis.html"><a href="stat-analysis.html"><i class="fa fa-check"></i><b>7</b> Основы статистики в R</a></li>
@@ -1834,22 +1836,165 @@ trade_russia =<span class="st"> </span>trades <span class="op">%&gt;%</span><spa
 <span class="st">  </span><span class="kw">coord_polar</span>(<span class="dt">theta =</span> <span class="st">&#39;y&#39;</span>)</code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 </div>
+<div id="advgraphics_titles" class="section level2">
+<h2><span class="header-section-number">6.7</span> Названия осей и легенды</h2>
+<p>ggplot предоставляет ряд функций для аннотирования осей и легенды. Для этого можно использовать одну из следующих функций:</p>
+<ul>
+<li><code>labs(...)</code> модифицирует заголовок легенды для соответствующей графической переменной, либо заголовок/подзаголовок графика</li>
+<li><code>xlab(label)</code> модифицирует подпись оси X</li>
+<li><code>ylab(label)</code> модифицирует подпись оси Н</li>
+<li><code>ggtitle(label, subtitle = NULL)</code> модифицирует заголовок и подзаголовок графика</li>
+</ul>
+<p>Создадиим подписи легенд, отвечающих за цвет и размер значка на графике соотношения импорта и экспорта разных видов продукции:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>)</code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-25-1.png" width="672" /> Добавим заголовок и подзаголовок графика:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)&#39;</span>,
+          <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>)</code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p>Изменим подписи осей:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)&#39;</span>,
+          <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Экспорт&#39;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Импорт&#39;</span>)</code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+</div>
+<div id="advgraphics_axes" class="section level2">
+<h2><span class="header-section-number">6.8</span> Разметка осей</h2>
+<p>Первое, что вам скорее всего захочется убрать — это экспоненциальная запись чисел. На самом деле, эта запись не является параметром <strong>ggplot</strong> или стандартной системы <strong>graphics</strong>. Количество значащих цифр, после которых число автоматически представляется в экспоненциальном виде, управляется параметром <code>scipen</code>. Мы можем задать его достаточно большим, чтобы запретить переводить лююбые разумные числа в экспоненциальный вид:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>)
+<span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)&#39;</span>,
+          <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Экспорт&#39;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Импорт&#39;</span>)</code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p>Для управления разметкой осей необходимо использовать функции <code>scale_x_continuous()</code>, <code>scale_x_continuous()</code>, <code>scale_x_log10(...)</code>, <code>scale_y_log10(...)</code>, <code>scale_x_reverse(...)</code>, <code>scale_y_reverse(...)</code>, <code>scale_x_sqrt(...)</code>, <code>scale_y_sqrt(...)</code>, которые, с одной стороны, указывают тип оси, а с другой стороны — позволяют управлять параметрами сетки координат и подписями.</p>
+<p>Для изменения координат линий сетки и подписей необходимо использовать, соответственно, параметры <code>breaks</code> и <code>labels</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_x_log10</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">500000</span>, <span class="dv">100000</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_y_log10</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">500000</span>, <span class="dv">100000</span>))</code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+<p>В данном случае, как раз, будет достаточно полезным параметр <code>labels</code>, поскольку метки можно сделать более компактными, поделив их на 1000 (и не забыть потом указать, что объемы теперь указаны не в миллионах, а в миллиардах долларов):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">brks =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">500000</span>, <span class="dv">100000</span>)
+<span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_x_log10</span>(<span class="dt">breaks =</span> brks, <span class="dt">labels =</span> brks <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_y_log10</span>(<span class="dt">breaks =</span> brks, <span class="dt">labels =</span> brks <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)</code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<p>Для обычной шкалы используйте функции <code>scale_x_continuous()</code> и <code>scale_x_continuous()</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> brks, <span class="dt">labels =</span> brks <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> brks, <span class="dt">labels =</span> brks <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)</code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+<p>Для того чтобы принудительно указать диапазоны осей и графических переменных, следует использовать функции <code>lims(...)</code>, <code>xlim(...)</code> и <code>ylim(...)</code>. Например, мы можем приблизиться в левый нижний угол графика, задав диапазон 0-200000 по обеим осям:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlim</span>(<span class="dv">0</span>, <span class="dv">75000</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylim</span>(<span class="dv">0</span>, <span class="dv">75000</span>)</code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<p>Функция <code>lims()</code> работает еще хитрее: она позволяет применять графические переменные только к ограниченному набору значений исходных данных. Например, таким путем я могу выделить на графике продукцию машиностроения:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">lims</span>(<span class="dt">color =</span> <span class="st">&#39;Machinery and transport equipment&#39;</span>)</code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+</div>
 <div id="advgraphics_labels" class="section level2">
-<h2><span class="header-section-number">6.7</span> Разметка осей и подписи</h2>
+<h2><span class="header-section-number">6.9</span> Подписи и аннотации</h2>
+<p>С точки зрения <strong>ggplot</strong> текст на графике, отображающий входные данные, является одной из разновидностей геометрии. Размещается он с помощью функции <code>geom_text()</code>. Как и в случае с другими геометриями, параметры, зависящие от исходных данных, должны быть переданы внутри <code>mapping = aes(...)</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>))) <span class="co"># добавляем подписи</span></code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+<p>Выравнивание подписи относительно якорной точки (снизу, сверху, справа, слева) по горизонтали и вертикали управляется параметрами <code>hjust</code> и <code>vjust</code>, а смещения по осям X (в координатах графика) — параметрами <code>nudge_x</code> и <code>nudge_y</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)), 
+            <span class="dt">vjust =</span> <span class="dv">0</span>, <span class="dt">nudge_y =</span> <span class="dv">40000</span>) <span class="co"># добавляем подписи</span></code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<p>Подписи с фоновой плашкой добавляются через функцию <code>geom_label()</code>, которая имеет аналогичный синтаксис:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trades <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">fill =</span> <span class="st">&#39;plum4&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_label</span>(<span class="kw">aes</span>(<span class="dt">y =</span> export <span class="op">/</span><span class="st"> </span><span class="dv">2</span>, <span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>))) <span class="co"># добавляем подписи</span></code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
+<p><strong>Аннотации</strong> представляют собой объекты, размещаемые на графике вручную, и используемые, как правило, для выделения объектов и областей. Для размещения аннотаций используется функция <code>annotate()</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)), 
+            <span class="dt">vjust =</span> <span class="dv">0</span>, <span class="dt">nudge_y =</span> <span class="dv">40000</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="kw">as.Date</span>(<span class="st">&#39;2009-01-01&#39;</span>), <span class="dt">y =</span> <span class="dv">550000</span>, <span class="dt">label =</span> <span class="st">&quot;Это провал&quot;</span>, <span class="dt">color =</span> <span class="st">&#39;red&#39;</span>)</code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
+<p>Аннотировать можно не только подписями, но и регионами. Например, мы можем выделить область, которая соответствует импорту/экспорту продукции химической промышленности:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;rect&quot;</span>, <span class="dt">xmin =</span> <span class="dv">100000</span>, <span class="dt">xmax =</span> <span class="dv">250000</span>, <span class="dt">ymin =</span> <span class="dv">75000</span>, <span class="dt">ymax =</span> <span class="dv">175000</span>,  <span class="dt">alpha =</span> .<span class="dv">2</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="dv">175000</span>, <span class="dt">y =</span> <span class="dv">190000</span>, <span class="dt">label =</span> <span class="st">&quot;Chemicals&quot;</span>, <span class="dt">color =</span> <span class="st">&#39;coral&#39;</span>)</code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
 </div>
 <div id="advgraphics_facets" class="section level2">
-<h2><span class="header-section-number">6.8</span> Фасеты</h2>
+<h2><span class="header-section-number">6.10</span> Фасеты</h2>
+<p>Фасеты представляют собой множество графиков, каждый из которых отображает свою переменную или набор значений. Для разбиения на фасеты используется функция facet_wrap(), которой необходимо передать переменную разбиения с <em>тильдой</em>. Например, рассмотрим изменение структуры импорта по годам:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">brks =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">150</span>, <span class="dv">200</span>)
+trades <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> import)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> brks <span class="op">*</span><span class="st"> </span><span class="fl">1e3</span>, <span class="dt">labels =</span> brks) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Импорт продукции машиностроения (мдрд долл. США)&#39;</span>,
+        <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>time)</code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
 </div>
 <div id="advgraphics_themes" class="section level2">
-<h2><span class="header-section-number">6.9</span> Темы</h2>
+<h2><span class="header-section-number">6.11</span> Темы</h2>
+<p>Система <strong>ggplot</strong> интересна также тем, что для нее существует множество предопределенных “тем” или скинов для оформления графиков. <a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">Часть из них</a> входит в состав самой библиотеки. Дополнительные темы можно установить через пакет <a href="https://cran.r-project.org/web/packages/ggthemes/index.html"><strong>ggthemes</strong></a>. Чтобы изменить тему оформления ggplot, достаточно прибавить в конце построения графика соответствующую функцию. Например, классическая черно-белая тема получается прибавлением функции <code>theme_bw()</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)), 
+            <span class="dt">vjust =</span> <span class="dv">0</span>, <span class="dt">nudge_y =</span> <span class="dv">40000</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_bw</span>()</code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+<span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)&#39;</span>,
+          <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Экспорт&#39;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Импорт&#39;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_bw</span>()</code></pre></div>
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-40-2.png" width="672" /></p>
 </div>
 <div id="questions_tasks_advgraphics" class="section level2">
-<h2><span class="header-section-number">6.10</span> Контрольные вопросы и упражнения</h2>
+<h2><span class="header-section-number">6.12</span> Контрольные вопросы и упражнения</h2>
 <div id="questions_advgraphics" class="section level3">
-<h3><span class="header-section-number">6.10.1</span> Вопросы</h3>
+<h3><span class="header-section-number">6.12.1</span> Вопросы</h3>
 </div>
 <div id="tasks_advgraphics" class="section level3">
-<h3><span class="header-section-number">6.10.2</span> Упражнения</h3>
+<h3><span class="header-section-number">6.12.2</span> Упражнения</h3>
 
 </div>
 </div>
