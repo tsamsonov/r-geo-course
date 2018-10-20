@@ -4,7 +4,7 @@
 
 ## Предварительные требования {#stat_analysis_prerequisites}
 
-Для работы по теме текущей лекции вам понадобятся пакеты из __tidyverse__. Помимо этого, мы будем работать с данными через интерфейс _Google Sheets_ напрямую с использованием пакета [__googlesheets__](https://cran.r-project.org/web/packages/googlesheets/):
+Для работы по теме текущей лекции вам понадобятся пакеты из __tidyverse__. Помимо этого, мы будем работать с данными через интерфейс _Google Sheets_ напрямую с использованием пакета [__googlesheets__](https://cran.r-project.org/web/packages/googlesheets/). Также в лекции используется пакет __ggrepel__, позволяющий устранять конфликты подписей на графиках __ggplot__:
 
 ```r
 library(googlesheets)
