@@ -29,7 +29,7 @@ library(sf)
 library(readxl) # Чтение файлов Excel
 library(lattice) # Пакет lattice используется для построения серий карт/графиков
 library(classInt) # Пакет classInt реализует методы классификации данных
-## Загрузка требуемого пакета: spData
+## Loading required package: spData
 ## To access larger datasets in this package, install the spDataLarge
 ## package with: `install.packages('spDataLarge',
 ## repos='https://nowosad.github.io/drat/', type='source'))`

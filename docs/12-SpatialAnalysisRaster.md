@@ -29,7 +29,7 @@ library(sf)
 ## Linking to GEOS 3.6.1, GDAL 2.1.3, proj.4 4.9.3
 library(raster)
 library(classInt)
-## Загрузка требуемого пакета: spData
+## Loading required package: spData
 ## To access larger datasets in this package, install the spDataLarge
 ## package with: `install.packages('spDataLarge',
 ## repos='https://nowosad.github.io/drat/', type='source'))`

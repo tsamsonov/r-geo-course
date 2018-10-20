@@ -150,11 +150,11 @@ head(quakes) # просмотрим макушку таблицы
 ```r
 library(dplyr)
 ## 
-## Присоединяю пакет: 'dplyr'
-## Следующие объекты скрыты от 'package:stats':
+## Attaching package: 'dplyr'
+## The following objects are masked from 'package:stats':
 ## 
 ##     filter, lag
-## Следующие объекты скрыты от 'package:base':
+## The following objects are masked from 'package:base':
 ## 
 ##     intersect, setdiff, setequal, union
 data(starwars)

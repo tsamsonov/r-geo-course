@@ -1124,10 +1124,10 @@ st_write(cites.sf, 'mycities.shp') # Шейп-файл
 
 ```r
 library(raster)
-## Загрузка требуемого пакета: sp
+## Loading required package: sp
 ## 
-## Присоединяю пакет: 'raster'
-## Следующий объект скрыт от 'package:dplyr':
+## Attaching package: 'raster'
+## The following object is masked from 'package:dplyr':
 ## 
 ##     select
 
