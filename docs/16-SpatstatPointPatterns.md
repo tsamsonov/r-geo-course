@@ -1,7 +1,0 @@
-# Анализ точечных процессов {#point_patterns}
-
-[Программный код главы](https://github.com/tsamsonov/r-geo-course/blob/master/code/14-InterpolationGeostatistics.R)
-
-Раздел посвящен анализу точечных процессов в R. 
-
-[To be written...]
