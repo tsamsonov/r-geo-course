@@ -1119,7 +1119,7 @@ write_xlsx(compare, "output/timber_compare.xlsx")
 ## Краткий обзор {#tables_review}
 
 Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
-[![](03-Tables_files/figure-epub3/unnamed-chunk-44-1.png)](https://tsamsonov.github.io/r-geo-course/slides/03-Tables_slides.html#1)<!-- -->
+<iframe src="https://tsamsonov.github.io/r-geo-course/slides/03-Tables_slides.html#1" width="672" height="500px"></iframe>
 
 > Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.
 

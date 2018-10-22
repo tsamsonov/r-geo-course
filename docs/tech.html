@@ -458,7 +458,7 @@ d12 =<span class="st"> </span><span class="kw">sqrt</span>((x[<span class="dv">1
 d23 =<span class="st"> </span><span class="kw">sqrt</span>((x[<span class="dv">2</span>] <span class="op">-</span><span class="st"> </span>x[<span class="dv">3</span>]) <span class="op">^</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>(y[<span class="dv">2</span>] <span class="op">-</span><span class="st"> </span>y[<span class="dv">3</span>]) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>)
 d31 =<span class="st"> </span><span class="kw">sqrt</span>((x[<span class="dv">3</span>] <span class="op">-</span><span class="st"> </span>x[<span class="dv">4</span>]) <span class="op">^</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>(y[<span class="dv">3</span>] <span class="op">-</span><span class="st"> </span>y[<span class="dv">4</span>]) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>)
 <span class="kw">cat</span>(d12, d23, d31)
-## 2.921306 2.507717 0.974082</code></pre></div>
+## 0.971779 1.824625 0.2329744</code></pre></div>
 <p>В правой части этих выражений стоит один и тот же код, который я скопировал и вставил, а далее заменил названия переменных. Это плохо сразу по двум причинам: дублирование фрагментов программы и возрастание вероятности опечаток в скопированой копии. Улучшить код можно, введя функцию вычисления расстояний:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">distance =<span class="st"> </span><span class="cf">function</span>(x1, y1, x2, y2) {
   <span class="kw">sqrt</span>((x1 <span class="op">-</span><span class="st"> </span>x2) <span class="op">^</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>(y1 <span class="op">-</span><span class="st"> </span>y2) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>)
@@ -468,7 +468,7 @@ d12 =<span class="st"> </span><span class="kw">distance</span>(x[<span class="dv
 d23 =<span class="st"> </span><span class="kw">distance</span>(x[<span class="dv">2</span>], y[<span class="dv">2</span>], x[<span class="dv">3</span>], y[<span class="dv">3</span>])
 d31 =<span class="st"> </span><span class="kw">distance</span>(x[<span class="dv">3</span>], y[<span class="dv">3</span>], x[<span class="dv">4</span>], y[<span class="dv">4</span>])
 <span class="kw">cat</span>(d12, d23, d31)
-## 2.921306 2.507717 0.974082</code></pre></div>
+## 0.971779 1.824625 0.2329744</code></pre></div>
 <p>Функция всегда возвращает один объект: значение, вектор, список и т.д. Например, мы можем сделать функцию следующего уровня, рассчитывающая сразу все расстояния для множества точек:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">distances =<span class="st"> </span><span class="cf">function</span>(x, y) {
   n =<span class="st"> </span><span class="kw">length</span>(x)
@@ -476,14 +476,14 @@ d31 =<span class="st"> </span><span class="kw">distance</span>(x[<span class="dv
 }
 
 <span class="kw">distances</span>(x, y)
-## [1] 2.921306 2.507717 0.974082</code></pre></div>
+## [1] 0.9717790 1.8246247 0.2329744</code></pre></div>
 <p>Можно пойти еще дальше, и сделать функцию, выполняющую вычисление длины линии, заданной координатами:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">line_length =<span class="st"> </span><span class="cf">function</span>(x, y) {
   <span class="kw">sum</span>(<span class="kw">distances</span>(x, y))
 }
 
 <span class="kw">line_length</span>(x, y)
-## [1] 6.403104</code></pre></div>
+## [1] 3.029378</code></pre></div>
 <p>Обратите внимание на то, как мы используем одну ранее написанную функцию при создании другой функции! Это весьма распространенная практика: одна и та же функция может быть как самостоятельно полезной (вызываться непосредственно в программе полтьзователя), так и применяться для решения задач внутри других функций. При этом иногда даже относительно простые фрагменты кода имеет смысл оформлять в виде функций, так как это может улучшить читаемость программы и пояснить смысл выполняемых операций. Так, например, <code>line_length(x, y)</code> в более явном виде обозначает операцию вычисления длины по координатам, нежели <code>sum(distances(x, y))</code>. В то же время, здесь важно не переусердствовать и оформлять короткие фрагменты кода в виде функций только если они будут применяться вами неоднократно.</p>
 <p>Если вам нужно вернуть из функции несколько объектов, имеющих разный тип или смысл, заключите их в список и дайте каждому элементу списка “говорящее” имя. Например, помимо периметра, мы можем вернуть также извилистость линии (отношение длины линии к длине отрезка, соединяющего ее первую и последнюю точку):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">line_params =<span class="st"> </span><span class="cf">function</span>(x, y) {
@@ -497,9 +497,9 @@ d31 =<span class="st"> </span><span class="kw">distance</span>(x[<span class="dv
 
 result =<span class="st"> </span><span class="kw">line_params</span>(x, y)
 result<span class="op">$</span>length
-## [1] 6.403104
+## [1] 3.029378
 result<span class="op">$</span>sinuosity
-## [1] 4.912886</code></pre></div>
+## [1] 2.508333</code></pre></div>
 </div>
 <div id="tech-fun-functionals" class="section level3">
 <h3><span class="header-section-number">4.1.2</span> Функционалы</h3>
@@ -979,7 +979,7 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["r-geo-course.epub"],
+"download": null,
 "toc": {
 "collapse": "section",
 "edit": "https://github.com/tsamsonov/r-geo-course/edit/master/%s"
