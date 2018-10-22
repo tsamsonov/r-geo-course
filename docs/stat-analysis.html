@@ -1657,14 +1657,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="stat_analysis_intro" class="section level2">
 <h2><span class="header-section-number">7.2</span> Введение</h2>
-<p>Математическая статистика – раздел математики, посвящённый математическим методам систематизации, обработки и использования статистических данных для научных и практических выводов. Под статистическими данными обычно понимают числовую информацию, извлекаемую из результатов выборочных обследований, результаты серии неточных измерений и вообще любую систему количественных данных <span class="citation">(Ю.В.Прохоров <a href="#ref-bigenc:matstat">2011</a>)</span>.</p>
+<p><strong>Математическая статистика</strong> — раздел математики, посвящённый математическим методам систематизации, обработки и использования статистических данных для научных и практических выводов. Под статистическими данными обычно понимают числовую информацию, извлекаемую из результатов выборочных обследований, результаты серии неточных измерений и вообще любую систему количественных данных <span class="citation">(Ю.В.Прохоров <a href="#ref-bigenc:matstat">2011</a>)</span>.</p>
 <p>Статистический метод представляет собой важнейший инструмент исследования, применяющийся во всех без исключения областях науки и технологий. Математическая статистика тесно связана с теорией вероятностей – разделом математики, изучающим математические модели случайных явлений. В силу огромного разнообразия статистических методов и специфики их применения в разных приложения, в одной лекции нет возможности (и смысла) представить их в одной лекции.</p>
-<p>В связи с этим в настоящем разделе представляются основные инструменты статистики, такие как: простейшие приемы статистического описания (описательные статистики), проверка статистических гипотез, оценка плотности распределения, одномерная классификация, корреляция и регрессия. Помимо этого, в настоящем разделе большое внимание уделено построению специализированных графиков, отражающих особенности распределения величины: гистограмм, диаграмм размаха, линий регрессии и локальной регрессии, графиков квантиль-квантиль, кривых и поверхностей плотности распределения.</p>
+<p>В связи с этим в настоящем разделе представляются основные инструменты статистики, такие как: простейшие приемы статистического описания (описательные статистики), проверка статистических гипотез, оценка плотности распределения, корреляция и регрессия. Помимо этого, в настоящем разделе большое внимание уделено построению специализированных графиков, отражающих особенности распределения величины: гистограмм, диаграмм размаха, линий регрессии и локальной регрессии, кривых и поверхностей плотности распределения.</p>
 <div id="stat_analysis_intro_sources" class="section level3">
 <h3><span class="header-section-number">7.2.1</span> Источники данных</h3>
 <div id="stat_analysis_intro_gapminder" class="section level4">
 <h4><span class="header-section-number">7.2.1.1</span> База данных Gapminder</h4>
-<p>В данной лекции мы будем работать с базой данных <a href="https://www.gapminder.org/"><strong>Gapminder</strong></a>, которая содержит уникальный набор показателей по странам мира, агрегированный их различных источников (многие данные имеют ряды на несколько столетий!):</p>
+<p>В данной лекции мы будем работать с базой данных <a href="https://www.gapminder.org/"><strong>Gapminder</strong></a>, которая содержит уникальный набор показателей по странам мира, агрегированный иp различных источников (многие показатели имеют ряды на несколько столетий!):</p>
 <div class="figure">
 <img src="images/gapminder.png" alt="База данных Gapminder" />
 <p class="caption">База данных Gapminder</p>
@@ -1687,12 +1687,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="stat_analysis_one_distr" class="section level3">
 <h3><span class="header-section-number">7.3.1</span> Оценка распределения</h3>
 <p>Для оценки распределения случайной величины можно использовать графические и статистические способы. Выявление типа распределения важно, поскольку статистические методы не универсальны, и во многих случаях предаолагают, что изучаемая переменная подчиняется определенному закону распределения (как правило, нормальному).</p>
-<p>В качестве примера возьмем данные по дохорду на душу населения, они содержатся в таблице gapminder с ниже приведенным кодом</p>
+<p>В качестве примера возьмем данные по ВВП на душу населения, они содержатся в таблице gapminder с ниже приведенным кодом</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(googlesheets)
 
-(<span class="st">&#39;1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span>
+(<span class="st">&#39;1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span>### ВВП на душу населения
 <span class="st">  </span><span class="kw">gs_key</span>(<span class="dt">lookup =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># не используем авторизацию</span>
-<span class="st">  </span><span class="kw">gs_read</span>(<span class="dt">ws =</span> <span class="dv">1</span>) -&gt;<span class="st"> </span>incdf) <span class="co"># выгружаем данные по ВВП на душу населения и сохраняем в переменную incdf</span>
+<span class="st">  </span><span class="kw">gs_read</span>(<span class="dt">ws =</span> <span class="dv">1</span>) -&gt;<span class="st"> </span>gdpdf) <span class="co"># выгружаем данные по ВВП на душу населения и сохраняем в переменную incdf</span>
 ## # A tibble: 260 x 256
 ##    `GDP per capita… `1764` `1765` `1766` `1767` `1768` `1769` `1770` `1771`
 ##    &lt;chr&gt;             &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
@@ -1727,8 +1727,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## #   `1858` &lt;dbl&gt;, `1859` &lt;dbl&gt;, `1860` &lt;dbl&gt;, `1861` &lt;dbl&gt;, `1862` &lt;dbl&gt;,
 ## #   `1863` &lt;dbl&gt;, `1864` &lt;dbl&gt;, `1865` &lt;dbl&gt;, `1866` &lt;dbl&gt;, `1867` &lt;dbl&gt;,
 ## #   `1868` &lt;dbl&gt;, `1869` &lt;dbl&gt;, `1870` &lt;dbl&gt;, `1871` &lt;dbl&gt;, …</code></pre></div>
-<p>Для дальнейшей работы целесообразно привести данные к аккуратному виду, избавившись от множества столбцов с годом измерения. Сразу получим данные за 2017 год для анализа:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">incdf_tidy =</span> incdf <span class="op">%&gt;%</span><span class="st"> </span>
+<p>Для дальнейшей работы целесообразно привести данные к аккуратному виду, избавившись от множества столбцов с годом измерения. Сразу получим данные за 2015 год для анализа:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">gdpdf_tidy =</span> gdpdf <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">   </span><span class="kw">gather</span>(year, gdp, <span class="st">`</span><span class="dt">1764</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2018</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">   </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>))
 ## # A tibble: 66,300 x 3
@@ -1746,17 +1746,17 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## 10 Antigua and Barbuda   1764     NA
 ## # ... with 66,290 more rows
 
-incdf15 =<span class="st"> </span><span class="kw">filter</span>(incdf_tidy, year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>)</code></pre></div>
+gdpdf15 =<span class="st"> </span><span class="kw">filter</span>(gdpdf_tidy, year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>)</code></pre></div>
 <p>Для визуальной проверки вида распределения можно использовать геометрию <code>geom_histogram()</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(incdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(gdpdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_histogram</span>()</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>Изменить ширину кармана можно, используя параметр <code>binwidth</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(incdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(gdpdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">5000</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>)</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>Аналогично рассмотрим показатель продолжительности жизни:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="st">&#39;1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span>
+<p>Аналогично рассмотрим показатель ожидаемой продолжительности жизни:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="st">&#39;1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># продолжительность жизни</span>
 <span class="st">  </span><span class="kw">gs_key</span>(<span class="dt">lookup =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># не используем авторизацию</span>
 <span class="st">  </span><span class="kw">gs_read</span>(<span class="dt">ws =</span> <span class="dv">1</span>) -&gt;<span class="st"> </span>lifedf) <span class="co"># выгружаем данные по ВВП на душу населения и сохраняем в переменную lifedf</span>
 ## # A tibble: 260 x 218
@@ -1803,15 +1803,16 @@ lifedf15 =<span class="st"> </span><span class="kw">filter</span>(lifedf_tidy, y
 <span class="kw">ggplot</span>(lifedf15, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp)) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">2</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>)</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>Для графической оценки распределения удобно использовать не только гистограмму, но также метод ядерного сглаживания (kernel density), который позволяет строить аппроксимацию функции плотности распределения. В ggplot за это отвечает геометрия <code>geom_density()</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(incdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span>
+<p>Для графической оценки распределения удобно использовать не только гистограмму, но также метод ядерного сглаживания (<em>kernel density</em>), который позволяет строить аппроксимацию функции плотности вероятности. В <strong>ggplot</strong> за это отвечает геометрия <code>geom_density()</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(gdpdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
 <span class="kw">ggplot</span>(lifedf15, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp)) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</code></pre></div>
-<p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-8-2.png" width="672" /> Вы можете комбинировать гистограммы и оценку плотности распределения, но для этого гистограмма по оси Y должна отражать не фактическое количество элементов в каждом классе, а <em>долю</em>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(incdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span>
+<p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+<p>Вы можете комбинировать гистограммы и оценку плотности распределения, но для этого гистограмма по оси <em>Y</em> должна отражать не фактическое количество элементов в каждом классе, а <em>долю</em> или плотность вероятности (<code>y = stat(density)</code>):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(gdpdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y =</span> <span class="kw">stat</span>(density)), <span class="dt">fill =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
@@ -1820,14 +1821,14 @@ lifedf15 =<span class="st"> </span><span class="kw">filter</span>(lifedf_tidy, y
 <span class="st">  </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y =</span> <span class="kw">stat</span>(density)), <span class="dt">fill =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
-<p>При построении гистограмм и оценке плотности распределения мы допустили ошибку: приняли, что все измерения являются равнозначными. Однако в данном случае это не так. Население Люксембурга и Пакистана отличается на два порядка — это означает, что Пакистан должен иметь соответственно больший вес при построении гистограммы. Для учета этой характеристики подгрузим из <strong>Gapminder</strong> данные по численности населения и присоединим их к нашим таблицам по доходам и продолжительности жизни:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="st">&#39;1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span>
+<p>При построении гистограмм и оценке плотности распределения мы допустили ошибку: приняли, что все измерения являются равнозначными. Однако в данном случае это не так. Население Люксембурга и Пакистана отличается на два порядка — это означает, что Пакистан должен иметь соответственно больший вес при построении гистограммы. Для учета этой характеристики подгрузим из <strong>Gapminder</strong> данные по численности населения и присоединим их к нашим таблицам по ВВП и продолжительности жизни:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="st">&#39;1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># численность населения</span>
 <span class="st">  </span><span class="kw">gs_key</span>(<span class="dt">lookup =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># не используем авторизацию</span>
-<span class="st">  </span><span class="kw">gs_read</span>(<span class="dt">ws =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">gs_read</span>(<span class="dt">ws =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># первый лист</span>
 <span class="st">  </span><span class="kw">gather</span>(year, pop, <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2015</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>) -&gt;<span class="st"> </span>popdf_tidy
 
-(<span class="dt">tab =</span> incdf_tidy <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">inner_join</span>(lifedf_tidy) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">inner_join</span>(popdf_tidy))
+(<span class="dt">tab =</span> gdpdf_tidy <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">inner_join</span>(lifedf_tidy) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">inner_join</span>(popdf_tidy))
 ## # A tibble: 19,359 x 5
 ##    Country               year    gdp lifexp     pop
 ##    &lt;chr&gt;                 &lt;chr&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
@@ -1854,7 +1855,7 @@ lifedf15 =<span class="st"> </span><span class="kw">filter</span>(lifedf_tidy, y
 <span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="fl">2.5</span>, <span class="dt">fill =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
-<p>Графики плотности распределения удобны тем, что их, в отличие от гистограмм, удобно комбинировать на одном изображении, используя цвет для разделения по еще одной переменной. Например, мы можем оценить, как изменились мировые диспропорции в продолжительности жизни и доходов населения за последние 50 лет (обратите внимание на параметр <code>fill</code> в эстетике:</p>
+<p>Графики плотности распределения удобны тем, что их, в отличие от гистограмм, удобно комбинировать на одном изображении, используя цвет для разделения по еще одной переменной. Например, мы можем оценить, как изменились мировые диспропорции в продолжительности жизни и доходов населения за последние 50 лет (обратите внимание на параметр <code>fill = year</code> в эстетике:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tab85 =<span class="st"> </span>tab <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(year <span class="op">%in%</span><span class="st">  </span><span class="kw">c</span>(<span class="dv">1965</span>, <span class="dv">2015</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">drop_na</span>()
 
 <span class="kw">ggplot</span>(tab85, <span class="kw">aes</span>(<span class="dt">x =</span> gdp, <span class="dt">fill =</span> year, <span class="dt">weight =</span> pop<span class="op">/</span><span class="kw">sum</span>(pop))) <span class="op">+</span><span class="st"> </span>
@@ -1867,7 +1868,7 @@ lifedf15 =<span class="st"> </span><span class="kw">filter</span>(lifedf_tidy, y
 </div>
 <div id="stat_analysis_one_summary" class="section level3">
 <h3><span class="header-section-number">7.3.2</span> Описательные статистики</h3>
-<p>Подгрузим данные <strong>Gapminder</strong> о принедлежности стран к различным регионам:</p>
+<p>Описательные статистики — это числовые характеристики, описывающие особенности статистического распределения изучаемой величины. К таким характеристикам относят выборочное среднее, медиану, минимум, максимум и ряд других величин. Можно вычислять эти характеристики для всей выборки, но для включения географического контекста мы стратифицируем ее по макрорегионам, которые используются в базе данных <strong>Gapminder</strong>. Подгрузим эту информацию (данные скачиваются <a href="https://www.gapminder.org/data/geo/">отсюда</a>):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(readxl)
 countries =<span class="st"> </span><span class="kw">read_excel</span>(<span class="st">&#39;gapminder.xlsx&#39;</span>, <span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(<span class="dt">Country =</span> name, <span class="dt">Region =</span> eight_regions) <span class="op">%&gt;%</span><span class="st"> </span>
@@ -1888,7 +1889,7 @@ countries =<span class="st"> </span><span class="kw">read_excel</span>(<span cla
 <span class="st">  </span><span class="kw">guides</span>(<span class="dt">fill=</span><span class="ot">FALSE</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">coord_flip</span>()</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-<p>Присоединим данные эти данные к исходной таблице:</p>
+<p>Присоединим эти данные к исходной таблице:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">tabreg =</span> tab <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">left_join</span>(countries) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>) <span class="op">%&gt;%</span><span class="st"> </span>
@@ -1907,7 +1908,7 @@ countries =<span class="st"> </span><span class="kw">read_excel</span>(<span cla
 ##  9 Austria             2015  37811.   81.3  8544586 europe_west       
 ## 10 Azerbaijan          2015  10475.   72.9  9753968 europe_east       
 ## # ... with 162 more rows</code></pre></div>
-<p>Для визуализации отличий в статистических параметрах исследуемой величины удобно использовать тип графика, который называется <a href="https://ru.wikipedia.org/wiki/%D0%AF%D1%89%D0%B8%D0%BA_%D1%81_%D1%83%D1%81%D0%B0%D0%BC%D0%B8"><strong>boxplot</strong></a> (а по русски — улей, или ящик с усами):</p>
+<p>Мы уже знакомы с функциями <code>min()</code>, <code>max()</code>, <code>median()</code>, <code>mean()</code>, <code>sd()</code>, которые дают значения соответствующих описательныъ статистик для векторов данных. Как представить их все одновременно? Для визуализации отличий в статистических параметрах исследуемой выборки удобно использовать тип графика, который называется <a href="https://ru.wikipedia.org/wiki/%D0%AF%D1%89%D0%B8%D0%BA_%D1%81_%D1%83%D1%81%D0%B0%D0%BC%D0%B8"><strong>boxplot</strong></a> (а по русски — диаграмма размаха, улей, или ящик с усами). В <strong>ggplot</strong> за него отвечает геометрия <code>geom_boxplot()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(<span class="dt">x =</span> Region, <span class="dt">y =</span> gdp)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">coord_flip</span>()</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
@@ -1915,13 +1916,13 @@ countries =<span class="st"> </span><span class="kw">read_excel</span>(<span cla
 <span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(<span class="dt">x =</span> Region, <span class="dt">y =</span> lifexp)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">coord_flip</span>()</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
-<p>Данные графики наглядно показывают, что регионы отличаются по ряду статистических параметров: средней величине, размаху вариации (разбросу значений), среднеквадратическому отклонению показателя. Эти статистики можно получить в табличном виде:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tabreg <span class="op">%&gt;%</span><span class="st"> </span>
+<p>Данные графики наглядно показывают, что регионы отличаются по ряду статистических параметров исследуемой переменной: среднему значению, размаху вариации (разбросу значений), среднеквадратическому отклонению Эти статистики можно получить и в табличном виде:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(tabreg <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">group_by</span>(Region) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">gdp_mean =</span> <span class="kw">mean</span>(gdp),
             <span class="dt">gdp_sd =</span> <span class="kw">sd</span>(gdp),
             <span class="dt">lifexp_mean =</span> <span class="kw">mean</span>(lifexp),
-            <span class="dt">lifexp_sd =</span> <span class="kw">sd</span>(lifexp))
+            <span class="dt">lifexp_sd =</span> <span class="kw">sd</span>(lifexp)))
 ## # A tibble: 8 x 5
 ##   Region             gdp_mean gdp_sd lifexp_mean lifexp_sd
 ##   &lt;chr&gt;                 &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;
@@ -1933,8 +1934,9 @@ countries =<span class="st"> </span><span class="kw">read_excel</span>(<span cla
 ## 6 east_asia_pacific    14062. 16634.        72.4      6.68
 ## 7 europe_east          13634.  7030.        75.9      2.86
 ## 8 europe_west          33571. 11104.        81.5      1.24</code></pre></div>
-<p>Прежде чем манипулировать этими значениями (говорить, что в Западной Европе ВВП на душу населения в 10 раз выше, чем в Южной Африке), необходимо убедиться, что их отличия являются статистически значимыми. Для сравнения средних значений и дисперсий двух статистических выборок обычно используют <a href="https://ru.wikipedia.org/wiki/T-%D0%9A%D1%80%D0%B8%D1%82%D0%B5%D1%80%D0%B8%D0%B9_%D0%A1%D1%82%D1%8C%D1%8E%D0%B4%D0%B5%D0%BD%D1%82%D0%B0">тест Стьюдента</a> и <a href="https://ru.wikipedia.org/wiki/F-%D1%82%D0%B5%D1%81%D1%82">тест Фишера</a> соответственно.</p>
-<p>Проведем тесты для сравнения средних по Европе и Южной Африке используя функцию <code>t.test()</code> (это тест Уэлча, являющийся модификацией теста Стьюдента):</p>
+<p>Прежде чем манипулировать вычисленными статистиками (говорить, что в Западной Европе ВВП на душу населения в 10 раз выше, чем в Южной Африке), необходимо убедиться, что их отличия являются статистически значимыми. На статистическую значимость влияет не только абсолютная разность средних, но также характер распределения и объем выборки — выборки малого объема не могут дать высокой статистической значимости.</p>
+<p>Для сравнения средних значений и дисперсий двух статистических выборок обычно используют <a href="https://ru.wikipedia.org/wiki/T-%D0%9A%D1%80%D0%B8%D1%82%D0%B5%D1%80%D0%B8%D0%B9_%D0%A1%D1%82%D1%8C%D1%8E%D0%B4%D0%B5%D0%BD%D1%82%D0%B0"><strong>тест Стьюдента</strong></a> и <a href="https://ru.wikipedia.org/wiki/F-%D1%82%D0%B5%D1%81%D1%82"><strong>тест Фишера</strong></a> соответственно.</p>
+<p>Проведем тесты для сравнения средних по Европе и Южной Африке используя функцию <code>t.test()</code> (на самом деле это <a href="https://en.wikipedia.org/wiki/Welch%27s_t-test">тест Уэлча</a>, являющийся модификацией теста Стьюдента):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;africa_sub_saharan&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp),
        tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_west&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp))
 ## 
@@ -2028,11 +2030,13 @@ countries =<span class="st"> </span><span class="kw">read_excel</span>(<span cla
 <p>Достаточно часто в задачах анализа данных возникает необходимость совместного изучения нескольких переменных. Данный раздел посвящен анализу двух переменных.</p>
 <div id="stat_analysis_two_distr" class="section level3">
 <h3><span class="header-section-number">7.4.1</span> Оценка распределения</h3>
-<p>Первичный анализ производится путем оценки совместного распределения выборок на плоскости (для двух переменных) путем построения диаграммы рассеяния. С этим графиком мы уже хорошо знакомы:</p>
+<div id="stat_analysis_two_distr_scatter" class="section level4">
+<h4><span class="header-section-number">7.4.1.1</span> Диаграмма рассеяния</h4>
+<p>Первичный анализ производится путем оценки совместного распределения переменных на плоскости (для двух переменных) путем построения диаграммы рассеяния. С этим графиком мы уже хорошо знакомы:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
-<p>Очевидно, что в даннм случае мы имеем с нелинейной зависимостью. Чтобы упростить задачу по дальнейшему анализу, можно попробовать перейти к логарифмической шкале по оси <em>X</em>:</p>
+<p>Очевидно, что в данном случае мы имеем с нелинейной зависимостью. Чтобы упростить задачу по дальнейшему анализу, можно попробовать перейти к логарифмической шкале по оси <em>X</em>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>)
 <span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
@@ -2043,22 +2047,30 @@ countries =<span class="st"> </span><span class="kw">read_excel</span>(<span cla
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">scale_x_log10</span>()</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
-<p>Еще сильнее повысить информавность диаграммы рассеяния можно, используя цвет точек для обозначения региона принадлежности. Это позволит понять, как страны из разных регионов расеределяются по диаграмме:</p>
+<p>Еще сильнее повысить информативность диаграммы рассеяния можно, используя цвет точек для обозначения региона принадлежности. Это позволит понять связь между введенной нами <em>географической стратификацией</em> и распределением элементов выборки на диаграмме рассеяния:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp, <span class="dt">size =</span> pop, <span class="dt">color =</span> Region)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme_bw</span>()</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
-<p>Целесообразно также добавить подписи крупнейших стран мира с населением более 100 млн чел, а также страны, занимающие экстремальные позиции по обеим осям:</p>
+<p>Использование цвета наглядно показывает, что африканские страны занимают нижнюю левую часть диаграммы рассеяния с малой величиной ВВП и низкой продолжительностью жизни.</p>
+<p>Целесообразно также добавить подписи крупнейших стран мира с населением более 100 млн чел, а также страны, занимающие экстремальные позиции по обеим осям, чтобы понять положение ключевых игроков на диаграмме:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
-tablab =<span class="st"> </span>tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(pop <span class="op">&gt;</span><span class="st"> </span><span class="fl">1e8</span> <span class="op">|</span><span class="st"> </span>gdp <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(gdp) <span class="op">|</span><span class="st"> </span>gdp <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(gdp) <span class="op">|</span><span class="st"> </span>lifexp <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(lifexp) <span class="op">|</span><span class="st"> </span>lifexp <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(lifexp))
+tablab =<span class="st"> </span>tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># табличка для подписей</span>
+<span class="st">  </span><span class="kw">filter</span>(
+    pop <span class="op">&gt;</span><span class="st"> </span><span class="fl">1e8</span> <span class="op">|</span><span class="st"> </span>
+<span class="st">    </span>gdp <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(gdp) <span class="op">|</span><span class="st"> </span>
+<span class="st">    </span>gdp <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(gdp) <span class="op">|</span><span class="st"> </span>
+<span class="st">    </span>lifexp <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(lifexp) <span class="op">|</span><span class="st"> </span>
+<span class="st">    </span>lifexp <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(lifexp)
+  )
 
 <span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp, <span class="dt">color =</span> Region)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> pop), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">data =</span> tablab, 
             <span class="kw">aes</span>(<span class="dt">label =</span> Country),
             <span class="dt">check_overlap =</span> <span class="ot">TRUE</span>,
-            <span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span>
+            <span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span><span class="st"> </span><span class="co"># убрать текст из легенды</span>
 <span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme_bw</span>()</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
@@ -2067,21 +2079,24 @@ tablab =<span class="st"> </span>tabreg <span class="op">%&gt;%</span><span clas
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> pop), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_text_repel</span>(<span class="dt">data =</span> tablab, 
                   <span class="kw">aes</span>(<span class="dt">label =</span> Country),
-                  <span class="dt">box.padding =</span> <span class="fl">0.7</span>,
-                  <span class="dt">segment.size =</span> <span class="fl">0.2</span>,
-                  <span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span>
+                  <span class="dt">box.padding =</span> <span class="fl">0.7</span>,  <span class="co"># зазор вокруг подписи</span>
+                  <span class="dt">segment.size =</span> <span class="fl">0.2</span>, <span class="co"># толщина линии выноски</span>
+                  <span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span><span class="st"> </span><span class="co"># убрать текст из легенды</span>
 <span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">label =</span> <span class="kw">element_blank</span>()) <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme_bw</span>()</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
-<p>Плотность совместного распределения двух случаяных величины представляет собой уже не кривую, а поверхность, которую можно построить с использованием геометрии <code>geom_density_2d()</code>:</p>
+</div>
+<div id="stat_analysis_two_distr_density" class="section level4">
+<h4><span class="header-section-number">7.4.1.2</span> Плотность распределения</h4>
+<p>Плотность совместного распределения двух случайных величин представляет собой уже не кривую, а поверхность, которую можно построить с использованием геометрии <code>geom_density_2d()</code>. По умолчаню эта геометрия визуализируется в форме изолиний:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_density_2d</span>()<span class="op">+</span>
 <span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme_bw</span>()</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
-<p>Усилить наглядность представления можно, добавив послойную окраску полигонов:</p>
+<p>Усилить наглядность представления можно, добавив вспомогательную растровую поверхность плотности распределения (по которой, собственно, и строятся изолинии). Обратите внимание, что для растра используется функция <code>stat_density()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">stat_density_2d</span>(<span class="dt">geom =</span> <span class="st">&quot;raster&quot;</span>, <span class="kw">aes</span>(<span class="dt">fill =</span> <span class="kw">stat</span>(density)), <span class="dt">contour =</span> <span class="ot">FALSE</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_density_2d</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span>
@@ -2090,7 +2105,8 @@ tablab =<span class="st"> </span>tabreg <span class="op">%&gt;%</span><span clas
 <span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme_bw</span>()</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
-<p>В некоторых случаях удобнее оказывается не аппроксимация непрерывной поверхности плотности распределения, а подсчет количества измерений по ячейкам регулярной сетки — квадратным или гексагонльным. Такой подход бывает особенно полезен, когда точек измерений очень много и из-за их количества оказывается проблематично разглядеть области их концентрации:</p>
+<p>График двумерной плотности распределения показывает, что <em>мода</em> распределения, т.е. наиболее часто встречающийся случай, примерно соответствует странам с продолжительностью жизни 75 лет и ВВП на душу населения $10000.</p>
+<p>В некоторых случаях удобнее оказывается не аппроксимация непрерывной поверхности плотности распределения, а подсчет количества измерений по ячейкам регулярной сетки — квадратным или гексагональным. Такой подход бывает особенно полезен, когда точек измерений очень много и из-за их количества оказывается проблематично разглядеть области их концентрации. Агрегирование данных по ячейкам осуществляется путем применения геометрий <code>geom_bin2d()</code> и <code>geom_hex()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_bin2d</span>(<span class="dt">bins =</span> <span class="dv">10</span>)<span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
@@ -2107,16 +2123,17 @@ tablab =<span class="st"> </span>tabreg <span class="op">%&gt;%</span><span clas
 <span class="st">  </span><span class="kw">theme_bw</span>()</code></pre></div>
 <p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-28-2.png" width="672" /></p>
 </div>
+</div>
 <div id="stat_analysis_two_distr_correg" class="section level3">
 <h3><span class="header-section-number">7.4.2</span> Корреляция и регрессия</h3>
-<p><a href="https://bigenc.ru/mathematics/text/2099814">Корреляционный анализ</a> позволяет дать численную характеристику статистической связи между двумя случайными величинами, а <a href="https://bigenc.ru/mathematics/text/3502638">регрессионный анализ</a> — моделировать эту взаимосвязь посредством построения функции взаимосвязи зависимой и множества независимых величин.</p>
+<p><a href="https://bigenc.ru/mathematics/text/2099814">Корреляционный анализ</a> позволяет дать численную характеристику статистической связи между двумя случайными величинами, а <a href="https://bigenc.ru/mathematics/text/3502638">регрессионный анализ</a> — <em>моделировать</em> эту взаимосвязь посредством построения функции взаимосвязи зависимой и множества независимых переменных.</p>
 <div id="stat_analysis_two_distr_correg_corr" class="section level4">
 <h4><span class="header-section-number">7.4.2.1</span> Корреляция</h4>
 <p><a href="https://bigenc.ru/mathematics/text/2099711"><strong>Коэффициент корреляции</strong></a> — это числовая характеристика совместного распределения двух случайных величин, характеризующая их взаимосвязь. Наиболее часто в статистике употребляется выборочный коэффициент корреляции Пирсона, в котором перебираются все пары соответствующих друг другу значений из рядов <span class="math inline">\(X = \{x_i\}\)</span> и <span class="math inline">\(Y = \{y_i\}\)</span>: <span class="math display">\[
 r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(x_i - \bar x)^2} \sqrt{\sum_{i=1}^{n}(y_i - \bar y)^2}},
 \]</span> где <span class="math inline">\(\bar x\)</span> и <span class="math inline">\(\bar y\)</span> соответствуют выборочным средним для <span class="math inline">\(X\)</span> и <span class="math inline">\(Y\)</span>.</p>
 <p>Важно помнить, что коэффициент корреляции Пирсона характеризует силу <em>линейной</em> связи между двумя величинами. Поэтому, если наблюдаемая нами картина взаимосвязи носит нелинейный характер, необходимо предварительно линеаризовать ее, то есть выполнить преобразование над переменными, приводящее к получению линейной зависимости. В нашем в случае изучения ВВП на душу населения и продолжительности жизни мы видели, что линеаризация возможна путем логарифмирования показателя ВВП.</p>
-<p>Для вычисления коэффициента корреляции Пирсона в R с оценкой уровня значимости используется функция <code>cor.test()</code>:</p>
+<p>Для вычисления коэффициента корреляции Пирсона в <strong>R</strong> с оценкой уровня значимости используется функция <code>cor.test()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor.test</span>(tabreg<span class="op">$</span>gdp, tabreg<span class="op">$</span>lifexp)
 ## 
 ##  Pearson&#39;s product-moment correlation
@@ -2151,11 +2168,15 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 y(x) = β_0φ_0(x)+ β_1φ_1(x)+...+ β_mφ_m(x)
 \]</span> Наиболее часто используется <em>полиномиальная регрессия</em>, при которой <span class="math display">\[
 y(x) = β_0+β_1x+...+ β_mx^m.
-\]</span> В этом случае основная задача регрессионого анализа сводится к поиску неизвестных коэффициентов <span class="math inline">\(β_0,...,β_m\)</span>, который осущестляется <a href="https://bigenc.ru/mathematics/text/2245173">методом наименьших квадратов</a>. Результатом этого поиска являются выборочные коэффициенты регрессии <span class="math inline">\(\hat β_0,...,\hat β_m\)</span> которые дают оценку искомых параметров <span class="math inline">\(β_0,...,β_m\)</span>. В итоге эмпирическая линия регрессии определяется многочленом <span class="math display">\[
+\]</span> В этом случае основная задача регрессионого анализа сводится к поиску неизвестных коэффициентов <span class="math inline">\(β_0,...,β_m\)</span>, который осущестляется <a href="https://bigenc.ru/mathematics/text/2245173">методом наименьших квадратов</a>. Результатом этого поиска являются выборочные коэффициенты регрессии <span class="math inline">\(\hat β_0,...,\hat β_m\)</span>, которые дают оценку искомых параметров <span class="math inline">\(β_0,...,β_m\)</span>. В итоге эмпирическая линия регрессии определяется многочленом <span class="math display">\[
 \hat y(x)=\hat β_0+\hat β_1x+...+\hat β_mx_m,
 \]</span> который и служит статистической оценкой неизвестной формы функциональной зависимости между исследуемыми величинами.</p>
-<p>Для представления моделей в R существует специальный объект, который называется <strong>формула</strong>. Формула имеет вид <code>f ~ x + y + ...</code>, что интерепретруется соответствующими функциями как <span class="math inline">\(f = β_0 + β_1x + β_2y + ...\)</span>. Обратит внимание на символ <em>тильды</em> (<code>~</code>) — он является отличительной особенностью формулы.</p>
-<p>Вместо переменных в формуле вы можете использовать функции от переменных. Например <code>log(f) ~ log(x) + sqrt(y)</code> означает модель <span class="math inline">\(\log f = β_0 + β_1 \log x + β_2 \sqrt y ...\)</span>. Если необходимо выполнить алгебраические преобразования переменных или задать конкретное значение свободного члена, то их необходимо заключить в функцию <code>I()</code>: <code>f ~ log(x) + I(y ^ 2) + I(0)</code> будет означать модель вида <span class="math inline">\(f = β_1 \log x + β_2 y^2\)</span>. Для краткой записи полиномиальной зависимости можно использовать вспомогательную функцию <code>poly()</code>, которая в качестве второго аргумента принимает степень многочлена. Т.е. <code>f ~ poly(x, 3)</code> означает модель вида <span class="math inline">\(f = β_0 + β_1x + β_2x^2 + β_3x^3\)</span>.</p>
+<p>Для представления моделей в R существует специальный объект, который называется <strong>формула</strong>. Формула имеет вид <code>f ~ x + y + ...</code>, что интерепретруется соответствующими функциями как <span class="math inline">\(f = β_0 + β_1x + β_2y + \dots\)</span></p>
+<blockquote>
+<p><strong>Обратите внимание</strong> на символ <em>тильды</em> (<code>~</code>) — он является отличительной особенностью формулы и интерпретируется как <em>«зависит от»</em>.</p>
+</blockquote>
+<p>Вместо переменных в формуле вы можете использовать функции от переменных. Например <code>log(f) ~ log(x) + sqrt(y)</code> означает модель <span class="math inline">\(\log f = β_0 + β_1 \log x + β_2 \sqrt y\)</span>. Если необходимо выполнить алгебраические преобразования переменных или задать конкретное значение свободного члена, то их необходимо заключить в специальную функцию <code>I()</code>: <code>f ~ log(x) + I(y ^ 2) + I(0)</code> будет означать модель вида <span class="math inline">\(f = β_1 \log x + β_2 y^2\)</span>.</p>
+<p>Для краткой записи полиномиальной зависимости можно использовать вспомогательную функцию <code>poly()</code>, которая в качестве второго аргумента принимает степень многочлена. Т.е. <code>f ~ poly(x, 3)</code> означает модель вида <span class="math inline">\(f = β_0 + β_1x + β_2x^2 + β_3x^3\)</span>.</p>
 <p>Оценка параметров линейных моделей осуществляется с помощью функции <code>lm()</code>. В нашем случае модель носит простой характер:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model =<span class="st"> </span><span class="kw">lm</span>(lifexp <span class="op">~</span><span class="st"> </span><span class="kw">log</span>(gdp), <span class="dt">data =</span> tabreg)
 <span class="kw">coef</span>(model)
@@ -2181,7 +2202,7 @@ y(x) = β_0+β_1x+...+ β_mx^m.
 ## Residual standard error: 4.785 on 170 degrees of freedom
 ## Multiple R-squared:  0.6385, Adjusted R-squared:  0.6363 
 ## F-statistic: 300.2 on 1 and 170 DF,  p-value: &lt; 0.00000000000000022</code></pre></div>
-<p>Результаты оценки говорят о том, что регрессия построена успешно. <a href="https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D1%8D%D1%84%D1%84%D0%B8%D1%86%D0%B8%D0%B5%D0%BD%D1%82_%D0%B4%D0%B5%D1%82%D0%B5%D1%80%D0%BC%D0%B8%D0%BD%D0%B0%D1%86%D0%B8%D0%B8">Коэффициент детерминации</a> (квадрат коэффицента корреляции) равен 0,64.</p>
+<p>Результаты оценки говорят о том, что регрессия построена удовлетворительно. <a href="https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D1%8D%D1%84%D1%84%D0%B8%D1%86%D0%B8%D0%B5%D0%BD%D1%82_%D0%B4%D0%B5%D1%82%D0%B5%D1%80%D0%BC%D0%B8%D0%BD%D0%B0%D1%86%D0%B8%D0%B8">Коэффициент детерминации</a> (квадрат коэффицента корреляции) равен 0,64.</p>
 <p>Для визуализации модели можно извлечь из нее значения используя функцию <code>fitted()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df =<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">lifexp =</span> <span class="kw">fitted</span>(model),
             <span class="dt">gdp =</span> tabreg<span class="op">$</span>gdp)
@@ -2210,7 +2231,8 @@ y(x) = β_0+β_1x+...+ β_mx^m.
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_smooth</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme_bw</span>()</code></pre></div>
-<p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-35-1.png" width="672" /> При визуализации линии локальной регрессее <strong>ggplot</strong> автоматически добавляет доверительные интервалы, показывающие диапазон нахождения искомой регрессионной кривой с вероятностью 0,95. Вы можете регулировать поведение локальной регрессии, задавая параметры <code>n</code>, <code>span</code> и <code>formula</code>. По умолчанию испольщуется регрессия первой степени (<code>formula = y ~ x</code>), значения <code>n = 80</code> и <code>span = 0.75</code>. Вы можете их изменить, например задать более компактный охват для поиска коэффициентов:</p>
+<p><img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<p>При визуализации линии локальной регрессии <strong>ggplot</strong> автоматически добавляет доверительные интервалы, показывающие диапазон нахождения искомой регрессионной кривой с вероятностью 0,95. Вы можете регулировать поведение локальной регрессии, задавая параметры <code>n</code>, <code>span</code> и <code>formula</code>. По умолчанию испольщуется регрессия первой степени (<code>formula = y ~ x</code>), значения <code>n = 80</code> и <code>span = 0.75</code>. Вы можете их изменить, например задать более компактный охват для поиска коэффициентов. В этом случае кривая будет более чувствительна к локальному разбросу элементов выборки:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">span =</span> <span class="fl">0.3</span>) <span class="op">+</span>
