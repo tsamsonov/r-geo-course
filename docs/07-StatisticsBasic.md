@@ -119,7 +119,7 @@ ggplot(gdpdf15, aes(x = gdp)) +
   geom_histogram()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-4-1.png)<!-- -->
 
 Изменить ширину кармана можно, используя параметр `binwidth`:
 
@@ -128,7 +128,7 @@ ggplot(gdpdf15, aes(x = gdp)) +
   geom_histogram(binwidth = 5000, color = 'black', fill = 'steelblue', size = 0.2)
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-5-1.png)<!-- -->
 
 Аналогично рассмотрим показатель ожидаемой продолжительности жизни:
 
@@ -185,7 +185,7 @@ ggplot(lifedf15, aes(x = lifexp)) +
   geom_histogram(binwidth = 2, color = 'black', fill = 'olivedrab', size = 0.2)
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-7-1.png)<!-- -->
 
 Для графической оценки распределения удобно использовать не только гистограмму, но также метод __ядерного сглаживания__ (_kernel density_), который позволяет строить аппроксимацию функции плотности вероятности. Условно говоря, ядро является функцией, которая позволяет распространить потенциал каждого элемента выборки на его ближайшую окрестность. Чем больше элементов выборки сконцентрировано вблизи данной точки, тем сильнее будет их совокупно наведенный потенциал в данной точке, и тем, соответственно, выше оценка плотности распределения, которая получается суперпозицией этих потенциалов. Математически операция ядерной оценки плотности в точке $x$ определяется как:
 $$
@@ -200,7 +200,7 @@ ggplot(gdpdf15, aes(x = gdp)) +
   geom_density(color = 'black', fill = 'steelblue', alpha = 0.5)
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-8-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-8-1.png)<!-- -->
 
 ```r
 
@@ -208,7 +208,7 @@ ggplot(lifedf15, aes(x = lifexp)) +
   geom_density(color = 'black', fill = 'olivedrab', alpha = 0.5)
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-8-2.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-8-2.png)<!-- -->
 
 Вы можете комбинировать гистограммы и оценку плотности распределения, но для этого гистограмма по оси _Y_ должна отражать не фактическое количество элементов в каждом классе, а _долю_ или плотность вероятности (`y = stat(density)`):
 
@@ -218,7 +218,7 @@ ggplot(gdpdf15, aes(x = gdp)) +
   geom_density(color = 'black', fill = 'steelblue', alpha = 0.5)
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-9-1.png)<!-- -->
 
 ```r
 
@@ -227,7 +227,7 @@ ggplot(lifedf15, aes(x = lifexp)) +
   geom_density(color = 'black', fill = 'olivedrab', alpha = 0.5)
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-9-2.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-9-2.png)<!-- -->
 
 При построении гистограмм и оценке плотности распределения мы допустили ошибку: приняли, что все измерения являются равнозначными. Однако в данном случае это не так. Население Люксембурга и Пакистана отличается на два порядка --- это означает, что Пакистан должен иметь соответственно больший вес при построении гистограммы. Для учета этой характеристики подгрузим из __Gapminder__ данные по численности населения и присоединим их к нашим таблицам по ВВП и продолжительности жизни:
 
@@ -265,7 +265,7 @@ ggplot(tab15, aes(x = gdp, y = stat(density), weight = pop/sum(pop))) +
   geom_density(color = 'black', fill = 'steelblue', alpha = 0.5)
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-11-1.png)<!-- -->
 
 ```r
 
@@ -274,7 +274,7 @@ ggplot(tab15, aes(x = lifexp, y = stat(density), weight = pop/sum(pop))) +
   geom_density(color = 'black', fill = 'olivedrab', alpha = 0.5)
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-11-2.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-11-2.png)<!-- -->
 
 Графики плотности распределения удобны тем, что их, в отличие от гистограмм, удобно комбинировать на одном изображении, используя цвет для разделения по еще одной переменной.  Например, мы можем оценить, как изменились мировые диспропорции в продолжительности жизни и доходов населения за последние 50 лет (обратите внимание на параметр `fill = year` в эстетике:
 
@@ -285,7 +285,7 @@ ggplot(tab85, aes(x = gdp, fill = year, weight = pop/sum(pop))) +
   geom_density(alpha = 0.5)
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-12-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-12-1.png)<!-- -->
 
 ```r
 
@@ -293,7 +293,7 @@ ggplot(tab85, aes(x = lifexp, fill = year, weight = pop/sum(pop))) +
   geom_density(alpha = 0.5)
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-12-2.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-12-2.png)<!-- -->
 
 ### Описательные статистики {#stat_analysis_one_summary}
 
@@ -321,7 +321,7 @@ ggplot(countries, aes(x = Country, y = 1, fill = Region)) +
   coord_flip()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-13-1.png)<!-- -->
 
 Присоединим эти данные к исходной таблице:
 
@@ -354,7 +354,7 @@ ggplot(tabreg, aes(x = Region, y = gdp)) +
   geom_boxplot() + coord_flip()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-15-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-15-1.png)<!-- -->
 
 ```r
 
@@ -362,7 +362,7 @@ ggplot(tabreg, aes(x = Region, y = lifexp)) +
   geom_boxplot() + coord_flip()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-15-2.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-15-2.png)<!-- -->
 
 Данные графики наглядно показывают, что регионы отличаются по ряду статистических параметров исследуемой переменной: среднему значению, размаху вариации (разбросу значений), среднеквадратическому отклонению  Эти статистики можно получить и в табличном виде:
 
@@ -506,7 +506,7 @@ ggplot(tabreg, aes(gdp, lifexp)) +
   geom_point()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-20-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-20-1.png)<!-- -->
 
 Очевидно, что в данном случае мы имеем с нелинейной зависимостью. Чтобы упростить задачу по дальнейшему анализу, можно попробовать перейти к логарифмической шкале по оси _X_:
 
@@ -517,7 +517,7 @@ ggplot(tabreg, aes(gdp, lifexp)) +
   scale_x_log10()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-21-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-21-1.png)<!-- -->
 
 На диаграмме рассеяния важно показать не только местоположение точек, но также их весовую значимость, которая в данном случае определяется численностью населения в стране. Введем соответствующую графическую переменную — размер точки:
 
@@ -527,7 +527,7 @@ ggplot(tabreg, aes(gdp, lifexp, size = pop)) +
   scale_x_log10()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-22-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-22-1.png)<!-- -->
 
 Еще сильнее повысить информативность диаграммы рассеяния можно, используя цвет точек для обозначения региона принадлежности. Это позволит понять связь между введенной нами _географической стратификацией_ и распределением элементов выборки на диаграмме рассеяния:
 
@@ -538,7 +538,7 @@ ggplot(tabreg, aes(gdp, lifexp, size = pop, color = Region)) +
   theme_bw()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-23-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-23-1.png)<!-- -->
 
 Использование цвета наглядно показывает, что африканские страны занимают нижнюю левую часть диаграммы рассеяния с малой величиной ВВП и низкой продолжительностью жизни.
 
@@ -565,7 +565,7 @@ ggplot(tabreg, aes(gdp, lifexp, color = Region)) +
   theme_bw()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-24-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-24-1.png)<!-- -->
 
 Устранение перекрытий подписей можно осуществить, ипользуя геометрию `geom_text_repel()` из пакета __ggrepel__ вместо стандартной `geom_text()`
 
@@ -582,7 +582,7 @@ ggplot(tabreg, aes(gdp, lifexp,  color = Region)) +
   theme_bw()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-25-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-25-1.png)<!-- -->
 
 #### Плотность распределения {#stat_analysis_two_distr_density}
 
@@ -596,7 +596,7 @@ ggplot(tabreg, aes(gdp, lifexp)) +
   theme_bw()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-26-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-26-1.png)<!-- -->
 
 Усилить наглядность представления можно, добавив вспомогательную растровую поверхность плотности распределения (по которой, собственно, и строятся изолинии). Обратите внимание, что для растра используется функция `stat_density()`:
 
@@ -610,7 +610,7 @@ ggplot(tabreg, aes(gdp, lifexp)) +
   theme_bw()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-27-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-27-1.png)<!-- -->
 
 График двумерной плотности распределения показывает, что _мода_ распределения, т.е. наиболее часто встречающийся случай, примерно соответствует странам с продолжительностью жизни 75 лет и ВВП на душу населения \$10000.
 
@@ -625,7 +625,7 @@ ggplot(tabreg, aes(gdp, lifexp)) +
   theme_bw()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-28-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-28-1.png)<!-- -->
 
 ```r
 
@@ -637,7 +637,7 @@ ggplot(tabreg, aes(gdp, lifexp)) +
   theme_bw()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-28-2.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-28-2.png)<!-- -->
 
 ### Корреляция и регрессия {#stat_analysis_two_distr_correg}
 
@@ -758,7 +758,7 @@ ggplot(tabreg, aes(gdp, lifexp)) +
   theme_bw()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-33-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-33-1.png)<!-- -->
 
 Если вам нужно только построить линию регрессии, но не находить ее коэффициенты, то вы можете пропустить этап оценки параметров модели и вывести график линейной регрессии средствами __ggplot__, используя геометрию `geom_smooth()` с параметром `method = lm`:
 
@@ -771,7 +771,7 @@ ggplot(tabreg, aes(gdp, lifexp)) +
   theme_bw()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-34-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-34-1.png)<!-- -->
 
 
 #### Локальная регрессия {#stat_analysis_two_distr_correg_loess}
@@ -792,7 +792,7 @@ ggplot(tabreg, aes(gdp, lifexp)) +
   theme_bw()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-35-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-35-1.png)<!-- -->
 
 При визуализации линии локальной регрессии __ggplot__ автоматически добавляет доверительные интервалы, показывающие диапазон нахождения искомой регрессионной кривой с вероятностью 0,95. Вы можете регулировать поведение локальной регрессии, задавая параметры `n`, `span` и `formula`. По умолчанию испольщуется регрессия первой степени (`formula = y ~ x`), значения `n = 80` и `span = 0.75`. Вы можете их изменить, например задать более компактный охват для поиска коэффициентов. В этом случае кривая будет более чувствительна к локальному разбросу элементов выборки:
 
@@ -803,7 +803,7 @@ ggplot(tabreg, aes(gdp, lifexp)) +
   theme_bw()
 ```
 
-<img src="07-StatisticsBasic_files/figure-html/unnamed-chunk-36-1.png" width="672" />
+![](07-StatisticsBasic_files/figure-epub3/unnamed-chunk-36-1.png)<!-- -->
 
 Вместо координат исходных точек для построения регрессии можно использовать и произвольные координаты $X$. В этом случае кривая будет соединять точки, полученные локальной регрессионной оценкой в заданных координатах $X$. Именно этот принцип используется в двумерном (и многомерном) случае. Пусть даны измерения показателя в $N$ исходных точках и задано число $\alpha$ --- сглаживающий параметр. Тогда аппроксимация показателя в каждом узле интерполяции получается путем построения поверхности тренда (см. выше) по $\alpha N$ ближайшим исходным точкам. Как и в одномерном случае, близкие точки будут оказывать более сильное влияние на коэффициенты регрессии, чем удаленные.
 
@@ -814,5 +814,3 @@ ggplot(tabreg, aes(gdp, lifexp)) +
 ### Вопросы {#questions_stat_analysis}
 
 ### Упражнения {#tasks_stat_analysis}
-
-
