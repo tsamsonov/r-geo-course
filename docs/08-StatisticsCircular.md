@@ -241,11 +241,6 @@ lines(c(0, xp), c(0, yp),
 
 <img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-11-1.png" width="672" />
 
-На график можно добавить оценку плотности распределения, для этого ее необъодимо предварительно вычислить:
-
-
-
-
 ## Статистика временных данных {#circular_time}
 
 ### Работа с датами в lubridate {#circular_time_lubridate}
