@@ -15,6 +15,7 @@ knitr::opts_chunk$set(warning=FALSE, message = FALSE, collapse=TRUE)
 ```{r}
 library(tidyverse)
 library(circular)
+library(readxl)
 library(NPCirc)
 library(pracma)
 library(lubridate)
@@ -29,7 +30,7 @@ devtools::install_github('thomasp85/gganimate')
 
 После этого пакет можно подключать в привычном режиме:
 ```{r}
-
+library(gganimate)
 ```
 
 ## Статистика направлений {#circular_circ}
@@ -76,8 +77,7 @@ $$
 
 ### Практика {#circular_circ_vis}
 
-В практической части данного раздела мы будем работать с массивом среднемесячных значений   
-метеопараметров в пограничном слое атмосферы по полярным аэрологическим обсерваториям России. Массив данных ежемесячно обновляется на [портале Аисори-М](http://aisori-m.meteo.ru) [__ВНИИГМИ-МЦД__](http://meteo.ru/). 
+В практической части данного раздела мы будем работать с массивом среднемесячных значений метеопараметров в пограничном слое атмосферы по полярным аэрологическим обсерваториям России. Массив данных ежемесячно обновляется на [портале Аисори-М](http://aisori-m.meteo.ru) [__ВНИИГМИ-МЦД__](http://meteo.ru/). 
 В системе доступны данные по следующим обсерваториям:
 ```{r}
 obs = readxl::read_excel('bound/scheme.xlsx', 2)
@@ -88,45 +88,49 @@ knitr::kable(obs)
 
 Для каждой обсерватории даны следующие параметры:
 ```{r, echo = FALSE}
-params = readxl::read_excel('bound/scheme.xlsx', 1)
+params = read_excel('bound/scheme.xlsx', 1)
 ```
 ```{r, echo = FALSE}
 knitr::kable(params)
 ```
 
-Загрузим данные по обсерватории в городе Кандалакша:
+Загрузим данные по всем обсерваториям из текстовых файлов в папке _bound_:
 ```{r}
-(kand = readr::read_table('bound/b22217.txt', col_names = params$Обозначение))
+files = paste('bound', list.files('bound', "*.txt"), sep = '/')
+
+(tab = lapply(files, function(X) readr::read_table(X, col_names = params$Обозначение)) %>% 
+  bind_rows() %>% 
+  left_join(obs, by = c('INDEX' = 'Индекс'))) # присоединим информацию о названиях станций
 ```
 
-Выберем данные по высоте 50 метров за 12 часов дня, сохранив только составляющие скорости и ее скалярную величину:
-```{r}
-(kand_wind = kand %>%
-  filter(HH == 12, Z == 0) %>% 
-  dplyr::select(MU, MV, SS))
-```
-
-Создадим объект типа `circular` для анализа, предварительно определив вспомогательную функцию, вычисляющую географический азимут на основе компонент скорости:
+Создадим объект типа `circular` с направлениями ветра для анализа, и запишем его в новую переменую таблицы. Предварительно определим вспомогательную функцию, вычисляющую географический азимут на основе компонент скорости:
 ```{r}
 geo_azimuth = function(dx, dy) {
   a = atan2(dx, dy)
   ifelse(a <= pi/2, pi/2 - a,  5*pi/2 - a)
 }
 
-(winds = circular(geo_azimuth(kand_wind$MV, kand_wind$MU), 
-                 template = 'geographics'))
-
+(winds = tab %>% 
+  mutate(wind = circular(geo_azimuth(MV, MU), template = 'geographics')) %>% 
+  select(INDEX, name = Название, GGGG, MM, HH, Z, MU, MV, SS, wind))
 ```
 
-Отобразим распределение направлений, розу-диаграмму, плотность распределения и преобладающее направление:
+Выберем данные по высоте 0 метров за 12 часов дня для города Тикси, сохранив только составляющие скорости и ее скалярную величину:
 ```{r}
-plot.circular(winds, 
+(tiksi_wind = winds %>% filter(name == 'Тикси', HH == 12, Z == 0))
+```
+
+Отобразим распределение направлений, розу-диаграмму и плотность распределения:
+```{r}
+plot.circular(tiksi_wind$wind, 
      cex = 0.5, 
      stack = TRUE, 
      sep = 0.035,
-     axes = FALSE)
+     axes = FALSE,
+     main = 'Среднемноголетняя роза ветров в Тикси',
+     sub = 'Измерения за период с 2007 по 2018 г, высота 50 м')
 
-rose.diag(winds, 
+rose.diag(tiksi_wind$wind, 
           bins = 8, 
           col = 'gray70',
           border = 'gray30',
@@ -135,16 +139,109 @@ rose.diag(winds,
           tick = FALSE,
           lwd = 0.5)
 
-kden = kern.den.circ(winds)
-lines(kden, shrink = 3, join=F)
+kden = kern.den.circ(tiksi_wind$wind)
 
-peak = findpeaks(kden$y, sortstr = T)[1,2]
-xp <- sin(kden$x[peak])
-yp <- cos(kden$x[peak])
+lines(kden, shrink = 3, 
+      join = F,
+      col = 'steelblue')
+```
+
+Так же как и в случае с обычными данными, плотность распределения удобно использовать для определения модальных направлений, то есть наиболее часто встречающихся:
+```{r}
+peak = findpeaks(kden$y, sortstr = T)[1,2] # находим индекс самого высокого пика плотности распределения
+
+(modal = kden$x[peak]) # извлекаем сам угол
+
+# раскладываем на составляющие для отрисовки линии
+xp = sin(modal)
+yp = cos(modal)
+
+plot.circular(tiksi_wind$wind, 
+     cex = 0.5, 
+     stack = TRUE, 
+     sep = 0.035,
+     axes = FALSE,
+     main = 'Среднемноголетняя роза ветров в Тикси',
+     sub = 'Измерения за период с 2007 по 2018 г, высота 50 м')
+
+rose.diag(tiksi_wind$wind, 
+          bins = 8, 
+          col = 'gray70',
+          border = 'gray30',
+          prop = 1, 
+          add = TRUE, 
+          tick = FALSE,
+          lwd = 0.5)
+
+lines(kden, shrink = 3, 
+      join = F, col = 'steelblue')
 
 lines(c(0, xp), c(0, yp),
-      lwd = 2)
+      lwd = 2, col = 'orangered')
+
+text(x = 1.4 * xp, y = 1.4 * yp, 
+     col = 'orangered',
+     labels = paste0(round(180 * modal / pi, 0), '°')) # приводим к целым градусам
 ```
+
+Проведем анализ направлений для всех станций. Для этого рассчитаем функции плотности распределения и разместим их в новом фрейме данных с лист-колонкой (да-да, в ячейках таблицы можно хранить сложные объекты!):
+```{r}
+(dens = winds %>% 
+  filter(HH == 12, Z == 0) %>%
+  group_by(name) %>% 
+  summarise(kden = list(kern.den.circ(wind))) %>% 
+  mutate(peak = sapply(kden, function(X) {
+                  peak = findpeaks(X$y, sortstr = T)[1,2]
+                  X$x[peak]
+                })
+  )
+)
+```
+
+После этого построим розы-диаграммы для всех станций:
+```{r}
+par(mar = c(1,1,1,1),
+    mfrow = c(1,2))
+for (obs_name in dens$name) {
+  
+  wind_df = winds %>% filter(name == obs_name, HH == 12, Z == 0)
+  dens_df = dens %>% filter(name == obs_name)
+  
+  modal = dens_df$peak
+
+  xp = sin(modal)
+  yp = cos(modal)
+  
+  plot.circular(wind_df$wind, 
+       shrink = 1.2,
+       cex = 0.5, 
+       stack = TRUE, 
+       sep = 0.035,
+       axes = FALSE,
+       main = obs_name)
+  
+  rose.diag(wind_df$wind, 
+            bins = 8, 
+            col = 'gray70',
+            border = 'gray30',
+            prop = 1, 
+            add = TRUE, 
+            tick = FALSE,
+            lwd = 0.5)
+  
+  lines(dens_df$kden[[1]], 
+        shrink = 3, join=F,
+        col = 'steelblue')
+  
+  lines(c(0, xp), c(0, yp),
+        lwd = 2, col = 'orangered')
+  
+  text(x = 1.4 * xp, y = 1.4 * yp, 
+       col = 'orangered',
+       labels = paste0(round(180 * modal / pi, 0), '°')) # приводим к целым градусам
+}
+```
+
 
 ## Статистика временных данных {#circular_time}
 
