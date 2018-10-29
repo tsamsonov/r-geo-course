@@ -1938,7 +1938,7 @@ I_p(\kappa) = \frac{1}{2π} \int_{0}^{2\pi} \cos (p \theta) e^{\kappa \cos θ} d
 <h4><span class="header-section-number">8.2.1.2</span> Вычисление статистических моментов</h4>
 <p>Для вычисления статистических моментов круговой случайной величины требуется найти средний равнодействующий вектор первого порядка <span class="math inline">\(R = (C, S)\)</span>, где <span class="math inline">\(C = \frac{1}{n} \sum_{j=1}^{n} \cos \theta_j\)</span>, <span class="math inline">\(S = \frac{1}{n} \sum_{j=1}^{n} \sin \theta_j\)</span>. Данный вектор имеет направление <span class="math inline">\(\bar\theta\)</span>, которое является выборочным средним направлением исследуемой величины. Выборочная средняя равнодействующая длина <span class="math inline">\(\bar R = \sqrt{C^2 + S^2}\)</span> принимает значения в диапазоне <span class="math inline">\([0, 1]\)</span> и показывает меру концентрации направлений относительно <span class="math inline">\(\theta\)</span>. <span class="math inline">\(\bar R = 1\)</span> означает, что все исходные направления совпадают, <span class="math inline">\(\bar R = 0\)</span> — что данные равномерно распределены по кругу, либо распределение имеет несколько мод, которые уравновешивают друг друга. Стандартное отклонение направлений <span class="math inline">\(v\)</span> в радианах может быть найдено как <span class="math inline">\(v=\sqrt{-2 \ln \bar R}\)</span> (Mardia, Jupp, 2000).</p>
 <p>Величина <span class="math inline">\(\bar R\)</span> дает важную информацию для предварительной диагностики картины направлений. Если значение <span class="math inline">\(\bar R\)</span> близко к единице, это означает, что распределение является унимодальным и в качестве основного направления можно принять значение <span class="math inline">\(\bar θ\)</span>.</p>
-<p>В ряде случаев противоположнееы направления считаются эквивалентными. Например, нельзя сказать, идет ли улица с юга на север или с севера на юг. Такие данные в теории круговой статистики называются <strong>аксиальными</strong> (Mardia, Jupp, 2000). Для аксиальных данных возможный диапазон значений лежит в интервале <span class="math inline">\([0, \pi)\)</span>. Поскольку методы круговой статистики рассчитаны на круговое замыкание данных, стандартный подход к обработке аксиальных данных предполагает переход от направлений к их удвоенным значениям <span class="math inline">\(\theta&#39; = 2\theta\)</span>, обработку полученных значений стандартными методами и отображение полученных значение обратно на интервал <span class="math inline">\([0, \pi)\)</span>. Для среднего, медианы и моды распределения это означает простое деление полученного значения пополам (Pewsey et al., 2013).</p>
+<p>В ряде случаев противоположные направления считаются эквивалентными. Например, нельзя сказать, идет ли улица с юга на север или с севера на юг. Такие данные в теории круговой статистики называются <strong>аксиальными</strong> (Mardia, Jupp, 2000). Для аксиальных данных возможный диапазон значений лежит в интервале <span class="math inline">\([0, \pi)\)</span>. Поскольку методы круговой статистики рассчитаны на круговое замыкание данных, стандартный подход к обработке аксиальных данных предполагает переход от направлений к их удвоенным значениям <span class="math inline">\(\theta&#39; = 2\theta\)</span>, обработку полученных значений стандартными методами и отображение полученных значение обратно на интервал <span class="math inline">\([0, \pi)\)</span>. Для среднего, медианы и моды распределения это означает простое деление полученного значения пополам (Pewsey et al., 2013).</p>
 </div>
 <div id="circular_circ_modes" class="section level4">
 <h4><span class="header-section-number">8.2.1.3</span> Определение модальных направлений</h4>
@@ -2240,7 +2240,7 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 ## # ... with 77,063 more rows, and 14 more variables: SD &lt;int&gt;, ND &lt;int&gt;,
 ## #   MS &lt;int&gt;, SS &lt;int&gt;, NS &lt;int&gt;, MU &lt;int&gt;, SU &lt;int&gt;, NU &lt;int&gt;, MV &lt;int&gt;,
 ## #   SV &lt;int&gt;, NV &lt;int&gt;, Название &lt;chr&gt;, Широта &lt;dbl&gt;, Долгота &lt;dbl&gt;</code></pre></div>
-<p>Создадим объект типа <code>circular</code> с направлениями ветра для анализа, и запишем его в новую переменую таблицы. Предварительно определим вспомогательную функцию, вычисляющую географический азимут на основе компонент скорости:</p>
+<p>Создадим объект типа <code>circular</code> (из пакета <strong>circular</strong>) с направлениями ветра для анализа, и запишем его в новую переменую таблицы. Предварительно определим вспомогательную функцию, вычисляющую географический азимут на основе компонент скорости:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">geo_azimuth =<span class="st"> </span><span class="cf">function</span>(dx, dy) {
   a =<span class="st"> </span><span class="kw">atan2</span>(dx, dy)
   <span class="kw">ifelse</span>(a <span class="op">&lt;=</span><span class="st"> </span>pi<span class="op">/</span><span class="dv">2</span>, pi<span class="op">/</span><span class="dv">2</span> <span class="op">-</span><span class="st"> </span>a,  <span class="dv">5</span><span class="op">*</span>pi<span class="op">/</span><span class="dv">2</span> <span class="op">-</span><span class="st"> </span>a)
@@ -2263,7 +2263,7 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 ##  9 20674 Остров Ди…  2007     1     0  1200    24    45    56 0.4899573   
 ## 10 20674 Остров Ди…  2007     1     0  1100    24    49    58 0.4554511   
 ## # ... with 77,063 more rows</code></pre></div>
-<p>Выберем данные по высоте 0 метров за 12 часов дня для города Тикси, сохранив только составляющие скорости и ее скалярную величину:</p>
+<p>Выберем данные по высоте 0 метров за 12 часов дня для поселка Тикси, сохранив только составляющие скорости и ее скалярную величину:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">tiksi_wind =</span> winds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> &#39;Тикси&#39;</span>, HH <span class="op">==</span><span class="st"> </span><span class="dv">12</span>, Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span>))
 ## # A tibble: 136 x 10
 ##    INDEX name   GGGG    MM    HH     Z    MU    MV    SS wind          
@@ -2279,14 +2279,14 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 ##  9 21824 Тикси  2007     9    12     0    24    14    34 1.0427219     
 ## 10 21824 Тикси  2007    10    12     0    41    47    40 0.7173217     
 ## # ... with 126 more rows</code></pre></div>
-<p>Отобразим распределение направлений, розу-диаграмму и плотность распределения:</p>
+<p>Отобразим распределение направлений, розу-диаграмму и плотность распределения. Для построени графиков используем функции <code>plot.circular()</code> и <code>rose.diag</code> из пакета <strong>circular</strong>. Для аппроксимации плотности распределения направлений воспользуемся функцией <code>kern.den.circ()</code> из пакета <strong>NPCirc</strong>. Эта функция использует функцию плотности распределения <em>фон Мизеса</em> в качестве ядра и по умолчанию разбивает круг на 250 направлений, по которым производится оценка плотности (при необходимости это значение можно изменить в параметре <code>len</code>):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot.circular</span>(tiksi_wind<span class="op">$</span>wind, 
      <span class="dt">cex =</span> <span class="fl">0.5</span>, 
      <span class="dt">stack =</span> <span class="ot">TRUE</span>, 
      <span class="dt">sep =</span> <span class="fl">0.035</span>,
      <span class="dt">axes =</span> <span class="ot">FALSE</span>,
      <span class="dt">main =</span> <span class="st">&#39;Среднемноголетняя роза ветров в Тикси&#39;</span>,
-     <span class="dt">sub =</span> <span class="st">&#39;Измерения за период с 2007 по 2018 г, высота 50 м&#39;</span>)
+     <span class="dt">sub =</span> <span class="st">&#39;Измерения за период с 2007 по 2018 г, высота 0 м&#39;</span>)
 
 <span class="kw">rose.diag</span>(tiksi_wind<span class="op">$</span>wind, 
           <span class="dt">bins =</span> <span class="dv">8</span>, 
@@ -2299,11 +2299,14 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 
 kden =<span class="st"> </span><span class="kw">kern.den.circ</span>(tiksi_wind<span class="op">$</span>wind)
 
-<span class="kw">lines</span>(kden, <span class="dt">shrink =</span> <span class="dv">3</span>, 
+<span class="kw">lines</span>(kden, <span class="dt">shrink =</span> <span class="dv">3</span>, <span class="co"># параметр shrink отвечает за масштаб радиус-вектора</span>
       <span class="dt">join =</span> F,
       <span class="dt">col =</span> <span class="st">&#39;steelblue&#39;</span>)</code></pre></div>
 <p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<p>Так же как и в случае с обычными данными, плотность распределения удобно использовать для определения модальных направлений, то есть наиболее часто встречающихся:</p>
+<blockquote>
+<p>Параметр <code>shrink</code> отвечает за масштаб радиус-вектора на графиках из пакета <strong>circular</strong>. Чем больше его величина, тем сильнее будет сжат график относительно центра круга.</p>
+</blockquote>
+<p>Так же как и в случае с обычными данными, плотность распределения удобно использовать для определения модальных направлений, то есть наиболее часто встречающихся. Для этого воспользуемся функцией <code>findpeaks()</code> из пакета <strong>pracma</strong>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">peak =<span class="st"> </span><span class="kw">findpeaks</span>(kden<span class="op">$</span>y, <span class="dt">sortstr =</span> T)[<span class="dv">1</span>,<span class="dv">2</span>] <span class="co"># находим индекс самого высокого пика плотности распределения</span>
 
 (<span class="dt">modal =</span> kden<span class="op">$</span>x[peak]) <span class="co"># извлекаем сам угол</span>
@@ -2326,7 +2329,7 @@ yp =<span class="st"> </span><span class="kw">cos</span>(modal)
      <span class="dt">sep =</span> <span class="fl">0.035</span>,
      <span class="dt">axes =</span> <span class="ot">FALSE</span>,
      <span class="dt">main =</span> <span class="st">&#39;Среднемноголетняя роза ветров в Тикси&#39;</span>,
-     <span class="dt">sub =</span> <span class="st">&#39;Измерения за период с 2007 по 2018 г, высота 50 м&#39;</span>)
+     <span class="dt">sub =</span> <span class="st">&#39;Измерения за период с 2007 по 2018 г, высота 0 м&#39;</span>)
 
 <span class="kw">rose.diag</span>(tiksi_wind<span class="op">$</span>wind, 
           <span class="dt">bins =</span> <span class="dv">8</span>, 
@@ -2347,7 +2350,11 @@ yp =<span class="st"> </span><span class="kw">cos</span>(modal)
      <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>,
      <span class="dt">labels =</span> <span class="kw">paste0</span>(<span class="kw">round</span>(<span class="dv">180</span> <span class="op">*</span><span class="st"> </span>modal <span class="op">/</span><span class="st"> </span>pi, <span class="dv">0</span>), <span class="st">&#39;°&#39;</span>)) <span class="co"># приводим к целым градусам</span></code></pre></div>
 <p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>Проведем анализ направлений для всех станций. Для этого рассчитаем функции плотности распределения и разместим их в новом фрейме данных с лист-колонкой (да-да, в ячейках таблицы можно хранить сложные объекты!):</p>
+<p>Проведем анализ направлений для всех станций. Для этого рассчитаем функции плотности распределения и разместим их в новом фрейме данных с лист-колонкой.</p>
+<blockquote>
+<p><strong>Лист-колонка</strong> (<em>list-column</em>) позволяет хранить в ячейках таблицы данные произвольного типа. В частности, используя лист-колонку, вы можете хранить в каждой ячейке не один объект, а множество объектов, например записать в нее вектор. Лист-колонка имеет тип <code>list</code>, и каждая ячейка в этой колонке так же, соответственно, имеет тип <code>list</code>. Что (и в каком количестве) располагать внутри ячейки — уже ваше дело. Лист-колонки оказываются неожиданно удобны в самых разнообразных сценариях, в том числе для представления статистических моделей (соответствующих каждой строке таблицы) и для хранения пространственных данных (об этом — в следующей лекции). Вместо хранения этих данных в отдельных переменных вы можете записать их в ячейки.</p>
+</blockquote>
+<p>В приведенном ниже коде мы группируем все измерения по имени аэрологической обсерватории, вычисляем вектор плотности распределения, записываем его в список, и этот список уже помещается функцией <code>summarise()</code> в <em>единственную</em> ячейку столбца <em>kden</em>, соответствующую данной аэрологической станции. Далее полученная лист-колонка используется для нахождения модальных значений (тут оказывается полезно знание функционалов семейства <code>apply</code>):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">dens =</span> winds <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(HH <span class="op">==</span><span class="st"> </span><span class="dv">12</span>, Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">group_by</span>(name) <span class="op">%&gt;%</span><span class="st"> </span>
@@ -2374,9 +2381,12 @@ yp =<span class="st"> </span><span class="kw">cos</span>(modal)
 ## 11 Салехард        &lt;S3: density.circular&gt; -2.82 
 ## 12 Тикси           &lt;S3: density.circular&gt;  0.814
 ## 13 Шойна           &lt;S3: density.circular&gt;  0.561</code></pre></div>
-<p>После этого построим розы-диаграммы для всех станций:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>),
+<p>После этого построим розы-диаграммы для всех станций. В данном случае оправдано использование обычного цикла, т.к. итераций немного:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># устанавливаем параметры компоновки</span>
+<span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>),
     <span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
+
+<span class="co"># строим графики в цикле</span>
 <span class="cf">for</span> (obs_name <span class="cf">in</span> dens<span class="op">$</span>name) {
   
   wind_df =<span class="st"> </span>winds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> </span>obs_name, HH <span class="op">==</span><span class="st"> </span><span class="dv">12</span>, Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)
@@ -2416,6 +2426,7 @@ yp =<span class="st"> </span><span class="kw">cos</span>(modal)
        <span class="dt">labels =</span> <span class="kw">paste0</span>(<span class="kw">round</span>(<span class="dv">180</span> <span class="op">*</span><span class="st"> </span>modal <span class="op">/</span><span class="st"> </span>pi, <span class="dv">0</span>), <span class="st">&#39;°&#39;</span>)) <span class="co"># приводим к целым градусам</span>
 }</code></pre></div>
 <p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-1.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-2.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-3.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-4.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-5.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-6.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-7.png" width="672" /></p>
+<p>Таким образом, мы провели графический и статистический анализ среднемноголетних направлений ветра по данным полярных аэрологических станций России. Выявлены модальные направлений, выполнена аппроксимация функции плотности вероятности направлений ветра.</p>
 </div>
 </div>
 <div id="circular_time" class="section level2">
@@ -2434,9 +2445,28 @@ yp =<span class="st"> </span><span class="kw">cos</span>(modal)
 <h2><span class="header-section-number">8.4</span> Контрольные вопросы и упражнения</h2>
 <div id="questions_circular" class="section level3">
 <h3><span class="header-section-number">8.4.1</span> Вопросы</h3>
+<ol style="list-style-type: decimal">
+<li>В каком виде направления рассматриваются в круговой статистике?</li>
+<li>Какое распределение является аналогом нормального распределения для круговых данных? Что означают параметры <span class="math inline">\(\kappa\)</span> и <span class="math inline">\(\mu\)</span> в функции этого распределения?</li>
+<li>Как вычисляется равнодействующий вектор первого порядка и выборочная средняя равнодействующая длина этого вектора для направлений?</li>
+<li>Чем аксиальные данные отличаются от круговых данных в общем случае? Какие преобразования осуществляются над такими данными для того чтобы применять к ним стандартные методы циркулярной статистики?</li>
+<li>Какой класс данных (и пакет) можно использовать в R для представления направлений? Как указать, что направления отсчитываются географическим методом, то есть, по часовой стрелки от направления на север?</li>
+<li>Какую функцию можно использовать для для оценки плотности распределения круговых данных? В каком пакете она находится?</li>
+<li>Какую функцию можно использовать для выявления модальных направлений по данным функции плотности вероятности?</li>
+<li>Какие функции позволяют строить диаграммы и розы-диаграммы по круговым данным в среде R?</li>
+<li>Какой параметр управляет масштабом радиус-вектора на круговых графиках?</li>
+<li>Что такое лист-колонка в фрейме данных, и какого типа данные можно в ней хранить?</li>
+</ol>
 </div>
 <div id="tasks_circular" class="section level3">
 <h3><span class="header-section-number">8.4.2</span> Упражнения</h3>
+<table>
+<tbody>
+<tr class="odd">
+<td><em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, 2017. DOI: 10.5281/zenodo.901911</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 </div>
