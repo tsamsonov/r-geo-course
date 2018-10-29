@@ -6,7 +6,7 @@
 
 [Программный код главы](https://github.com/tsamsonov/r-geo-course/blob/master/code/07-SpatialData.R)
 
-__Необходимые пакеты:__ `sf, raster, dplyr`
+_Необходимые пакеты:_ __sf__, __stars__, __raster__, __mapview__, __tidyverse__
 
 Данный модуль посвящен введению в работу с пространственными данными в R. Рассмотрены общие вопросы моделирования реального мира средствами моделей пространственных данных. Рассматривается чтение векторных и растровых данных, их визуализация стандартными средствами.
 
@@ -283,7 +283,7 @@ Cо многими из этих функций мы познакомимся в
 Для чтения данных средствами sf необходимо использовать функцию `st_read()`:
 
 ```r
-countries <- st_read('ne/countries.gpkg')
+countries = st_read('ne/countries.gpkg')
 ## Reading layer `admin_0_map_units' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/countries.gpkg' using driver `GPKG'
 ## Simple feature collection with 183 features and 72 fields
 ## geometry type:  MULTIPOLYGON
@@ -355,7 +355,7 @@ head(countries[tail(colnames(countries))])
 
 
 ```r
-outlines <- st_geometry(countries)
+outlines = st_geometry(countries)
 class(outlines)
 ## [1] "sfc_MULTIPOLYGON" "sfc"
 ```
@@ -445,7 +445,7 @@ plot(countries['gdp_md_est'], graticule = TRUE, axes = TRUE)
 Для совмещения нескольких слоев на одной карте необходимо при втором и последующих вызовах функции `plot()` указать параметр `add = TRUE`:
 
 ```r
-oceans <- st_read('ne/oceans.gpkg')
+oceans = st_read('ne/oceans.gpkg')
 ## Reading layer `ocean' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/oceans.gpkg' using driver `GPKG'
 ## Simple feature collection with 2 features and 4 fields
 ## geometry type:  POLYGON
@@ -453,7 +453,7 @@ oceans <- st_read('ne/oceans.gpkg')
 ## bbox:           xmin: -180 ymin: -85.60904 xmax: 180 ymax: 90
 ## epsg (SRID):    4326
 ## proj4string:    +proj=longlat +datum=WGS84 +no_defs
-rivers <- st_read('ne/rivers.gpkg')
+rivers = st_read('ne/rivers.gpkg')
 ## Reading layer `rivers_lake_centerlines' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/rivers.gpkg' using driver `GPKG'
 ## Simple feature collection with 13 features and 8 fields
 ## geometry type:  LINESTRING
@@ -461,7 +461,7 @@ rivers <- st_read('ne/rivers.gpkg')
 ## bbox:           xmin: -135.3134 ymin: -33.99358 xmax: 129.956 ymax: 72.90651
 ## epsg (SRID):    4326
 ## proj4string:    +proj=longlat +datum=WGS84 +no_defs
-lakes <- st_read('ne/lakes.gpkg')
+lakes = st_read('ne/lakes.gpkg')
 ## Reading layer `lakes' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/lakes.gpkg' using driver `GPKG'
 ## Simple feature collection with 25 features and 8 fields
 ## geometry type:  POLYGON
@@ -522,11 +522,11 @@ st_crs('+proj=utm +zone=37 +datum=WGS84 +units=m')
 
 
 ```r
-st_crs(countries) <- NA
+st_crs(countries) = NA
 st_crs(countries) 
 ## Coordinate Reference System: NA
 
-st_crs(countries) <- st_crs(4326)
+st_crs(countries) = st_crs(4326)
 st_crs(countries)
 ## Coordinate Reference System:
 ##   EPSG: 4326 
@@ -540,7 +540,7 @@ st_crs(countries)
 
 ```r
 # Проекция Меркатора
-countries.merc <- st_transform(countries, 3857)
+countries.merc = st_transform(countries, 3857)
 
 plot(st_geometry(countries.merc), 
      col = 'lightgray',
@@ -554,7 +554,7 @@ plot(st_geometry(countries.merc),
 
 ```r
 # Проекция Робинсона (используем dplyr)
-countries.rob <- countries %>% st_transform(54030)
+countries.rob = countries %>% st_transform(54030)
 plot(st_geometry(countries.rob), 
      col = 'lightgray',
      lwd = 0.5,
@@ -568,7 +568,7 @@ plot(st_geometry(countries.rob),
 ```r
 # Зарубежная Европа в Конической равнопромежуточной проекции. 
 # Задаем только необходимые параметры проекции
-europe.conic <- countries %>% 
+europe.conic = countries %>% 
   dplyr::filter(continent == 'Europe' & sovereignt != 'Russia') %>% 
   st_transform('+proj=eqdc +lon_0=10 +lat_1=30 +lat_2=60 +datum=WGS84 +units=m')
 
@@ -591,7 +591,7 @@ plot(st_geometry(europe.conic),
 ```r
 library(dplyr)
 
-italy <- countries %>% filter(sovereignt == 'Italy')
+italy = countries %>% filter(sovereignt == 'Italy')
 plot(st_geometry(italy))
 ```
 
@@ -600,7 +600,7 @@ plot(st_geometry(italy))
 Следующий пример иллюстрирует как выбрать страны с населением более 100 млн человек:
 
 ```r
-largest <- countries %>% select(pop_est) %>% filter(pop_est > 100000000)
+largest = countries %>% select(pop_est) %>% filter(pop_est > 100000000)
 plot(outlines, col = 'lightgrey')
 plot(largest, col = 'red', add = TRUE)
 ```
@@ -615,7 +615,7 @@ plot(largest, col = 'red', add = TRUE)
 
 
 ```r
-continents <- countries %>% 
+continents = countries %>% 
   group_by(continent) %>% 
   summarise(gdp = sum(gdp_md_est))
 plot(continents['gdp'])
@@ -653,7 +653,7 @@ plot(continents['gdp'])
 
 
 ```r
-cities <- st_read('ne/cities.gpkg')
+cities = st_read('ne/cities.gpkg')
 ## Reading layer `populated_places' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/cities.gpkg' using driver `GPKG'
 ## Simple feature collection with 243 features and 103 fields
 ## geometry type:  POINT
@@ -661,7 +661,7 @@ cities <- st_read('ne/cities.gpkg')
 ## bbox:           xmin: -175.2206 ymin: -41.29999 xmax: 179.2166 ymax: 64.15002
 ## epsg (SRID):    4326
 ## proj4string:    +proj=longlat +datum=WGS84 +no_defs
-city.pts <- st_geometry(cities)
+city.pts = st_geometry(cities)
 
 # Наносим исходную конфигурацию
 plot(outlines, lwd = 0.5)
@@ -673,7 +673,7 @@ plot(cities, col = 'black', pch = 20, cex = 0.5, add = TRUE)
 ```r
 
 # Отбираем точки внутри стран с максимальным ВВП
-sel <- cities[largest, ]
+sel = cities[largest, ]
 ## although coordinates are longitude/latitude, st_intersects assumes that they are planar
 
 # Смотрим что получилось
@@ -688,8 +688,8 @@ plot(sel, pch = 20, col = 'black', add = TRUE)
 
 
 ```r
-cz <- countries %>% filter(sovereignt == 'Czechia')
-neighbors <- countries[cz, op = st_touches]
+cz = countries %>% filter(sovereignt == 'Czechia')
+neighbors = countries[cz, op = st_touches]
 ## although coordinates are longitude/latitude, st_touches assumes that they are planar
 
 plot(st_geometry(neighbors), col = 'lightgray', lwd = 0.5)
@@ -739,18 +739,18 @@ st_point(c(0, 2, -1, 5)) # XYZM POINT
 При создании __мультиточек__ (_MULTIPOINT_) и __линий__ (_LINESTRING_) необходимо подавать на вход функции уже матрицу координат:
 
 ```r
-coords <- matrix(c(
+coords = matrix(c(
   0, 2,
   1, 3,
   3, 1,
   5, 0
 ), ncol = 2, byrow = TRUE)
 
-mp <- st_multipoint(coords) # XY MULTIPOINT
+mp = st_multipoint(coords) # XY MULTIPOINT
 print(mp)
 ## MULTIPOINT (0 2, 1 3, 3 1, 5 0)
 
-ls <- st_linestring(coords) # XY LINESTRING
+ls = st_linestring(coords) # XY LINESTRING
 print(ls)
 ## LINESTRING (0 2, 1 3, 3 1, 5 0)
 ```
@@ -778,7 +778,7 @@ plot(mp, col = 'red', pch = 19, add = TRUE)
 Если дыр в полигоне нет, его список будет содержать только одну матрицу. Рассмотрим оба примера построения __полигонов__:
 
 ```r
-coords <- matrix(c( # Координаты главного полигона
+coords = matrix(c( # Координаты главного полигона
   1, 0,
   0, 2,
   2, 3,
@@ -787,7 +787,7 @@ coords <- matrix(c( # Координаты главного полигона
   1, 0
 ), ncol = 2, byrow = TRUE)
 
-pol <- st_polygon(list(coords)) # Простой полигон
+pol = st_polygon(list(coords)) # Простой полигон
 print(pol)
 ## POLYGON ((1 0, 0 2, 2 3, 4 2, 3 0.5, 1 0))
 
@@ -798,7 +798,7 @@ plot(pol, col = 'lightblue')
 
 ```r
 
-hole <- matrix(c( # Координаты дыры
+hole = matrix(c( # Координаты дыры
   2, 1,
   3, 1.5,
   3, 2,
@@ -807,7 +807,7 @@ hole <- matrix(c( # Координаты дыры
   2, 1
 ), ncol = 2, byrow = TRUE)
 
-pol2 <- st_polygon(list(coords, hole)) # Полигон с дырой
+pol2 = st_polygon(list(coords, hole)) # Полигон с дырой
 print(pol2)
 ## POLYGON ((1 0, 0 2, 2 3, 4 2, 3 0.5, 1 0), (2 1, 3 1.5, 3 2, 2 2, 1.5 1.5, 2 1))
 
@@ -822,7 +822,7 @@ plot(pol2, col = 'lightblue')
 
 
 ```r
-coords1 <- matrix(c(
+coords1 = matrix(c(
   0.5, 0,
   0, 1,
   1, 1.5,
@@ -831,7 +831,7 @@ coords1 <- matrix(c(
   0.5, 0
 ), ncol = 2, byrow = TRUE)
 
-coords2 <- matrix(c(
+coords2 = matrix(c(
   3, 1,
   2.5, 2,
   3.5, 2.5,
@@ -840,7 +840,7 @@ coords2 <- matrix(c(
   3, 1
 ), ncol = 2, byrow = TRUE)
 
-mpol <- st_multipolygon(list(list(coords1), list(coords2)))
+mpol = st_multipolygon(list(list(coords1), list(coords2)))
 
 print(mpol)
 ## MULTIPOLYGON (((0.5 0, 0 1, 1 1.5, 2 1, 1.5 0.25, 0.5 0)), ((3 1, 2.5 2, 3.5 2.5, 4 2, 4 1.25, 3 1)))
@@ -854,7 +854,7 @@ plot(mpol, col = 'pink', add = TRUE) # Мультиполигон (розовы�
 Как насчет острова на озере? Если остров и суша, окружающая озеро, составляют единое целое (например, подлежат учету как единый массив леса), их можно собрать как мультиполигон. В этом случае первая компонента мультиполигона будет представлять собой полигон с дыркой, а вторая компонента — остров. Порядок компонент в данном случае роли не играет:
 
 ```r
-coords4 <- matrix(c(
+coords4 = matrix(c(
   2.2, 1.2,
   2.8, 1.5,
   2.8, 1.8,
@@ -863,9 +863,9 @@ coords4 <- matrix(c(
   2.2, 1.2
 ), ncol = 2, byrow = TRUE)
 
-island <- st_polygon(list(coords4))
+island = st_polygon(list(coords4))
 
-mpol2 <- st_multipolygon(list(pol2, island))
+mpol2 = st_multipolygon(list(pol2, island))
 
 print(mpol2)
 ## MULTIPOLYGON (((1 0, 0 2, 2 3, 4 2, 3 0.5, 1 0), (2 1, 3 1.5, 3 2, 2 2, 1.5 1.5, 2 1)), ((2.2 1.2, 2.8 1.5, 2.8 1.8, 2.2 1.8, 2 1.6, 2.2 1.2)))
@@ -880,19 +880,19 @@ plot(mpol2, col = 'darkolivegreen4')
 Мультилиния, в отличие от мультиполигона, не требует дополнительного списка верхнего уровня, поскольку линии не могут содержать дыр. Например, можно собрать мультилинию из двух частей, соответствующих участкам реки до и после озера:
 
 ```r
-coords1 <- matrix(c(
+coords1 = matrix(c(
   -3, 0,
   -1, 2,
   0, 2
 ), ncol = 2, byrow = TRUE)
 
-coords2 <- matrix(c(
+coords2 = matrix(c(
   4, 2,
   5, 3,
   6, 5
 ), ncol = 2, byrow = TRUE)
 
-mline <- st_multilinestring(list(coords1, coords2))
+mline = st_multilinestring(list(coords1, coords2))
 print(mline)
 ## MULTILINESTRING ((-3 0, -1 2, 0 2), (4 2, 5 3, 6 5))
 
@@ -905,7 +905,7 @@ plot(pol2, col = 'lightblue', add = TRUE)
 Наконец, еще один вид геометрии --- это геометрическая коллекция (GEOMETRYCOLLECTION), который позволяет хранить вместе любые виды геометрий. Эта возможность используется достаточно редко, тем не менее, рассмотреть ее нужно. Геометрическая коллекция собирается из списка объектов с простыми типами геометрии (мы создали их ранее):
 
 ```r
-col <- st_geometrycollection(list(ls, mp, mline, pol2))
+col = st_geometrycollection(list(ls, mp, mline, pol2))
 print(col)
 ## GEOMETRYCOLLECTION (LINESTRING (0 2, 1 3, 3 1, 5 0), MULTIPOINT (0 2, 1 3, 3 1, 5 0), MULTILINESTRING ((-3 0, -1 2, 0 2), (4 2, 5 3, 6 5)), POLYGON ((1 0, 0 2, 2 3, 4 2, 3 0.5, 1 0), (2 1, 3 1.5, 3 2, 2 2, 1.5 1.5, 2 1)))
 plot(col)
@@ -919,11 +919,11 @@ plot(col)
 
 
 ```r
-moscow.sfg <- st_point(c(37.615, 55.752))
-irkutsk.sfg <- st_point(c(104.296, 52.298))
-petro.sfg <- st_point(c(158.651, 53.044))
+moscow.sfg = st_point(c(37.615, 55.752))
+irkutsk.sfg = st_point(c(104.296, 52.298))
+petro.sfg = st_point(c(158.651, 53.044))
 
-cities.sfc <- st_sfc(moscow.sfg, irkutsk.sfg, petro.sfg)
+cities.sfc = st_sfc(moscow.sfg, irkutsk.sfg, petro.sfg)
 print(cities.sfc)
 ## Geometry set for 3 features 
 ## geometry type:  POINT
@@ -939,7 +939,7 @@ print(cities.sfc)
 При создании списка геометрий для него может быть определена система координат (это можно сделать и позднее при создании таблицы пространственных объектов). Для этого используем уже знакомую нам функцию `st_crs()`:
 
 ```r
-st_crs(cities.sfc) <- st_crs(4326) # WGS84
+st_crs(cities.sfc) = st_crs(4326) # WGS84
 print(cities.sfc)
 ## Geometry set for 3 features 
 ## geometry type:  POINT
@@ -968,13 +968,13 @@ countries %>% filter(sovereignt == 'Russia') %>% st_geometry() %>% plot(add = TR
 Пространственные объекты (класс `sf`) организуются в виде фрейма данных, один из столбцов которого имеет класс `sfc`. Для этого следует сначала создать обычный фрейм данных с атрибутами, а затем соединить его со списком геометрий посредством функции `st_sf`:
 
 ```r
-city.attr <- data.frame(
+city.attr = data.frame(
   name = c('Москва', 'Иркутск', 'Петропавловск-Камчатский'),
   established = c(1147, 1661, 1740),
   population = c(12500, 620, 180)
 )
 
-cites.sf <- st_sf(city.attr, geometry = cities.sfc)
+cites.sf = st_sf(city.attr, geometry = cities.sfc)
 print(cites.sf)
 ## Simple feature collection with 3 features and 3 fields
 ## geometry type:  POINT
@@ -994,15 +994,15 @@ print(cites.sf)
 
 
 ```r
-italy.borders <- st_cast(italy, 'MULTILINESTRING')
+italy.borders = st_cast(italy, 'MULTILINESTRING')
 class(st_geometry(italy.borders))
 ## [1] "sfc_MULTILINESTRING" "sfc"
 
-italy.regions <- st_cast(italy.borders, 'MULTIPOLYGON')
+italy.regions = st_cast(italy.borders, 'MULTIPOLYGON')
 class(st_geometry(italy.regions))
 ## [1] "sfc_MULTIPOLYGON" "sfc"
 
-italy.points <- st_cast(italy.borders, 'POINT')
+italy.points = st_cast(italy.borders, 'POINT')
 class(st_geometry(italy.points))
 ## [1] "sfc_POINT" "sfc"
 
@@ -1027,7 +1027,7 @@ __Полигонизация__ --- это процесс преобразова�
 ```r
 # Создадим три линии
 coords1 = rbind(c(0, 0), c(0, 6))
-line1 <- st_linestring(coords1)
+line1 = st_linestring(coords1)
 
 coords2 = rbind(c(-1,1), c(5,1))
 line2 = st_linestring(coords2)
@@ -1036,11 +1036,11 @@ coords3 = rbind(c(-1,5), c(4,0))
 line3 = st_linestring(coords3)
 
 # Создадим мультилинию
-mls <- st_multilinestring(list(line1, line2, line3))
+mls = st_multilinestring(list(line1, line2, line3))
 plot(mls)
 
 # Посмотрим на ее точки
-points <- st_cast(mls, 'MULTIPOINT')
+points = st_cast(mls, 'MULTIPOINT')
 plot(points, pch = 20, add = TRUE)
 ```
 
@@ -1055,9 +1055,9 @@ st_polygonize(mls)
 Операция завершилась возвратом пустой геометрической коллекции, то есть программа не смогла выделить замкнутые области. Это произошло по причине того, что линии не разбиты в точках пересечения. Разбить их на компоненты можно, используя функцию `st_node()`:
 
 ```r
-mls2 <- st_node(mls)
-poly2 <- st_polygonize(mls2)
-points2 <- st_cast(mls2, 'MULTIPOINT')
+mls2 = st_node(mls)
+poly2 = st_polygonize(mls2)
+points2 = st_cast(mls2, 'MULTIPOINT')
 
 plot(mls2)
 plot(poly2, col = 'grey', add = TRUE)
@@ -1091,7 +1091,7 @@ st_length(italy) # Периметр
 
 
 ```r
-box <- st_as_sfc(st_bbox(italy)) # Ограничивающий прямоугольник
+box = st_as_sfc(st_bbox(italy)) # Ограничивающий прямоугольник
 
 plot(italy %>% st_geometry(), 
      col = 'lightgrey')
@@ -1131,13 +1131,13 @@ library(raster)
 ## 
 ##     select
 
-dem <- raster('world/gebco.tif') # Цифровая модель рельефа
+dem = raster('world/gebco.tif') # Цифровая модель рельефа
 class(dem)
 ## [1] "RasterLayer"
 ## attr(,"package")
 ## [1] "raster"
 
-img <- stack('world/BlueMarbleJuly.tif') # Цветной космический снимок (RGB)
+img = stack('world/BlueMarbleJuly.tif') # Цветной космический снимок (RGB)
 class(img)
 ## [1] "RasterStack"
 ## attr(,"package")
@@ -1151,11 +1151,11 @@ class(img[[1]])
 Вы также можете прочитать каналы многоканального растра по отдельности. Для этого необходимо использовать функцию `raster()`, указав ей в качестве второго параметра номер канала, который вы хотите прочитать. Если потом потребуется собрать поканальные растры в один стек, для этого можно снова использовать функцию `stack()`:
 
 ```r
-ch1 <- raster('world/BlueMarbleJuly.tif', 1)
-ch2 <- raster('world/BlueMarbleJuly.tif', 2)
-ch3 <- raster('world/BlueMarbleJuly.tif', 3)
+ch1 = raster('world/BlueMarbleJuly.tif', 1)
+ch2 = raster('world/BlueMarbleJuly.tif', 2)
+ch3 = raster('world/BlueMarbleJuly.tif', 3)
 
-img <- stack(ch1, ch2, ch3)
+img = stack(ch1, ch2, ch3)
 ```
 
 ### Визуализация {#raster_viz}
@@ -1174,8 +1174,8 @@ plot(dem)
 Поскольку растры часто используют в классифицированном виде, вы можете сформировать вектор граничных значений классов, вектор цветов классов, и передать их в параметры `breaks` и `col` функции `plot()` соответственно. Если параметр `breaks` не определять, то весь диапазон значений растра будет разбит на равные интервалы соответственно количеству цветов. Если не определять параметр `col`, то будет применена стандартная палитра `terrain.colors`. Вы также можете использовать одну из готовых палитр цветов или создать ее вручную (см. посвященную графической подсистеме R):
 
 ```r
-brks <- c(-12000, 0, 200, 500, 1000, 2000, 4000, 8000)
-clrs <- c(
+brks = c(-12000, 0, 200, 500, 1000, 2000, 4000, 8000)
+clrs = c(
   "steelblue4",
   "darkseagreen",
   "lightgoldenrod1",
@@ -1251,10 +1251,10 @@ plot(outlines, border = "white", lwd = 0.5, add = TRUE)
 crs(dem) # читаем систему координат
 ## CRS arguments:
 ##  +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0
-crs(dem) <- NA # очищаем систему координат
+crs(dem) = NA # очищаем систему координат
 crs(dem)
 ## CRS arguments: NA
-crs(dem) <- st_crs(4326)[[2]] # создаем систему координат
+crs(dem) = st_crs(4326)[[2]] # создаем систему координат
 crs(dem)
 ## CRS arguments:
 ##  +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0
@@ -1267,7 +1267,7 @@ crs(dem)
 
 ```r
 # Проекция Меркатора:
-img.merc <- projectRaster(img, crs = st_crs(3857)[[2]])
+img.merc = projectRaster(img, crs = st_crs(3857)[[2]])
 plotRGB(img.merc)
 plot(st_geometry(countries.merc), 
      border = rgb(1,1,1,0.2), lwd = 0.5, add = TRUE)
@@ -1278,7 +1278,7 @@ plot(st_geometry(countries.merc),
 
 ```r
 # Проекция Робинсона:
-img.merc <- projectRaster(img, crs = st_crs(54030)[[2]])
+img.merc = projectRaster(img, crs = st_crs(54030)[[2]])
 plotRGB(img.merc)
 plot(st_geometry(countries.rob), 
      border = rgb(1,1,1,0.2), lwd = 0.5, add = TRUE)
@@ -1286,7 +1286,7 @@ plot(st_geometry(countries.rob),
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-62-1.png" width="672" />
 
-### Операции со значениями
+### Операции со значениями {#raster_values}
 
 Операции со значениями растров чрезвычайно разнообразны, поэтому подробно они разбираются в одной из последующих глав. Здесь же мы кратко познакомимся с _локальными операциями_ над растром, такими как фильтрация и арифметические преобразования. В локальных операциях каждый пиксел растра анализируется отдельно, независимо от остальных пикселов. Поэтому локальные операции наиболее просты в применении. Но это не означает, что они менее важны, чем более сложные операции. Как раз наоборот: фильтрация и арифметика представялют собой важнейшие операции растровой алгебры. 
 
@@ -1296,7 +1296,7 @@ plot(st_geometry(countries.rob),
 
 
 ```r
-below.zero <- dem < 0
+below.zero = dem < 0
 plot(below.zero)
 ```
 
@@ -1304,7 +1304,7 @@ plot(below.zero)
 
 ```r
 
-highlands <- dem > 100 & dem < 500
+highlands = dem > 100 & dem < 500
 plot(highlands)
 ```
 
@@ -1312,7 +1312,7 @@ plot(highlands)
 
 ```r
 
-mountains <- dem > 1000
+mountains = dem > 1000
 plot(mountains)
 ```
 
@@ -1325,10 +1325,10 @@ plot(mountains)
 Покажем возможности растровой алгебры на примере определения толщины покровного оледенения. Глобальная цифровая модель рельефа [ETOPO1](https://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.ngdc.mgg.dem:316) поставляется в двух вариантах: Ice Surface (поверхность с учетом покровного оледенения) и Bedrock (подстилающая поверхность). Если вычесть из первой вторую, можно узнать толщину льда в Гренландии и на Антарктиде:
 
 ```r
-bed <- raster('world/etopo1_bed.tif')
-ice <- raster('world/etopo1_ice.tif')
+bed = raster('world/etopo1_bed.tif')
+ice = raster('world/etopo1_ice.tif')
 
-ice.depth <- ice - bed
+ice.depth = ice - bed
 
 plot(ice.depth, col = cm.colors(255))
 plot(outlines, border = 'black', lwd = 0.5, add = TRUE)
@@ -1339,7 +1339,7 @@ plot(outlines, border = 'black', lwd = 0.5, add = TRUE)
 Чтобы маскировать значения растра, необходимо воспользоваться функцией `values()`, которая обнажает список значений растра. Например, можно превратить в NA все пикселы, в которых толщина льда меньше или равна нулю:
 
 ```r
-values(ice.depth)[values(ice.depth) <= 0] <- NA
+values(ice.depth)[values(ice.depth) <= 0] = NA
 
 plot(ice.depth, col = cm.colors(255))
 plot(outlines, border = 'black', lwd = 0.5, add = TRUE)
@@ -1347,8 +1347,7 @@ plot(outlines, border = 'black', lwd = 0.5, add = TRUE)
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-65-1.png" width="672" />
 
-
-### Экспорт
+### Экспорт {#raster_export}
 
 Чтобы экспортировать (сохранить в файл) любой растр, можно воспользоваться функцией `writeRaster()`, указав имя выходного файла:
 
@@ -1356,13 +1355,16 @@ plot(outlines, border = 'black', lwd = 0.5, add = TRUE)
 writeRaster(ice.depth, 'world/ice_depth.tif')
 ```
 
-<!--
-## Контрольные вопросы и задачи {#questions_tasks_spatial}
+<!-- ## Многомерные данные {#stars} -->
+
+<!-- В данном разделе кратко рассматриваются данные типа `stars` (spatio-temporal tidy arrays), который удобно использовать для анализа многомерных растровых массивов. -->
+
+## Контрольные вопросы и упражнения {#questions_tasks_spatial}
 
 ### Вопросы {#questions_spatial}
 
-### Задачи {#tasks_spatial}
---> 
+### Упражнения {#tasks_spatial}
+
 
 ----
 _Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, 2017. DOI: 10.5281/zenodo.901911
