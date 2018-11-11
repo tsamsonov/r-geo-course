@@ -1,6 +1,8 @@
-# Тематические карты в R {#thematic_mapping}
+# Тематические карты в R {#thematic_mapping_new}
 
 
+
+## Предварительные условия  {-}
 
 Для выполнения кода данной лекции вам понадобятся следующие пакеты:
 
@@ -17,7 +19,15 @@ library(googlesheets)
 library(rnaturalearth)
 ```
 
-## Данные Natural Earth {#thematic_mapping_ne}
+## Введение
+
+Тематические карты представляют собой важный инструмент географических исследований. Таблицы и графики не дают полного представления о пространственном распределении изучаемого явления. Это знание способна дать исследователю карта.
+
+Разнообразие типов и видов карт достаточно велико. Комплексные картографические произведения, содержащие многослойный набор объектов, создаются, как правило, средствами геоинформационных пакетов. Такие карты требуют тщательной и кропотливой работы с легендой, устранения графических конфликтов между знаками, многократного редактирования входных данных, условий, фильтров и способов изображения в попытке достичь эстетичного и вместе с тем информативного результата.
+
+В то же время, гораздо большее количество создаваемых в повседневной практике карт носят простой аналитический характер. Такие карты показывают одно, максимум два явления, и могут иллюстрировать входные данные, результаты промежуточных или итоговых расчетов. Создание именно таких карт целесообразно автоматизировать средствами программирования. В этом разделе мы познакомимся с созданием тематических карт средствами пакета [__tmap__](https://cran.r-project.org/web/packages/tmap/index.html). В качестве источника открытых данных мы будем использовать [Natural Earth](https://www.naturalearthdata.com/) и [WorldClim](http://www.worldclim.org/).
+
+### Данные Natural Earth {#thematic_mapping_ne}
 
 [Natural Earth](https://www.naturalearthdata.com/) — это открытые мелкомасштабные картографические данные высокого качества. Данные доступны для трех масштабов: 1:10М, 1:50М и 1:110М. Для доступа к этимм данным из среды R без загрущзки исходных файлов можно использоват пакет [__rnaturalearth__](https://cran.r-project.org/web/packages/rnaturalearth/index.html). Пакет позволяет выгружать данные из внешнего репозитория, а также содержит три предзакачанных слоя:
 
@@ -33,23 +43,72 @@ countries = ne_countries() %>%
   st_as_sf()
 coast = ne_coastline() %>% 
   st_as_sf()
-
-ocean = ne_download(scale = 110, type = 'ocean', category = 'physical')
+ocean = ne_download(scale = 110, type = 'ocean', category = 'physical') %>% 
+  st_as_sf()
 ## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/h1/_pw8qgdd6y7gy251_ttnq8240000gn/T/RtmpitJbb1", layer: "ne_110m_ocean"
+## Source: "/private/var/folders/h1/_pw8qgdd6y7gy251_ttnq8240000gn/T/RtmpvLplh1", layer: "ne_110m_ocean"
 ## with 2 features
 ## It has 3 fields
 
 plot(countries %>% st_geometry(), border = 'grey')
 plot(ocean, col = 'lightblue', add = TRUE)
-plot(coast, add = TRUE, col = 'blue')
+plot(coast, add = TRUE, col = 'steelblue')
 ```
 
 <img src="10-ThematicMapping_files/figure-html/unnamed-chunk-2-1.png" width="672" />
 
+Перед построением карт мира данные целесообразно спроецировать. Чтобы не трансформировать каждый слой отдельно, можно объединить слои в список и воспользоваться функционалом lapply для множественного трансформирования:
+
+```r
+lyr = list(ocean = ocean, countries = countries, coast = coast)
+lyrp = lapply(lyr, st_transform, crs = "+proj=eck3") # Псевдоцилиндрическая проекция Эккерта
+
+g = st_graticule(lyrp$ocean) %>% st_geometry()
+
+plot(lyrp$countries %>% st_geometry(), border = 'grey', 
+     graticule = TRUE,
+     axes = TRUE)
+plot(lyrp$ocean, col = 'lightblue', border = 'steelblue', add = TRUE)
+plot(g, lty = 3, add = TRUE)
+```
+
+<img src="10-ThematicMapping_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+
+### Данные WorldClim
+
+[WorldClim](http://www.worldclim.org/) --- это открытые сеточные наборы климатических характеристик с пространственным разрешением от $30''$ (около 1 км) до $10'$ (около 20 км). Данные можно выгрузить в виде файлов GeoTiff, однако эту операцию можно сделать и программным путем через пакет __raster__ --- используя функцию `getData()`. Выполним загрузку 10-минутного растра с суммарным количеством осадков за год:
+
+```r
+prec = getData("worldclim", var = "prec", res = 10) %>% 
+  projectRaster(crs = "+proj=eck3")
+class(prec) # это 12-канальный растр
+## [1] "RasterBrick"
+## attr(,"package")
+## [1] "raster"
+```
+
+Визуализируем на карте
+
+```r
+ramp = colorRampPalette(c("white", "violetred"))
+
+# Визуализируем данные на январь:
+plot(prec, 1, 
+     col = ramp(10),
+     main = 'Количество осадков в январе, мм',
+     box = FALSE,
+     axes = FALSE)
+plot(lyrp$ocean, add = TRUE, border = 'steelblue', 
+     col = 'lightblue')
+```
+
+<img src="10-ThematicMapping_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+
+> Использовать программную загрузку целесообразно для небольших наборов данных. Если счет пошел на десятки мегабайт и выше, следует все-таки выкачать данные в виде файла и работать с ним
+
 ## Тематические карты tmap {#thematic_mapping_tmap}
 
-Пакет tmap предоставляет простой в использовании и достаточно мощный механизм формирования тематических карт. Шаблон построения карты в этом пакете напоминает _ggplot_ и выглядит следующим образом:
+Пакет __tmap__ предоставляет простой в использовании и достаточно мощный механизм формирования тематических карт. Шаблон построения карты в этом пакете напоминает _ggplot_ и выглядит следующим образом:
 
 ```r
 tm_shape(<DATA>) +
@@ -67,11 +126,11 @@ tm_shape(<DATA>) +
 Для реализации качественного и количественного фона, а также картограмм используется метод `tm_polygons()`. Он автоматически определяет тип переменной и строит соответствующую шкалу:
 
 ```r
-tm_shape(countries) +
+tm_shape(lyrp$countries) +
   tm_polygons('economy') # качественная переменная
 ```
 
-<img src="10-ThematicMapping_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+<img src="10-ThematicMapping_files/figure-html/unnamed-chunk-7-1.png" width="672" />
 
 Количественный фон или картограммы получаются при картографировании числового показателя:
 
@@ -101,45 +160,111 @@ tm_shape(countries) +
 ## #   Latitude <dbl>, Longitude <dbl>, `UN member since` <dttm>, `World bank
 ## #   region` <chr>, `World bank income group 2017` <chr>
 
-coun = countries %>% left_join(lifedf, by = c('adm0_a3' = 'geo'))
+coun = lyrp$countries %>% left_join(lifedf, by = c('adm0_a3' = 'geo'))
 
 tm_shape(coun) +
   tm_polygons('lifexp') # количественная переменная
 ```
 
-<img src="10-ThematicMapping_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+<img src="10-ThematicMapping_files/figure-html/unnamed-chunk-8-1.png" width="672" />
 
 Для реализации способа картодиаграмм используется геометрия `tm_bubbles()`. Чтобы оставить отображение границ полигонов, нам необходимо к одной геометрии применить несколько способов изображения:
 
 ```r
-tm_shape(ocean)+
+tm_shape(lyrp$ocean)+
   tm_fill(col = 'lightblue') +
 tm_shape(coun) +
-  tm_fill() +
-  tm_borders() +
+  tm_fill(col = 'white') +
+  tm_borders(col = 'grey') +
   tm_bubbles('gdp_md_est', 
              scale = 3,
              col = 'red', 
              alpha = 0.5) # количественная переменная
 ```
 
-<img src="10-ThematicMapping_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+<img src="10-ThematicMapping_files/figure-html/unnamed-chunk-9-1.png" width="672" />
 
 ### Растровые карты {#thematic_mapping_rasters}
 
-При отображени растровых данных используется способ отображения `tm_raster()`:
+При отображении растровых данных используется способ отображения `tm_raster()`:
 
 ```r
-data(land) # мелкомасштабные растры в пакете tmap
-
-tm_shape(land) +
-    tm_raster("elevation", palette = terrain.colors(10)) +
-tm_shape(ocean) +
+tm_shape(prec) +
+    tm_raster('prec1', 
+              breaks = c(10, 50, 100, 200, 500, 1000), 
+              palette = ramp(5), title = 'мм') +
+tm_layout(legend.position = c('left', 'bottom'),
+          fontfamily = 'OpenSans',
+          main.title.size = 1.2,
+          main.title = 'Среднемноголетнее количество осадков в январе') +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'lightblue') +
   tm_borders(col = 'steelblue')
 ```
 
-<img src="10-ThematicMapping_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+<img src="10-ThematicMapping_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+
+## Классификация {#thematic_mapping_class}
+
+### Методы классификации {#thematic_mapping_class_methods}
+
+Классификация данных --- важнейший этап картографирования, который во многом определяет, как данные будут представлены на карте и какие географические выводы читатель сделает на ее основе. Существует множество методов классификации числовых рядов. Классифицировать данные автоматически можно с помощью функции `classIntervals()` из пакета `classInt`. Наберите в консоли `?classInt` чтобы прочитать справку о методах классификации.
+
+Посмотрим несколько методов классификации. Первый параметр функции `classInt` --- это числовой ряд. Число классов следует передать в параметр `n =`, метод классификации указывается в параметре `style =`.
+
+Для начала попробуем метод равных интервалов, который просто делит размах вариации (диапазон от минимума до максимум) на $n$ равных интервалов. Функция `plot()` применительно к созданной классификации рисует замечательный график, на котором показаны границы классов и  эмпирическая функция распределения показателя. В параметр `pal` можно передать цветовую палитру:
+
+```r
+# Запишем число классов в переменную
+nclasses = 5
+
+intervals = classIntervals(coun$lifexp, n = nclasses, style = "equal")
+
+# извлечь полученные границы можно через $brks
+intervals$brks
+## [1] 48.860 55.748 62.636 69.524 76.412 83.300
+
+plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Равные интервалы MIN/MAX")
+```
+
+<img src="10-ThematicMapping_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+
+Cозданные интервалы хоть и равны, но не аккуратны. Зато метод классификации `"pretty"` создает также равные интервалы, но может слегка расширить диапазон или добавить 1 класс, чтобы получить границы интервалов, округленные до целых чисел:
+
+```r
+intervals = classIntervals(coun$lifexp, n = nclasses, style = "pretty")
+intervals$brks
+## [1] 45 50 55 60 65 70 75 80 85
+plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Округленные равные интервалы")
+```
+
+<img src="10-ThematicMapping_files/figure-html/unnamed-chunk-12-1.png" width="672" />
+
+Квантили --- равноколичественные интервалы. В каждом классе содержится одинаковое число объектов:
+
+```r
+intervals = classIntervals(coun$lifexp, n = nclasses, style = "quantile")
+intervals$brks
+## [1] 48.860 64.488 71.300 75.440 79.360 83.300
+plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Квантили (равноколичественные)")
+```
+
+<img src="10-ThematicMapping_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+
+Метод "естественных интервалов", или метод Фишера-Дженкса позволяет найти классы, максимально однородные внутри и при этом максимально отличающиеся друг от друга:
+
+```r
+intervals = classIntervals(coun$lifexp, n = nclasses, style = "jenks")
+intervals$brks
+## [1] 48.86 55.90 63.70 70.40 77.10 83.30
+plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Естественные интервалы")
+```
+
+<img src="10-ThematicMapping_files/figure-html/unnamed-chunk-14-1.png" width="672" />
+
+### Применение на картах {#thematic_mapping_class_application}
+
+## Фасетные карты
 
 ### Интерактивный режим  {#thematic_mapping_interactive}
 
