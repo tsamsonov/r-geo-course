@@ -42,53 +42,81 @@ library(rnaturalearth)
 Для загрузки других слоев необходимо использовать функцию `ne_download()`, передав ей масштаб, название слоя и его категорию: 
 
 ```{r}
-countries = ne_countries() %>% 
-  st_as_sf()
-coast = ne_coastline() %>% 
-  st_as_sf()
-ocean = ne_download(scale = 110, type = 'ocean', category = 'physical') %>% 
+countries = ne_countries() %>% st_as_sf()
+
+coast = ne_coastline() %>% st_as_sf()
+
+ocean = ne_download(scale = 110, 
+                    type = 'ocean', 
+                    category = 'physical') %>% 
   st_as_sf()
 
-plot(countries %>% st_geometry(), border = 'grey')
-plot(ocean, col = 'lightblue', add = TRUE)
-plot(coast, add = TRUE, col = 'steelblue')
+cities = ne_download(scale = 110, 
+                     type = 'populated_places', 
+                     category = 'cultural') %>% 
+  st_as_sf()
+
+rivers = ne_download(scale = 110, 
+                     type = 'rivers_lake_centerlines', 
+                     category = 'physical') %>% 
+  st_as_sf()
 ```
 
-Перед построением карт мира данные целесообразно спроецировать. Чтобы не трансформировать каждый слой отдельно, можно объединить слои в список и воспользоваться функционалом lapply для множественного трансформирования:
+Познакомимся с загруженными данными:
 ```{r}
-lyr = list(ocean = ocean, countries = countries, coast = coast)
+plot(ocean %>% st_geometry(), col = 'lightblue')
+plot(countries, col = 'white', border = 'grey', add = TRUE)
+plot(coast, add = TRUE, col = 'steelblue')
+plot(rivers, add = TRUE, col = 'steelblue')
+plot(cities, add = TRUE, col = 'black', pch = 19, cex = 0.2)
+```
+
+
+Перед построением карт мира данные целесообразно спроецировать. Чтобы не трансформировать каждый слой отдельно, можно объединить слои в список и воспользоваться функционалом `lapply` для множественного трансформирования. Для создания списка воспользуемся функцией `lst()` из пакета `tibble`, которая присваивает компонентам списка имена, соответствующие названиям входных переменных (чтобы не писать `ocean = ocean`):
+```{r}
+lyr = tibble::lst(ocean, coast, countries, rivers, cities)
 lyrp = lapply(lyr, st_transform, crs = "+proj=eck3") # Псевдоцилиндрическая проекция Эккерта
 
-g = st_graticule(lyrp$ocean) %>% st_geometry()
+g = st_graticule(lyrp$ocean) %>% st_geometry() # построим  координатную сетку
 
-plot(lyrp$countries %>% st_geometry(), border = 'grey', 
-     graticule = TRUE,
-     axes = TRUE)
-plot(lyrp$ocean, col = 'lightblue', border = 'steelblue', add = TRUE)
-plot(g, lty = 3, add = TRUE)
+plot(lyrp$ocean %>% st_geometry(), col = 'lightblue', border = NA)
+plot(lyrp$countries, col = 'white', border = 'grey', lwd = 0.5, add = TRUE)
+plot(lyrp$coast, add = TRUE, lwd = 0.5, col = 'steelblue')
+plot(lyrp$rivers, add = TRUE, lwd = 0.5, col = 'steelblue')
+plot(lyrp$cities, add = TRUE, col = 'black', pch = 19, cex = 0.1)
+
+plot(g, lty = 3, lwd = 0.5, add = TRUE)
 ```
 
 ### Данные WorldClim
 
 [WorldClim](http://www.worldclim.org/) --- это открытые сеточные наборы климатических характеристик с пространственным разрешением от $30''$ (около 1 км) до $10'$ (около 20 км). Данные можно выгрузить в виде файлов GeoTiff, однако эту операцию можно сделать и программным путем через пакет __raster__ --- используя функцию `getData()`. Выполним загрузку 10-минутного растра с суммарным количеством осадков за год:
-```{r}
-prec = getData("worldclim", var = "prec", res = 10) %>% 
-  projectRaster(crs = "+proj=eck3")
-class(prec) # это 12-канальный растр
+```{r, fig.height=20}
+prec = getData("worldclim", var = "prec", res = 10)
+plot(prec, nc = 2) # это 12-канальный растр
 ```
 
-Визуализируем на карте
+Выполним трансформирование данных в проекцию Миллера. Для того чтобы карта не обрезалась по охвату растра (он не включает данные на Антарктиду), необходимо расширить его охват на весь земной шар:
+```{r}
+precm = prec %>% 
+  extend(extent(-180, 180, -90, 90)) %>% 
+  projectRaster(crs = "+proj=mill")
+lyrm = lapply(lyr, st_transform, crs = "+proj=mill") # Цилиндрическая проекция Миллера
+```
+
+Визуализируем на карте:
 ```{r}
 ramp = colorRampPalette(c("white", "violetred"))
 
 # Визуализируем данные на январь:
-plot(prec, 1, 
+plot(precm, 1, 
      col = ramp(10),
+     colNA = 'grey',
      main = 'Количество осадков в январе, мм',
      box = FALSE,
      axes = FALSE)
-plot(lyrp$ocean, add = TRUE, border = 'steelblue', 
-     col = 'lightblue')
+plot(lyrm$ocean, border = 'steelblue', 
+     col = 'lightblue', add = TRUE)
 ```
 
 > Использовать программную загрузку целесообразно для небольших наборов данных. Если счет пошел на десятки мегабайт и выше, следует все-таки выкачать данные в виде файла и работать с ним
@@ -112,10 +140,13 @@ tm_shape(<DATA>) +
 Для реализации качественного и количественного фона, а также картограмм используется метод `tm_polygons()`. Он автоматически определяет тип переменной и строит соответствующую шкалу:
 ```{r}
 tm_shape(lyrp$countries) +
-  tm_polygons('economy') # качественная переменная
+  tm_polygons('economy') + # качественная переменная
+tm_shape(lyrp$ocean)+
+  tm_fill(col = 'azure') +
+  tm_borders(col = 'steelblue')
 ```
 
-Количественный фон или картограммы получаются при картографировании числового показателя:
+__Количественный фон__ или __картограммы__ получаются при картографировании числового показателя применением той же функции `tm_polygons()`:
 ```{r}
 ('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo' %>% # продолжительность жизни
   gs_key(lookup = FALSE) %>% # не используем авторизацию
@@ -129,37 +160,103 @@ tm_shape(lyrp$countries) +
 coun = lyrp$countries %>% left_join(lifedf, by = c('adm0_a3' = 'geo'))
 
 tm_shape(coun) +
-  tm_polygons('lifexp') # количественная переменная
+  tm_polygons('lifexp', border.col = 'gray20') + # количественная переменная
+tm_shape(lyrp$ocean) +
+  tm_fill(col = 'azure') +
+  tm_borders(col = 'steelblue4')
 ```
 
-Для реализации способа картодиаграмм используется геометрия `tm_bubbles()`. Чтобы оставить отображение границ полигонов, нам необходимо к одной геометрии применить несколько способов изображения:
+Для реализации способа __картодиаграмм__ используется геометрия `tm_bubbles()`. Чтобы оставить отображение границ полигонов, нам необходимо к одной геометрии применить несколько способов изображения:
 ```{r}
-tm_shape(lyrp$ocean)+
-  tm_fill(col = 'lightblue') +
 tm_shape(coun) +
   tm_fill(col = 'white') +
   tm_borders(col = 'grey') +
   tm_bubbles('gdp_md_est', 
              scale = 3,
              col = 'red', 
-             alpha = 0.5) # количественная переменная
+             alpha = 0.5,
+             title.size = '$ млн') + # количественная переменная
+tm_shape(lyrp$ocean) +
+  tm_fill(col = 'lightblue') +
+  tm_borders(col = 'steelblue')
+```
+
+Аналогичным образом реализуется __значковый способ__ применительно к объектам, локализованным по точкам. Картографируем численность населения по крупнейшим городам:
+```{r}
+tm_shape(lyrp$countries) +
+  tm_fill(col = 'white') +
+  tm_borders(col = 'grey') +
+tm_shape(lyrp$ocean) +
+  tm_fill(col = 'lightblue') +
+  tm_borders(col = 'steelblue') +
+tm_shape(lyrp$cities) +
+  tm_bubbles('POP2015', col = 'olivedrab', alpha = 0.8)
+```
+
+__Надписи__ объектов на карте размещаются с помощью функции `tm_text`. Данная функция содержит весьма полезные параметры remove.overlap и auto.placement, которые позволяют убрать перекрывающиеся подписи и автоматически разместить из вокруг точек так, чтобы уменьшить перекрытия с самими знаками и другими подписями. Дополним предыдущую карту названиями городов:
+```{r}
+tm_shape(lyrp$countries) +
+  tm_fill(col = 'white') +
+  tm_borders(col = 'grey') +
+tm_shape(lyrp$ocean) +
+  tm_fill(col = 'lightblue') +
+  tm_borders(col = 'steelblue') +
+tm_shape(lyrp$cities) +
+  tm_bubbles('POP2015', col = 'olivedrab', alpha = 0.8) +
+  tm_text('name_ru', size = 0.5, remove.overlap = TRUE, auto.placement = TRUE)
 ```
 
 ### Растровые карты {#thematic_mapping_rasters}
 
-При отображении растровых данных используется способ отображения `tm_raster()`:
+При отображении растровых данных используется способ отображения `tm_raster()`. Параметр `breaks` определяет границы интервалов, для которых будут использованы цвета, взятые из параметра `palette`:
 ```{r}
-tm_shape(prec) +
+tm_shape(precm) +
     tm_raster('prec1',
               breaks = c(10, 50, 100, 200, 500, 1000),
-              palette = ramp(5), title = 'мм') +
-tm_layout(legend.position = c('left', 'bottom'),
-          fontfamily = 'OpenSans',
-          main.title.size = 1.2,
-          main.title = 'Среднемноголетнее количество осадков в январе')
-# tm_shape(lyrp$ocean) +
-#   tm_fill(col = 'lightblue') +
-#   tm_borders(col = 'steelblue')
+              palette = ramp(5)) +
+tm_shape(lyrm$ocean) +
+  tm_fill(col = 'lightblue') +
+  tm_borders(col = 'steelblue')
+```
+
+## Цветовые шкалы {#thematic_color_scales}
+
+Для изменения цветовой шкалы при определдении способа избражения вы можете определить параметр `palette`. Пакет __tmap__ позволяет работать с цветовыми палитрами _Color Brewer_ или задавать цвета вручную. Очень удобным инструментом подбора шкалы является функция `palette_explorer()` из пакета __tmaptools__. При вызове функции открывается интерактивное приложение, позволяющее менять настройки цветовых палитр:
+```{r, eval=FALSE}
+tmaptools::palette_explorer()
+```
+
+![Приложение Palette Explorer из пакета __tmaptools__](images/palette_explorer.png)
+
+Данных палитр хватат для решения большинства задач по картографической визуализации. Применим категориальную палитру _Dark2_:
+```{r}
+tm_shape(lyrp$countries) +
+  tm_polygons('economy', palette = 'Dark2') + # качественная переменная
+tm_shape(lyrp$ocean)+
+  tm_fill(col = 'azure') +
+  tm_borders(col = 'steelblue')
+```
+
+Для количественного показателя (количество осадков) применим палитру _PuBuGn_:
+```{r}
+tm_shape(precm) +
+    tm_raster('prec1',
+              breaks = c(10, 50, 100, 200, 500, 1000),
+              palette = 'PuBuGn') +
+tm_shape(lyrm$ocean) +
+  tm_fill(col = 'lightblue') +
+  tm_borders(col = 'steelblue')
+```
+
+Вы всегда можете, конечно, определить цвета вручную. В этом случае их количество должно совпадать с количеством интервалов классификации:
+```{r}
+tm_shape(precm) +
+    tm_raster('prec1',
+              breaks = c(10, 50, 100, 200, 500, 1000),
+              palette = c('white', 'gray80', 'gray60', 'gray40', 'gray20')) +
+tm_shape(lyrm$ocean) +
+  tm_fill(col = 'lightblue') +
+  tm_borders(col = 'steelblue')
 ```
 
 ## Классификация {#thematic_mapping_class}
@@ -206,9 +303,76 @@ plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Естественные 
 
 ### Применение на картах {#thematic_mapping_class_application}
 
-## Фасетные карты
+## Компоновка {#thematic_mapping_layouts}
 
-### Интерактивный режим  {#thematic_mapping_interactive}
+Пакет __tmap__ предоставляет широкий набор настроек компоновки картографического изображения, который включает настройку легенды, заголовка карты и ряда других важных параметров. Большинство настроек компоновки осуществляется через функцию `tm_layout()`, однако часть из них, специфичная для конкретного слоя, определяется непосредственно при настройке способа изображения.
+
+В примере ниже показано, как добавить заголовок карты, поместить ее легенду в полупрозрачный прямоугольник и заменить стандартный шрифт на _OpenSans_:
+```{r}
+tm_shape(lyrp$countries) +
+  tm_polygons('economy', title = '') +
+tm_shape(lyrp$ocean)+
+  tm_fill(col = 'azure') +
+  tm_borders(col = 'steelblue') +
+tm_layout(legend.position = c('left', 'bottom'),
+          fontfamily = 'OpenSans',
+          main.title.size = 1.2,
+          main.title = 'Тип экономики',
+          legend.frame = TRUE,
+          legend.frame.lwd = 0.2,
+          legend.bg.alpha = 0.8,
+          legend.bg.color = 'white')
+```
+
+По умолчанию tmap размещает легенду внутри фрейма картографического изображения. Однако ее можно вынести и наружу, используя параметр `legend.outside` функции `tm_layout()`. В примере ниже показано также, как можно задать способ отображения отсутствующих данных и отформатировать разделитель в легенде с интервалами значений:
+```{r}
+tm_shape(coun) +
+  tm_polygons('lifexp', 
+              border.col = 'gray20', 
+              title = 'Лет',
+              colorNA = 'lightgray',
+              textNA = 'Нет данных',
+              legend.format = list(text.separator = '—')) + # количественная переменная
+tm_shape(lyrp$ocean) +
+  tm_fill(col = 'azure') +
+  tm_borders(col = 'steelblue4') +
+tm_layout(legend.outside = TRUE,
+          legend.outside.position = 'right',
+          fontfamily = 'OpenSans',
+          main.title.size = 1.2,
+          main.title = 'Продолжительность жизни',
+          legend.bg.color = 'white')
+```
+
+
+```{r}
+tm_shape(precm) +
+    tm_raster('prec1',
+              breaks = c(10, 50, 100, 200, 500, 1000),
+              palette = ramp(5), title = 'мм',
+              colorNA = 'lightgray',
+              textNA = 'Нет данных',
+              legend.format = list(text.separator = '—')) +
+tm_shape(lyrm$ocean) +
+  tm_fill(col = 'lightblue') +
+  tm_borders(col = 'steelblue') +
+tm_layout(legend.position = c('left', 'bottom'),
+          fontfamily = 'OpenSans',
+          main.title.size = 1.2,
+          main.title = 'Среднемноголетнее количество осадков в январе',
+          legend.frame = TRUE,
+          legend.frame.lwd = 0.2,
+          legend.bg.alpha = 0.5,
+          legend.bg.color = 'white')
+```
+
+## Фасетные карты {#thematic_mapping_facets}
+
+## Анимированные карты {#thematic_mapping_facets}
+
+## Анаморфозы {#thematic_mapping_facets}
+
+## Интерактивные карты  {#thematic_mapping_interactive}
 
 Любую карту tmap можно превести в интерактивный режим с помощью функции `tmap_mode()` с параметром `'view'`:
 ```{r}
