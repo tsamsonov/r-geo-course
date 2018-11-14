@@ -869,15 +869,16 @@ map = tm_shape(coun2) +
               legend.reverse = TRUE,
               legend.format = list(text.separator = '—')) + # количественная переменная
   tm_facets(along = 'year',
-            free.coords = FALSE) +
+            free.coords = FALSE,
+            drop.units = TRUE) +
 tm_shape(lyrp$ocean) +
   tm_fill(col = 'azure') +
   tm_borders(col = 'steelblue4') 
 
-tmap_animation(map, 'images/lifexp.gif', delay = 50)
+tmap_animation(map, 'images/lifexp.gif', delay = 100)
 ```
 
-<!-- ![](images/lifexp.gif) -->
+![](images/lifexp.gif)
 
 ## Интерактивные карты  {#thematic_mapping_interactive}
 
