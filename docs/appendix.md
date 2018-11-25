@@ -1,13 +1,6 @@
----
-title: "Приложения"
-author: "Тимофей Самсонов"
-date: "21 09 2018"
-output: html_document
----
-
-
-
 # (APPENDIX) Решение проблем {-}
+
+
 
 # Установка пакетов {#package-troubles}
 

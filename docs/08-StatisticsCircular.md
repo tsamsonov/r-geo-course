@@ -137,7 +137,7 @@ files = paste('bound', list.files('bound', "*.txt"), sep = '/')
   left_join(obs, by = c('INDEX' = 'Индекс'))) # присоединим информацию о названиях станций
 ## # A tibble: 77,073 x 26
 ##    INDEX  GGGG    MM    HH     Z    MP    SP    NP    MT    ST    NT    MD
-##    <dbl> <int> <int> <int> <int> <int> <int> <int> <int> <int> <int> <int>
+##    <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
 ##  1 20674  2007     1     0  2000  7629    78    27  -187    35    27    53
 ##  2 20674  2007     1     0  1900  7732    79    27  -182    36    27    52
 ##  3 20674  2007     1     0  1800  7836    79    27  -178    36    27    51
@@ -148,9 +148,9 @@ files = paste('bound', list.files('bound', "*.txt"), sep = '/')
 ##  8 20674  2007     1     0  1300  8376    82    27  -156    39    27    43
 ##  9 20674  2007     1     0  1200  8488    83    27  -152    40    27    40
 ## 10 20674  2007     1     0  1100  8601    83    27  -148    41    27    37
-## # ... with 77,063 more rows, and 14 more variables: SD <int>, ND <int>,
-## #   MS <int>, SS <int>, NS <int>, MU <int>, SU <int>, NU <int>, MV <int>,
-## #   SV <int>, NV <int>, Название <chr>, Широта <dbl>, Долгота <dbl>
+## # ... with 77,063 more rows, and 14 more variables: SD <dbl>, ND <dbl>,
+## #   MS <dbl>, SS <dbl>, NS <dbl>, MU <dbl>, SU <dbl>, NU <dbl>, MV <dbl>,
+## #   SV <dbl>, NV <dbl>, Название <chr>, Широта <dbl>, Долгота <dbl>
 ```
 
 Создадим объект типа `circular` (из пакета __circular__) с направлениями ветра для анализа, и запишем его в новую переменую таблицы. Предварительно определим вспомогательную функцию, вычисляющую географический азимут на основе компонент скорости:
@@ -166,7 +166,7 @@ geo_azimuth = function(dx, dy) {
   select(INDEX, name = Название, GGGG, MM, HH, Z, MU, MV, SS, wind))
 ## # A tibble: 77,073 x 10
 ##    INDEX name        GGGG    MM    HH     Z    MU    MV    SS wind        
-##    <dbl> <chr>      <int> <int> <int> <int> <int> <int> <int> <S3: circul>
+##    <dbl> <chr>      <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <S3: circul>
 ##  1 20674 Остров Ди…  2007     1     0  2000    33    31    45 0.8166380   
 ##  2 20674 Остров Ди…  2007     1     0  1900    32    32    45 0.7853982   
 ##  3 20674 Остров Ди…  2007     1     0  1800    30    33    46 0.7378151   
@@ -186,7 +186,7 @@ geo_azimuth = function(dx, dy) {
 (tiksi_wind = winds %>% filter(name == 'Тикси', HH == 12, Z == 0))
 ## # A tibble: 136 x 10
 ##    INDEX name   GGGG    MM    HH     Z    MU    MV    SS wind          
-##    <dbl> <chr> <int> <int> <int> <int> <int> <int> <int> <S3: circular>
+##    <dbl> <chr> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <S3: circular>
 ##  1 21824 Тикси  2007     1    12     0    36    35    48 0.7994817     
 ##  2 21824 Тикси  2007     2    12     0    16    11    27 0.9685090     
 ##  3 21824 Тикси  2007     3    12     0    23    22    34 0.8076167     

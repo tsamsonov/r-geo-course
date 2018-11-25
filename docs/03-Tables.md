@@ -208,17 +208,17 @@ library(readr)
 (okruga = read_csv('okruga.csv'))
 ## Parsed with column specification:
 ## cols(
-##   `№` = col_integer(),
+##   `№` = col_double(),
 ##   Регион = col_character(),
-##   `2005` = col_integer(),
-##   `2010` = col_integer(),
-##   `2011` = col_integer(),
-##   `2012` = col_integer(),
-##   `2013` = col_integer()
+##   `2005` = col_double(),
+##   `2010` = col_double(),
+##   `2011` = col_double(),
+##   `2012` = col_double(),
+##   `2013` = col_double()
 ## )
 ## # A tibble: 8 x 7
 ##     `№` Регион            `2005` `2010` `2011` `2012` `2013`
-##   <int> <chr>              <int>  <int>  <int>  <int>  <int>
+##   <dbl> <chr>              <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
 ## 1     1 Центральный         4341   3761   3613   3651   3570
 ## 2     2 Северо-Западный     3192   3088   2866   2877   2796
 ## 3     3 Южный федеральный   1409   1446   1436   1394   1321
@@ -258,7 +258,7 @@ library(readr)
 (wenergy = read_table('wind_energy.txt', col_names = c('id', 'lat', 'lon', 'energy50', 'energy110')))
 ## Parsed with column specification:
 ## cols(
-##   id = col_integer(),
+##   id = col_double(),
 ##   lat = col_double(),
 ##   lon = col_double(),
 ##   energy50 = col_double(),
@@ -266,7 +266,7 @@ library(readr)
 ## )
 ## # A tibble: 92 x 5
 ##       id   lat   lon energy50 energy110
-##    <int> <dbl> <dbl>    <dbl>     <dbl>
+##    <dbl> <dbl> <dbl>    <dbl>     <dbl>
 ##  1     1  43.5  28       111.      178.
 ##  2     2  43.5  28.5     187.      301.
 ##  3     3  44    28.5     169.      271.
@@ -405,7 +405,7 @@ colnames(okruga) <- c("N", "Region", "Year05", "Year10", "Year11", "Year12", "Ye
 print(okruga)
 ## # A tibble: 8 x 7
 ##       N Region            Year05 Year10 Year11 Year12 Year13
-##   <int> <chr>              <int>  <int>  <int>  <int>  <int>
+##   <dbl> <chr>              <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
 ## 1     1 Центральный         4341   3761   3613   3651   3570
 ## 2     2 Северо-Западный     3192   3088   2866   2877   2796
 ## 3     3 Южный федеральный   1409   1446   1436   1394   1321
@@ -464,7 +464,7 @@ okruga[okruga$Year10 > 2000, ] # Несколько строк через TRUE/F
 okruga[2:3, c("Year11", "Year12")]
 ## # A tibble: 2 x 2
 ##   Year11 Year12
-##    <int>  <int>
+##    <dbl>  <dbl>
 ## 1   2866   2877
 ## 2   1436   1394
 ```
