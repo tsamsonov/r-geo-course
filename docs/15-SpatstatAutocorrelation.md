@@ -30,8 +30,8 @@ library(RANN)
 library(RColorBrewer)
 library(readxl)
 
-reg.sf <- st_read('Regions.gpkg')
-reg <- as(reg.sf, 'Spatial') # пакет spdep пока что требует объекты класса sp
+reg.sf = st_read('Regions.gpkg')
+reg = as(reg.sf, 'Spatial') # пакет spdep пока что требует объекты класса sp
 
 par(mar = c(1,1,1,1))
 plot(reg, border = "gray50")
@@ -69,7 +69,7 @@ __Соседство по метрике__ основано на вычисле�
 
 
 ```r
-polynei <- poly2nb(reg) # Соседство по правилу ферзя
+polynei = poly2nb(reg) # Соседство по правилу ферзя
 polynei  # посмотрим сводную информацию
 class(polynei)  # проверим тип объекта
 ```
@@ -78,7 +78,7 @@ class(polynei)  # проверим тип объекта
 
 
 ```r
-coords <- coordinates(reg)
+coords = coordinates(reg)
 
 # Теперь рисуем граф:
 plot(reg, border = "gray50")
@@ -91,7 +91,7 @@ title(main="Соседи по смежности (правило ферзя)")
 Для определения соседей по правилу ладьи необходимо вызвать функцию `poly2nb()` с аргументом `queen=FALSE`. В нашем случае, правда, это даст тот же результат, поскольку в данных отсутствуют единицы, соприкасающиеся в одной лишь точке:
 
 ```r
-polynei<-poly2nb(reg, queen=FALSE) # Соседство по правилу ладьи
+polynei=poly2nb(reg, queen=FALSE) # Соседство по правилу ладьи
 
 plot(reg, border="grey70")
 plot(polynei, coords, pch = 19, cex = 0.5, add = TRUE)
@@ -152,7 +152,7 @@ __Соседи по графу Гэбриела__ получаются такж�
 
 ```r
 plot(reg, border="grey70")
-gabnei<-graph2nb(gabrielneigh(coords))
+gabnei=graph2nb(gabrielneigh(coords))
 plot(gabnei, coords, pch = 19, cex = 0.5, add = TRUE)
 title(main="Соседи по графу Гэбриела")
 ```
@@ -169,7 +169,7 @@ __Относительные соседи по графу__ получаются
 
 ```r
 plot(reg, border="grey70")
-relnei<-graph2nb(relativeneigh(coords))
+relnei=graph2nb(relativeneigh(coords))
 plot(relnei, coords, pch = 19, cex = 0.5, add = TRUE)
 title(main="Относительные соседи по графу")
 ```
@@ -190,7 +190,7 @@ title(main="Относительные соседи по графу")
 ```r
 par(mfrow = c(2,2))
 for (i in 1:4){
-  knearnei<-knn2nb(knearneigh(coords, k = i))
+  knearnei=knn2nb(knearneigh(coords, k = i))
   
   plot(reg, border="grey70")
   plot(knearnei, coords, pch = 19, cex = 0.5, add = TRUE)
@@ -206,7 +206,7 @@ for (i in 1:4){
 ```r
 par(mfrow = c(2,2))
 for (d in 3:6){
-  dnearnei <- dnearneigh(coords, d1 = 0, d2 = d)
+  dnearnei = dnearneigh(coords, d1 = 0, d2 = d)
   
   plot(reg, border="grey70")
   plot(dnearnei, coords, pch = 19, cex = 0.5, add = TRUE)
@@ -226,8 +226,8 @@ for (d in 3:6){
 
 
 ```r
-polynei<-poly2nb(reg)
-Wbin<-nb2listw(polynei,style="B")
+polynei=poly2nb(reg)
+Wbin=nb2listw(polynei,style="B")
 Wbin  # посмотрим, что за объект получается на выходе (listw)
 ```
 
@@ -243,7 +243,7 @@ Wbin$weights
 Матрицу весов как правило визуализируют, поскольку она может содержать в себе довольно интересные паттерны. Для этого полученный список весов нужно превратить в матрицу с помощью функции `listw2mat()`. Далее использовать функцию `levelplot` из пакета `lattice`, которая раскрашивает ячейки матрицы или растрового набора данных:
 
 ```r
-M<-listw2mat(Wbin)
+M=listw2mat(Wbin)
 levelplot(M, main="Матрица весов (бинарная)")
 ```
 
@@ -252,11 +252,11 @@ levelplot(M, main="Матрица весов (бинарная)")
 Более интересный результат дает нормированная матрица. В ней веса всех соседей нормируются на количество соседей. То есть, если у текущей точки 2 соседа, их веса будут равны 0.5. Если 3 соседа то 0.33, 4 — 0.25 и так далее. Взвешенная матрица позволяет отразить тот факт, что одна и та же территориальная единица может оказывать неодинаковое влияние на соседние единицы:
 
 ```r
-Wstand<-nb2listw(polynei, style = "W")
-M<-listw2mat(Wstand)
+Wstand=nb2listw(polynei, style = "W")
+M=listw2mat(Wstand)
 
-ramp <- colorRampPalette(c("white","red"))
-levels <- 1/1:10  # шкала 1, 0.5, 0.33, 0.25 ... 0.1
+ramp = colorRampPalette(c("white","red"))
+levels = 1/1:10  # шкала 1, 0.5, 0.33, 0.25 ... 0.1
 levelplot(M, 
           main="Матрица весов (нормированная)", 
           at = levels, 
@@ -271,10 +271,10 @@ levelplot(M,
 
 ```r
 # Ближайшие соседи (k = 1)
-knearnei<-knn2nb(knearneigh(coords,k=1))
+knearnei=knn2nb(knearneigh(coords,k=1))
 
-Wstand<-nb2listw(knearnei, style = "B")
-M<-listw2mat(Wstand)
+Wstand=nb2listw(knearnei, style = "B")
+M=listw2mat(Wstand)
 levelplot(M, 
           main="Матрица весов (нормированная)", 
           at = levels, 
@@ -309,22 +309,22 @@ levelplot(M,
 
 ```r
 # Чтение базовых пространственных данных
-mun.sf <- st_read("Kirov.gpkg")
+mun.sf = st_read("Kirov.gpkg")
 
-mun <- as(mun.sf, 'Spatial')
+mun = as(mun.sf, 'Spatial')
 
 # Чтение таблицы со статистикой
-# classes <- c("integer", "character", rep("numeric", 10))
-tab <- read_xlsx("Kirov.xlsx", 1)
+# classes = c("integer", "character", rep("numeric", 10))
+tab = read_xlsx("Kirov.xlsx", 1)
 
 # Соединение таблиц
-mun@data <- merge(mun@data, tab, by.x="OBJECTID", by.y="N")
+mun@data = merge(mun@data, tab, by.x="OBJECTID", by.y="N")
 
 # Построение серии карт
-months <- names(mun)[22:31] # выбираем названия столбцов с месяцами
-ramp <- colorRampPalette(c("white", "orange", "red"))
-levels <- seq(0,10000,1000)
-nclasses <- length(levels)-1
+months = names(mun)[22:31] # выбираем названия столбцов с месяцами
+ramp = colorRampPalette(c("white", "orange", "red"))
+levels = seq(0,10000,1000)
+nclasses = length(levels)-1
 spplot(mun, months, at = levels, col.regions = ramp(nclasses))
 ```
 
@@ -336,22 +336,22 @@ spplot(mun, months, at = levels, col.regions = ramp(nclasses))
 
 ```r
 # Определение соседства (правило ферзя)
-nei<-poly2nb(mun)
+nei=poly2nb(mun)
 
 # Визиуализация графа соседства
-coords <- coordinates(mun)
+coords = coordinates(mun)
 plot(mun, border="darkgray")
 plot(nei, coords, pch = 19, cex = 0.5, add = TRUE)
 title(main="Соседи по смежности (правило ферзя)")
 
 # Вычисление весов (нормированная матрица)
-W <- nb2listw(nei)
+W = nb2listw(nei)
 
 # Визуализация матрицы весов
-M<-listw2mat(W)
+M=listw2mat(W)
 
-ramp2 <- colorRampPalette(c("white","red"))
-levels2 <- 1/1:10 # шкала 1, 0.5, 0.33, 0.25 ... 0.1
+ramp2 = colorRampPalette(c("white","red"))
+levels2 = 1/1:10 # шкала 1, 0.5, 0.33, 0.25 ... 0.1
 levelplot(M, 
           main="Матрица весов (нормированная)", 
           at = levels2, 
@@ -434,7 +434,7 @@ moran.test(mun$Февраль, W)
 Графически вышеприведенные рассуждения можно иллюстрировать с помощью перестановочного теста (__permutation test__). Для этого значения исследуемой нами величины перемешиваются между территориальными единицами и далее строится гистограмма распределения. Перестановочный тест выполняется с помощью функции `moran.mc()` с параметром `nsim =`, задающим число перестановок:
 
 ```r
-sim<-moran.mc(mun$Февраль, listw = W, nsim = 10000)
+sim=moran.mc(mun$Февраль, listw = W, nsim = 10000)
 sim
 
 # Построим гистограмму по вычисленным индексам:
@@ -493,7 +493,7 @@ Z ~ 1
 
 
 ```r
-model <- spautolm(mun$Февраль ~ 1, listw=W)
+model = spautolm(mun$Февраль ~ 1, listw=W)
 model
 ## 
 ## Call:
@@ -514,10 +514,10 @@ model
 Извлекаем модельные значения $Z$ и записываем в таблицу
 
 ```r
-mun$fitted <- fitted(model)
+mun$fitted = fitted(model)
 
 # Извлекаем остатки ε и записываем в таблицу
-mun$residuals <- residuals(model)
+mun$residuals = residuals(model)
 
 # Сравниваем исходные данные, модельные и остатки
 spplot(mun, 
