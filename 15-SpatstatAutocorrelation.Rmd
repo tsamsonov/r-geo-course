@@ -33,6 +33,8 @@ library(lattice)
 library(RANN)
 library(RColorBrewer)
 library(readxl)
+library(tidyverse)
+library(mapview)
 
 reg.sf = st_read('Regions.gpkg')
 reg = as(reg.sf, 'Spatial') # пакет spdep пока что требует объекты класса sp
@@ -458,9 +460,42 @@ spplot(mun,
        col.regions = ramp(nclasses))
 ```
 
-## Локальные показатели пространственной ассоциации (LISA) {#autocorrelation_lisa}
+## Географически взвешенная регрессия (GWR) {#autocorrelation_gwr}
 
-## Географически взвешенная реграссия (GWR) {#autocorrelation_gwr}
+```{r}
+library(tmap)
+library(GWmodel)
+realest = read_delim(url('https://www.jefftk.com/apartment_prices/apts-1542637382.txt'), 
+                 delim = ' ',
+                 col_names = c('price', 'rooms', 'id', 'lon', 'lat')) %>% 
+  st_as_sf(coords = c('lon', 'lat'), crs = 4326) %>% 
+  st_transform(3395)
+
+tmap_mode('view')
+tm_shape(realest) +
+  tm_bubbles(col = 'price',
+             size = 'rooms',
+             style = 'fixed',
+             breaks = c(0, 1000, 2000, 3000, 4000, 5000, 10000, max(realest$price)),
+             scale = 0.5, 
+             palette = colorRampPalette(c('steelblue4', 'orange', 'darkred'))(7),
+             alpha = 0.8) +
+  tm_view(symbol.size.fixed = TRUE)
+
+samples = realest %>% dplyr::sample_n(1000) %>% as('Spatial')
+
+gwr.res = gwr.basic(price ~ rooms, data = samples, bw = 1000, kernel = 'gaussian')
+gwr.res
+
+tm_shape(gwr.res$SDF) +
+  tm_bubbles(col = 'rooms',
+             style = 'quantile',
+             scale = 0.3, 
+             palette = 'Reds',
+             alpha = 0.5) +
+  tm_view(symbol.size.fixed = TRUE)
+```
+
 
 ----
 _Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, 2017. DOI: 10.5281/zenodo.901911
