@@ -1,7 +1,7 @@
 Пространственные данные в R
 ========================================================
 author: Тимофей Самсонов
-date: `r Sys.Date()`
+date: 2019-02-15
 autosize: true
 font-family: 'Open Sans'
 
@@ -66,42 +66,12 @@ Simple Features
 Simple Features
 ========================================================
 
-```{r, echo = FALSE}
-library(sf)
-p <- rbind(c(3.2,4), c(3,4.6), c(3.8,4.4), c(3.5,3.8), c(3.4,3.6), c(3.9,4.5))
-mp <- st_multipoint(p)
 
-s1 <- rbind(c(0,3),c(0,4),c(1,5),c(2,5))
-ls <- st_linestring(s1)
-
-s2 <- rbind(c(0.2,3), c(0.2,4), c(1,4.8), c(2,4.8))
-s3 <- rbind(c(0,4.4), c(0.6,5))
-mls <- st_multilinestring(list(s1,s2,s3))
-
-p1 <- rbind(c(0,0), c(1,0), c(3,2), c(2,4), c(1,4), c(0,0))
-p2 <- rbind(c(1,1), c(1,2), c(2,2), c(1,1))
-pol <-st_polygon(list(p1,p2))
-p3 <- rbind(c(3,0), c(4,0), c(4,1), c(3,1), c(3,0))
-p4 <- rbind(c(3.3,0.3), c(3.8,0.3), c(3.8,0.8), c(3.3,0.8), c(3.3,0.3))[5:1,]
-p5 <- rbind(c(3,3), c(4,2), c(4,3), c(3,3))
-mpol <- st_multipolygon(list(list(p1,p2), list(p3,p4), list(p5)))
-
-gc <- st_geometrycollection(list(mp, mpol, ls))
-```
 
 Simple Features
 ========================================================
 
-```{r, echo=FALSE,fig.width=16, fig.height=8, fig.show='hold'}
-par(mfrow = c(2,3))
-plot(mp, cex = 5, pch = 20, main = 'MULTIPOINT', cex.main=3)
-plot(ls, lwd = 3, main = 'LINESTRING', cex.main=3)
-plot(mls, lwd = 3, main = 'MULTILINESTRING', cex.main=3)
-plot(pol, lwd = 3, col = 'grey', main = 'POLYGON', cex.main=3)
-plot(mpol, lwd = 3, col = 'grey', main = 'MULTIPOLYGON', cex.main=3)
-plot(gc, lwd = 3, col = 'grey', border = 'black', main = 'GEOMETRYCOLLECTION', cex.main=3)
-par(mfrow = c(1,1))
-```
+![plot of chunk unnamed-chunk-2](SpatialDataR-figure/unnamed-chunk-2-1.png)
 
 
 WELL-KNOWN TEXT
@@ -109,10 +79,12 @@ WELL-KNOWN TEXT
 
 __WELL-KNOWN TEXT (WKT)__ --- стандарт представления геометрии в виде множества списков координат:
 
-```{r, echo=FALSE}
-cat(st_as_text(mp))
-plot(mp, cex = 5, pch = 20, main = 'MULTIPOINT', cex.main=3)
+
 ```
+MULTIPOINT (3.2 4, 3 4.6, 3.8 4.4, 3.5 3.8, 3.4 3.6, 3.9 4.5)
+```
+
+![plot of chunk unnamed-chunk-3](SpatialDataR-figure/unnamed-chunk-3-1.png)
 
 
 WELL-KNOWN TEXT
@@ -120,67 +92,77 @@ WELL-KNOWN TEXT
 
 __WELL-KNOWN TEXT (WKT)__ --- стандарт представления геометрии в виде множества списков координат:
 
-```{r, echo=FALSE}
-cat(st_as_text(ls))
-plot(ls, lwd = 3, main = 'LINESTRING', cex.main=3)
+
 ```
+LINESTRING (0 3, 0 4, 1 5, 2 5)
+```
+
+![plot of chunk unnamed-chunk-4](SpatialDataR-figure/unnamed-chunk-4-1.png)
 
 WELL-KNOWN TEXT
 ========================================================
 
 __WELL-KNOWN TEXT (WKT)__ --- стандарт представления геометрии в виде множества списков координат:
 
-```{r, echo=FALSE}
-cat(st_as_text(mls))
-plot(ls, lwd = 3, main = 'MULTILINESTRING', cex.main=3)
+
 ```
+MULTILINESTRING ((0 3, 0 4, 1 5, 2 5), (0.2 3, 0.2 4, 1 4.8, 2 4.8), (0 4.4, 0.6 5))
+```
+
+![plot of chunk unnamed-chunk-5](SpatialDataR-figure/unnamed-chunk-5-1.png)
 
 WELL-KNOWN TEXT
 ========================================================
 
 __WELL-KNOWN TEXT (WKT)__ --- стандарт представления геометрии в виде множества списков координат:
 
-```{r, echo=FALSE}
-cat(st_as_text(pol))
-plot(pol, lwd = 3, col = 'grey', main = 'POLYGON', cex.main=3)
+
 ```
+POLYGON ((0 0, 1 0, 3 2, 2 4, 1 4, 0 0), (1 1, 1 2, 2 2, 1 1))
+```
+
+![plot of chunk unnamed-chunk-6](SpatialDataR-figure/unnamed-chunk-6-1.png)
 
 WELL-KNOWN TEXT
 ========================================================
 
 __WELL-KNOWN TEXT (WKT)__ --- стандарт представления геометрии в виде множества списков координат:
 
-```{r, echo=FALSE}
-cat(st_as_text(mpol))
-plot(mpol, lwd = 3, col = 'grey', main = 'MULTIPOLYGON', cex.main=3)
+
 ```
+MULTIPOLYGON (((0 0, 1 0, 3 2, 2 4, 1 4, 0 0), (1 1, 1 2, 2 2, 1 1)), ((3 0, 4 0, 4 1, 3 1, 3 0), (3.3 0.3, 3.3 0.8, 3.8 0.8, 3.8 0.3, 3.3 0.3)), ((3 3, 4 2, 4 3, 3 3)))
+```
+
+![plot of chunk unnamed-chunk-7](SpatialDataR-figure/unnamed-chunk-7-1.png)
 
 WELL-KNOWN TEXT
 ========================================================
 
 __WELL-KNOWN TEXT (WKT)__ --- стандарт представления геометрии в виде множества списков координат:
 
-```{r, echo=FALSE}
-cat(st_as_text(gc))
-plot(gc, lwd = 3, col = 'grey', border = 'black', main = 'GEOMETRYCOLLECTION', cex.main=3)
+
 ```
+GEOMETRYCOLLECTION (MULTIPOINT (3.2 4, 3 4.6, 3.8 4.4, 3.5 3.8, 3.4 3.6, 3.9 4.5), MULTIPOLYGON (((0 0, 1 0, 3 2, 2 4, 1 4, 0 0), (1 1, 1 2, 2 2, 1 1)), ((3 0, 4 0, 4 1, 3 1, 3 0), (3.3 0.3, 3.3 0.8, 3.8 0.8, 3.8 0.3, 3.3 0.3)), ((3 3, 4 2, 4 3, 3 3))), LINESTRING (0 3, 0 4, 1 5, 2 5))
+```
+
+![plot of chunk unnamed-chunk-8](SpatialDataR-figure/unnamed-chunk-8-1.png)
 
 WELL-KNOWN TEXT
 ========================================================
 
 __WELL-KNOWN BINARY (WKB)__ --- бинарный формат хранения координат, который фактически используется в базах данных:
 
-```{r, echo=FALSE}
-cat(st_as_binary(ls))
-plot(ls, lwd = 3, main = 'LINESTRING', cex.main=3)
+
 ```
+01 02 00 00 00 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 08 40 00 00 00 00 00 00 00 00 00 00 00 00 00 00 10 40 00 00 00 00 00 00 f0 3f 00 00 00 00 00 00 14 40 00 00 00 00 00 00 00 40 00 00 00 00 00 00 14 40
+```
+
+![plot of chunk unnamed-chunk-9](SpatialDataR-figure/unnamed-chunk-9-1.png)
 
 Slide With Plot
 ========================================================
 
-```{r, echo=FALSE}
-plot(cars)
-```
+![plot of chunk unnamed-chunk-10](SpatialDataR-figure/unnamed-chunk-10-1.png)
 
 Пространственная привязка
 ========================================================
@@ -234,23 +216,27 @@ PROJ.4 String
 __Примеры записи координатных систем__
 
 Географические координаты в _WGS84_ (без проекции):
-```{r, echo = FALSE}
-cat(st_crs(4326)[['proj4string']])
+
+```
++proj=longlat +datum=WGS84 +no_defs
 ```
 
 Координаты в проекции _Web Mercator_ (проекция Google Maps, Яндекс.Карт и т.д.):
-```{r, echo = FALSE}
-cat(st_crs(3857)[['proj4string']])
+
+```
++proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs
 ```
 
 Координаты в _конической равнопромежуточной проекции_:
-```{r, echo = FALSE}
-cat(st_crs(54027)[['proj4string']])
+
+```
++proj=eqdc +lat_0=0 +lon_0=0 +lat_1=60 +lat_2=60 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs
 ```
 
 Координаты в проекции _UTM, зона 37_:
-```{r, echo = FALSE}
-cat(st_crs(32637)[['proj4string']])
+
+```
++proj=utm +zone=37 +datum=WGS84 +units=m +no_defs
 ```
 
 Well-Known Text (WKT)
