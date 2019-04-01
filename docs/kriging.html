@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Визуализация и анализ географических данных на языке R</title>
+  <title>Глава 14 Геостатистическая интерполяция | Визуализация и анализ географических данных на языке R</title>
   <meta name="description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных">
-  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
 
-  <meta property="og:title" content="Визуализация и анализ географических данных на языке R" />
+  <meta property="og:title" content="Глава 14 Геостатистическая интерполяция | Визуализация и анализ географических данных на языке R" />
   <meta property="og:type" content="book" />
   
   
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="tsamsonov/r-geo-course" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Визуализация и анализ географических данных на языке R" />
+  <meta name="twitter:title" content="Глава 14 Геостатистическая интерполяция | Визуализация и анализ географических данных на языке R" />
   
   <meta name="twitter:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
   
@@ -25,7 +25,7 @@
 <meta name="author" content="Тимофей Самсонов">
 
 
-<meta name="date" content="2018-11-12">
+<meta name="date" content="2018-11-25">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -36,6 +36,7 @@
 <link rel="next" href="autocorrelation.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
@@ -47,70 +48,92 @@
 
 
 
-<script src="libs/htmlwidgets-1.2/htmlwidgets.js"></script>
+<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
 <link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
 <script src="libs/leaflet-1.3.1/leaflet.js"></script>
 <link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
 <script src="libs/Proj4Leaflet-1.0.1/proj4-compressed.js"></script>
 <script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
 <link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
-<script src="libs/leaflet-binding-2.0.1/leaflet.js"></script>
+<script src="libs/leaflet-binding-2.0.2/leaflet.js"></script>
 <script src="libs/leaflet-providers-1.1.17/leaflet-providers.js"></script>
-<script src="libs/leaflet-providers-plugin-2.0.1/leaflet-providers-plugin.js"></script>
-<script src="libs/mapPane-0.0.1/map-pane.js"></script>
+<script src="libs/leaflet-providers-plugin-2.0.2/leaflet-providers-plugin.js"></script>
 <link href="libs/HomeButton-0.0.1/home-button.css" rel="stylesheet" />
 <script src="libs/HomeButton-0.0.1/home-button.js"></script>
 <script src="libs/HomeButton-0.0.1/easy-button-src.min.js"></script>
 <link href="libs/PopupTable-0.0.1/popup.css" rel="stylesheet" />
-<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.4/datatables.js"></script>
-<link href="libs/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.10.16/js/jquery.dataTables.min.js"></script>
-<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="libs/pagedtable-1.1/js/pagedtable.js"></script>
 <script src="libs/plotly-binding-4.8.0/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
 <link href="libs/plotly-htmlwidgets-css-1.39.2/plotly-htmlwidgets.css" rel="stylesheet" />
 <script src="libs/plotly-main-1.39.2/plotly-latest.min.js"></script>
 
 
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -130,18 +153,18 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Введение</a><ul>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Программное обеспечение</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#---"><i class="fa fa-check"></i>Установка и подключение пакетов</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i>Выполнение программного кода</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i>Установка рабочей директории</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Диагностические функции</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Получение справки</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#d09ad0bed0bcd0bcd0b5d0bdd182d0b0d180d0b8d0b8"><i class="fa fa-check"></i>Комментарии</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#----r"><i class="fa fa-check"></i>Стандарт оформления кода на R</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Зарезервированные слова</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Названия переменных</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i>Названия специальных символов</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#--"><i class="fa fa-check"></i>Ссылка на пособие</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#section-1"><i class="fa fa-check"></i>Программное обеспечение</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#section-2"><i class="fa fa-check"></i>Установка и подключение пакетов</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#section-3"><i class="fa fa-check"></i>Выполнение программного кода</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#section-4"><i class="fa fa-check"></i>Установка рабочей директории</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#section-5"><i class="fa fa-check"></i>Диагностические функции</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#section-6"><i class="fa fa-check"></i>Получение справки</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#section-7"><i class="fa fa-check"></i>Комментарии</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#r"><i class="fa fa-check"></i>Стандарт оформления кода на R</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#section-8"><i class="fa fa-check"></i>Зарезервированные слова</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#section-9"><i class="fa fa-check"></i>Названия переменных</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#section-10"><i class="fa fa-check"></i>Названия специальных символов</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#section-11"><i class="fa fa-check"></i>Ссылка на пособие</a></li>
 </ul></li>
 <li class="part"><span><b>I Начало работы с R</b></span></li>
 <li class="chapter" data-level="1" data-path="data-types.html"><a href="data-types.html"><i class="fa fa-check"></i><b>1</b> Типы данных, условия, ввод и вывод</a><ul>
@@ -341,10 +364,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="10" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html"><i class="fa fa-check"></i><b>10</b> Тематические карты в R</a><ul>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#-"><i class="fa fa-check"></i>Предварительные условия</a></li>
-<li class="chapter" data-level="10.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#-1"><i class="fa fa-check"></i><b>10.1</b> Введение</a><ul>
-<li class="chapter" data-level="10.1.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_ne"><i class="fa fa-check"></i><b>10.1.1</b> Данные Natural Earth</a></li>
-<li class="chapter" data-level="10.1.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#-worldclim"><i class="fa fa-check"></i><b>10.1.2</b> Данные WorldClim</a></li>
+<li class="chapter" data-level="" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#section-12"><i class="fa fa-check"></i>Предварительные условия</a></li>
+<li class="chapter" data-level="10.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro"><i class="fa fa-check"></i><b>10.1</b> Введение</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro_ne"><i class="fa fa-check"></i><b>10.1.1</b> Данные Natural Earth</a></li>
+<li class="chapter" data-level="10.1.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro_wc"><i class="fa fa-check"></i><b>10.1.2</b> Данные WorldClim</a></li>
 </ul></li>
 <li class="chapter" data-level="10.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_tmap"><i class="fa fa-check"></i><b>10.2</b> Способы изображения</a><ul>
 <li class="chapter" data-level="10.2.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_vectors"><i class="fa fa-check"></i><b>10.2.1</b> Векторные данные</a></li>
@@ -358,13 +381,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="10.4.4" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_na"><i class="fa fa-check"></i><b>10.4.4</b> Пропущенные данные</a></li>
 </ul></li>
 <li class="chapter" data-level="10.5" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_layouts"><i class="fa fa-check"></i><b>10.5</b> Компоновка</a></li>
-<li class="chapter" data-level="10.6" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_facets"><i class="fa fa-check"></i><b>10.6</b> Фасетные карты</a></li>
-<li class="chapter" data-level="10.7" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_facets"><i class="fa fa-check"></i><b>10.7</b> Анимированные карты</a></li>
-<li class="chapter" data-level="10.8" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_facets"><i class="fa fa-check"></i><b>10.8</b> Анаморфозы</a></li>
-<li class="chapter" data-level="10.9" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_interactive"><i class="fa fa-check"></i><b>10.9</b> Интерактивные карты</a></li>
-<li class="chapter" data-level="10.10" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#questions_tasks_tmap"><i class="fa fa-check"></i><b>10.10</b> Контрольные вопросы и упражнения</a><ul>
-<li class="chapter" data-level="10.10.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#questions_tmap"><i class="fa fa-check"></i><b>10.10.1</b> Вопросы</a></li>
-<li class="chapter" data-level="10.10.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#tasks_tmap"><i class="fa fa-check"></i><b>10.10.2</b> Упражнения</a></li>
+<li class="chapter" data-level="10.6" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_facets"><i class="fa fa-check"></i><b>10.6</b> Фасеты и серии карт</a></li>
+<li class="chapter" data-level="10.7" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_animations"><i class="fa fa-check"></i><b>10.7</b> Картографические анимации</a></li>
+<li class="chapter" data-level="10.8" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_interactive"><i class="fa fa-check"></i><b>10.8</b> Интерактивные карты</a></li>
+<li class="chapter" data-level="10.9" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#questions_tasks_tmap"><i class="fa fa-check"></i><b>10.9</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="10.9.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#questions_tmap"><i class="fa fa-check"></i><b>10.9.1</b> Вопросы</a></li>
+<li class="chapter" data-level="10.9.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#tasks_tmap"><i class="fa fa-check"></i><b>10.9.2</b> Упражнения</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="11" data-path="vector-analysis.html"><a href="vector-analysis.html"><i class="fa fa-check"></i><b>11</b> Пространственный анализ 1. Векторные методы</a><ul>
@@ -379,16 +401,25 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="11.6" data-path="vector-analysis.html"><a href="vector-analysis.html#conc_zones"><i class="fa fa-check"></i><b>11.6</b> Анализ конкурентных зон окружения</a></li>
 <li class="chapter" data-level="11.7" data-path="vector-analysis.html"><a href="vector-analysis.html#transport_zones"><i class="fa fa-check"></i><b>11.7</b> Анализ зон транспортной доступности</a></li>
 <li class="chapter" data-level="11.8" data-path="vector-analysis.html"><a href="vector-analysis.html#routes"><i class="fa fa-check"></i><b>11.8</b> Построение маршрутов и матриц времени движения</a></li>
+<li class="chapter" data-level="11.9" data-path="vector-analysis.html"><a href="vector-analysis.html#qtasks_vector_analysis"><i class="fa fa-check"></i><b>11.9</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="11.9.1" data-path="vector-analysis.html"><a href="vector-analysis.html#questions_vector_analysis"><i class="fa fa-check"></i><b>11.9.1</b> Вопросы</a></li>
+<li class="chapter" data-level="11.9.2" data-path="vector-analysis.html"><a href="vector-analysis.html#tasks_vector_analysis"><i class="fa fa-check"></i><b>11.9.2</b> Упражнения</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="12" data-path="raster-analysis.html"><a href="raster-analysis.html"><i class="fa fa-check"></i><b>12</b> Пространственный анализ 2. Растровые методы</a><ul>
+<li class="chapter" data-level="" data-path="raster-analysis.html"><a href="raster-analysis.html#section-13"><i class="fa fa-check"></i>Предварительные условия</a></li>
 <li class="chapter" data-level="12.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_intro"><i class="fa fa-check"></i><b>12.1</b> Введение</a></li>
-<li class="chapter" data-level="12.2" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_local"><i class="fa fa-check"></i><b>12.2</b> Локальные операции</a></li>
-<li class="chapter" data-level="12.3" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal"><i class="fa fa-check"></i><b>12.3</b> Фокальные операции</a><ul>
-<li class="chapter" data-level="12.3.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal_fixed"><i class="fa fa-check"></i><b>12.3.1</b> Фиксированная окрестность</a></li>
-<li class="chapter" data-level="12.3.2" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal_extended"><i class="fa fa-check"></i><b>12.3.2</b> Расширенная окрестность</a></li>
+<li class="chapter" data-level="12.2" data-path="raster-analysis.html"><a href="raster-analysis.html#section-14"><i class="fa fa-check"></i><b>12.2</b> Растровая алгебра</a><ul>
+<li class="chapter" data-level="12.2.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_local"><i class="fa fa-check"></i><b>12.2.1</b> Локальные операции</a></li>
+<li class="chapter" data-level="12.2.2" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal"><i class="fa fa-check"></i><b>12.2.2</b> Фокальные операции</a></li>
+<li class="chapter" data-level="12.2.3" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_zonal"><i class="fa fa-check"></i><b>12.2.3</b> Зональные операции</a></li>
+<li class="chapter" data-level="12.2.4" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_global"><i class="fa fa-check"></i><b>12.2.4</b> Глобальные операции</a></li>
 </ul></li>
-<li class="chapter" data-level="12.4" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_zonal"><i class="fa fa-check"></i><b>12.4</b> Зональные операции</a></li>
-<li class="chapter" data-level="12.5" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_global"><i class="fa fa-check"></i><b>12.5</b> Глобальные операции</a></li>
+<li class="chapter" data-level="12.3" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_extract"><i class="fa fa-check"></i><b>12.3</b> Извлечение данных</a></li>
+<li class="chapter" data-level="12.4" data-path="raster-analysis.html"><a href="raster-analysis.html#questions_tasks_raster"><i class="fa fa-check"></i><b>12.4</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="12.4.1" data-path="raster-analysis.html"><a href="raster-analysis.html#questions_raster"><i class="fa fa-check"></i><b>12.4.1</b> Вопросы</a></li>
+<li class="chapter" data-level="12.4.2" data-path="raster-analysis.html"><a href="raster-analysis.html#tasks_raster"><i class="fa fa-check"></i><b>12.4.2</b> Упражнения</a></li>
+</ul></li>
 </ul></li>
 <li class="part"><span><b>IV Пространственная статистика</b></span></li>
 <li class="chapter" data-level="13" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html"><i class="fa fa-check"></i><b>13</b> Детерминистическая интерполяция</a><ul>
@@ -405,8 +436,64 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="13.4.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_global"><i class="fa fa-check"></i><b>13.4.1</b> Глобальный тренд</a></li>
 <li class="chapter" data-level="13.4.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_local"><i class="fa fa-check"></i><b>13.4.2</b> Локальный тренд</a></li>
 </ul></li>
+<li class="chapter" data-level="13.5" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#areal_interpolation"><i class="fa fa-check"></i><b>13.5</b> Интерполяция по ареалам</a></li>
+<li class="chapter" data-level="13.6" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interp_review"><i class="fa fa-check"></i><b>13.6</b> Краткий обзор</a></li>
+<li class="chapter" data-level="13.7" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#questions_tasks_interp"><i class="fa fa-check"></i><b>13.7</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="13.7.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#questions_interp"><i class="fa fa-check"></i><b>13.7.1</b> Вопросы</a></li>
+<li class="chapter" data-level="13.7.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#tasks_interp"><i class="fa fa-check"></i><b>13.7.2</b> Упражнения</a></li>
 </ul></li>
-<li class="chapter" data-level="14" data-path="kriging.html"><a href="kriging.html"><i class="fa fa-check"></i><b>14</b> Геостатистическая интерполяция</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="kriging.html"><a href="kriging.html"><i class="fa fa-check"></i><b>14</b> Геостатистическая интерполяция</a><ul>
+<li class="chapter" data-level="14.1" data-path="kriging.html"><a href="kriging.html#section-15"><i class="fa fa-check"></i><b>14.1</b> Теоретические сведения</a><ul>
+<li class="chapter" data-level="14.1.1" data-path="kriging.html"><a href="kriging.html#section-16"><i class="fa fa-check"></i><b>14.1.1</b> Базовые компоненты</a></li>
+<li class="chapter" data-level="14.1.2" data-path="kriging.html"><a href="kriging.html#section-17"><i class="fa fa-check"></i><b>14.1.2</b> Случайная величина</a></li>
+<li class="chapter" data-level="14.1.3" data-path="kriging.html"><a href="kriging.html#section-18"><i class="fa fa-check"></i><b>14.1.3</b> Пространственная модель</a></li>
+<li class="chapter" data-level="14.1.4" data-path="kriging.html"><a href="kriging.html#section-19"><i class="fa fa-check"></i><b>14.1.4</b> Случайный процесс (функция)</a></li>
+<li class="chapter" data-level="14.1.5" data-path="kriging.html"><a href="kriging.html#section-20"><i class="fa fa-check"></i><b>14.1.5</b> Автокорреляция</a></li>
+<li class="chapter" data-level="14.1.6" data-path="kriging.html"><a href="kriging.html#section-21"><i class="fa fa-check"></i><b>14.1.6</b> Пространственная статистика</a></li>
+<li class="chapter" data-level="14.1.7" data-path="kriging.html"><a href="kriging.html#section-22"><i class="fa fa-check"></i><b>14.1.7</b> Геостатистическое оценивание</a></li>
+<li class="chapter" data-level="14.1.8" data-path="kriging.html"><a href="kriging.html#section-23"><i class="fa fa-check"></i><b>14.1.8</b> Математическое ожидание</a></li>
+<li class="chapter" data-level="14.1.9" data-path="kriging.html"><a href="kriging.html#section-24"><i class="fa fa-check"></i><b>14.1.9</b> Дисперсия</a></li>
+<li class="chapter" data-level="14.1.10" data-path="kriging.html"><a href="kriging.html#section-25"><i class="fa fa-check"></i><b>14.1.10</b> Ковариация</a></li>
+<li class="chapter" data-level="14.1.11" data-path="kriging.html"><a href="kriging.html#section-26"><i class="fa fa-check"></i><b>14.1.11</b> Свойства моментов случайных процессов</a></li>
+<li class="chapter" data-level="14.1.12" data-path="kriging.html"><a href="kriging.html#section-27"><i class="fa fa-check"></i><b>14.1.12</b> Гипотеза стационарности</a></li>
+<li class="chapter" data-level="14.1.13" data-path="kriging.html"><a href="kriging.html#section-28"><i class="fa fa-check"></i><b>14.1.13</b> Стационарность</a></li>
+<li class="chapter" data-level="14.1.14" data-path="kriging.html"><a href="kriging.html#section-29"><i class="fa fa-check"></i><b>14.1.14</b> Стационарность</a></li>
+<li class="chapter" data-level="14.1.15" data-path="kriging.html"><a href="kriging.html#section-30"><i class="fa fa-check"></i><b>14.1.15</b> Стационарность второго порядка</a></li>
+<li class="chapter" data-level="14.1.16" data-path="kriging.html"><a href="kriging.html#section-31"><i class="fa fa-check"></i><b>14.1.16</b> Эргодичность</a></li>
+<li class="chapter" data-level="14.1.17" data-path="kriging.html"><a href="kriging.html#section-32"><i class="fa fa-check"></i><b>14.1.17</b> Простой кригинг</a></li>
+<li class="chapter" data-level="14.1.18" data-path="kriging.html"><a href="kriging.html#section-33"><i class="fa fa-check"></i><b>14.1.18</b> Дисперсия простого кригинга</a></li>
+<li class="chapter" data-level="14.1.19" data-path="kriging.html"><a href="kriging.html#section-34"><i class="fa fa-check"></i><b>14.1.19</b> Стационарность приращений</a></li>
+<li class="chapter" data-level="14.1.20" data-path="kriging.html"><a href="kriging.html#section-35"><i class="fa fa-check"></i><b>14.1.20</b> Положительная определенность</a></li>
+<li class="chapter" data-level="14.1.21" data-path="kriging.html"><a href="kriging.html#section-36"><i class="fa fa-check"></i><b>14.1.21</b> Допустимые линейные комбинации</a></li>
+<li class="chapter" data-level="14.1.22" data-path="kriging.html"><a href="kriging.html#section-37"><i class="fa fa-check"></i><b>14.1.22</b> Условная положительная определенность</a></li>
+<li class="chapter" data-level="14.1.23" data-path="kriging.html"><a href="kriging.html#section-38"><i class="fa fa-check"></i><b>14.1.23</b> Переход от ковариации к вариограмме</a></li>
+<li class="chapter" data-level="14.1.24" data-path="kriging.html"><a href="kriging.html#section-39"><i class="fa fa-check"></i><b>14.1.24</b> Обычный кригинг</a></li>
+<li class="chapter" data-level="14.1.25" data-path="kriging.html"><a href="kriging.html#section-40"><i class="fa fa-check"></i><b>14.1.25</b> Дисперсия обычного кригинга</a></li>
+<li class="chapter" data-level="14.1.26" data-path="kriging.html"><a href="kriging.html#section-41"><i class="fa fa-check"></i><b>14.1.26</b> Универсальный кригинг</a></li>
+<li class="chapter" data-level="14.1.27" data-path="kriging.html"><a href="kriging.html#section-42"><i class="fa fa-check"></i><b>14.1.27</b> Дисперсия универсального кригинга</a></li>
+<li class="chapter" data-level="14.1.28" data-path="kriging.html"><a href="kriging.html#section-43"><i class="fa fa-check"></i><b>14.1.28</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.1.29" data-path="kriging.html"><a href="kriging.html#section-44"><i class="fa fa-check"></i><b>14.1.29</b> Вариограмма</a></li>
+<li class="chapter" data-level="14.1.30" data-path="kriging.html"><a href="kriging.html#section-45"><i class="fa fa-check"></i><b>14.1.30</b> Сферическая модель</a></li>
+<li class="chapter" data-level="14.1.31" data-path="kriging.html"><a href="kriging.html#section-46"><i class="fa fa-check"></i><b>14.1.31</b> Экспоненциальная модель</a></li>
+<li class="chapter" data-level="14.1.32" data-path="kriging.html"><a href="kriging.html#section-47"><i class="fa fa-check"></i><b>14.1.32</b> Гауссова модель</a></li>
+<li class="chapter" data-level="14.1.33" data-path="kriging.html"><a href="kriging.html#section-48"><i class="fa fa-check"></i><b>14.1.33</b> Степенная модель</a></li>
+<li class="chapter" data-level="14.1.34" data-path="kriging.html"><a href="kriging.html#section-49"><i class="fa fa-check"></i><b>14.1.34</b> Эффект самородка (модель наггет)</a></li>
+<li class="chapter" data-level="14.1.35" data-path="kriging.html"><a href="kriging.html#section-50"><i class="fa fa-check"></i><b>14.1.35</b> Диаграмма рассеяния с лагом</a></li>
+<li class="chapter" data-level="14.1.36" data-path="kriging.html"><a href="kriging.html#section-51"><i class="fa fa-check"></i><b>14.1.36</b> Вариограммное облако</a></li>
+<li class="chapter" data-level="14.1.37" data-path="kriging.html"><a href="kriging.html#section-52"><i class="fa fa-check"></i><b>14.1.37</b> Эмпирическая вариограмма</a></li>
+<li class="chapter" data-level="14.1.38" data-path="kriging.html"><a href="kriging.html#section-53"><i class="fa fa-check"></i><b>14.1.38</b> Вариокарта</a></li>
+<li class="chapter" data-level="14.1.39" data-path="kriging.html"><a href="kriging.html#section-54"><i class="fa fa-check"></i><b>14.1.39</b> Приближение теоретической модели</a></li>
+<li class="chapter" data-level="14.1.40" data-path="kriging.html"><a href="kriging.html#section-55"><i class="fa fa-check"></i><b>14.1.40</b> Обычный кригинг</a></li>
+<li class="chapter" data-level="14.1.41" data-path="kriging.html"><a href="kriging.html#section-56"><i class="fa fa-check"></i><b>14.1.41</b> Обычный кригинг</a></li>
+<li class="chapter" data-level="14.1.42" data-path="kriging.html"><a href="kriging.html#section-57"><i class="fa fa-check"></i><b>14.1.42</b> Оценка и дисперсия кригинга</a></li>
+<li class="chapter" data-level="14.1.43" data-path="kriging.html"><a href="kriging.html#section-58"><i class="fa fa-check"></i><b>14.1.43</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.1.44" data-path="kriging.html"><a href="kriging.html#section-59"><i class="fa fa-check"></i><b>14.1.44</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.1.45" data-path="kriging.html"><a href="kriging.html#section-60"><i class="fa fa-check"></i><b>14.1.45</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.1.46" data-path="kriging.html"><a href="kriging.html#section-61"><i class="fa fa-check"></i><b>14.1.46</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.1.47" data-path="kriging.html"><a href="kriging.html#section-62"><i class="fa fa-check"></i><b>14.1.47</b> Кросс-валидация</a></li>
+</ul></li>
+</ul></li>
 <li class="chapter" data-level="15" data-path="autocorrelation.html"><a href="autocorrelation.html"><i class="fa fa-check"></i><b>15</b> Пространственная автокорреляция</a><ul>
 <li class="chapter" data-level="15.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_intro"><i class="fa fa-check"></i><b>15.1</b> Введение</a></li>
 <li class="chapter" data-level="15.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors"><i class="fa fa-check"></i><b>15.2</b> Пространственное соседство</a><ul>
@@ -421,8 +508,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="15.4.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_moranscatter"><i class="fa fa-check"></i><b>15.4.3</b> Диаграмма рассеяния Морана</a></li>
 </ul></li>
 <li class="chapter" data-level="15.5" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_autoregression"><i class="fa fa-check"></i><b>15.5</b> Пространственная авторегрессия</a></li>
-<li class="chapter" data-level="15.6" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_lisa"><i class="fa fa-check"></i><b>15.6</b> Локальные показатели пространственной ассоциации (LISA)</a></li>
-<li class="chapter" data-level="15.7" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_gwr"><i class="fa fa-check"></i><b>15.7</b> Географически взвешенная реграссия (GWR)</a></li>
+<li class="chapter" data-level="15.6" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_gwr"><i class="fa fa-check"></i><b>15.6</b> Географически взвешенная регрессия (GWR)</a></li>
 </ul></li>
 <li class="chapter" data-level="16" data-path="point-patterns.html"><a href="point-patterns.html"><i class="fa fa-check"></i><b>16</b> Анализ точечных процессов</a></li>
 <li class="appendix"><span><b>Решение проблем</b></span></li>
@@ -454,9 +540,659 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="kriging" class="section level1">
 <h1><span class="header-section-number">Глава 14</span> Геостатистическая интерполяция</h1>
 <p><a href="https://github.com/tsamsonov/r-geo-course/blob/master/code/14-InterpolationGeostatistics.R">Программный код главы</a></p>
-<p>Раздел посвящен геостатистической интерполяции в R.</p>
-<p>[To be written…]</p>
+<div id="section-15" class="section level2">
+<h2><span class="header-section-number">14.1</span> Теоретические сведения</h2>
+<div id="section-16" class="section level3">
+<h3><span class="header-section-number">14.1.1</span> Базовые компоненты</h3>
+<ol style="list-style-type: decimal">
+<li>Пространственные локации (точки)
+<span class="math display">\[\{p_1, p_2, ..., p_n\}\]</span></li>
+<li>Данные в этих локациях
+<span class="math display">\[\{Z(p_1), Z(p_2), ..., Z(p_n)\}\]</span>
+&gt; Обе компоненты в общем случае являются случайными</li>
+</ol>
+</div>
+<div id="section-17" class="section level3">
+<h3><span class="header-section-number">14.1.2</span> Случайная величина</h3>
+<blockquote>
+<p><strong>Случайной величиной</strong> <span class="math inline">\(Z(w)\)</span> называется функция, которая в результате случайного события <span class="math inline">\(w\)</span> принимает некоторое вещественнозначное значение.</p>
+</blockquote>
+<p>Например, при анализе температуры водоема в отдельно взятой точке в толще воды случайной величиной (функцией) является собственно температура, а событием — та совокупность физико-химических условий, которая сложилась в данной точке в момент измерений.</p>
+<p><em>Элемент случайности вносится именно событием</em>, которое в природе может быть чрезвычайно сложной и трудно предсказуемой комбинацией факторов, в то время как <em>случайная величина связана с событием функциональной зависимостью</em>.</p>
+</div>
+<div id="section-18" class="section level3">
+<h3><span class="header-section-number">14.1.3</span> Пространственная модель</h3>
+<p><span class="math inline">\(p \in \mathbb{R}^k\)</span> точка в <span class="math inline">\(k\)</span>-мерном Евклидовом пространстве</p>
+<p><span class="math inline">\(Z(p)\)</span> <strong>случайная величина</strong> в точке <span class="math inline">\(p\)</span></p>
+<p>Если <span class="math inline">\(p\)</span> меняется над индексным множеством <span class="math inline">\(D \subset \mathbb{R}^k\)</span>, то формируется <strong>случайный процесс</strong>:</p>
+<p><span class="math display">\[\{Z(p) | p \in D\}\]</span>
+Результат наблюдения случайного процесса в точках <span class="math inline">\(D\)</span> является <strong>реализацией</strong> случайного процесса:</p>
+<p><span class="math display">\[\{z(p) | p \in D\}\]</span>
+&gt; В общем случае <span class="math inline">\(D\)</span> и <span class="math inline">\(Z\)</span> случайны и независимы</p>
+</div>
+<div id="section-19" class="section level3">
+<h3><span class="header-section-number">14.1.4</span> Случайный процесс (функция)</h3>
+<blockquote>
+<p><strong>Случайный процесс</strong> это семейство случайных величин, индексированных некоторым параметром <span class="math inline">\(t\)</span></p>
+</blockquote>
+<ul>
+<li><p>Наиболее часто анализируются одномерные случайные процессы, в которых <span class="math inline">\(t\)</span> это время</p></li>
+<li><p>Пример случайного процесса температура не в один момент времени, а в течение некоторого промежутка времени</p></li>
+<li><p>Пространственная статистика изучает случайные процессы, в которых <span class="math inline">\(t\)</span> — это координата точки (обычно на плоскости)</p></li>
+<li><p>В каждой точке <span class="math inline">\(p_i\)</span> существует некоторая <em>случайная величина</em> <span class="math inline">\(Z(p_i)\)</span> — <strong>сечение случайного процесса</strong></p></li>
+<li><p>При изменении точки <span class="math inline">\(p_i\)</span> наблюдаемое значение случайного процесса меняется случайным образом, поскольку определяется оно не только местоположением, но и заранее неизвестным случайным событием</p></li>
+<li><p>Большинство природных явлений показывают зависимость наблюдаемых значений от их взаимного местоположения, которая проявляется в наличии корреляции значений <span class="math inline">\(Z(\mathbf{p})\)</span> и <span class="math inline">\(Z(\mathbf{p} + \mathbf{h})\)</span>, где <span class="math inline">\(\mathbf{h}\)</span> вектор смещения между точками</p></li>
+<li><p>Тем короче <span class="math inline">\(h\)</span>, тем, как правило, сильнее выражена корреляция значений</p></li>
+</ul>
+</div>
+<div id="section-20" class="section level3">
+<h3><span class="header-section-number">14.1.5</span> Автокорреляция</h3>
+<p>Стьюдент в письме Карлу Пирсону (1900):</p>
+<blockquote>
+<p><em>…В целом, корреляция ослабевает, если охват по времени или пространству увеличивается. Меня не покидает мысль, что было бы великим достижением установить закон, согласно которому корреляция будет ослабевать с увеличением охвата</em></p>
+</blockquote>
+<p>Роберт Эйлмер Фишер, «The Design of Experiments» (1935):</p>
+<blockquote>
+<p><em>…всестороннее подтверждение получил тот факт, что близко расположенные участки более схожи, чем удаленные, судя по данным об урожайности…следовательно, наиболее верным будет делать [выборочные] блоки максимально компактными</em></p>
+</blockquote>
+<p>Британский статистик и биолог <strong>Рональд Эйлмер Фишер</strong> изучал пространственное распределение характеристик растений на опытных площадках, будучи сотрудником Ротамстедской агрохимической станции в 1920-1930-е гг.</p>
+</div>
+<div id="section-21" class="section level3">
+<h3><span class="header-section-number">14.1.6</span> Пространственная статистика</h3>
+<ol style="list-style-type: decimal">
+<li><strong>Геостатистика</strong> <em>(geostatistics)</em></li>
+</ol>
+<ul>
+<li><span class="math inline">\(D\)</span> фиксированное подмножество в <span class="math inline">\(\mathbb{R}^k\)</span></li>
+<li><span class="math inline">\(Z(p)\)</span> случайный вектор в каждой точке <span class="math inline">\(p\)</span></li>
+<li>Исследуется пространственное распределение</li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li><strong>Сеточные данные</strong> <em>(lattice data)</em></li>
+</ol>
+<ul>
+<li><span class="math inline">\(D\)</span> фиксированное счетное подмножество точек <span class="math inline">\(\mathbb{R}^k\)</span></li>
+<li><span class="math inline">\(Z(p)\)</span> случайный вектор в каждой точке <span class="math inline">\(p\)</span></li>
+<li>Исследуется пространственная автокорреляция</li>
+</ul>
+<ol start="3" style="list-style-type: decimal">
+<li><strong>Конфигурации точек</strong> <em>(point patterns)</em></li>
+</ol>
+<ul>
+<li><span class="math inline">\(D\)</span> счетное подмножество точек <span class="math inline">\(\mathbb{R}^k\)</span> <em>(точечный процесс)</em></li>
+<li><span class="math inline">\(Z(p)\)</span> константа или счетное множество <em>(маркированный точечный процесс)</em></li>
+<li>Исследуется пространственное размещение</li>
+</ul>
+</div>
+<div id="section-22" class="section level3">
+<h3><span class="header-section-number">14.1.7</span> Геостатистическое оценивание</h3>
+<p>Геостатистическое оценивание производится аналогично простым линейным интерполяторам:</p>
+<p><span class="math display">\[Z^*(p) = \sum_{p_i \in D(p)} w_i(p) Z(p_i),\]</span></p>
+<p>за тем исключением что веса <span class="math inline">\(w_i\)</span> определяются путем анализа и моделирования пространственной автокорреляции.</p>
+<blockquote>
+<p>Эта процедура носит название <strong>вариографии</strong>.</p>
+</blockquote>
+</div>
+<div id="section-23" class="section level3">
+<h3><span class="header-section-number">14.1.8</span> Математическое ожидание</h3>
+<p><strong>Математическое ожидание</strong> наиболее вероятная реализация случайного процесса:</p>
+<p><span class="math display">\[E[Z(p)]=m(p)\]</span></p>
+<ul>
+<li><p>Пусть дан географический регион, в котором производятся наблюдения температуры в течение месяца.</p></li>
+<li><p>В каждый момент времени мы имеем непрерывное поле температуры — реализацию случайного процесса и относящиеся к ней данные наблюдений на метеостанциях</p></li>
+<li><p>Осреднив данные за период наблюдений восстановим выборочное среднее поле распределения температур оценку математического ожидания случайного процесса</p></li>
+</ul>
+</div>
+<div id="section-24" class="section level3">
+<h3><span class="header-section-number">14.1.9</span> Дисперсия</h3>
+<p><strong>Дисперсия</strong> мера разброса реализаций случайного процесса относительно его математического ожидания:</p>
+<p><span class="math display">\[Var[Z(p)]=E[Z^2(p)]-m^2(p)\]</span></p>
+<blockquote>
+<p>Аналогично математическому ожиданию, дисперсия двумерного с.п. представляет собой <em>поле распределения</em>, значение которого в каждой точке равно дисперсии локального сечения с.п.</p>
+</blockquote>
+</div>
+<div id="section-25" class="section level3">
+<h3><span class="header-section-number">14.1.10</span> Ковариация</h3>
+<p><strong>Ковариация</strong> мера линейной зависимости сечений случайного процесса в двух точках <span class="math inline">\(p_1\)</span> и <span class="math inline">\(p_2\)</span>:</p>
+<p><span class="math display">\[Cov(p_1,p_2) = Cov[Z(p_1), Z(p_2)] = \\E[Z(p_1)Z(p_2)]-m(p_1)m(p_2)\]</span>
+&gt; Недостатком ковариации является необходимость знания математического ожидания с.п. Это условие выполняется далеко не всегда, что связано с тем что как правило приходится иметь дело только с одной реализацией с.п</p>
+</div>
+<div id="section-26" class="section level3">
+<h3><span class="header-section-number">14.1.11</span> Свойства моментов случайных процессов</h3>
+<ul>
+<li><p>Моменты пространственных случайных процессов являются <strong>функциями</strong>, а не <em>константами</em>, в отличие от моментов случайных величин.</p></li>
+<li><p>Давать оценку пространственной структуре явления на основе вычисленных моментов с.п. можно только при условии, что он удовлетворяет свойствам <strong>стационарности</strong> и <strong>эргодичности.</strong></p></li>
+</ul>
+</div>
+<div id="section-27" class="section level3">
+<h3><span class="header-section-number">14.1.12</span> Гипотеза стационарности</h3>
+<ul>
+<li><p>Функции корреляции между данными зависят только от взаимного расположения точек измерений, а не от их конкретного местоположения в пространстве.</p></li>
+<li><p>В этом случае пространственная корреляция определяется вектором <span class="math inline">\(\mathbf{h}\)</span> между точками.</p></li>
+<li><p>Для изотропного случая, когда корреляция не зависит от направления, а только от расстояния вектор <span class="math inline">\(\mathbf{h}\)</span> переходит в скаляр — расстояние <span class="math inline">\(d\)</span>.</p></li>
+</ul>
+</div>
+<div id="section-28" class="section level3">
+<h3><span class="header-section-number">14.1.13</span> Стационарность</h3>
+<p><strong>Стационарность</strong> <em>в строгом смысле</em> означает что функция распределения множества случайных величин для любой комбинации точек <span class="math inline">\({x_1, x_2,...,x_k}\)</span> и любого <span class="math inline">\(k &lt; \infty\)</span> остается неизменной при смещении этой комбинации на произвольный вектор <span class="math inline">\(h\)</span>:</p>
+<p><span class="math display">\[P\{Z(x_1)&lt;z_1,...,Z(x_k)&lt;z_k\} = \\P\{Z(x_1 + h)&lt;z_1,...,Z(x_k + h)&lt;z_k\}\]</span></p>
+</div>
+<div id="section-29" class="section level3">
+<h3><span class="header-section-number">14.1.14</span> Стационарность</h3>
+<ul>
+<li><p>Стационарность по другому называют <strong>однородностью в пространстве</strong>, подразумевая что явление ведет себя одинаковым образом в любой точке пространства, как бы повторяет само себя.</p></li>
+<li><p>Если с.ф. стационарна, все ее моменты будут инвариантны относительно сдвигов (то есть будут постоянны), а это означает что для их оценки можно использовать ограниченную в пространстве область.</p></li>
+<li><p>В реальности же подобного рода «идеальное» поведение встречается крайне редко, поэтому используют более слабое предположение о стационарности второго порядка.</p></li>
+</ul>
+</div>
+<div id="section-30" class="section level3">
+<h3><span class="header-section-number">14.1.15</span> Стационарность второго порядка</h3>
+<p>Случайная функция имеет имеет <strong>стационарность второго порядка</strong>, если для любых точек <span class="math inline">\(x\)</span> и <span class="math inline">\(x+h\)</span> в <span class="math inline">\(R^k\)</span></p>
+<p><span class="math display">\[\begin{cases}
+  E[Z(x)] = m \\
+  E[(Z(x)-m)(Z(x+h)-m)] = C(h)
+\end{cases}\]</span></p>
+<p>Математическое ожидание с.ф. постоянно, а ковариация зависит только от вектора <span class="math inline">\(h\)</span> между точками и не зависит от их абсолютного положения.</p>
+<p>Если ковариация также не зависит от направления, а только от расстояния между точками, то <span class="math inline">\(h\)</span> вырождается в скаляр, а такая случайная функция является <em>изотропной стационарной</em>.</p>
+</div>
+<div id="section-31" class="section level3">
+<h3><span class="header-section-number">14.1.16</span> Эргодичность</h3>
+<p>Стационарная случайная функция <span class="math inline">\(Z(x,w)\)</span> называется <strong>эргодической</strong>, если ее среднее по области <span class="math inline">\(V \subset R^k\)</span> сходится к математическому ожиданию <span class="math inline">\(m(w)\)</span> при стремлении <span class="math inline">\(V\)</span> к бесконечности:</p>
+<p><span class="math display">\[\lim_{V \rightarrow \infty} \frac{1}{|V|}\int_{V} Z(x,w)dx = m(w)\]</span>
+<span class="math inline">\(|V|\)</span> обозначает <em>меру</em> области <span class="math inline">\(V\)</span> (площадь, объем). Предполагается что сама область <span class="math inline">\(V\)</span> растет во всех направлениях, и предел ее роста не зависит от ее формы.</p>
+<blockquote>
+<p>Cреднее по всем возможным реализациям равно среднему отдельной безграничной в пространстве реализации.</p>
+</blockquote>
+<p>Дан кувшин с песком, в котором необходимо определить долю объема, занятую содержимым.</p>
+<ul>
+<li><p>Зафиксируем некоторую точку <span class="math inline">\(x\)</span> в системе отсчета, привязанной к кувшину, и будем его встряхивать бесконечное число раз, каждый раз фиксируя, оказалась ли точка <span class="math inline">\(x\)</span> внутри песчинки (записываем 1) или же попала в свободное между ними пространство (записываем 0)</p></li>
+<li><p>Из серии подобных экспериментов мы сможем оценить среднее значение индикаторной функции <span class="math inline">\(I(x,w)\)</span>, которое равно вероятности попадания зерна в точку <span class="math inline">\(x\)</span>, и которое не зависит от <span class="math inline">\(x\)</span>.</p></li>
+<li><p>Эта вероятность и будет равна доли объема кувшина, занятой песком.</p></li>
+</ul>
+<p>Аналогичный результат можно получить, если теперь зафиксировать кувшин, а точку <span class="math inline">\(x\)</span> выбирать каждый раз случайным образом.</p>
+<ul>
+<li>В первом случае берется среднее по реализациям, а во втором среднее по пространству.</li>
+</ul>
+<blockquote>
+<p>В реальных экспериментах приходится иметь дело со вторым случаем.</p>
+</blockquote>
+</div>
+<div id="section-32" class="section level3">
+<h3><span class="header-section-number">14.1.17</span> Простой кригинг</h3>
+<p>Для оценки в точке <span class="math inline">\(z_0 = z(p_0)\)</span> по <span class="math inline">\(N\)</span> измерениям <span class="math inline">\(z_1, ..., z_N\)</span> ищутся коэффициенты следующего выражения:</p>
+<p><span class="math display">\[Z^* = \sum_{i} \lambda_i Z_i + \lambda_0\]</span></p>
+<p>Константа <span class="math inline">\(\lambda_0\)</span> и веса <span class="math inline">\(\lambda_i\)</span> подобираются таким образом, что минимизируется среднеквадратическая ошибка:</p>
+<p><span class="math display">\[E\big[(Z^* - Z_0)^2\big],\]</span>
+то есть математическое ожидание квадрата отклонения оценки от реального значения (известного в точках измерений).</p>
+<p>Используя соотношение <span class="math inline">\(Var[X] = E[X^2] - (E[X])^2\)</span>, можно выразить среднюю квадратическую ошибку как:</p>
+<p><span class="math display">\[E\big[(Z^* - Z_0)^2\big] = Var[Z^* - Z_0] + (E[Z^* - Z_0])^2\]</span></p>
+<p>Поскольку дисперсия нечувствительна к сдвигам, изменение константы <span class="math inline">\(\lambda_0\)</span> влияет только на компоненту <span class="math inline">\(E[Z^* - Z_0]\)</span>. Приравняем ее нулю:</p>
+<p><span class="math display">\[E[Z^* - Z_0] = E\Big[\sum_{i} \lambda_i Z_i + \lambda_0 - Z_0\Big] = 0\]</span></p>
+<p>Поскольку <span class="math inline">\(\lambda_0\)</span> явялется константой, то по свойству мат. ожидания ее можно вынести за скобки:</p>
+<p><span class="math display">\[\lambda_0 = -E\Big[\sum_{i} \lambda_i Z_i - Z_0\Big] = m_0 - \sum_i \lambda_i m_i,\]</span></p>
+<p>где <span class="math inline">\(m_i\)</span> известные значения мат. ожиданий случайной функции в каждой точке, <span class="math inline">\(m_0\)</span> известное глобальное мат. ожидание случайной функции.</p>
+<p>Имея:</p>
+<p><span class="math display">\[Z^* = \sum_{i} \lambda_i Z_i + \lambda_0,\\
+\lambda_0 = m_0 - \sum_i \lambda_i m_i,\]</span></p>
+<p>Получаем:</p>
+<p><span class="math display">\[Z^* = \sum_{i} \lambda_i Z_i + m_0 - \sum_i \lambda_i m_i = \\
+m_0 + \sum_{i} \lambda_i (Z_i - m_i)\]</span></p>
+<p>Поскольку компонента <span class="math inline">\(m_0\)</span> постоянна и известна заранее, задачу оценки можно выполнить для переменной <span class="math inline">\(Y(p) = Z(p) - m(p)\)</span>, используя линейную оценку</p>
+<p><span class="math display">\[Y^* = \sum_{i} \lambda_i Y_i,\]</span>
+и прибавляя к полученному результату <span class="math inline">\(m_0\)</span>.</p>
+<p>Основной вопрос заключается в нахождении коэффициентов <span class="math inline">\(\lambda_i\)</span>.</p>
+<p>Поскольку мы показали, что компонента <span class="math inline">\(E[Z^* - Z_0]\)</span> может быть приравнена нулю, среднеквадратическая ошибка равна дисперсии:</p>
+<p><span class="math display">\[E\big[(Z^* - Z_0)^2\big] = Var[Z^* - Z_0]\]</span></p>
+<p>Используя свойства:</p>
+<ul>
+<li><span class="math inline">\(Var[X + Y] = Var[X] + Var[Y] + 2 Cov[X, Y]\)</span>,<br />
+</li>
+<li><span class="math inline">\(Var[-X] = Var[X]\)</span>,</li>
+<li><span class="math inline">\(Cov[X, -Y] = -Cov[X, Y]\)</span>, получаем:</li>
+</ul>
+<p><span class="math display">\[Var[Z^* - Z_0] = Var[Z^*] + Var[Z_0] - 2 Cov[Z^*, Z_0]\]</span></p>
+<p>Распишем компоненты этого выражения в терминах ковариации.</p>
+<p>Пусть <span class="math inline">\(X_1,\ldots, X_n\)</span> случайные величины, а <span class="math inline">\(Y_1 = \sum\limits_{i=1}^n a_i X_i,\; Y_2 = \sum\limits_{j=1}^m b_j X_j\)</span> — их две произвольные линейные комбинации. Тогда:</p>
+<p><span class="math display">\[\mathrm{cov}[Y_1,Y_2] = \sum\limits_{i=1}^n\sum\limits_{j=1}^m a_i b_j \mathrm{cov}[X_i,X_j]\]</span>.</p>
+<p><span class="math display">\[Var[Z^* - Z_0] = Var[Z^*] + Var[Z_0] - 2 Cov[Z^*, Z_0]\]</span></p>
+<p>Распишем компоненты этого варажения в терминах ковариации.</p>
+<p><span class="math inline">\(Var[Z^*] = Cov[Z^*, Z^*] = Cov\Big[\sum_{i} \lambda_i Z_i, \sum_{j} \lambda_j Z_j\Big] = \\ \sum_{i}\sum_{j} \lambda_i \lambda_j Cov[Z_i, Z_j] = \sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij}\)</span></p>
+<p><span class="math inline">\(Var[Z_0] = Cov[Z_0, Z_0] = \sigma_{00}\)</span></p>
+<p><span class="math inline">\(Cov[Z^*, Z_0] = Cov\Big[\sum_{i} \lambda_i Z_i, Z_0\Big] =\\ \sum_{i} \lambda_i Cov[Z_i, Z_0] = \sum_{i} \lambda_i \sigma_{i0}\)</span></p>
+<p>Таким образом, выражение для ошибки</p>
+<p><span class="math display">\[Var[Z^* - Z_0] = Var[Z^*] + Var[Z_0] - 2 Cov[Z^*, Z_0]\]</span></p>
+<p>Трансформируется в</p>
+<p><span class="math display">\[Var[Z^* - Z_0] = \sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij} - 2 \sum_{} \lambda_i \sigma_{i0} + \sigma_{00}\]</span></p>
+<p>Для нахождения минимума этой квадратичной функции необходимо приравнять нулю ее производные по основной переменной <span class="math inline">\(\lambda\)</span>. Выберем в качестве «жертвы» коэффициенты с индексом <span class="math inline">\(i\)</span>:</p>
+<p><span class="math display">\[\frac{\partial}{\partial \lambda_i} E\big[(Z^* - Z_0)^2\big] = 2 \sum_{j} \lambda_j \sigma_{ij} - 2 \sigma_{i0} = 0\]</span>
+<span class="math display">\[\frac{\partial}{\partial \lambda_i} E\big[(Z^* - Z_0)^2\big] = 2 \sum_{j} \lambda_j \sigma_{ij} - 2 \sigma_{i0} = 0\]</span></p>
+<p>Таким образом, система уравнений <strong>простого кригинга</strong> для точки <span class="math inline">\(Z_0\)</span> имеет вид:</p>
+<p><span class="math display">\[\color{red}{\boxed{\color{blue}{\sum_{j} \lambda_j \sigma_{ij} = \sigma_{i0}\color{gray}{,~i = 1,...,N}}}}\]</span></p>
+<blockquote>
+<p>Уравнения простого кригинга носят чисто теоретический характер. На практике используется метод обычного кригинга, в котором знание среднего значения случайной функции не требуется.</p>
+</blockquote>
+</div>
+<div id="section-33" class="section level3">
+<h3><span class="header-section-number">14.1.18</span> Дисперсия простого кригинга</h3>
+<p>Существует возможность оценить в каждой точке не только величину показателя, но также дисперсию оценки (в случае постоянного мат. ожидания — среднеквадратическую ошибку).</p>
+<p>Для этого необходимо коэффициенты <span class="math inline">\(\lambda_i\)</span>, полученные из системы уравнения простого кригинга</p>
+<p><span class="math display">\[\sum_{j} \lambda_j \sigma_{ij} = \sigma_{i0}\]</span></p>
+<p>подставить в выражение среднеквадратической ошибки</p>
+<p><span class="math display">\[Var[Z^* - Z_0] = \sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij} - 2 \sum_{} \lambda_i \sigma_{i0} + \sigma_{00}\]</span></p>
+<p>Умножим обе части каждого уравнения простого кригинга на <span class="math inline">\(\lambda_i\)</span> и просуммируем все уравнения по <span class="math inline">\(i\)</span>:</p>
+<p><span class="math display">\[\sum_{j} \lambda_j \sigma_{ij} = \sigma_{i0}~\Bigg|\times \lambda_i\\
+\sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij} = \sum_{i}\lambda_i\sigma_{i0}\]</span></p>
+<p>Заметим, что левая часть уравнения присутствует в выражении среднеквадратической ошибки:</p>
+<p><span class="math display">\[Var[Z^* - Z_0] = \color{red}{\sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij}} - 2 \sum_{} \lambda_i \sigma_{i0} + \sigma_{00}\]</span></p>
+<p>Заменим <span class="math inline">\(\sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij}\)</span> на <span class="math inline">\(\sum_{i}\lambda_i\sigma_{i0}\)</span> в выражении для ско:</p>
+<p><span class="math display">\[Var[Z^* - Z_0] = \color{red}{\sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij}} - 2 \sum_{} \lambda_i \sigma_{i0} + \sigma_{00} =\\
+\sum_{i}\lambda_i\sigma_{i0} - 2 \sum_{} \lambda_i \sigma_{i0} + \sigma_{00}\]</span></p>
+<p>Отсюда получаем выражение для дисперсии (ошибки) простого кригинга:</p>
+<p><span class="math display">\[\color{red}{\boxed{\color{blue}{\sigma_{SK} = Var[Z^* - Z_0] = \sigma_{00} - \sum_{i}\lambda_i\sigma_{i0}}}}\]</span></p>
+</div>
+<div id="section-34" class="section level3">
+<h3><span class="header-section-number">14.1.19</span> Стационарность приращений</h3>
+<p>Стационарность второго порядка требует знания математического ожидания для вычисления ковариации.</p>
+<p>В ряде случаев оценить математическое ожидание оказывается невозможно (оно может не существовать) или же оно действительно оказывается непостоянным.</p>
+<p>Тогда пользуются еще более мягкой формой стационарности <strong>стационарностью приращений</strong>, при которой стационарной предполагается не сама с.ф. <span class="math inline">\(Z(x)\)</span>, а производная от нее функция:</p>
+<p><span class="math display">\[Y_h(x) = Z(x+h)-Z(x)\]</span></p>
+<p>Функция <span class="math inline">\(Z(x)\)</span>, обладающая таким свойством, называется подчиняющейся <em>внутренней гипотезе</em>.</p>
+<p>У функции <span class="math inline">\(Y_h(x) = Z(x+h)-Z(x)\)</span> должны существовать математическое ожидание и дисперсия <strong>приращений</strong>:</p>
+<p><span class="math display">\[\begin{cases}
+E[Z(x+h)-Z(x)] = \langle a,h \rangle \\
+Var[Z(x+h)-Z(x)] = 2\gamma(h)
+\end{cases}\]</span></p>
+<ul>
+<li><p><span class="math inline">\(\langle a,h \rangle\)</span> обозначает линейный тренд <span class="math inline">\(a\)</span> при заданном векторе <span class="math inline">\(h\)</span> (<em>математическое ожидание разности значений</em>), который варажется через скалярное произведение: <span class="math inline">\(\langle a,h \rangle = \sum_i a_i h_i\)</span></p></li>
+<li><p><span class="math inline">\(\gamma(h)\)</span> — дисперсия приращений, называемая <em>вариограммой</em></p></li>
+</ul>
+<p>Если процесс подчиняется гипотезе стационарности второго рода <span class="math inline">\(E[Z(x)] = m\)</span>, то <span class="math inline">\(E[Z(x+h)-Z(x)] = E[Y_h(x)] = 0\)</span> и вариограмму можно выразить следующим образом:</p>
+<p><span class="math display">\[2\gamma(h) = Var[Z(x+h)-Z(x)] =  Var[Y_h(x)] \\=E\big[Y_h(x)\big]^2 - \Big(E\big[Y_h(x)\big]\Big)^2 \\=E\big[Y_h(x)\big]^2 = E\big[Z(x+h)-Z(x)\big]^2\]</span></p>
+<p>Таким образом, наиболее распространенная в геостатистике гипотеза подчиняется следующим условиям:</p>
+<p><span class="math display">\[\begin{cases}
+E\big[Z(x)\big] = m\\
+E\big[Z(x+h)-Z(x)\big] = 0 \\
+E\big[Z(x+h)-Z(x)\big]^2 = 2\gamma(h)
+\end{cases}\]</span></p>
+<ul>
+<li><p>Эти условия позволяют избавиться от необходимости знания среднего значения и дисперсии случайной функции и использовать для вычислений вариограмму.</p></li>
+<li><p>Чтобы модифицировать соответствующим образом уравнения простого кригинга, необходимо знать связь между ковариацией и вариограммой.</p></li>
+</ul>
+</div>
+<div id="section-35" class="section level3">
+<h3><span class="header-section-number">14.1.20</span> Положительная определенность</h3>
+<p>Для того чтобы функция могла считаться ковариацией, необходимо, чтобы дисперсия, вычисленная на ее основе, была положительной:</p>
+<p><span class="math display">\[Var \Bigg[\sum_{i=1}^N \lambda_i Z(x_i)\Bigg] = \sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j cov\big[Z(x_i), Z(x_j)\big] \\= \sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j C(x_j - x_i)\]</span>
+&gt; Функция <span class="math inline">\(C(h)\)</span>, для которой при любых значениях <span class="math inline">\(N\)</span>, <span class="math inline">\(x_i\)</span> и <span class="math inline">\(\lambda_i\)</span> выражение <span class="math inline">\(\sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j C(x_j - x_i)\)</span> принимает неотрицательные значения, называется <strong>положительно определенной</strong>.</p>
+</div>
+<div id="section-36" class="section level3">
+<h3><span class="header-section-number">14.1.21</span> Допустимые линейные комбинации</h3>
+<ul>
+<li><p>Если функция отвечает внутренней гипотезе, нет гарантий, что ее ковариация существует и ограничена.</p></li>
+<li><p>В этом случае можно оценить дисперсию суммы случайных функций через дисперсию приращений, наложив дополнительное условие <span class="math inline">\(\sum_{i=1}^N \lambda_i = 0\)</span>. В этом случае, учитывая что <span class="math inline">\(\sum_{i=1}^N \lambda_i Z(x_0) = 0\)</span>, имеем:</p></li>
+</ul>
+<p><span class="math display">\[\sum_{i=1}^N \lambda_i Z(x_i) = \sum_{i=1}^N \lambda_i \big[Z(x_i) - Z(x_0)\big]\]</span>
+&gt; Линейные комбинации, отвечающие условию <span class="math inline">\(\sum_{i=1}^N \lambda_i = 0\)</span>, называются <strong>допустимыми линейными комбинациями</strong>.</p>
+</div>
+<div id="section-37" class="section level3">
+<h3><span class="header-section-number">14.1.22</span> Условная положительная определенность</h3>
+<p>Дисперсия <em>допустимой линейной комбинации</em> может быть выражена через вариограмму:</p>
+<p><span class="math display">\[Var \Bigg[\sum_{i=1}^N \lambda_i Z(x_i)\Bigg] = - \sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j \gamma(x_j - x_i)\]</span>
+Функция <span class="math inline">\(G(h)\)</span>, для которой при условии и <span class="math inline">\(\sum_{i=1}^N \lambda_i = 0\)</span> выражение <span class="math inline">\(\sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j G(x_j - x_i)\)</span> принимает неотрицательные значения, называется <strong>условно положительно определенной</strong>.</p>
+<blockquote>
+<p><span class="math inline">\(-\gamma(h)\)</span> — условно положительно определенная ф.</p>
+</blockquote>
+</div>
+<div id="section-38" class="section level3">
+<h3><span class="header-section-number">14.1.23</span> Переход от ковариации к вариограмме</h3>
+<p>Рассмотрим ковариацию двух линейных комбинаций с.ф.:</p>
+<p><span class="math display">\[Cov \Bigg[\sum_{i=1}^N \lambda_i Z(x_i), \sum_{j=1}^M \mu_j Z(x_j) \Bigg] = \sum_{i=1}^N \sum_{j=1}^M \lambda_i \mu_j C(x_j - x_i)\]</span>
+Используя правило <span class="math inline">\(Cov[X + \alpha, Y + \beta] = Cov[X, Y]\)</span>, введем условное начало координат:</p>
+<p><span class="math display">\[\sum_{i=1}^N \sum_{j=1}^M \lambda_i \mu_j C(x_j - x_i) =\\
+=\sum_{i=1}^N \sum_{j=1}^M \lambda_i \mu_j Cov \big[Z(x_i) - Z(x_0), Z(x_j) - Z(x_0)\big]\]</span></p>
+<p>Распишем ковариацию через математические ожидания, учитывая, что, согласно гипотезе, <span class="math inline">\(E\big[Z(x+h)-Z(x)\big] = 0\)</span>:</p>
+<p><span class="math display">\[Cov \big[Z(x_i) - Z(x_0), Z(x_j) - Z(x_0)\big] =\\
+= E\big[Z_i - Z_0\big]\big[Z_j - Z_0\big] - E\big[Z_i - Z_0\big] E\big[Z_j - Z_0\big] = \\
+= E\big[Z_i - Z_0\big]\big[Z_j - Z_0\big]\]</span></p>
+<p>Обратим внимание, что произведение приращений можно выразить через квадраты приращений:</p>
+<p><span class="math display">\[\color{blue}{(Z_j - Z_i)^2} = \big[(Z_j - Z_0) - (Z_i - Z_0)\big]^2 = \\ = \color{blue}{(Z_i - Z_0)^2} - 2\color{red}{(Z_i - Z_0)(Z_j - Z_0)} + \color{blue}{(Z_j - Z_0)^2}\]</span></p>
+<p>Имеем:</p>
+<p><span class="math display">\[ (Z_i - Z_0)(Z_j - Z_0) = \frac{1}{2} \Big[(Z_i - Z_0)^2 + (Z_j - Z_0)^2 - (Z_j - Z_i)^2\Big]\]</span>
+Учитывая, что <span class="math inline">\(E\big[Z(x+h)-Z(x)\big]^2 = 2\gamma(h)\)</span>, подставим это выражение в формулу вычисления ковариации:</p>
+<p><span class="math display">\[Cov \big[Z(x_i) - Z(x_0), Z(x_j) - Z(x_0)\big] = E\big[Z_i - Z_0\big]\big[Z_j - Z_0\big] = \\
+= \frac{1}{2} E \Big[(Z_i - Z_0)^2 + (Z_j - Z_0)^2 - (Z_j - Z_i)^2\Big] = \\
+= \gamma(x_i - x_0) + \gamma(x_j - x_0) - \gamma(x_j - x_i)\]</span></p>
+<p>Подставим полученное выражение в двойную сумму:</p>
+<p><span class="math display">\[\sum_{i=1}^N \sum_{j=1}^M \lambda_i \mu_j Cov \big[Z(x_i) - Z(x_0), Z(x_j) - Z(x_0)\big] = \\ 
+= \sum_{i=1}^N \sum_{j=1}^M \lambda_i \mu_j \big[\gamma(x_i - x_0) + \gamma(x_j - x_0) - \gamma(x_j - x_i)\big] = \\
+= - \sum_{i=1}^N \sum_{j=1}^M \lambda_i \mu_j \gamma(x_j - x_i),\]</span></p>
+<ul>
+<li><span class="math inline">\(\sum_{i=1}^N \sum_{j=1}^M \lambda_i \mu_j \gamma(x_i - x_0) = \sum_{j=1}^M \mu_j \sum_{i=1}^N \lambda_i \gamma(x_i - x_0) = 0\)</span></li>
+<li><span class="math inline">\(\sum_{i=1}^N \sum_{j=1}^M \lambda_i \mu_j \gamma(x_j - x_0) = \sum_{i=1}^N \lambda_i \sum_{j=1}^M \mu_i \gamma(x_j - x_0) = 0\)</span></li>
+</ul>
+<p>Стационарный случай:</p>
+<p><span class="math display">\[Cov \Bigg[\sum_{i=1}^N \lambda_i Z(x_i), \sum_{j=1}^M \mu_j Z(x_j) \Bigg] = \sum_{i=1}^N \sum_{j=1}^M \lambda_i \mu_j C(x_j - x_i)\]</span></p>
+<p>Внутренняя гипотеза:</p>
+<p><span class="math display">\[Cov \Bigg[\sum_{i=1}^N \lambda_i Z(x_i), \sum_{j=1}^M \mu_j Z(x_j) \Bigg] = - \sum_{i=1}^N \sum_{j=1}^M \lambda_i \mu_j \gamma(x_j - x_i)\]</span></p>
+<blockquote>
+<p>При соблюдении внутренней гипотезы в уравнениях кригинга можно принять <span class="math inline">\(\sigma_{ij} = -\gamma_{ij}\)</span></p>
+</blockquote>
+</div>
+<div id="section-39" class="section level3">
+<h3><span class="header-section-number">14.1.24</span> Обычный кригинг</h3>
+<p>Пусть дано неизвестное среднее <span class="math inline">\(m(x) = a_0\)</span>. Необходимо произвести линейную оценку <span class="math inline">\(Z^* = \sum_{i} \lambda_i Z_i + \lambda_0\)</span>. Выразим среднюю квадратическую ошибку:</p>
+<p><span class="math display">\[E\big[(Z^* - Z_0)^2\big] = Var[Z^* - Z_0] + \big(E[Z^* - Z_0]\big)^2 =\\
+= Var[Z^* - Z_0] + \Bigg[\lambda_0 + \bigg(\sum_i \lambda_i - 1 \bigg) a_0 \Bigg]^2\]</span></p>
+<ul>
+<li>Только компонента сдвига <span class="math inline">\(E[Z^* - Z_0]\)</span> содержит <span class="math inline">\(\lambda_0\)</span>, однако, в отличие от случая простого кригинга, мы не можем минимизировать ее, не зная <span class="math inline">\(a_0\)</span>.</li>
+<li>Единственный способ избавиться от <span class="math inline">\(a_0\)</span> заключается в том, чтобы наложить дополнительное условие <span class="math inline">\(\sum \lambda_i - 1 = 0\)</span></li>
+</ul>
+<p>Минимизируем ранее введенную функцию ошибки:</p>
+<p><span class="math display">\[Var[Z^* - Z_0] = \sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij} - 2 \sum_{} \lambda_i \sigma_{i0} + \sigma_{00}\]</span></p>
+<p>Для этого, с учетом дополнительного условия <span class="math inline">\(\sum \lambda_i -1 = 0\)</span> применим метод множителей Лагранжа и построим вспомогательную функцию:</p>
+<p><span class="math display">\[Q = Var[Z^* - Z_0] + 2\mu \bigg(\sum_i \lambda_i - 1 \bigg),\]</span></p>
+<p>где <span class="math inline">\(\mu\)</span> – неизвестный множитель Лагранжа.</p>
+<p>Для минимизации функции приравняем нулю ее частные производные:</p>
+<p><span class="math display">\[\begin{cases}\frac{\partial Q}{\partial \lambda_i} = 2 \sum_j \lambda_j \sigma_{ij} - 2 \sigma_{i0} + 2\mu = 0,~i = 1,...,N,\\
+\frac{\partial Q}{\partial \mu} = 2\bigg(\sum_i \lambda_i - 1 \bigg) = 0
+\end{cases}\]</span></p>
+<p>Имеем <span class="math inline">\(N + 1\)</span> уравнений с <span class="math inline">\(N + 1\)</span> неизвестными:</p>
+<p><span class="math display">\[\begin{cases}\sum_j \lambda_j \sigma_{ij} + \mu = \sigma_{i0},~i = 1,...,N,\\
+\sum_i \lambda_i = 1
+\end{cases}\]</span></p>
+<p>Заменяя ковариацию на вариограмму, получаем <strong>систему уравнений обычного кригинга</strong>:</p>
+<p><span class="math display">\[\color{red}{\boxed{\color{blue}{\begin{cases}\sum_j \lambda_j \gamma_{ij} - \mu = \gamma_{i0},\color{gray}{~i = 1,...,N,}\\
+\sum_i \lambda_i = 1
+\end{cases}}}}\]</span></p>
+<blockquote>
+<p>Это наиболее часто используемый в геостатистике метод оценки</p>
+</blockquote>
+</div>
+<div id="section-40" class="section level3">
+<h3><span class="header-section-number">14.1.25</span> Дисперсия обычного кригинга</h3>
+<p>Вывод формулы для оценки дисперсии обычного кригинга выполняется аналогично случаю простого кригинга. Умножим <span class="math inline">\(N\)</span> первых уравнений на <span class="math inline">\(\lambda_i\)</span>, просуммируем их по <span class="math inline">\(i\)</span>:</p>
+<p><span class="math display">\[\sum_j \lambda_j \gamma_{ij} - \mu = \gamma_{i0}~\Bigg|\times \lambda_i\]</span></p>
+<p>Учтя дополнительное условие <span class="math inline">\(\sum_i \lambda_i = 1\)</span>, получаем выражение для оценки дисперсии (ошибки) обычного кригинга:</p>
+<p><span class="math display">\[\color{red}{\boxed{\color{blue}{\sigma_{OK} = Var[Z^* - Z_0] = \sum_{i}\lambda_i\gamma_{i0} - \mu}}}\]</span></p>
+</div>
+<div id="section-41" class="section level3">
+<h3><span class="header-section-number">14.1.26</span> Универсальный кригинг</h3>
+<p>В методе универсального кригинга осуществляется декомпозиция переменной <span class="math inline">\(Z(x)\)</span> в виде следующей суммы:</p>
+<p><span class="math display">\[Z(x) = m(x) + Y(x)\]</span></p>
+<ul>
+<li><p><span class="math inline">\(m(x)\)</span> — <strong>дрифт</strong> (<em>drift</em>), гладкая детерминированная функция, описывающая <em>систематическую</em> составляющую пространственной изменчивости явления;</p></li>
+<li><p><span class="math inline">\(Y(x)\)</span> - <strong>остаток</strong> (<em>residual</em>), случайная функция с нулевым математическим ожиданием, описывающая <em>случайную</em> составляющую пространственной изменчивости явления;</p></li>
+</ul>
+<blockquote>
+<p>Декомпозиция любого явления на дрифт и остаток зависит от масштаба рассмотрения явления.</p>
+</blockquote>
+<p>Метод универсального кригинга используется, когда математическое ожидание случайного процесса непостоянно по пространству. Это позволяет интерполировать данные, в которых присутствует тренд.</p>
+<p>В предположении, что м.о. имеет функциональную зависимость от других процессов в точке <span class="math inline">\(x\)</span>, вводится следующая модель:</p>
+<p><span class="math display">\[m(x) = \sum_{k=0}^{K} a_k f^k(x),\]</span></p>
+<p>где <span class="math inline">\(f^k(x)\)</span> — известные <em>базисные функции</em>, а <span class="math inline">\(a_k\)</span> — фиксированные для точки <span class="math inline">\(x\)</span>, но неизвестные коэффициенты.</p>
+<ul>
+<li><p>Обычно первая базисная функция при <span class="math inline">\(k = 0\)</span> представляет собой константу, равную 1. Это позволяет включить в модель случай постоянного м.о.</p></li>
+<li><p>Если среднее зависит только от местоположения, то оставшиеся функции <span class="math inline">\(f^k(x), k &gt; 0\)</span>, как правило, представляют собой одночлены от координат (например, для двумерного случая <span class="math inline">\(f^2(p) = x^2 + y^2\)</span>)</p></li>
+<li><p>Коэффициенты <span class="math inline">\(a_k\)</span> могут меняться в зависимости от <span class="math inline">\(x\)</span>, но обязательно медленно, чтобы их можно было считать постоянными в окрестности <span class="math inline">\(x\)</span>.</p></li>
+</ul>
+<p>В качестве дрифта <span class="math inline">\(m(x)\)</span> можно использовать не только функцию от местоположения, но также значения внешней переменной — <strong>ковариаты</strong>.</p>
+<p>Например, количество осадков можно связать с высотой точки <span class="math inline">\(H(x)\)</span> следующей моделью:</p>
+<p><span class="math display">\[Z(x) = a_0 + a_1 H(x) + Y(x)\]</span></p>
+<p>С статистической точки зрения это линейная регрессия, в которой остатки коррелированы (автокоррелированы).</p>
+<blockquote>
+<p>В литературе данный метод называют также <strong>регрессионным кригингом</strong> (<em>regression kriging</em>), а оценка дрифта — <strong>пространственной регрессией</strong> (<em>spatial regression</em>).</p>
+</blockquote>
+<p>Для вывода уравнений рассмотрим среднеквадратическую ошибку:
+<span class="math display">\[E[Z^* - Z_0]^2 = Var[Z^* - Z_0] + \big(E[Z^* - Z_0]\big)^2\]</span></p>
+<p>Используя введенную модель дрифта <span class="math inline">\(m(x) = \sum_{k=0}^{K} a^k f^k(x)\)</span> распишем выражение для мат.ожидания приращений:</p>
+<p><span class="math display">\[E[Z^* - Z_0] = E[Z^*\big] - E[Z_0] = \\
+\sum_i \lambda_i \sum_k a_k f_i^k - \sum_k a_k f_0^k = \sum_k a_k \Bigg(\sum_i \lambda_i f_i^k - f_0^k\Bigg)\]</span></p>
+<p>Чтобы минимизировать <span class="math inline">\(E[Z^* - Z_0]\)</span> независимо от коэффициентов <span class="math inline">\(a_k\)</span>, достаточно в вышеприведенной формуле приравнять нулю выражение в скобках. Отсюда имеем:</p>
+<p><span class="math display">\[\sum_i \lambda_i f_i^k = f_0^k,~k = 0, 1, ..., K.\]</span></p>
+<p>Эти условия называются <strong>условиями универсальности</strong>. Отсюда идет название метода — <em>универсальный кригинг</em></p>
+<blockquote>
+<p>Условия универсальности гаранируют, что оценка <span class="math inline">\(Z^*\)</span> является <strong>несмещенной</strong> для <em>любых</em> значений <span class="math inline">\(a_k\)</span>.</p>
+</blockquote>
+<p>Минимизируем ранее введенную функцию ошибки:</p>
+<p><span class="math display">\[Var[Z^* - Z_0] = \sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij} - 2 \sum_{} \lambda_i \sigma_{i0} + \sigma_{00}\]</span></p>
+<p>Для этого, с учетом дополнительного условия <span class="math inline">\(\sum_i \lambda_i f_i^k = f_0^k\)</span> применим метод множителей Лагранжа и построим вспомогательную функцию:</p>
+<p><span class="math display">\[Q = Var[Z^* - Z_0] + 2 \sum_{k=0}^K \mu_k \Bigg[ \sum_i \lambda_i f_i^k - f_0^k\Bigg],\]</span></p>
+<p>где <span class="math inline">\(\mu_k,~k = 0, 1, ..., K\)</span> представляют <span class="math inline">\(K + 1\)</span> дополнительных неизвестных, множители Лагранжа.</p>
+<p>Для минимизации функции приравняем нулю ее частные производные:</p>
+<p><span class="math display">\[\begin{cases}\frac{\partial Q}{\partial \lambda_i} = 2 \sum_j \lambda_j \sigma_{ij} -2 \sigma_{i0} + 2 \sum_k \mu_k f_i^k = 0,\color{gray}{~i = 1,...,N,}\\
+\frac{\partial Q}{\partial \mu} = 2\bigg[\sum_i \lambda_i f_i^k - f_0^k \bigg] = 0\color{gray}{,~k = 0, 1,..., K.}
+\end{cases}\]</span></p>
+<p>Имеем систему из <span class="math inline">\(N + K + 1\)</span> уравнений с <span class="math inline">\(N + K + 1\)</span> неизвестными:</p>
+<p><span class="math display">\[\begin{cases}\sum_j \lambda_j \sigma_{ij} + \sum_k \mu_k f_i^k = \sigma_{i0},~i = 1,...,N,\\
+\sum_i \lambda_i f_i^k = f_0^k,~k = 0, 1,..., K.
+\end{cases}\]</span></p>
+<p>Заменяя ковариацию на вариограмму, получаем <strong>систему уравнений универсального кригинга</strong>:</p>
+<p><span class="math display">\[\color{red}{\boxed{\color{blue}{\begin{cases}\sum_j \lambda_j \gamma_{ij} - \sum_k \mu_k f_i^k = \gamma_{i0},\color{gray}{~i = 1,...,N,}\\
+\sum_i \lambda_i f_i^k = f_0^k\color{gray}{,~k = 0, 1,..., K.}
+\end{cases}}}}\]</span></p>
+</div>
+<div id="section-42" class="section level3">
+<h3><span class="header-section-number">14.1.27</span> Дисперсия универсального кригинга</h3>
+<p>Вывод формулы для оценки дисперсии универсального кригинга выполняется аналогично случаю обычного кригинга. Умножим <span class="math inline">\(N\)</span> первых уравнений на <span class="math inline">\(\lambda_i\)</span>, просуммируем их по <span class="math inline">\(i\)</span>:</p>
+<p><span class="math display">\[\sum_j \lambda_j \gamma_{ij} - \sum_k \mu_k f_i^k = \gamma_{i0} ~ \Bigg|\times \lambda_i\]</span></p>
+<p>Учтя дополнительное условие <span class="math inline">\(\sum_i \lambda_i f_i^k = f_0^k\)</span>, получаем выражение для оценки дисперсии (ошибки) универсального кригинга:</p>
+<p><span class="math display">\[\color{red}{\boxed{\color{blue}{\sigma_{UK} = E[Z^* - Z_0]^2 = \sum_{i}\lambda_i\gamma_{i0} - \sum_k \mu_k f_0^k}}}\]</span></p>
+</div>
+<div id="section-43" class="section level3">
+<h3><span class="header-section-number">14.1.28</span> Кросс-валидация</h3>
+<p>Значение переменной <span class="math inline">\(Z(x)\)</span> оценивается в каждой точке <span class="math inline">\(x_i\)</span> по данным в соседних точках <span class="math inline">\(Z(x_j), ~ j \neq i\)</span> как если бы <span class="math inline">\(Z(x_i)\)</span> было неизвестно.</p>
+<p>В каждой точке вычисляется оценка кригинга <span class="math inline">\(Z_{-i}^*\)</span> и соответствующая дисперсия кригинга <span class="math inline">\(\sigma_{Ki}^2\)</span>. Поскольку значение <span class="math inline">\(Z_i = Z(x_i)\)</span> известно, мы можем вычислить:</p>
+<ul>
+<li><strong>Ошибку кригинга</strong> <span class="math inline">\(E_i = Z_{-i}^* - Z_i\)</span></li>
+<li><strong>Стандартизированную ошибку</strong> <span class="math inline">\(e_i = E_i / \sigma_{Ki}\)</span></li>
+</ul>
+<p>Если <span class="math inline">\(\gamma(h)\)</span> — теоретическая вариограмма, то <span class="math inline">\(E_i = Z_{-i}^* - Z_i\)</span> — случайная величина с м.о. = <span class="math inline">\(0\)</span> и дисперсией <span class="math inline">\(\sigma_{Ki}^2\)</span>, а <span class="math inline">\(e_i\)</span> имеет м.о. = <span class="math inline">\(0\)</span> и дисперсию, равную <span class="math inline">\(1\)</span>.</p>
+<p>Стандартно анализируются следующие карты и графики:</p>
+<ul>
+<li><p><em>Карта стандартизированных ошибок</em> <span class="math inline">\(e_i\)</span>. Стационарность ошибок, отсутствие эффекта пропорциональности.</p></li>
+<li><p><em>Гистограмма стандартизированных ошибок</em> <span class="math inline">\(e_i\)</span>. Нормальность распределения, отсутствие аномалий.</p></li>
+<li><p><em>Диаграмма рассеяния</em> <span class="math inline">\((Z_{-i}^*, Z_i)\)</span>. Сглаживающий эффект, соответствие оценки и реального значения.</p></li>
+<li><p><em>Диаграмма рассеяния</em> <span class="math inline">\((Z_{-i}^*, e_i)\)</span>. Независимость (ортогональность) оценки и ошибки.</p></li>
+</ul>
+</div>
+<div id="section-44" class="section level3">
+<h3><span class="header-section-number">14.1.29</span> Вариограмма</h3>
+<p><strong>Вариограмма</strong> <em>(полувариограмма)</em> дисперсия разности значений в точках как функция от их взаимного положения:</p>
+<p><span class="math display">\[\gamma (\mathbf{h}) = \gamma(\mathbf{x}, \mathbf{x + h}) = E\big[Z(x + h)-Z(x)\big]^2\]</span></p>
+<p>Для <span class="math inline">\(N\)</span> точек, разделенных вектором <span class="math inline">\(\mathbf{h}\)</span>:</p>
+<p><span class="math display">\[\gamma(\mathbf{h}) = \frac{1}{2N(h)}\sum_{i=1}^{N(\mathbf{h})} \big[Z(\mathbf{x_i}) - Z(\mathbf{x_i + h})\big]^2\]</span></p>
+<p>Свойства вариограммы:</p>
+<ul>
+<li><p>Вариограмма симметрична:</p>
+<p><span class="math display">\[\gamma(\mathbf{x}) = \gamma(-\mathbf{x})\]</span></p></li>
+<li><p>Вариограмма связана с дисперсией:</p>
+<p><span class="math display">\[\gamma(\infty) = Var\big[ Z(\mathbf{x}) \big]\]</span></p></li>
+<li><p>Вариограмма связана с ковариацией:</p>
+<p><span class="math display">\[\gamma(\mathbf{h}) = Var\big[ Z(\mathbf{x}) \big] - C(\mathbf{h})\]</span></p></li>
+<li><p>Вариограмма чувствительна к аномальным значениям (по причине второй степени)</p></li>
+</ul>
+</div>
+<div id="section-45" class="section level3">
+<h3><span class="header-section-number">14.1.30</span> Сферическая модель</h3>
+<p><span class="math display">\[\gamma(h) = \begin{cases}
+  c_0 + c\Big[\frac{3h}{2a} - \frac{1}{2}\big(\frac{h}{a}\big)^3\Big], &amp; h \leq a; \\
+  c_0 + c, &amp; h &gt; a.
+\end{cases}\]</span></p>
+<p><span class="math display">\[\gamma(a) = Var[Z(p)] = c_0 + c\]</span></p>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-1-1.png" width="2100" style="display: block; margin: auto;" /></p>
+<!-- - Данная модель достигает плато в точке $h = a$. -->
+</div>
+<div id="section-46" class="section level3">
+<h3><span class="header-section-number">14.1.31</span> Экспоненциальная модель</h3>
+<p><span class="math display">\[\gamma(h) = \begin{cases}
+  0, &amp; h = 0; \\
+  c_0 + (c-c_0)\Big[1 - \exp\big(\frac{-3h}{a}\big)\Big], &amp; h \neq 0.
+\end{cases}\]</span></p>
+<p><span class="math display">\[\gamma(a) = Var[Z(p)] = c_0 + c\]</span>
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-2-1.png" width="2100" style="display: block; margin: auto;" /></p>
+<ul>
+<li>Данная модель достигает плато асимптотически.</li>
+<li>В точке <span class="math inline">\(h = a\)</span> достигается <span class="math inline">\(95\%\)</span> уровня плато.</li>
+</ul>
+</div>
+<div id="section-47" class="section level3">
+<h3><span class="header-section-number">14.1.32</span> Гауссова модель</h3>
+<p><span class="math display">\[\gamma(h) = c_0 + c\Bigg[1 - \exp\bigg(\frac{-3h^2}{a^2}\bigg)\Bigg]\]</span></p>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-3-1.png" width="2100" style="display: block; margin: auto;" /></p>
+<ul>
+<li>Данная модель достигает плато асимптотически.</li>
+<li>В точке <span class="math inline">\(h = a\)</span> достигается <span class="math inline">\(95\%\)</span> уровня плато.</li>
+<li>Отличительной чертой этой модели является ее гладкость: параболическое поведение вблизи нуля и асимптотическое приближение к плато.</li>
+</ul>
+</div>
+<div id="section-48" class="section level3">
+<h3><span class="header-section-number">14.1.33</span> Степенная модель</h3>
+<p><span class="math display">\[\gamma(h) = \begin{cases}
+  0, &amp; h = 0; \\
+  c h^\alpha, &amp; h \neq 0.
+\end{cases}\]</span></p>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-4-1.png" width="2100" style="display: block; margin: auto;" /></p>
+<ul>
+<li>Автокорреляция присутствует на всех расстояниях: <span class="math inline">\(a \rightarrow \infty\)</span></li>
+<li>Предположение о стационарности второго порядка не выполняется</li>
+<li>Как правило, это означает наличие тренда в данных</li>
+</ul>
+</div>
+<div id="section-49" class="section level3">
+<h3><span class="header-section-number">14.1.34</span> Эффект самородка (модель наггет)</h3>
+<p><span class="math display">\[\gamma(h) = \begin{cases}
+  0, &amp; h = 0; \\
+  c_0, &amp; h \neq 0.
+\end{cases}, ~ c_0 = C(0)\]</span></p>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/sam-1.png" width="2100" style="display: block; margin: auto;" /></p>
+<ul>
+<li>Наличие у данных вариограммы типа наггет означает отсутствие пространственной корреляции.</li>
+<li>Возможные причины:
+<ul>
+<li>Абсолютно случайное распределение</li>
+<li>Мелкомасштабная вариабельность (меньше, чем расстояние между измерениями)</li>
+<li>Ошибки в измерениях</li>
+<li>Ошибки в координатах точек</li>
+</ul></li>
+</ul>
+</div>
+<div id="section-50" class="section level3">
+<h3><span class="header-section-number">14.1.35</span> Диаграмма рассеяния с лагом</h3>
+<p><strong>Lagged scatterplot</strong> — вариант диаграммы рассеяния, на котором показываются значения в точках, расстояние между которыми попадает в заданный интервал</p>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-5-1.png" width="2100" style="display: block; margin: auto;" /></p>
+</div>
+<div id="section-51" class="section level3">
+<h3><span class="header-section-number">14.1.36</span> Вариограммное облако</h3>
+<p>Квадрат разности значений как функция от расстояния между точками
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-6-1.png" width="2100" /></p>
+</div>
+<div id="section-52" class="section level3">
+<h3><span class="header-section-number">14.1.37</span> Эмпирическая вариограмма</h3>
+<p>Эмпирическая вариограмма рассчитывается путем разбения вариограммного облака на интервалы расстояний — <strong>лаги</strong> — и подсчета среднего значения <span class="math inline">\(\gamma\)</span> в каждом лаге:</p>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-7-1.png" width="2100" /></p>
+<p><span class="math display">\[\hat{\gamma} = \frac{1}{2N_h} \sum_{x_i - x_j \approx h} \big[z(x_i) - z(x_j)\big]^2\]</span></p>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-8-1.png" width="2100" />
+Размер точки означает количество пар значений, которые попали в каждый лаг.</p>
+<p>Поскольку вариограмма есть <em>дисперсия разности значений</em>, ее рост при увеличении расстояния можно оценить также по увеличению размера «ящика» на диаграмме размаха <span class="math inline">\(\sqrt\gamma\)</span>:</p>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-9-1.png" width="2100" /></p>
+</div>
+<div id="section-53" class="section level3">
+<h3><span class="header-section-number">14.1.38</span> Вариокарта</h3>
+<p><strong>Вариокарта</strong> (<em>variogram map, variomap</em>) представляет вариограмму как функцию приращений координат:
+<span class="math display">\[\hat{\gamma} (\Delta x, \Delta y) = \frac{1}{2N_{\substack{\Delta x\\ \Delta y}}} \sum_{\substack{\Delta x_{ij} \approx \Delta x\\ \Delta y_{ij} \approx \Delta y}} \big[z(p_i) - z(p_j)\big]^2\]</span></p>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-10-1.png" width="2100" /></p>
+<p>Вариокарта используется для выявления <em>пространственной анизотропии</em>. Профиль по линии из центра к краю вариокарты даст эмпирическую вариограмму</p>
+</div>
+<div id="section-54" class="section level3">
+<h3><span class="header-section-number">14.1.39</span> Приближение теоретической модели</h3>
+<p><strong>Приближение</strong> (<em>fitting</em>) модели вариограммы предполагает:</p>
+<ol style="list-style-type: decimal">
+<li>Выбор теоретической модели</li>
+<li>Подбор параметров модели: эффект самородка (nugget), радиус корреляции и плато.</li>
+</ol>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-11-1.png" width="2100" /></p>
+<p>Дана вариограмма семейства <span class="math inline">\(\gamma (h; \mathbf{b})\)</span>, где <span class="math inline">\(\mathbf{b} = (b_1, ..., b_k)\)</span> — вектор из <span class="math inline">\(k\)</span> параметров модели. Параметры <span class="math inline">\(\mathbf{b}\)</span> подбираются таким образом, чтобы минимизировать следующий функционал:</p>
+<p><span class="math display">\[Q(\mathbf{b}) = \sum_{l=1}^{L} w_l \big[\hat{\gamma}(h_l) - \gamma (h; \mathbf{b})\big]^2,\]</span></p>
+<p>где <span class="math inline">\(\big\{\hat{\gamma} (h_l): l = 1,...,L\big\}\)</span> — значения эмпирической вариограммы для <span class="math inline">\(L\)</span> лагов, вычисленные по <span class="math inline">\(N(h_l)\)</span> векторам.</p>
+<p>Веса <span class="math inline">\(w_l\)</span> обычно выбираются исходя из отношения <span class="math inline">\(w_l = N(h_l) / |h_l|\)</span>, чтобы придать большее значение коротким расстояниям и лагам с хорошей оценкой.</p>
+<p>Минимизация функционала осуществляется итеративно:</p>
+<ol style="list-style-type: decimal">
+<li>Процесс начинается с некоторого предположения <span class="math inline">\(\mathbf{b}^{(0)}\)</span></li>
+<li>На шаге <span class="math inline">\(s\)</span> функция <span class="math inline">\(Q\)</span> аппроксимируется в виде квадратичной формы <span class="math inline">\(Q(\mathbf{b}^{(s)}) \approx \sum_{i=1}^k \sum_{j=1}^k \delta_{ij} b_i b_j\)</span> путем разложения в ряд Тейлора вокруг точки <span class="math inline">\(\mathbf{b}^{(s)}\)</span>.</li>
+<li>Новая точка минимума <span class="math inline">\(\mathbf{b}^{(s+1)}\)</span> находится как минимум квадратичной формы (<em>этот минимум один</em>).</li>
+</ol>
+<p>Шаги 2-3 повторяются до тех пор, пока значение <span class="math inline">\(Q\)</span> не станет меньше заданного порога.</p>
+<p>Сравним результат ручного и автоматического приближения вариограммы:</p>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-12-1.png" width="2100" /></p>
+</div>
+<div id="section-55" class="section level3">
+<h3><span class="header-section-number">14.1.40</span> Обычный кригинг</h3>
+<p>Рассмотрим данные по температуре:
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-13-1.png" width="2100" /></p>
+</div>
+<div id="section-56" class="section level3">
+<h3><span class="header-section-number">14.1.41</span> Обычный кригинг</h3>
+<p>Проинтерполируем, используя приближенную модель вариограммы:</p>
+<pre class="sourceCode r"><code class="sourceCode r">tempkriged =<span class="st"> </span><span class="kw">krige</span>(rain_<span class="dv">24</span><span class="op">~</span><span class="dv">1</span>, rainfall, pts.grid, <span class="dt">model =</span> varmd)</code></pre>
+<pre><code>## [using ordinary kriging]</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(tempkriged<span class="op">@</span>data)</code></pre>
+<pre><code>##   var1.pred var1.var
+## 1  17.85238 78.83696
+## 2  17.95391 66.04074
+## 3  18.03931 54.60832
+## 4  19.32920 47.74359
+## 5  22.63669 44.07620
+## 6  25.35137 38.42061</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">temps =<span class="st"> </span><span class="kw">SpatialPixelsDataFrame</span>(tempkriged, <span class="dt">data =</span> tempkriged<span class="op">@</span>data[<span class="st">&#39;var1.pred&#39;</span>]) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">raster</span>()
+vars =<span class="st"> </span><span class="kw">SpatialPixelsDataFrame</span>(tempkriged, <span class="dt">data =</span> tempkriged<span class="op">@</span>data[<span class="st">&#39;var1.var&#39;</span>]) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">raster</span>()</code></pre>
+</div>
+<div id="section-57" class="section level3">
+<h3><span class="header-section-number">14.1.42</span> Оценка и дисперсия кригинга</h3>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-15-1.png" width="2100" /><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-15-2.png" width="2100" /></p>
+<p>Дисперсия кригинга высока там, где мало данных.</p>
+</div>
+<div id="section-58" class="section level3">
+<h3><span class="header-section-number">14.1.43</span> Кросс-валидация</h3>
+<p>Для выполнения кросс-валидации воспользуемся функцией <code>krige.cv</code>:</p>
+<pre class="sourceCode r"><code class="sourceCode r">cvl =<span class="st"> </span><span class="kw">krige.cv</span>(rain_<span class="dv">24</span><span class="op">~</span><span class="dv">1</span>, rainfall, varmd) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sterr =</span> residual <span class="op">/</span><span class="st"> </span><span class="kw">sqrt</span>(var1.var))
 
+<span class="kw">head</span>(cvl <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_set_geometry</span>(<span class="ot">NULL</span>), <span class="dv">10</span>)</code></pre>
+<pre><code>##    var1.pred var1.var observed     residual      zscore fold       sterr
+## 1   5.743730 34.84033      6.0   0.25627005  0.04341669    1  0.04341669
+## 2  11.137129 60.24070     10.0  -1.13712865 -0.14650910    2 -0.14650910
+## 3   6.929502 47.22732      7.0   0.07049833  0.01025846    3  0.01025846
+## 4  23.252858 48.06354      1.0 -22.25285758 -3.20979954    4 -3.20979954
+## 5  15.655167 56.76258      1.0 -14.65516724 -1.94517957    5 -1.94517957
+## 6  11.794241 44.03055      1.0 -10.79424095 -1.62672846    6 -1.62672846
+## 7  11.325378 62.65261      0.1 -11.22537769 -1.41818009    7 -1.41818009
+## 8  28.421330 75.24988      0.2 -28.22133030 -3.25330355    8 -3.25330355
+## 9   2.340115 58.30350      1.0  -1.34011550 -0.17550719    9 -0.17550719
+## 10  3.489972 62.96551      0.2  -3.28997242 -0.41461106   10 -0.41461106</code></pre>
+</div>
+<div id="section-59" class="section level3">
+<h3><span class="header-section-number">14.1.44</span> Кросс-валидация</h3>
+<p>Cтандартизированные ошибки в стационарном случае должны быть распределены нормально:</p>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-17-1.png" width="2100" /></p>
+</div>
+<div id="section-60" class="section level3">
+<h3><span class="header-section-number">14.1.45</span> Кросс-валидация</h3>
+<p>Ошибки должны быть независимы от значений:</p>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-18-1.png" width="2100" /></p>
+</div>
+<div id="section-61" class="section level3">
+<h3><span class="header-section-number">14.1.46</span> Кросс-валидация</h3>
+<p>Облако рассеяния оценки относительно истинных значений должно быть компактным:</p>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-19-1.png" width="2100" /></p>
+</div>
+<div id="section-62" class="section level3">
+<h3><span class="header-section-number">14.1.47</span> Кросс-валидация</h3>
+<p>Пространственная картина стандартизированных ошибок должна быть гомогенной:
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-20-1.png" width="2100" /></p>
+
+</div>
+</div>
 </div>
             </section>
 
@@ -484,7 +1220,7 @@ gitbook.start({
 "google": false,
 "linkedin": false,
 "weibo": false,
-"instapper": false,
+"instapaper": false,
 "vk": false,
 "all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
 },
@@ -494,6 +1230,10 @@ gitbook.start({
 "size": 2
 },
 "edit": {
+"link": null,
+"text": null
+},
+"history": {
 "link": null,
 "text": null
 },
@@ -511,8 +1251,8 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    var src = "";
-    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:" && /^https?:/.test(src))
       src = src.replace(/^https?:/, '');
     script.src = src;
