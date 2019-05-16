@@ -65,7 +65,7 @@ library(googlesheets)
 ##  8 Angola               NA     NA     NA     NA     NA     NA     NA     NA
 ##  9 Anguilla             NA     NA     NA     NA     NA     NA     NA     NA
 ## 10 Antigua and Bar…     NA     NA     NA     NA     NA     NA     NA     NA
-## # ... with 250 more rows, and 247 more variables: `1772` <dbl>,
+## # … with 250 more rows, and 247 more variables: `1772` <dbl>,
 ## #   `1773` <dbl>, `1774` <dbl>, `1775` <dbl>, `1776` <dbl>, `1777` <dbl>,
 ## #   `1778` <dbl>, `1779` <dbl>, `1780` <dbl>, `1781` <dbl>, `1782` <dbl>,
 ## #   `1783` <dbl>, `1784` <dbl>, `1785` <dbl>, `1786` <dbl>, `1787` <dbl>,
@@ -107,7 +107,7 @@ library(googlesheets)
 ##  8 Angola                1764     NA
 ##  9 Anguilla              1764     NA
 ## 10 Antigua and Barbuda   1764     NA
-## # ... with 66,290 more rows
+## # … with 66,290 more rows
 
 gdpdf15 = filter(gdpdf_tidy, year == 2015)
 ```
@@ -149,7 +149,7 @@ ggplot(gdpdf15, aes(x = gdp)) +
 ##  8 Angola             27.0   27.0   27.0   27.0   27.0   27.0   27.0   27.0
 ##  9 Anguilla           NA     NA     NA     NA     NA     NA     NA     NA  
 ## 10 Antigua and Bar…   33.5   33.5   33.5   33.5   33.5   33.5   33.5   33.5
-## # ... with 250 more rows, and 209 more variables: `1808` <dbl>,
+## # … with 250 more rows, and 209 more variables: `1808` <dbl>,
 ## #   `1809` <dbl>, `1810` <dbl>, `1811` <dbl>, `1812` <dbl>, `1813` <dbl>,
 ## #   `1814` <dbl>, `1815` <dbl>, `1816` <dbl>, `1817` <dbl>, `1818` <dbl>,
 ## #   `1819` <dbl>, `1820` <dbl>, `1821` <dbl>, `1822` <dbl>, `1823` <dbl>,
@@ -252,7 +252,7 @@ ggplot(lifedf15, aes(x = lifexp)) +
 ##  8 Angola                1800   360.   27.0 1567028
 ##  9 Anguilla              1800   776.   NA      2025
 ## 10 Antigua and Barbuda   1800   538.   33.5   37000
-## # ... with 19,349 more rows
+## # … with 19,349 more rows
 ```
 
 Теперь мы можем произвести взвешенную оценку плотности распределения:
@@ -343,7 +343,7 @@ ggplot(countries, aes(x = Country, y = 1, fill = Region)) +
 ##  8 Australia           2015  38085.   82.3 23968973 east_asia_pacific 
 ##  9 Austria             2015  37811.   81.3  8544586 europe_west       
 ## 10 Azerbaijan          2015  10475.   72.9  9753968 europe_east       
-## # ... with 162 more rows
+## # … with 162 more rows
 ```
 
 Мы уже знакомы с функциями `min()`, `max()`, `median()`, `mean()`, `sd()`, которые дают значения соответствующих описательных статистик для векторов данных. Как представить их все одновременно? Для визуализации отличий в статистических параметрах исследуемой выборки удобно использовать тип графика, который называется [__boxplot__](https://ru.wikipedia.org/wiki/%D0%AF%D1%89%D0%B8%D0%BA_%D1%81_%D1%83%D1%81%D0%B0%D0%BC%D0%B8) (а по русски — диаграмма размаха, улей, или ящик с усами). В __ggplot__ за него отвечает геометрия `geom_boxplot()`:

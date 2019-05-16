@@ -494,7 +494,7 @@ head(mtemp)
 ##  8     8 Herbaceous                            1  -7.54  
 ##  9     9 Herbaceous with Sparse Tree/Shrub     1  24.3   
 ## 10    10 Sparse vegetation                     1  -9.51  
-## # ... with 230 more rows
+## # … with 230 more rows
 
 ggplot(mtemp_tidy) +
   geom_line(aes(x = month, y = tmean, color = cover), size = 1) +
