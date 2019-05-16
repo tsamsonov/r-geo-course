@@ -4,13 +4,6 @@
 
 [Программный код главы](https://github.com/tsamsonov/r-geo-course/blob/master/code/14-InterpolationGeostatistics.R)
 
-## Краткий обзор {#geostat_review}
-
-Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
-
-
-> Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.
-
 ## Теоретические сведения
 
 ### Базовые компоненты
@@ -624,7 +617,7 @@ $$\gamma(h) = \begin{cases}
 
 $$\gamma(a) = Var[Z(p)] = c_0 + c$$
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-2-1.png" width="2100" style="display: block; margin: auto;" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-1-1.png" width="2100" style="display: block; margin: auto;" />
 
 <!-- - Данная модель достигает плато в точке $h = a$. -->
 
@@ -638,7 +631,7 @@ $$\gamma(h) = \begin{cases}
 \end{cases}$$
 
 $$\gamma(a) = Var[Z(p)] = c_0 + c$$
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-3-1.png" width="2100" style="display: block; margin: auto;" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-2-1.png" width="2100" style="display: block; margin: auto;" />
 
 - Данная модель достигает плато асимптотически.
 - В точке $h = a$ достигается $95\%$ уровня плато.
@@ -649,7 +642,7 @@ $$\gamma(a) = Var[Z(p)] = c_0 + c$$
 
 $$\gamma(h) = c_0 + c\Bigg[1 - \exp\bigg(\frac{-3h^2}{a^2}\bigg)\Bigg]$$
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-4-1.png" width="2100" style="display: block; margin: auto;" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-3-1.png" width="2100" style="display: block; margin: auto;" />
 
 - Данная модель достигает плато асимптотически.
 - В точке $h = a$ достигается $95\%$ уровня плато.
@@ -662,7 +655,7 @@ $$\gamma(h) = \begin{cases}
   c h^\alpha, & h \neq 0.
 \end{cases}$$
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-5-1.png" width="2100" style="display: block; margin: auto;" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-4-1.png" width="2100" style="display: block; margin: auto;" />
 
 - Автокорреляция присутствует на всех расстояниях: $a \rightarrow \infty$
 - Предположение о стационарности второго порядка не выполняется
@@ -688,35 +681,35 @@ $$\gamma(h) = \begin{cases}
 
 __Lagged scatterplot__ — вариант диаграммы рассеяния, на котором показываются значения в точках, расстояние между которыми попадает в заданный интервал 
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-6-1.png" width="2100" style="display: block; margin: auto;" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-5-1.png" width="2100" style="display: block; margin: auto;" />
 
 ### Вариограммное облако
 
 Квадрат разности значений как функция от расстояния между точками
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-7-1.png" width="2100" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-6-1.png" width="2100" />
   
 
 ### Эмпирическая вариограмма
 
 Эмпирическая вариограмма рассчитывается путем разбения вариограммного облака на интервалы расстояний — __лаги__ — и подсчета среднего значения $\gamma$ в каждом лаге:
   
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-8-1.png" width="2100" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-7-1.png" width="2100" />
 
 $$\hat{\gamma} = \frac{1}{2N_h} \sum_{x_i - x_j \approx h} \big[z(x_i) - z(x_j)\big]^2$$
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-9-1.png" width="2100" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-8-1.png" width="2100" />
 Размер точки означает количество пар значений, которые попали в каждый лаг.
 
 Поскольку вариограмма есть _дисперсия разности значений_, ее рост при увеличении расстояния можно оценить также по увеличению размера «ящика» на диаграмме размаха $\sqrt\gamma$:
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-10-1.png" width="2100" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-9-1.png" width="2100" />
 
 ### Вариокарта
 
 __Вариокарта__ (_variogram map, variomap_) представляет вариограмму как функцию приращений координат:
 $$\hat{\gamma} (\Delta x, \Delta y) = \frac{1}{2N_{\substack{\Delta x\\ \Delta y}}} \sum_{\substack{\Delta x_{ij} \approx \Delta x\\ \Delta y_{ij} \approx \Delta y}} \big[z(p_i) - z(p_j)\big]^2$$
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-11-1.png" width="2100" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-10-1.png" width="2100" />
 
 Вариокарта используется для выявления _пространственной анизотропии_. Профиль по линии из центра к краю вариокарты даст эмпирическую вариограмму
 
@@ -727,7 +720,7 @@ __Приближение__ (_fitting_) модели вариограммы пр�
 1. Выбор теоретической модели
 2. Подбор параметров модели: эффект самородка (nugget), радиус корреляции и плато.
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-12-1.png" width="2100" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-11-1.png" width="2100" />
 
 Дана вариограмма семейства $\gamma (h; \mathbf{b})$, где $\mathbf{b} = (b_1, ..., b_k)$ — вектор из $k$ параметров модели. Параметры $\mathbf{b}$ подбираются таким образом, чтобы минимизировать следующий функционал:
 
@@ -747,12 +740,12 @@ $$Q(\mathbf{b}) = \sum_{l=1}^{L} w_l \big[\hat{\gamma}(h_l) - \gamma (h; \mathbf
 
 Сравним результат ручного и автоматического приближения вариограммы:
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-13-1.png" width="2100" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-12-1.png" width="2100" />
 
 ### Обычный кригинг
 
 Рассмотрим данные по температуре:
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-14-1.png" width="2100" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-13-1.png" width="2100" />
 
 ### Обычный кригинг
 
@@ -772,12 +765,12 @@ head(tempkriged@data)
 
 ```
 ##   var1.pred var1.var
-## 1  17.75282 84.73160
-## 2  17.90094 71.59532
-## 3  17.94141 59.33082
-## 4  18.37118 49.61956
-## 5  20.94397 45.95779
-## 6  24.60903 39.43435
+## 1  18.36489 95.17916
+## 2  18.59768 83.33985
+## 3  18.95470 72.45937
+## 4  19.72711 63.59284
+## 5  21.41456 57.32387
+## 6  23.41987 52.30861
 ```
 
 ```r
@@ -787,7 +780,7 @@ vars = SpatialPixelsDataFrame(tempkriged, data = tempkriged@data['var1.var']) %>
 
 ### Оценка и дисперсия кригинга
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-16-1.png" width="2100" /><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-16-2.png" width="2100" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-15-1.png" width="2100" /><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-15-2.png" width="2100" />
 
 Дисперсия кригинга высока там, где мало данных.
 
@@ -821,22 +814,39 @@ head(cvl %>% st_set_geometry(NULL), 10)
 
 Cтандартизированные ошибки в стационарном случае должны быть распределены нормально:
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-18-1.png" width="2100" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-17-1.png" width="2100" />
 
 
 ### Кросс-валидация
 
 Ошибки должны быть независимы от значений:
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-19-1.png" width="2100" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-18-1.png" width="2100" />
 
 ### Кросс-валидация
 
 Облако рассеяния оценки относительно истинных значений должно быть компактным:
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-20-1.png" width="2100" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-19-1.png" width="2100" />
 
 ### Кросс-валидация
 
 Пространственная картина стандартизированных ошибок должна быть гомогенной:
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-21-1.png" width="2100" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-20-1.png" width="2100" />
+
+## Краткий обзор {#geostat_review}
+
+Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
+
+
+> Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.
+
+## Контрольные вопросы и упражнения {#geostat_qt}
+
+### Вопросы {#geostat_q}
+
+### Упражнения {#geostat_t}
+
+----
+_Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, 2019. DOI: 10.5281/zenodo.901911
+----
