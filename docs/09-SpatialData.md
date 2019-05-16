@@ -262,29 +262,31 @@ methods(class = "sf") # Посмотрим, какие методы доступ
 ## [10] dbDataType            dbWriteTable          distinct             
 ## [13] extent                extract               filter               
 ## [16] full_join             gather                group_by             
-## [19] identify              initialize            inner_join           
-## [22] left_join             mapView               mask                 
-## [25] merge                 mutate                nest                 
-## [28] plot                  print                 raster               
-## [31] rasterize             rbind                 rename               
-## [34] right_join            sample_frac           sample_n             
-## [37] select                semi_join             separate             
-## [40] show                  slice                 slotsFromS3          
-## [43] spread                st_agr                st_agr<-             
-## [46] st_area               st_as_sf              st_bbox              
-## [49] st_boundary           st_buffer             st_cast              
-## [52] st_centroid           st_collection_extract st_convex_hull       
-## [55] st_coordinates        st_crop               st_crs               
-## [58] st_crs<-              st_difference         st_geometry          
-## [61] st_geometry<-         st_intersection       st_is                
-## [64] st_line_merge         st_nearest_points     st_node              
-## [67] st_point_on_surface   st_polygonize         st_precision         
-## [70] st_segmentize         st_set_precision      st_simplify          
-## [73] st_snap               st_sym_difference     st_transform         
-## [76] st_triangulate        st_union              st_voronoi           
-## [79] st_wrap_dateline      st_write              st_zm                
-## [82] summarise             transmute             ungroup              
-## [85] unite                 unnest               
+## [19] group_map             group_split           identify             
+## [22] initialize            inner_join            left_join            
+## [25] mapView               mask                  merge                
+## [28] mutate                nest                  plot                 
+## [31] print                 raster                rasterize            
+## [34] rbind                 rename                right_join           
+## [37] sample_frac           sample_n              select               
+## [40] semi_join             separate              show                 
+## [43] slice                 slotsFromS3           spread               
+## [46] st_agr                st_agr<-              st_area              
+## [49] st_as_sf              st_bbox               st_boundary          
+## [52] st_buffer             st_cast               st_centroid          
+## [55] st_collection_extract st_convex_hull        st_coordinates       
+## [58] st_crop               st_crs                st_crs<-             
+## [61] st_difference         st_geometry           st_geometry<-        
+## [64] st_interpolate_aw     st_intersection       st_intersects        
+## [67] st_is                 st_line_merge         st_nearest_points    
+## [70] st_node               st_normalize          st_point_on_surface  
+## [73] st_polygonize         st_precision          st_segmentize        
+## [76] st_set_precision      st_simplify           st_snap              
+## [79] st_sym_difference     st_transform          st_triangulate       
+## [82] st_union              st_voronoi            st_wrap_dateline     
+## [85] st_write              st_zm                 summarise            
+## [88] transmute             ungroup               unite                
+## [91] unnest               
 ## see '?methods' for accessing help and source code
 ```
 
@@ -1517,5 +1519,5 @@ mapview(countries, col.regions = 'white') + mapview(sf_stations, col.regions = '
 2. Таблица _storms_ из пакета __dplyr__ содержит данные трекинга тропических циклонов c 1975 по 2015 год. Выберите любой циклон и постройте для него линию трека прохождения и точки прохождения. Отобразите эти данные на интерактивной карте средствами __mapview__. Напишите программу таким образом, чтобы можно было выбирать имя циклона и программа отображала его трек на интерактивной карте.
 
 ----
-_Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, 2017. DOI: 10.5281/zenodo.901911
+_Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, `lubridate::year(Sys.Date())`. DOI: [10.5281/zenodo.901911](https://doi.org/10.5281/zenodo.901911)
 ----

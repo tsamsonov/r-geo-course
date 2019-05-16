@@ -414,41 +414,41 @@ tm_shape(land) +
 
 ```r
 temp
-## class       : RasterBrick 
-## dimensions  : 900, 2160, 1944000, 12  (nrow, ncol, ncell, nlayers)
-## resolution  : 0.1666667, 0.1666667  (x, y)
-## extent      : -180, 180, -60, 90  (xmin, xmax, ymin, ymax)
-## coord. ref. : +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0 
-## data source : in memory
-## names       : tmean1, tmean2, tmean3, tmean4, tmean5, tmean6, tmean7, tmean8, tmean9, tmean10, tmean11, tmean12 
-## min values  :  -51.3,  -47.3,  -44.3,  -35.7,  -20.6,  -11.6,  -11.4,  -11.0,  -16.5,   -28.4,   -40.9,   -48.7 
-## max values  :   33.8,   33.3,   33.3,   34.2,   36.0,   38.4,   39.2,   38.2,   35.8,    32.7,    32.8,    33.0
+## class      : RasterBrick 
+## dimensions : 900, 2160, 1944000, 12  (nrow, ncol, ncell, nlayers)
+## resolution : 0.1666667, 0.1666667  (x, y)
+## extent     : -180, 180, -60, 90  (xmin, xmax, ymin, ymax)
+## crs        : +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0 
+## source     : memory
+## names      : tmean1, tmean2, tmean3, tmean4, tmean5, tmean6, tmean7, tmean8, tmean9, tmean10, tmean11, tmean12 
+## min values :  -51.3,  -47.3,  -44.3,  -35.7,  -20.6,  -11.6,  -11.4,  -11.0,  -16.5,   -28.4,   -40.9,   -48.7 
+## max values :   33.8,   33.3,   33.3,   34.2,   36.0,   38.4,   39.2,   38.2,   35.8,    32.7,    32.8,    33.0
 land$cover
-## class       : RasterLayer 
-## dimensions  : 540, 1080, 583200  (nrow, ncol, ncell)
-## resolution  : 0.3333333, 0.3333333  (x, y)
-## extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-## coord. ref. : +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 
-## data source : in memory
-## names       : cover 
-## values      : 1, 20  (min, max)
-## attributes  :
+## class      : RasterLayer 
+## dimensions : 540, 1080, 583200  (nrow, ncol, ncell)
+## resolution : 0.3333333, 0.3333333  (x, y)
+## extent     : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+## crs        : +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 
+## source     : memory
+## names      : cover 
+## values     : 1, 20  (min, max)
+## attributes :
 ##        ID  COUNT                      cover
 ##  from:  1   9140 Broadleaf Evergreen Forest
-##  to  : 20 393060               Water bodies
+##   to : 20 393060               Water bodies
 
 cover = crop(land$cover, temp) %>% 
   resample(temp, method = 'ngb') # используем 'ngb', поскольку растр категориальный
 
 cover
-## class       : RasterLayer 
-## dimensions  : 900, 2160, 1944000  (nrow, ncol, ncell)
-## resolution  : 0.1666667, 0.1666667  (x, y)
-## extent      : -180, 180, -60, 90  (xmin, xmax, ymin, ymax)
-## coord. ref. : +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0 
-## data source : in memory
-## names       : cover 
-## values      : 1, 20  (min, max)
+## class      : RasterLayer 
+## dimensions : 900, 2160, 1944000  (nrow, ncol, ncell)
+## resolution : 0.1666667, 0.1666667  (x, y)
+## extent     : -180, 180, -60, 90  (xmin, xmax, ymin, ymax)
+## crs        : +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0 
+## source     : memory
+## names      : cover 
+## values     : 1, 20  (min, max)
 ```
 
 Для вычисления средней температуры января в пределах каждой зоны земельного покрова воспользуемся функцией `zonal()` из пакета `raster`. Полученный объект является матрицей:
@@ -670,5 +670,5 @@ ggplot(tempdf, aes(x = dist, y = tmean6)) +
 4. Рассчитайте морфометрические коэффициенты  TPI, TRI и roughness для [цифровой модели рельефа Ферганской долины](https://github.com/tsamsonov/r-geo-course/blob/master/data/dem_fergana.tif), которая использовалась в текущей лекции. В чем их суть? Изучите справку к инструменту `terrain()`.
 
 ----
-_Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, 2017. DOI: 10.5281/zenodo.901911
+_Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, `lubridate::year(Sys.Date())`. DOI: [10.5281/zenodo.901911](https://doi.org/10.5281/zenodo.901911)
 ----

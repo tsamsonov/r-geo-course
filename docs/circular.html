@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html >
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Глава 8 Статистика направлений и времени | Визуализация и анализ географических данных на языке R</title>
-  <meta name="description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных">
-  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+  <meta name="description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  <meta name="generator" content="bookdown 0.10 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Глава 8 Статистика направлений и времени | Визуализация и анализ географических данных на языке R" />
   <meta property="og:type" content="book" />
@@ -22,14 +21,14 @@
   <meta name="twitter:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
   
 
-<meta name="author" content="Тимофей Самсонов">
+<meta name="author" content="Тимофей Самсонов" />
 
 
-<meta name="date" content="2019-05-16">
+<meta name="date" content="2019-05-16" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
 <link rel="prev" href="stat-analysis.html">
@@ -499,7 +498,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="14.3.2" data-path="kriging.html"><a href="kriging.html#geostat_t"><i class="fa fa-check"></i><b>14.3.2</b> Упражнения</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="15" data-path="autocorrelation.html"><a href="autocorrelation.html"><i class="fa fa-check"></i><b>15</b> Пространственная автокорреляция</a><ul>
+<li class="chapter" data-level="15" data-path="autocorrelation.html"><a href="autocorrelation.html"><i class="fa fa-check"></i><b>15</b> Пространственная и географически взвешенная регрессия</a><ul>
 <li class="chapter" data-level="15.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_intro"><i class="fa fa-check"></i><b>15.1</b> Введение</a></li>
 <li class="chapter" data-level="15.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors"><i class="fa fa-check"></i><b>15.2</b> Пространственное соседство</a><ul>
 <li class="chapter" data-level="15.2.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_contguity"><i class="fa fa-check"></i><b>15.2.1</b> Соседи по смежности</a></li>
@@ -516,7 +515,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.6" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_gwr"><i class="fa fa-check"></i><b>15.6</b> Географически взвешенная регрессия (GWR)</a></li>
 <li class="chapter" data-level="15.7" data-path="autocorrelation.html"><a href="autocorrelation.html#spreg_review"><i class="fa fa-check"></i><b>15.7</b> Краткий обзор</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="point-patterns.html"><a href="point-patterns.html"><i class="fa fa-check"></i><b>16</b> Анализ точечных процессов</a></li>
+<li class="chapter" data-level="16" data-path="point-patterns.html"><a href="point-patterns.html"><i class="fa fa-check"></i><b>16</b> Анализ точечных процессов</a><ul>
+<li class="chapter" data-level="16.1" data-path="point-patterns.html"><a href="point-patterns.html#point_review"><i class="fa fa-check"></i><b>16.1</b> Краткий обзор</a></li>
+</ul></li>
 <li class="appendix"><span><b>Решение проблем</b></span></li>
 <li class="chapter" data-level="A" data-path="package-troubles.html"><a href="package-troubles.html"><i class="fa fa-check"></i><b>A</b> Установка пакетов</a><ul>
 <li class="chapter" data-level="A.1" data-path="package-troubles.html"><a href="package-troubles.html#package-troubles-standard"><i class="fa fa-check"></i><b>A.1</b> Недоступен стандартный каталог</a></li>
@@ -901,34 +902,34 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">wind =</span> <span class="kw">circular</span>(<span class="kw">geo_azimuth</span>(MV, MU), <span class="dt">template =</span> <span class="st">&#39;geographics&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(INDEX, <span class="dt">name =</span> Название, GGGG, MM, HH, Z, MU, MV, SS, wind))
 <span class="co">## # A tibble: 77,073 x 10</span>
-<span class="co">##    INDEX name         GGGG    MM    HH     Z    MU    MV    SS wind        </span>
-<span class="co">##    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;S3: circul&gt;</span>
-<span class="co">##  1 20674 Остров Дик…  2007     1     0  2000    33    31    45 0.8166380   </span>
-<span class="co">##  2 20674 Остров Дик…  2007     1     0  1900    32    32    45 0.7853982   </span>
-<span class="co">##  3 20674 Остров Дик…  2007     1     0  1800    30    33    46 0.7378151   </span>
-<span class="co">##  4 20674 Остров Дик…  2007     1     0  1700    29    35    47 0.6919214   </span>
-<span class="co">##  5 20674 Остров Дик…  2007     1     0  1600    28    38    49 0.6350267   </span>
-<span class="co">##  6 20674 Остров Дик…  2007     1     0  1500    26    40    50 0.5763752   </span>
-<span class="co">##  7 20674 Остров Дик…  2007     1     0  1400    25    41    51 0.5475622   </span>
-<span class="co">##  8 20674 Остров Дик…  2007     1     0  1300    25    42    54 0.5369107   </span>
-<span class="co">##  9 20674 Остров Дик…  2007     1     0  1200    24    45    56 0.4899573   </span>
-<span class="co">## 10 20674 Остров Дик…  2007     1     0  1100    24    49    58 0.4554511   </span>
+<span class="co">##    INDEX name           GGGG    MM    HH     Z    MU    MV    SS wind      </span>
+<span class="co">##    &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;circular&gt;</span>
+<span class="co">##  1 20674 Остров Диксон  2007     1     0  2000    33    31    45 0.8166380 </span>
+<span class="co">##  2 20674 Остров Диксон  2007     1     0  1900    32    32    45 0.7853982 </span>
+<span class="co">##  3 20674 Остров Диксон  2007     1     0  1800    30    33    46 0.7378151 </span>
+<span class="co">##  4 20674 Остров Диксон  2007     1     0  1700    29    35    47 0.6919214 </span>
+<span class="co">##  5 20674 Остров Диксон  2007     1     0  1600    28    38    49 0.6350267 </span>
+<span class="co">##  6 20674 Остров Диксон  2007     1     0  1500    26    40    50 0.5763752 </span>
+<span class="co">##  7 20674 Остров Диксон  2007     1     0  1400    25    41    51 0.5475622 </span>
+<span class="co">##  8 20674 Остров Диксон  2007     1     0  1300    25    42    54 0.5369107 </span>
+<span class="co">##  9 20674 Остров Диксон  2007     1     0  1200    24    45    56 0.4899573 </span>
+<span class="co">## 10 20674 Остров Диксон  2007     1     0  1100    24    49    58 0.4554511 </span>
 <span class="co">## # … with 77,063 more rows</span></code></pre>
 <p>Выберем данные по высоте 0 метров за 12 часов дня для поселка Тикси, сохранив только составляющие скорости и ее скалярную величину:</p>
 <pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">tiksi_wind =</span> winds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> &#39;Тикси&#39;</span>, HH <span class="op">==</span><span class="st"> </span><span class="dv">12</span>, Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span>))
 <span class="co">## # A tibble: 136 x 10</span>
-<span class="co">##    INDEX name   GGGG    MM    HH     Z    MU    MV    SS wind          </span>
-<span class="co">##    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;S3: circular&gt;</span>
-<span class="co">##  1 21824 Тикси  2007     1    12     0    36    35    48 0.7994817     </span>
-<span class="co">##  2 21824 Тикси  2007     2    12     0    16    11    27 0.9685090     </span>
-<span class="co">##  3 21824 Тикси  2007     3    12     0    23    22    34 0.8076167     </span>
-<span class="co">##  4 21824 Тикси  2007     4    12     0    17     9    30 1.0838971     </span>
-<span class="co">##  5 21824 Тикси  2007     5    12     0   -17    -3    34 4.5377168     </span>
-<span class="co">##  6 21824 Тикси  2007     6    12     0   -23   -25    27 3.8853482     </span>
-<span class="co">##  7 21824 Тикси  2007     7    12     0    -5   -11    27 3.5682201     </span>
-<span class="co">##  8 21824 Тикси  2007     8    12     0     4     5    25 0.6747409     </span>
-<span class="co">##  9 21824 Тикси  2007     9    12     0    24    14    34 1.0427219     </span>
-<span class="co">## 10 21824 Тикси  2007    10    12     0    41    47    40 0.7173217     </span>
+<span class="co">##    INDEX name   GGGG    MM    HH     Z    MU    MV    SS wind      </span>
+<span class="co">##    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;circular&gt;</span>
+<span class="co">##  1 21824 Тикси  2007     1    12     0    36    35    48 0.7994817 </span>
+<span class="co">##  2 21824 Тикси  2007     2    12     0    16    11    27 0.9685090 </span>
+<span class="co">##  3 21824 Тикси  2007     3    12     0    23    22    34 0.8076167 </span>
+<span class="co">##  4 21824 Тикси  2007     4    12     0    17     9    30 1.0838971 </span>
+<span class="co">##  5 21824 Тикси  2007     5    12     0   -17    -3    34 4.5377168 </span>
+<span class="co">##  6 21824 Тикси  2007     6    12     0   -23   -25    27 3.8853482 </span>
+<span class="co">##  7 21824 Тикси  2007     7    12     0    -5   -11    27 3.5682201 </span>
+<span class="co">##  8 21824 Тикси  2007     8    12     0     4     5    25 0.6747409 </span>
+<span class="co">##  9 21824 Тикси  2007     9    12     0    24    14    34 1.0427219 </span>
+<span class="co">## 10 21824 Тикси  2007    10    12     0    41    47    40 0.7173217 </span>
 <span class="co">## # … with 126 more rows</span></code></pre>
 <p>Отобразим распределение направлений, розу-диаграмму и плотность распределения. Для построени графиков используем функции <code>plot.circular()</code> и <code>rose.diag</code> из пакета <strong>circular</strong>. Для аппроксимации плотности распределения направлений воспользуемся функцией <code>kern.den.circ()</code> из пакета <strong>NPCirc</strong>. Эта функция использует функцию плотности распределения <em>фон Мизеса</em> в качестве ядра и по умолчанию разбивает круг на 250 направлений, по которым производится оценка плотности (при необходимости это значение можно изменить в параметре <code>len</code>):</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot.circular</span>(tiksi_wind<span class="op">$</span>wind, 
@@ -1017,21 +1018,21 @@ yp =<span class="st"> </span><span class="kw">cos</span>(modal)
   )
 )
 <span class="co">## # A tibble: 13 x 3</span>
-<span class="co">##    name            kden                     peak</span>
-<span class="co">##    &lt;chr&gt;           &lt;list&gt;                  &lt;dbl&gt;</span>
-<span class="co">##  1 Верхоянск       &lt;S3: density.circular&gt; -2.97 </span>
-<span class="co">##  2 Жиганск         &lt;S3: density.circular&gt; -3.20 </span>
-<span class="co">##  3 Кандалакша      &lt;S3: density.circular&gt; -0.347</span>
-<span class="co">##  4 Мирный          &lt;S3: density.circular&gt; -0.826</span>
-<span class="co">##  5 Мурманск        &lt;S3: density.circular&gt;  0.814</span>
-<span class="co">##  6 Нарьян-Мар      &lt;S3: density.circular&gt;  1.04 </span>
-<span class="co">##  7 Новолазаревская &lt;S3: density.circular&gt; -0.902</span>
-<span class="co">##  8 Норильск        &lt;S3: density.circular&gt; -0.877</span>
-<span class="co">##  9 Оленек          &lt;S3: density.circular&gt; -3.48 </span>
-<span class="co">## 10 Остров Диксон   &lt;S3: density.circular&gt; -0.145</span>
-<span class="co">## 11 Салехард        &lt;S3: density.circular&gt; -2.82 </span>
-<span class="co">## 12 Тикси           &lt;S3: density.circular&gt;  0.814</span>
-<span class="co">## 13 Шойна           &lt;S3: density.circular&gt;  0.561</span></code></pre>
+<span class="co">##    name            kden         peak</span>
+<span class="co">##    &lt;chr&gt;           &lt;list&gt;      &lt;dbl&gt;</span>
+<span class="co">##  1 Верхоянск       &lt;dnsty.cr&gt; -2.97 </span>
+<span class="co">##  2 Жиганск         &lt;dnsty.cr&gt; -3.20 </span>
+<span class="co">##  3 Кандалакша      &lt;dnsty.cr&gt; -0.347</span>
+<span class="co">##  4 Мирный          &lt;dnsty.cr&gt; -0.826</span>
+<span class="co">##  5 Мурманск        &lt;dnsty.cr&gt;  0.814</span>
+<span class="co">##  6 Нарьян-Мар      &lt;dnsty.cr&gt;  1.04 </span>
+<span class="co">##  7 Новолазаревская &lt;dnsty.cr&gt; -0.902</span>
+<span class="co">##  8 Норильск        &lt;dnsty.cr&gt; -0.877</span>
+<span class="co">##  9 Оленек          &lt;dnsty.cr&gt; -3.48 </span>
+<span class="co">## 10 Остров Диксон   &lt;dnsty.cr&gt; -0.145</span>
+<span class="co">## 11 Салехард        &lt;dnsty.cr&gt; -2.82 </span>
+<span class="co">## 12 Тикси           &lt;dnsty.cr&gt;  0.814</span>
+<span class="co">## 13 Шойна           &lt;dnsty.cr&gt;  0.561</span></code></pre>
 <p>После этого построим розы-диаграммы для всех станций. В данном случае оправдано использование обычного цикла, т.к. итераций немного:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># устанавливаем параметры компоновки</span>
 <span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>),
@@ -1114,7 +1115,7 @@ yp =<span class="st"> </span><span class="kw">cos</span>(modal)
 <table>
 <tbody>
 <tr class="odd">
-<td><em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, 2017. DOI: 10.5281/zenodo.901911</td>
+<td><em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, <code>lubridate::year(Sys.Date())</code>. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a></td>
 </tr>
 </tbody>
 </table>
