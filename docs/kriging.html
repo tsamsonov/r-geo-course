@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Глава 14 Геостатистическая интерполяция | Визуализация и анализ географических данных на языке R</title>
   <meta name="description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
-  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Глава 14 Геостатистическая интерполяция | Визуализация и анализ географических данных на языке R" />
   <meta property="og:type" content="book" />
@@ -72,26 +72,27 @@
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
 code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -100,9 +101,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -599,47 +600,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><p>в каждой точке <span class="math inline">\(p_i\)</span> существует некоторая <em>случайная величина</em> <span class="math inline">\(Z(p_i)\)</span> — <strong>сечение случайного процесса</strong></p></li>
 <li><p>при изменении точки <span class="math inline">\(p_i\)</span> наблюдаемое значение случайного процесса меняется случайным образом, поскольку определяется оно не только местоположением, но и заранее неизвестным случайным событием.</p></li>
-<li><p>большинство природных явлений показывают зависимость наблюдаемых значений от их взаимного местоположения, которая проявляется в наличии корреляции значений <span class="math inline">\(Z(\mathbf{p})\)</span> и <span class="math inline">\(Z(\mathbf{p} + \mathbf{h})\)</span>, где <span class="math inline">\(\mathbf{h}\)</span> вектор смещения между точками; чем короче <span class="math inline">\(h\)</span>, тем, как правило, сильнее выражена корреляция значений</p></li>
 </ul>
-<p>Упомянутая зависимость носит название <strong>пространственной автокорреляции</strong>. Наличие автокорреляции в географически распределенных данных отмечалось уже в трудах “отцов-основателей” математической статистики. Уильям Госсет (Стьюдент) в письме Карлу Пирсону (1900) заметил, что:</p>
-<blockquote>
-<p><em>…В целом, корреляция ослабевает, если охват по времени или пространству увеличивается. Меня не покидает мысль, что было бы великим достижением установить закон, согласно которому корреляция будет ослабевать с увеличением охвата</em></p>
-</blockquote>
-<p>Британский статистик и биолог <strong>Рональд Эйлмер Фишер</strong> изучал пространственное распределение характеристик растений на опытных площадках, будучи сотрудником Ротамстедской агрохимической станции в 1920-1930-е гг. В своей книге «The Design of Experiments» (1935) он обращает внимание на то, что:</p>
-<blockquote>
-<p><em>…всестороннее подтверждение получил тот факт, что близко расположенные участки более схожи, чем удаленные, судя по данным об урожайности…следовательно, наиболее верным будет делать [выборочные] блоки максимально компактными</em></p>
-</blockquote>
-<p>Для описания таких процессов необходимо ввести базовую математическую модель, а также определить ее свойства.</p>
+<p>Для описания случайных процессов в пространстве необходимо сформировать базовую математическую модель, а также определить ее свойства.</p>
 </div>
 <div id="section-18" class="section level3">
 <h3><span class="header-section-number">14.2.2</span> Случайный процесс в пространстве и его моменты</h3>
-<p>Введение понятия случайного процесса позволяет сформировать базовую модель геостатистики. Пусть <span class="math inline">\(p \in \mathbb{R}^k\)</span> — точка в <span class="math inline">\(k\)</span>-мерном Евклидовом пространстве и <span class="math inline">\(Z(p)\)</span> — <strong>случайная величина</strong> в точке <span class="math inline">\(p\)</span>. Тогда если <span class="math inline">\(p\)</span> меняется в пределах области <span class="math inline">\(D \subset \mathbb{R}^k\)</span> (эта область именуется <em>индексным множеством</em>), то формируется <strong>случайный процесс</strong>:</p>
+<p>Пусть <span class="math inline">\(p \in \mathbb{R}^k\)</span> — точка в <span class="math inline">\(k\)</span>-мерном Евклидовом пространстве и <span class="math inline">\(Z(p)\)</span> — <strong>случайная величина</strong> в точке <span class="math inline">\(p\)</span>. Тогда если <span class="math inline">\(p\)</span> меняется в пределах области <span class="math inline">\(D \subset \mathbb{R}^k\)</span> (эта область именуется <em>индексным множеством</em>), то формируется <strong>случайный процесс</strong>:</p>
 <p><span class="math display">\[\{Z(p) | p \in D\}\]</span>
-Вертикальная черта в данной записи означает <em>условие</em>. То есть, переменная <span class="math inline">\(p\)</span> ограничена областью <span class="math inline">\(D\)</span>.</p>
-<p>Результат наблюдения случайного процесса в точках <span class="math inline">\(D\)</span> является <strong>реализацией</strong> случайного процесса:</p>
+Вертикальная черта в соответствии с принятой в теории вероятности нотацией означает <em>условие</em>. То есть, переменная <span class="math inline">\(p\)</span> ограничена областью <span class="math inline">\(D\)</span>.</p>
+<p>Результат наблюдения случайного процесса в точках области <span class="math inline">\(D\)</span> является <strong>реализацией</strong> случайного процесса:</p>
 <p><span class="math display">\[\{z(p) | p \in D\}\]</span>
 &gt; В общем случае <span class="math inline">\(D\)</span> и <span class="math inline">\(Z\)</span> случайны и независимы</p>
-<p>Случайный процесс, как и случайную величину, можно описать с помощью стандартных статистических моментов</p>
+<p>Случайный процесс, как и случайную величину, можно описать с помощью статистических моментов, таких как математическое ожидание и дисперсия.</p>
 <p><strong>Математическое ожидание</strong> есть наиболее вероятная реализация случайного процесса:</p>
-<p><span class="math display">\[E[Z(p)]=m(p)\]</span></p>
-<p>Приведем пример, поясняющий смысл математического ожидания случайного процесса:</p>
+<p><span class="math display">\[\operatorname E[Z(p)]=m(p)\]</span></p>
+<p>Поясним суть математического ожидания СП на следующем примере:</p>
 <ul>
-<li>Пусть дан географический регион, в котором производятся наблюдения температуры в течение месяца.</li>
-<li>В каждый момент времени мы имеем непрерывное поле температуры — реализацию случайного процесса и относящиеся к ней данные наблюдений на метеостанциях</li>
-<li>Осреднив данные за период наблюдений восстановим выборочное среднее поле распределения температур оценку математического ожидания случайного процесса</li>
+<li>Пусть дан географический регион, в пределах которого рассматривается поле температуры и его временная изменчивость.</li>
+<li>В каждый момент времени мы имеем непрерывное поле температуры — реализацию случайного процесса.</li>
+<li>Если рассмотреть поведение это поля во временном разрезе (по аналогии с колебаниями волн в пространстве), то получим некое “среднее” поле — математическое ожидаение случайного процесса.</li>
 </ul>
+<p>Если в приведенном примере температура наблюдается посредством сети метеостанций, то в каждый момент времени реализацию СП можно приблизительно восстановить путем выполнения интерполяции по их данным. Осреднив же данные по времени, и снова проинтерполировав их, получим <em>выборочную среднюю</em> поверхность — оценку мат. ожидания СП.</p>
 <p><strong>Дисперсия</strong> есть мера разброса реализаций случайного процесса относительно его математического ожидания:</p>
-<p><span class="math display">\[Var[Z(p)]=E[Z^2(p)]-m^2(p)\]</span></p>
-<blockquote>
-<p>Аналогично математическому ожиданию, дисперсия двумерного с.п. представляет собой <em>поле распределения</em>, значение которого в каждой точке равно дисперсии локального сечения с.п.</p>
-</blockquote>
+<p><span class="math display">\[\operatorname{Var}[Z(p)]= \operatorname E[Z^2(p)]-m^2(p)\]</span>
+Аналогично математическому ожиданию, дисперсия двумерного СП представляет собой <em>поле распределения</em>. Величина этого поля каждой точке равна дисперсии сечения СП в этой точке, то есть дисперсии случайной величины. Так же как и в традиционной статистике, вместо дисперсии в расчетах часто используют среднеквадратическое отклонение, поскольку оно выражено в тех же единицах, что и сама случайная величина:</p>
+<p><span class="math display">\[\sigma(p)= \sqrt{\operatorname{Var}[Z(p)]}\]</span></p>
+<p>В случае поля температуры можно представить себе объем, ограниченный двумя поверхностями <span class="math inline">\(m(p) + \sigma(p)\)</span> и <span class="math inline">\(m(p) - \sigma(p)\)</span>. Расстояние между этими поверхностями в каждой точке <span class="math inline">\(p\)</span> представляет собой среднеквадратическое отклонение случайного процесса.</p>
 <p><strong>Ковариация</strong> мера линейной зависимости сечений случайного процесса в двух точках <span class="math inline">\(p_1\)</span> и <span class="math inline">\(p_2\)</span>:</p>
 <p><span class="math display">\[Cov(p_1,p_2) = Cov[Z(p_1), Z(p_2)] = \\E[Z(p_1)Z(p_2)]-m(p_1)m(p_2)\]</span>
 &gt; Недостатком ковариации является необходимость знания математического ожидания с.п. Это условие выполняется далеко не всегда, что связано с тем что как правило приходится иметь дело только с одной реализацией с.п</p>
 <p>Следует обратить внимание на то, что <em>моменты пространственных случайных процессов являются функциями, а не константами</em>, в отличие от моментов случайных величин.</p>
-<ul>
-<li>Давать оценку пространственной структуре явления на основе вычисленных моментов с.п. можно только при условии, что он удовлетворяет свойствам <strong>стационарности</strong> и <strong>эргодичности.</strong></li>
-</ul>
+<p>Давать оценку пространственной структуре явления на основе вычисленных моментов с.п. можно только при условии, что он удовлетворяет свойствам <strong>стационарности</strong> и <strong>эргодичности.</strong></p>
 </div>
 </div>
 <div id="section-19" class="section level2">
@@ -1119,18 +1110,18 @@ E\big[Z(x+h)-Z(x)\big]^2 = 2\gamma(h)
 <div id="section-49" class="section level3">
 <h3><span class="header-section-number">14.4.25</span> Обычный кригинг</h3>
 <p>Проинтерполируем, используя приближенную модель вариограммы:</p>
-<pre class="sourceCode r"><code class="sourceCode r">tempkriged =<span class="st"> </span><span class="kw">krige</span>(rain_<span class="dv">24</span><span class="op">~</span><span class="dv">1</span>, rainfall, pts.grid, <span class="dt">model =</span> varmd)</code></pre>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="kriging.html#cb1-1"></a>tempkriged =<span class="st"> </span><span class="kw">krige</span>(rain_<span class="dv">24</span><span class="op">~</span><span class="dv">1</span>, rainfall, pts.grid, <span class="dt">model =</span> varmd)</span></code></pre></div>
 <pre><code>## [using ordinary kriging]</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(tempkriged<span class="op">@</span>data)</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="kriging.html#cb3-1"></a><span class="kw">head</span>(tempkriged<span class="op">@</span>data)</span></code></pre></div>
 <pre><code>##   var1.pred var1.var
-## 1  18.34907 93.01875
-## 2  18.58764 81.17554
-## 3  18.95893 70.39648
-## 4  19.82182 61.83001
-## 5  21.67174 55.82617
-## 6  23.67839 50.96655</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">temps =<span class="st"> </span><span class="kw">SpatialPixelsDataFrame</span>(tempkriged, <span class="dt">data =</span> tempkriged<span class="op">@</span>data[<span class="st">&#39;var1.pred&#39;</span>]) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">raster</span>()
-vars =<span class="st"> </span><span class="kw">SpatialPixelsDataFrame</span>(tempkriged, <span class="dt">data =</span> tempkriged<span class="op">@</span>data[<span class="st">&#39;var1.var&#39;</span>]) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">raster</span>()</code></pre>
+## 1  17.90929 86.55386
+## 2  18.07618 73.76692
+## 3  18.21731 61.92782
+## 4  18.86844 52.73836
+## 5  21.29281 48.04487
+## 6  24.58251 41.19034</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="kriging.html#cb5-1"></a>temps =<span class="st"> </span><span class="kw">SpatialPixelsDataFrame</span>(tempkriged, <span class="dt">data =</span> tempkriged<span class="op">@</span>data[<span class="st">&#39;var1.pred&#39;</span>]) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">raster</span>()</span>
+<span id="cb5-2"><a href="kriging.html#cb5-2"></a>vars =<span class="st"> </span><span class="kw">SpatialPixelsDataFrame</span>(tempkriged, <span class="dt">data =</span> tempkriged<span class="op">@</span>data[<span class="st">&#39;var1.var&#39;</span>]) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">raster</span>()</span></code></pre></div>
 </div>
 <div id="section-50" class="section level3">
 <h3><span class="header-section-number">14.4.26</span> Оценка и дисперсия кригинга</h3>
@@ -1140,11 +1131,11 @@ vars =<span class="st"> </span><span class="kw">SpatialPixelsDataFrame</span>(te
 <div id="section-51" class="section level3">
 <h3><span class="header-section-number">14.4.27</span> Кросс-валидация</h3>
 <p>Для выполнения кросс-валидации воспользуемся функцией <code>krige.cv</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r">cvl =<span class="st"> </span><span class="kw">krige.cv</span>(rain_<span class="dv">24</span><span class="op">~</span><span class="dv">1</span>, rainfall, varmd) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sterr =</span> residual <span class="op">/</span><span class="st"> </span><span class="kw">sqrt</span>(var1.var))
-
-<span class="kw">head</span>(cvl <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_set_geometry</span>(<span class="ot">NULL</span>), <span class="dv">10</span>)</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="kriging.html#cb6-1"></a>cvl =<span class="st"> </span><span class="kw">krige.cv</span>(rain_<span class="dv">24</span><span class="op">~</span><span class="dv">1</span>, rainfall, varmd) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-2"><a href="kriging.html#cb6-2"></a><span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-3"><a href="kriging.html#cb6-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sterr =</span> residual <span class="op">/</span><span class="st"> </span><span class="kw">sqrt</span>(var1.var))</span>
+<span id="cb6-4"><a href="kriging.html#cb6-4"></a></span>
+<span id="cb6-5"><a href="kriging.html#cb6-5"></a><span class="kw">head</span>(cvl <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_set_geometry</span>(<span class="ot">NULL</span>), <span class="dv">10</span>)</span></code></pre></div>
 <pre><code>##    var1.pred var1.var observed     residual      zscore fold       sterr
 ## 1   5.743730 34.84033      6.0   0.25627005  0.04341669    1  0.04341669
 ## 2  11.137129 60.24070     10.0  -1.13712865 -0.14650910    2 -0.14650910
