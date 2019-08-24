@@ -662,7 +662,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <blockquote>
 <p>В целях уменьшения количества скобок мы используем нотацию <span class="math inline">\(\operatorname{E}[Z^* - Z_0]^2 = \operatorname{E}\big[(Z^* - Z_0)^2\big]\)</span></p>
 </blockquote>
-<p>Теоретическое значение <span class="math inline">\(Z_0\)</span>, входящее в формулу ошибки, не известно, однако, как будет видно далее, его знание и не требуется, поскольку <em>ищется не сам квадрат отклонения, а его математическое ожидание</em>. Используя соотношение <span class="math inline">\(\operatorname{Var}[X] = \operatorname{E}[X^2] - (\operatorname{E}[X])^2\)</span>, выразим среднюю квадратическую ошибку как:</p>
+<p>Теоретическое значение <span class="math inline">\(Z_0\)</span>, входящее в формулу ошибки, не известно. Однако, как будет показано далее, его знание и не требуется, поскольку <em>ищется не сам квадрат отклонения, а его математическое ожидание</em>.</p>
+<p>Используя соотношение <span class="math inline">\(\operatorname{Var}[X] = \operatorname{E}[X^2] - (\operatorname{E}[X])^2\)</span>, выразим среднюю квадратическую ошибку как:</p>
 <p><span class="math display">\[\operatorname{E}[Z^* - Z_0]^2 = \operatorname{Var}[Z^* - Z_0] + \big(\operatorname{E}[Z^* - Z_0]\big)^2\]</span></p>
 <p>Поскольку дисперсия нечувствительна к сдвигам, изменение константы <span class="math inline">\(\lambda_0\)</span> влияет только на компоненту <span class="math inline">\(\operatorname{E}[Z^* - Z_0]\)</span>. Приравняем ее нулю:</p>
 <p><span class="math display">\[\operatorname{E}[Z^* - Z_0] = \operatorname{E}\Big[\sum_{i} \lambda_i Z_i + \lambda_0 - Z_0\Big] = 0\]</span></p>
@@ -673,22 +674,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="math display">\[Z^* = \sum_{i} \lambda_i Z_i + \lambda_0,\\
 \lambda_0 = m_0 - \sum_i \lambda_i m_i,\]</span></p>
 <p>Получаем:</p>
-<p><span class="math display">\[Z^* = \sum_{i} \lambda_i Z_i + m_0 - \sum_i \lambda_i m_i = m_0 + \sum_{i} \lambda_i (Z_i - m_i)\]</span></p>
-<p>Поскольку компонента <span class="math inline">\(m_0\)</span> постоянна и известна заранее, задачу оценки можно выполнить для переменной <span class="math inline">\(Y(p) = Z(p) - m(p)\)</span>, используя линейную оценку</p>
-<p><span class="math display">\[Y^* = \sum_{i} \lambda_i Y_i,\]</span>
-и прибавляя к полученному результату <span class="math inline">\(m_0\)</span>. Поэтому в дальнейших расчетах будет использоваться запись без этой константы:</p>
-<p><span class="math display">\[Z^* = \sum_{i} \lambda_i (Z_i - m_i)\]</span></p>
-<p>Основной вопрос заключается в нахождении коэффициентов <span class="math inline">\(\lambda_i\)</span>.</p>
-<p>Поскольку мы показали, что компонента <span class="math inline">\(\operatorname{E}[Z^* - Z_0]\)</span> при должном выборе коэффициентов может быть приравнена нулю, среднеквадратическую ошибку в этом случае можно вычислить через дисперсию:</p>
-<p><span class="math display">\[\operatorname{E}[Z^* - Z_0]^2 = \operatorname{Var}[Z^* - Z_0]\]</span></p>
-<p>Поскольку изначально мы имеем дело с распределением значений, а не их разностей, необходимо выразить дисперсию разностей в терминах статистических моментов исходной функции. Для этого воспользуемся следующими свойствами дисперсии и ковариации:</p>
+<p><span class="math display">\[Z^* = \sum_{i} \lambda_i Z_i + m_0 - \sum_i \lambda_i m_i = m_0 + \sum_{i} \lambda_i (Z_i - m_i)\]</span>
+Поскольку математические ожидания <span class="math inline">\(m_0\)</span> и <span class="math inline">\(m_i\)</span> предполагаются известными, величину <span class="math inline">\(Z(p)\)</span> можно заменить величиной <span class="math inline">\(Y(p) = Z(p) - m(p)\)</span> в обеих частях уравнения (это эквивалентно вычитанию известного тренда из исходных измерений):</p>
+<p><span class="math display">\[
+Z^* = m_0 + \sum_{i} \lambda_i (Z_i - m_i),\\
+\underbrace{Z^* - m_0}_{Y^*} = \sum_{i} \lambda_i \underbrace{(Z_i - m_i)}_{Y_i},\\
+Y^* =  \sum_{i} \lambda_i Y_i.
+\]</span>
+Это означает, что оценку <span class="math inline">\(Z^*\)</span> можно заменить оценкой <span class="math inline">\(Y^*\)</span> и прибавлением к ней среднего значения <span class="math inline">\(m_0\)</span>:</p>
+<p><span class="math display">\[Z^* = m_0 + \sum_{i} \lambda_i Y_i,\]</span>
+Обратим внимание на то, что <span class="math inline">\(\operatorname{E}[Y^* - Y_0] = \underbrace{\operatorname{E}[Y^*]}_0 - \underbrace{\operatorname{E}[Y_0]}_0 = 0\)</span> по определению <span class="math inline">\(Y(p)\)</span>. В этом случае также <span class="math inline">\(\lambda_0 = \underbrace{\operatorname{E}[Y_0]}_0 - \sum_{i} \lambda_i \underbrace{\operatorname{E}[Y_i]}_0 = 0\)</span> .</p>
+<p>Чтобы не загромождать дальнейшее изложение формулами, примем, что <span class="math inline">\(Z^* := Y^*\)</span>, предполагая, что исходная величина уже центрирована относительно мат. ожидания, и к результату вычислений его надо прибавить.</p>
+<p>Поскольку <span class="math inline">\(\operatorname{E}[Z^* - Z_0] = 0\)</span>, среднеквадратическую ошибка будет равна дисперсии:</p>
+<p><span class="math display">\[\operatorname{E}[Z^* - Z_0]^2 = \operatorname{Var}[Z^* - Z_0]\]</span>
+Выразим дисперсию разностей в терминах статистических моментов исходной функции. Для этого воспользуемся следующими свойствами дисперсии и ковариации:</p>
 <ul>
 <li><span class="math inline">\(\operatorname{Var}[X + Y] = \operatorname{Var}[X] + \operatorname{Var}[Y] + 2\operatorname{Cov}[X, Y]\)</span>;</li>
 <li><span class="math inline">\(\operatorname{Var}[-X] = \operatorname{Var}[X]\)</span>;</li>
 <li><span class="math inline">\(\operatorname{Cov}[X, -Y] = -\operatorname{Cov}[X, Y]\)</span>.</li>
 </ul>
 <p>Используя эти свойства, получаем:</p>
-<p><span class="math display">\[\operatorname{Var}[Z^* - Z_0] = \operatorname{Var}[Z^*] + \operatorname{Var}[Z_0] - 2\operatorname{Cov}[Z^*, Z_0].\]</span></p>
+<p><span class="math display">\[\operatorname{E}[Z^* - Z_0]^2 = \operatorname{Var}[Z^* - Z_0] = \operatorname{Var}[Z^*] + \operatorname{Var}[Z_0] - 2\operatorname{Cov}[Z^*, Z_0].\]</span></p>
 <p>Чтобы минимизировать данное выражение, необходимо раскрыть содержание трёх его компонент. Для этого нам понадобится следующая теорема, позволяющая выразить ковариацию двух линейных комбинаций случайных величин через ковариацию самих исходных случайных величин:</p>
 
 <div class="theorem">
@@ -704,9 +710,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <p>где <span class="math inline">\(\sigma_{ij}\)</span> — ковариация случайных величин в точках <span class="math inline">\(p_i\)</span> и <span class="math inline">\(p_j\)</span>, <span class="math inline">\(\sigma_{i0}\)</span> — ковариация случайных величин в точках <span class="math inline">\(p_i\)</span> и оцениваемой точке <span class="math inline">\(p_0\)</span>, <span class="math inline">\(\sigma_{00}\)</span> — дисперсия в точке <span class="math inline">\(p_0\)</span>.</p>
 <p>Используя полученные соотношения, выражение для ошибки</p>
-<p><span class="math display">\[\operatorname{Var}[Z^* - Z_0] = \operatorname{Var}[Z^*] + \operatorname{Var}[Z_0] - 2\operatorname{Cov}[Z^*, Z_0]\]</span></p>
+<p><span class="math display">\[\operatorname{E}[Z^* - Z_0]^2 = \operatorname{Var}[Z^*] + \operatorname{Var}[Z_0] - 2\operatorname{Cov}[Z^*, Z_0]\]</span></p>
 <p>можно представить следующим образом:</p>
-<p><span class="math display">\[\operatorname{Var}[Z^* - Z_0] = \sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij} - 2 \sum_{} \lambda_i \sigma_{i0} + \sigma_{00}\]</span></p>
+<p><span class="math display">\[\operatorname{E}[Z^* - Z_0]^2 = \sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij} - 2 \sum_{} \lambda_i \sigma_{i0} + \sigma_{00}\]</span></p>
 <p>Для нахождения минимума этой квадратичной функции необходимо приравнять нулю ее производные по основной переменной <span class="math inline">\(\lambda\)</span>. Выберем в качестве «жертвы» коэффициенты с индексом <span class="math inline">\(i\)</span>:</p>
 <p><span class="math display">\[\frac{\partial}{\partial \lambda_i} E[Z^* - Z_0]^2 = 2 \sum_{j} \lambda_j \sigma_{ij} - 2 \sigma_{i0} = 0\]</span></p>
 <p>Таким образом, система уравнений <strong>простого кригинга</strong> для точки <span class="math inline">\(Z_0\)</span> имеет вид:</p>
@@ -1078,12 +1084,12 @@ E\big[Z(x+h)-Z(x)\big]^2 = 2\gamma(h)
 <pre><code>## [using ordinary kriging]</code></pre>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="kriging.html#cb3-1"></a><span class="kw">head</span>(tempkriged<span class="op">@</span>data)</span></code></pre></div>
 <pre><code>##   var1.pred var1.var
-## 1  18.45373 87.62405
-## 2  18.73468 76.16747
-## 3  19.26220 66.24131
-## 4  20.55491 58.98804
-## 5  22.67829 53.47272
-## 6  24.00247 50.76418</code></pre>
+## 1  18.30409 95.72174
+## 2  18.52559 83.74604
+## 3  18.84992 72.64191
+## 4  19.54745 63.46181
+## 5  21.18180 57.02445
+## 6  23.32117 51.75935</code></pre>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="kriging.html#cb5-1"></a>temps =<span class="st"> </span><span class="kw">SpatialPixelsDataFrame</span>(tempkriged, <span class="dt">data =</span> tempkriged<span class="op">@</span>data[<span class="st">&#39;var1.pred&#39;</span>]) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">raster</span>()</span>
 <span id="cb5-2"><a href="kriging.html#cb5-2"></a>vars =<span class="st"> </span><span class="kw">SpatialPixelsDataFrame</span>(tempkriged, <span class="dt">data =</span> tempkriged<span class="op">@</span>data[<span class="st">&#39;var1.var&#39;</span>]) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">raster</span>()</span></code></pre></div>
 </div>
