@@ -246,25 +246,24 @@ $$\sum_{j} \lambda_j \sigma_{ij} = \sigma_{i0}$$
 
 подставить в выражение среднеквадратической ошибки
 
-$$Var[Z^* - Z_0] = \sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij} - 2 \sum_{} \lambda_i \sigma_{i0} + \sigma_{00}$$
+$$\operatorname{Var}[Z^* - Z_0] = \sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij} - 2 \sum_{} \lambda_i \sigma_{i0} + \sigma_{00}$$
 
 Умножим обе части каждого уравнения простого кригинга на $\lambda_i$ и просуммируем все уравнения по $i$:
 
 $$\sum_{j} \lambda_j \sigma_{ij} = \sigma_{i0}~\Bigg|\times \lambda_i\\
-\sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij} = \sum_{i}\lambda_i\sigma_{i0}$$
+\color{red}{\sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij}} = \color{blue}{\sum_{i}\lambda_i\sigma_{i0}}$$
 
 Заметим, что левая часть уравнения присутствует в выражении среднеквадратической ошибки:
 
-$$Var[Z^* - Z_0] = \color{red}{\sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij}} - 2 \sum_{} \lambda_i \sigma_{i0} + \sigma_{00}$$
+$$\operatorname{Var}[Z^* - Z_0] = \color{red}{\sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij}} - 2 \sum_{} \lambda_i \sigma_{i0} + \sigma_{00}$$
 
-Заменим $\sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij}$ на $\sum_{i}\lambda_i\sigma_{i0}$ в выражении для ско:
+Выполним соответствующую замену $\sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij}$ на $\sum_{i}\lambda_i\sigma_{i0}$:
 
-$$Var[Z^* - Z_0] = \color{red}{\sum_{i}\sum_{j} \lambda_i \lambda_j \sigma_{ij}} - 2 \sum_{} \lambda_i \sigma_{i0} + \sigma_{00} =\\
-\sum_{i}\lambda_i\sigma_{i0} - 2 \sum_{} \lambda_i \sigma_{i0} + \sigma_{00}$$
+$$\operatorname{Var}[Z^* - Z_0] = \color{blue}{\sum_{i}\lambda_i\sigma_{i0}} - 2 \sum_{} \lambda_i \sigma_{i0} + \sigma_{00}$$
 
 Отсюда получаем выражение для дисперсии (ошибки) простого кригинга:
 
-$$\color{red}{\boxed{\color{blue}{\sigma_{SK} = Var[Z^* - Z_0] = \sigma_{00} - \sum_{i}\lambda_i\sigma_{i0}}}}$$
+$$\color{red}{\boxed{\color{blue}{\sigma_{SK} = \operatorname{Var}[Z^* - Z_0] = \sigma_{00} - \sum_{i}\lambda_i\sigma_{i0}}}}$$
 
 ### Стационарность приращений
 
@@ -726,12 +725,12 @@ head(tempkriged@data)
 
 ```
 ##   var1.pred var1.var
-## 1  18.30409 95.72174
-## 2  18.52559 83.74604
-## 3  18.84992 72.64191
-## 4  19.54745 63.46181
-## 5  21.18180 57.02445
-## 6  23.32117 51.75935
+## 1  17.84900 90.55752
+## 2  18.02844 77.63853
+## 3  18.16101 65.39370
+## 4  18.51448 55.03511
+## 5  20.34742 49.27130
+## 6  23.58142 43.78930
 ```
 
 ```r
