@@ -608,7 +608,10 @@ head(temprof[[1]])
 tempdf = temprof[[1]] %>% 
   as_tibble() %>% 
   bind_cols(xyFromCell(temp, .$cell) %>% as_tibble()) %>% 
-  mutate(dist = 0.001 * c(0, cumsum(geosphere::distGeo(select(., x, y)))))
+  mutate(dist = 0.001 * c(0, select(., x, y) %>% 
+                             geosphere::distGeo() %>% 
+                             cumsum() %>% 
+                             head(-1)))
 
 pts = profile %>% 
   st_cast('POINT') %>% 

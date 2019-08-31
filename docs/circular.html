@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Глава 8 Статистика направлений и времени | Визуализация и анализ географических данных на языке R</title>
   <meta name="description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
-  <meta name="generator" content="bookdown 0.10 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Глава 8 Статистика направлений и времени | Визуализация и анализ географических данных на языке R" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Тимофей Самсонов" />
 
 
-<meta name="date" content="2019-05-16" />
+<meta name="date" content="2019-08-31" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -72,26 +72,27 @@
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
 code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -100,9 +101,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -184,10 +185,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="1.4" data-path="data-types.html"><a href="data-types.html#ifelse"><i class="fa fa-check"></i><b>1.4</b> Условный оператор</a></li>
 <li class="chapter" data-level="1.5" data-path="data-types.html"><a href="data-types.html#switch"><i class="fa fa-check"></i><b>1.5</b> Оператор переключения</a></li>
-<li class="chapter" data-level="1.6" data-path="data-types.html"><a href="data-types.html#review"><i class="fa fa-check"></i><b>1.6</b> Краткий обзор</a></li>
-<li class="chapter" data-level="1.7" data-path="data-types.html"><a href="data-types.html#questions_tasks_basics"><i class="fa fa-check"></i><b>1.7</b> Контрольные вопросы и упражнения</a><ul>
-<li class="chapter" data-level="1.7.1" data-path="data-types.html"><a href="data-types.html#questions_basics"><i class="fa fa-check"></i><b>1.7.1</b> Вопросы</a></li>
-<li class="chapter" data-level="1.7.2" data-path="data-types.html"><a href="data-types.html#tasks_basic"><i class="fa fa-check"></i><b>1.7.2</b> Упражнения</a></li>
+<li class="chapter" data-level="1.6" data-path="data-types.html"><a href="data-types.html#basics-detail"><i class="fa fa-check"></i><b>1.6</b> Технические детали</a></li>
+<li class="chapter" data-level="1.7" data-path="data-types.html"><a href="data-types.html#review"><i class="fa fa-check"></i><b>1.7</b> Краткий обзор</a></li>
+<li class="chapter" data-level="1.8" data-path="data-types.html"><a href="data-types.html#questions_tasks_basics"><i class="fa fa-check"></i><b>1.8</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="1.8.1" data-path="data-types.html"><a href="data-types.html#questions_basics"><i class="fa fa-check"></i><b>1.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="1.8.2" data-path="data-types.html"><a href="data-types.html#tasks_basic"><i class="fa fa-check"></i><b>1.8.2</b> Упражнения</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="data-structures.html"><a href="data-structures.html"><i class="fa fa-check"></i><b>2</b> Структуры данных и циклы</a><ul>
@@ -443,59 +445,52 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="14" data-path="kriging.html"><a href="kriging.html"><i class="fa fa-check"></i><b>14</b> Геостатистическая интерполяция</a><ul>
-<li class="chapter" data-level="14.1" data-path="kriging.html"><a href="kriging.html#section-15"><i class="fa fa-check"></i><b>14.1</b> Теоретические сведения</a><ul>
-<li class="chapter" data-level="14.1.1" data-path="kriging.html"><a href="kriging.html#section-16"><i class="fa fa-check"></i><b>14.1.1</b> Базовые компоненты</a></li>
-<li class="chapter" data-level="14.1.2" data-path="kriging.html"><a href="kriging.html#section-17"><i class="fa fa-check"></i><b>14.1.2</b> Случайная величина</a></li>
-<li class="chapter" data-level="14.1.3" data-path="kriging.html"><a href="kriging.html#section-18"><i class="fa fa-check"></i><b>14.1.3</b> Пространственная модель</a></li>
-<li class="chapter" data-level="14.1.4" data-path="kriging.html"><a href="kriging.html#section-19"><i class="fa fa-check"></i><b>14.1.4</b> Случайный процесс (функция)</a></li>
-<li class="chapter" data-level="14.1.5" data-path="kriging.html"><a href="kriging.html#section-20"><i class="fa fa-check"></i><b>14.1.5</b> Автокорреляция</a></li>
-<li class="chapter" data-level="14.1.6" data-path="kriging.html"><a href="kriging.html#section-21"><i class="fa fa-check"></i><b>14.1.6</b> Пространственная статистика</a></li>
-<li class="chapter" data-level="14.1.7" data-path="kriging.html"><a href="kriging.html#section-22"><i class="fa fa-check"></i><b>14.1.7</b> Геостатистическое оценивание</a></li>
-<li class="chapter" data-level="14.1.8" data-path="kriging.html"><a href="kriging.html#section-23"><i class="fa fa-check"></i><b>14.1.8</b> Математическое ожидание</a></li>
-<li class="chapter" data-level="14.1.9" data-path="kriging.html"><a href="kriging.html#section-24"><i class="fa fa-check"></i><b>14.1.9</b> Дисперсия</a></li>
-<li class="chapter" data-level="14.1.10" data-path="kriging.html"><a href="kriging.html#section-25"><i class="fa fa-check"></i><b>14.1.10</b> Ковариация</a></li>
-<li class="chapter" data-level="14.1.11" data-path="kriging.html"><a href="kriging.html#section-26"><i class="fa fa-check"></i><b>14.1.11</b> Свойства моментов случайных процессов</a></li>
-<li class="chapter" data-level="14.1.12" data-path="kriging.html"><a href="kriging.html#section-27"><i class="fa fa-check"></i><b>14.1.12</b> Гипотеза стационарности</a></li>
-<li class="chapter" data-level="14.1.13" data-path="kriging.html"><a href="kriging.html#section-28"><i class="fa fa-check"></i><b>14.1.13</b> Стационарность</a></li>
-<li class="chapter" data-level="14.1.14" data-path="kriging.html"><a href="kriging.html#section-29"><i class="fa fa-check"></i><b>14.1.14</b> Стационарность</a></li>
-<li class="chapter" data-level="14.1.15" data-path="kriging.html"><a href="kriging.html#section-30"><i class="fa fa-check"></i><b>14.1.15</b> Стационарность второго порядка</a></li>
-<li class="chapter" data-level="14.1.16" data-path="kriging.html"><a href="kriging.html#section-31"><i class="fa fa-check"></i><b>14.1.16</b> Эргодичность</a></li>
-<li class="chapter" data-level="14.1.17" data-path="kriging.html"><a href="kriging.html#section-32"><i class="fa fa-check"></i><b>14.1.17</b> Простой кригинг</a></li>
-<li class="chapter" data-level="14.1.18" data-path="kriging.html"><a href="kriging.html#section-33"><i class="fa fa-check"></i><b>14.1.18</b> Дисперсия простого кригинга</a></li>
-<li class="chapter" data-level="14.1.19" data-path="kriging.html"><a href="kriging.html#section-34"><i class="fa fa-check"></i><b>14.1.19</b> Стационарность приращений</a></li>
-<li class="chapter" data-level="14.1.20" data-path="kriging.html"><a href="kriging.html#section-35"><i class="fa fa-check"></i><b>14.1.20</b> Положительная определенность</a></li>
-<li class="chapter" data-level="14.1.21" data-path="kriging.html"><a href="kriging.html#section-36"><i class="fa fa-check"></i><b>14.1.21</b> Допустимые линейные комбинации</a></li>
-<li class="chapter" data-level="14.1.22" data-path="kriging.html"><a href="kriging.html#section-37"><i class="fa fa-check"></i><b>14.1.22</b> Условная положительная определенность</a></li>
-<li class="chapter" data-level="14.1.23" data-path="kriging.html"><a href="kriging.html#section-38"><i class="fa fa-check"></i><b>14.1.23</b> Переход от ковариации к вариограмме</a></li>
-<li class="chapter" data-level="14.1.24" data-path="kriging.html"><a href="kriging.html#section-39"><i class="fa fa-check"></i><b>14.1.24</b> Обычный кригинг</a></li>
-<li class="chapter" data-level="14.1.25" data-path="kriging.html"><a href="kriging.html#section-40"><i class="fa fa-check"></i><b>14.1.25</b> Дисперсия обычного кригинга</a></li>
-<li class="chapter" data-level="14.1.26" data-path="kriging.html"><a href="kriging.html#section-41"><i class="fa fa-check"></i><b>14.1.26</b> Универсальный кригинг</a></li>
-<li class="chapter" data-level="14.1.27" data-path="kriging.html"><a href="kriging.html#section-42"><i class="fa fa-check"></i><b>14.1.27</b> Дисперсия универсального кригинга</a></li>
-<li class="chapter" data-level="14.1.28" data-path="kriging.html"><a href="kriging.html#section-43"><i class="fa fa-check"></i><b>14.1.28</b> Кросс-валидация</a></li>
-<li class="chapter" data-level="14.1.29" data-path="kriging.html"><a href="kriging.html#section-44"><i class="fa fa-check"></i><b>14.1.29</b> Вариограмма</a></li>
-<li class="chapter" data-level="14.1.30" data-path="kriging.html"><a href="kriging.html#section-45"><i class="fa fa-check"></i><b>14.1.30</b> Сферическая модель</a></li>
-<li class="chapter" data-level="14.1.31" data-path="kriging.html"><a href="kriging.html#section-46"><i class="fa fa-check"></i><b>14.1.31</b> Экспоненциальная модель</a></li>
-<li class="chapter" data-level="14.1.32" data-path="kriging.html"><a href="kriging.html#section-47"><i class="fa fa-check"></i><b>14.1.32</b> Гауссова модель</a></li>
-<li class="chapter" data-level="14.1.33" data-path="kriging.html"><a href="kriging.html#section-48"><i class="fa fa-check"></i><b>14.1.33</b> Степенная модель</a></li>
-<li class="chapter" data-level="14.1.34" data-path="kriging.html"><a href="kriging.html#section-49"><i class="fa fa-check"></i><b>14.1.34</b> Эффект самородка (модель наггет)</a></li>
-<li class="chapter" data-level="14.1.35" data-path="kriging.html"><a href="kriging.html#section-50"><i class="fa fa-check"></i><b>14.1.35</b> Диаграмма рассеяния с лагом</a></li>
-<li class="chapter" data-level="14.1.36" data-path="kriging.html"><a href="kriging.html#section-51"><i class="fa fa-check"></i><b>14.1.36</b> Вариограммное облако</a></li>
-<li class="chapter" data-level="14.1.37" data-path="kriging.html"><a href="kriging.html#section-52"><i class="fa fa-check"></i><b>14.1.37</b> Эмпирическая вариограмма</a></li>
-<li class="chapter" data-level="14.1.38" data-path="kriging.html"><a href="kriging.html#section-53"><i class="fa fa-check"></i><b>14.1.38</b> Вариокарта</a></li>
-<li class="chapter" data-level="14.1.39" data-path="kriging.html"><a href="kriging.html#section-54"><i class="fa fa-check"></i><b>14.1.39</b> Приближение теоретической модели</a></li>
-<li class="chapter" data-level="14.1.40" data-path="kriging.html"><a href="kriging.html#section-55"><i class="fa fa-check"></i><b>14.1.40</b> Обычный кригинг</a></li>
-<li class="chapter" data-level="14.1.41" data-path="kriging.html"><a href="kriging.html#section-56"><i class="fa fa-check"></i><b>14.1.41</b> Обычный кригинг</a></li>
-<li class="chapter" data-level="14.1.42" data-path="kriging.html"><a href="kriging.html#section-57"><i class="fa fa-check"></i><b>14.1.42</b> Оценка и дисперсия кригинга</a></li>
-<li class="chapter" data-level="14.1.43" data-path="kriging.html"><a href="kriging.html#section-58"><i class="fa fa-check"></i><b>14.1.43</b> Кросс-валидация</a></li>
-<li class="chapter" data-level="14.1.44" data-path="kriging.html"><a href="kriging.html#section-59"><i class="fa fa-check"></i><b>14.1.44</b> Кросс-валидация</a></li>
-<li class="chapter" data-level="14.1.45" data-path="kriging.html"><a href="kriging.html#section-60"><i class="fa fa-check"></i><b>14.1.45</b> Кросс-валидация</a></li>
-<li class="chapter" data-level="14.1.46" data-path="kriging.html"><a href="kriging.html#section-61"><i class="fa fa-check"></i><b>14.1.46</b> Кросс-валидация</a></li>
-<li class="chapter" data-level="14.1.47" data-path="kriging.html"><a href="kriging.html#section-62"><i class="fa fa-check"></i><b>14.1.47</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.1" data-path="kriging.html"><a href="kriging.html#section-15"><i class="fa fa-check"></i><b>14.1</b> Введение</a></li>
+<li class="chapter" data-level="14.2" data-path="kriging.html"><a href="kriging.html#section-16"><i class="fa fa-check"></i><b>14.2</b> Базовые понятия и элементы геостатистики</a><ul>
+<li class="chapter" data-level="14.2.1" data-path="kriging.html"><a href="kriging.html#section-17"><i class="fa fa-check"></i><b>14.2.1</b> Базовые понятия</a></li>
+<li class="chapter" data-level="14.2.2" data-path="kriging.html"><a href="kriging.html#section-18"><i class="fa fa-check"></i><b>14.2.2</b> Случайный процесс в пространстве и его моменты</a></li>
 </ul></li>
-<li class="chapter" data-level="14.2" data-path="kriging.html"><a href="kriging.html#geostat_review"><i class="fa fa-check"></i><b>14.2</b> Краткий обзор</a></li>
-<li class="chapter" data-level="14.3" data-path="kriging.html"><a href="kriging.html#geostat_qt"><i class="fa fa-check"></i><b>14.3</b> Контрольные вопросы и упражнения</a><ul>
-<li class="chapter" data-level="14.3.1" data-path="kriging.html"><a href="kriging.html#geostat_q"><i class="fa fa-check"></i><b>14.3.1</b> Вопросы</a></li>
-<li class="chapter" data-level="14.3.2" data-path="kriging.html"><a href="kriging.html#geostat_t"><i class="fa fa-check"></i><b>14.3.2</b> Упражнения</a></li>
+<li class="chapter" data-level="14.3" data-path="kriging.html"><a href="kriging.html#section-19"><i class="fa fa-check"></i><b>14.3</b> Стационарность и эргодичность</a><ul>
+<li class="chapter" data-level="14.3.1" data-path="kriging.html"><a href="kriging.html#section-20"><i class="fa fa-check"></i><b>14.3.1</b> Стационарность</a></li>
+<li class="chapter" data-level="14.3.2" data-path="kriging.html"><a href="kriging.html#section-21"><i class="fa fa-check"></i><b>14.3.2</b> Эргодичность</a></li>
+</ul></li>
+<li class="chapter" data-level="14.4" data-path="kriging.html"><a href="kriging.html#section-22"><i class="fa fa-check"></i><b>14.4</b> Геостатистическое оценивание</a><ul>
+<li class="chapter" data-level="14.4.1" data-path="kriging.html"><a href="kriging.html#section-23"><i class="fa fa-check"></i><b>14.4.1</b> Простой кригинг</a></li>
+<li class="chapter" data-level="14.4.2" data-path="kriging.html"><a href="kriging.html#section-24"><i class="fa fa-check"></i><b>14.4.2</b> Дисперсия простого кригинга</a></li>
+<li class="chapter" data-level="14.4.3" data-path="kriging.html"><a href="kriging.html#section-25"><i class="fa fa-check"></i><b>14.4.3</b> Стационарность приращений</a></li>
+<li class="chapter" data-level="14.4.4" data-path="kriging.html"><a href="kriging.html#section-26"><i class="fa fa-check"></i><b>14.4.4</b> Положительная определенность</a></li>
+<li class="chapter" data-level="14.4.5" data-path="kriging.html"><a href="kriging.html#section-27"><i class="fa fa-check"></i><b>14.4.5</b> Допустимые линейные комбинации</a></li>
+<li class="chapter" data-level="14.4.6" data-path="kriging.html"><a href="kriging.html#section-28"><i class="fa fa-check"></i><b>14.4.6</b> Условная положительная определенность</a></li>
+<li class="chapter" data-level="14.4.7" data-path="kriging.html"><a href="kriging.html#section-29"><i class="fa fa-check"></i><b>14.4.7</b> Переход от ковариации к вариограмме</a></li>
+<li class="chapter" data-level="14.4.8" data-path="kriging.html"><a href="kriging.html#section-30"><i class="fa fa-check"></i><b>14.4.8</b> Обычный кригинг</a></li>
+<li class="chapter" data-level="14.4.9" data-path="kriging.html"><a href="kriging.html#section-31"><i class="fa fa-check"></i><b>14.4.9</b> Дисперсия обычного кригинга</a></li>
+<li class="chapter" data-level="14.4.10" data-path="kriging.html"><a href="kriging.html#section-32"><i class="fa fa-check"></i><b>14.4.10</b> Универсальный кригинг</a></li>
+<li class="chapter" data-level="14.4.11" data-path="kriging.html"><a href="kriging.html#section-33"><i class="fa fa-check"></i><b>14.4.11</b> Дисперсия универсального кригинга</a></li>
+<li class="chapter" data-level="14.4.12" data-path="kriging.html"><a href="kriging.html#section-34"><i class="fa fa-check"></i><b>14.4.12</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.4.13" data-path="kriging.html"><a href="kriging.html#section-35"><i class="fa fa-check"></i><b>14.4.13</b> Вариограмма</a></li>
+<li class="chapter" data-level="14.4.14" data-path="kriging.html"><a href="kriging.html#section-36"><i class="fa fa-check"></i><b>14.4.14</b> Сферическая модель</a></li>
+<li class="chapter" data-level="14.4.15" data-path="kriging.html"><a href="kriging.html#section-37"><i class="fa fa-check"></i><b>14.4.15</b> Экспоненциальная модель</a></li>
+<li class="chapter" data-level="14.4.16" data-path="kriging.html"><a href="kriging.html#section-38"><i class="fa fa-check"></i><b>14.4.16</b> Гауссова модель</a></li>
+<li class="chapter" data-level="14.4.17" data-path="kriging.html"><a href="kriging.html#section-39"><i class="fa fa-check"></i><b>14.4.17</b> Степенная модель</a></li>
+<li class="chapter" data-level="14.4.18" data-path="kriging.html"><a href="kriging.html#section-40"><i class="fa fa-check"></i><b>14.4.18</b> Эффект самородка (модель наггет)</a></li>
+<li class="chapter" data-level="14.4.19" data-path="kriging.html"><a href="kriging.html#section-41"><i class="fa fa-check"></i><b>14.4.19</b> Диаграмма рассеяния с лагом</a></li>
+<li class="chapter" data-level="14.4.20" data-path="kriging.html"><a href="kriging.html#section-42"><i class="fa fa-check"></i><b>14.4.20</b> Вариограммное облако</a></li>
+<li class="chapter" data-level="14.4.21" data-path="kriging.html"><a href="kriging.html#section-43"><i class="fa fa-check"></i><b>14.4.21</b> Эмпирическая вариограмма</a></li>
+<li class="chapter" data-level="14.4.22" data-path="kriging.html"><a href="kriging.html#section-44"><i class="fa fa-check"></i><b>14.4.22</b> Вариокарта</a></li>
+<li class="chapter" data-level="14.4.23" data-path="kriging.html"><a href="kriging.html#section-45"><i class="fa fa-check"></i><b>14.4.23</b> Приближение теоретической модели</a></li>
+<li class="chapter" data-level="14.4.24" data-path="kriging.html"><a href="kriging.html#section-46"><i class="fa fa-check"></i><b>14.4.24</b> Обычный кригинг</a></li>
+<li class="chapter" data-level="14.4.25" data-path="kriging.html"><a href="kriging.html#section-47"><i class="fa fa-check"></i><b>14.4.25</b> Обычный кригинг</a></li>
+<li class="chapter" data-level="14.4.26" data-path="kriging.html"><a href="kriging.html#section-48"><i class="fa fa-check"></i><b>14.4.26</b> Оценка и дисперсия кригинга</a></li>
+<li class="chapter" data-level="14.4.27" data-path="kriging.html"><a href="kriging.html#section-49"><i class="fa fa-check"></i><b>14.4.27</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.4.28" data-path="kriging.html"><a href="kriging.html#section-50"><i class="fa fa-check"></i><b>14.4.28</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.4.29" data-path="kriging.html"><a href="kriging.html#section-51"><i class="fa fa-check"></i><b>14.4.29</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.4.30" data-path="kriging.html"><a href="kriging.html#section-52"><i class="fa fa-check"></i><b>14.4.30</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.4.31" data-path="kriging.html"><a href="kriging.html#section-53"><i class="fa fa-check"></i><b>14.4.31</b> Кросс-валидация</a></li>
+</ul></li>
+<li class="chapter" data-level="14.5" data-path="kriging.html"><a href="kriging.html#geostat_review"><i class="fa fa-check"></i><b>14.5</b> Краткий обзор</a></li>
+<li class="chapter" data-level="14.6" data-path="kriging.html"><a href="kriging.html#geostat_qt"><i class="fa fa-check"></i><b>14.6</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="14.6.1" data-path="kriging.html"><a href="kriging.html#geostat_q"><i class="fa fa-check"></i><b>14.6.1</b> Вопросы</a></li>
+<li class="chapter" data-level="14.6.2" data-path="kriging.html"><a href="kriging.html#geostat_t"><i class="fa fa-check"></i><b>14.6.2</b> Упражнения</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="15" data-path="autocorrelation.html"><a href="autocorrelation.html"><i class="fa fa-check"></i><b>15</b> Пространственная и географически взвешенная регрессия</a><ul>
@@ -550,18 +545,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">8.1</span> Предварительные требования</h2>
 <p>Для работы по теме текущей лекции вам понадобятся пакеты из <strong>tidyverse</strong>. Помимо этого, необходимы методы круговой статистики из пакетов <a href="https://cran.r-project.org/web/packages/circular/"><strong>circular</strong></a> и <a href="https://cran.r-project.org/web/packages/NPCirc/index.html"><strong>NPCirc</strong></a>, и методы из пакета <a href="https://cran.r-project.org/web/packages/pracma/index.html"><strong>pracma</strong></a>.</p>
 <p>Для работы с временными данными мы воспользуемся пакетом <a href="https://lubridate.tidyverse.org/"><strong>lubridate</strong></a>, который входит в <strong>tidyverse</strong>, но автоматически не подключается в сессию. Мы также воспользуемся пакетом <a href="https://github.com/thomasp85/gganimate"><strong>gganimate</strong></a>, который позволяет анимировать графики, построенные с помощью ggplot:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
-<span class="kw">library</span>(circular)
-<span class="kw">library</span>(readxl)
-<span class="kw">library</span>(NPCirc)
-<span class="kw">library</span>(pracma)
-<span class="kw">library</span>(lubridate)
-<span class="kw">library</span>(gganimate)</code></pre>
+<div class="sourceCode" id="cb359"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb359-1"><a href="circular.html#cb359-1"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb359-2"><a href="circular.html#cb359-2"></a><span class="kw">library</span>(circular)</span>
+<span id="cb359-3"><a href="circular.html#cb359-3"></a><span class="kw">library</span>(readxl)</span>
+<span id="cb359-4"><a href="circular.html#cb359-4"></a><span class="kw">library</span>(NPCirc)</span>
+<span id="cb359-5"><a href="circular.html#cb359-5"></a><span class="kw">library</span>(pracma)</span>
+<span id="cb359-6"><a href="circular.html#cb359-6"></a><span class="kw">library</span>(lubridate)</span>
+<span id="cb359-7"><a href="circular.html#cb359-7"></a><span class="kw">library</span>(gganimate)</span></code></pre></div>
 <p>Пакет <strong>gganimate</strong> пока что не опубликован на <em>CRAN</em>, но доступен на <em>GitHub</em>. Для его установки последовательно выполните в консоли (не в скрипте!) следующие команды:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&#39;devtools&#39;</span>)
-devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&#39;thomasp85/gganimate&#39;</span>)</code></pre>
+<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb360-1"><a href="circular.html#cb360-1"></a><span class="kw">install.packages</span>(<span class="st">&#39;devtools&#39;</span>)</span>
+<span id="cb360-2"><a href="circular.html#cb360-2"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&#39;thomasp85/gganimate&#39;</span>)</span></code></pre></div>
 <p>После этого пакет можно подключать в привычном режиме:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(gganimate)</code></pre>
+<div class="sourceCode" id="cb361"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb361-1"><a href="circular.html#cb361-1"></a><span class="kw">library</span>(gganimate)</span></code></pre></div>
 </div>
 <div id="circular_circ" class="section level2">
 <h2><span class="header-section-number">8.2</span> Статистика направлений</h2>
@@ -604,7 +599,7 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 <h3><span class="header-section-number">8.2.2</span> Практика</h3>
 <p>В практической части данного раздела мы будем работать с массивом среднемесячных значений метеопараметров в пограничном слое атмосферы по полярным аэрологическим обсерваториям России. Массив данных ежемесячно обновляется на <a href="http://aisori-m.meteo.ru">портале Аисори-М</a> <a href="http://meteo.ru/"><strong>ВНИИГМИ-МЦД</strong></a>.
 В системе доступны данные по следующим обсерваториям:</p>
-<pre class="sourceCode r"><code class="sourceCode r">obs =<span class="st"> </span>readxl<span class="op">::</span><span class="kw">read_excel</span>(<span class="st">&#39;bound/scheme.xlsx&#39;</span>, <span class="dv">2</span>)</code></pre>
+<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb362-1"><a href="circular.html#cb362-1"></a>obs =<span class="st"> </span>readxl<span class="op">::</span><span class="kw">read_excel</span>(<span class="st">&#39;bound/scheme.xlsx&#39;</span>, <span class="dv">2</span>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -871,212 +866,212 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 </tbody>
 </table>
 <p>Загрузим данные по всем обсерваториям из текстовых файлов в папке <em>bound</em>:</p>
-<pre class="sourceCode r"><code class="sourceCode r">files =<span class="st"> </span><span class="kw">paste</span>(<span class="st">&#39;bound&#39;</span>, <span class="kw">list.files</span>(<span class="st">&#39;bound&#39;</span>, <span class="st">&quot;*.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&#39;/&#39;</span>)
-
-(<span class="dt">tab =</span> <span class="kw">lapply</span>(files, <span class="cf">function</span>(X) readr<span class="op">::</span><span class="kw">read_table</span>(X, <span class="dt">col_names =</span> params<span class="op">$</span>Обозначение)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">left_join</span>(obs, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;INDEX&#39;</span> =<span class="st"> &#39;Индекс&#39;</span>))) <span class="co"># присоединим информацию о названиях станций</span>
-<span class="co">## # A tibble: 77,073 x 26</span>
-<span class="co">##    INDEX  GGGG    MM    HH     Z    MP    SP    NP    MT    ST    NT    MD</span>
-<span class="co">##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
-<span class="co">##  1 20674  2007     1     0  2000  7629    78    27  -187    35    27    53</span>
-<span class="co">##  2 20674  2007     1     0  1900  7732    79    27  -182    36    27    52</span>
-<span class="co">##  3 20674  2007     1     0  1800  7836    79    27  -178    36    27    51</span>
-<span class="co">##  4 20674  2007     1     0  1700  7942    80    27  -173    36    27    49</span>
-<span class="co">##  5 20674  2007     1     0  1600  8048    81    27  -168    36    27    48</span>
-<span class="co">##  6 20674  2007     1     0  1500  8157    81    27  -164    38    27    47</span>
-<span class="co">##  7 20674  2007     1     0  1400  8266    82    27  -160    39    27    45</span>
-<span class="co">##  8 20674  2007     1     0  1300  8376    82    27  -156    39    27    43</span>
-<span class="co">##  9 20674  2007     1     0  1200  8488    83    27  -152    40    27    40</span>
-<span class="co">## 10 20674  2007     1     0  1100  8601    83    27  -148    41    27    37</span>
-<span class="co">## # … with 77,063 more rows, and 14 more variables: SD &lt;dbl&gt;, ND &lt;dbl&gt;,</span>
-<span class="co">## #   MS &lt;dbl&gt;, SS &lt;dbl&gt;, NS &lt;dbl&gt;, MU &lt;dbl&gt;, SU &lt;dbl&gt;, NU &lt;dbl&gt;, MV &lt;dbl&gt;,</span>
-<span class="co">## #   SV &lt;dbl&gt;, NV &lt;dbl&gt;, Название &lt;chr&gt;, Широта &lt;dbl&gt;, Долгота &lt;dbl&gt;</span></code></pre>
+<div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb363-1"><a href="circular.html#cb363-1"></a>files =<span class="st"> </span><span class="kw">paste</span>(<span class="st">&#39;bound&#39;</span>, <span class="kw">list.files</span>(<span class="st">&#39;bound&#39;</span>, <span class="st">&quot;*.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&#39;/&#39;</span>)</span>
+<span id="cb363-2"><a href="circular.html#cb363-2"></a></span>
+<span id="cb363-3"><a href="circular.html#cb363-3"></a>(<span class="dt">tab =</span> <span class="kw">lapply</span>(files, <span class="cf">function</span>(X) readr<span class="op">::</span><span class="kw">read_table</span>(X, <span class="dt">col_names =</span> params<span class="op">$</span>Обозначение)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb363-4"><a href="circular.html#cb363-4"></a><span class="st">  </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb363-5"><a href="circular.html#cb363-5"></a><span class="st">  </span><span class="kw">left_join</span>(obs, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;INDEX&#39;</span> =<span class="st"> &#39;Индекс&#39;</span>))) <span class="co"># присоединим информацию о названиях станций</span></span>
+<span id="cb363-6"><a href="circular.html#cb363-6"></a><span class="co">## # A tibble: 77,073 x 26</span></span>
+<span id="cb363-7"><a href="circular.html#cb363-7"></a><span class="co">##    INDEX  GGGG    MM    HH     Z    MP    SP    NP    MT    ST    NT    MD</span></span>
+<span id="cb363-8"><a href="circular.html#cb363-8"></a><span class="co">##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb363-9"><a href="circular.html#cb363-9"></a><span class="co">##  1 20674  2007     1     0  2000  7629    78    27  -187    35    27    53</span></span>
+<span id="cb363-10"><a href="circular.html#cb363-10"></a><span class="co">##  2 20674  2007     1     0  1900  7732    79    27  -182    36    27    52</span></span>
+<span id="cb363-11"><a href="circular.html#cb363-11"></a><span class="co">##  3 20674  2007     1     0  1800  7836    79    27  -178    36    27    51</span></span>
+<span id="cb363-12"><a href="circular.html#cb363-12"></a><span class="co">##  4 20674  2007     1     0  1700  7942    80    27  -173    36    27    49</span></span>
+<span id="cb363-13"><a href="circular.html#cb363-13"></a><span class="co">##  5 20674  2007     1     0  1600  8048    81    27  -168    36    27    48</span></span>
+<span id="cb363-14"><a href="circular.html#cb363-14"></a><span class="co">##  6 20674  2007     1     0  1500  8157    81    27  -164    38    27    47</span></span>
+<span id="cb363-15"><a href="circular.html#cb363-15"></a><span class="co">##  7 20674  2007     1     0  1400  8266    82    27  -160    39    27    45</span></span>
+<span id="cb363-16"><a href="circular.html#cb363-16"></a><span class="co">##  8 20674  2007     1     0  1300  8376    82    27  -156    39    27    43</span></span>
+<span id="cb363-17"><a href="circular.html#cb363-17"></a><span class="co">##  9 20674  2007     1     0  1200  8488    83    27  -152    40    27    40</span></span>
+<span id="cb363-18"><a href="circular.html#cb363-18"></a><span class="co">## 10 20674  2007     1     0  1100  8601    83    27  -148    41    27    37</span></span>
+<span id="cb363-19"><a href="circular.html#cb363-19"></a><span class="co">## # … with 77,063 more rows, and 14 more variables: SD &lt;dbl&gt;, ND &lt;dbl&gt;,</span></span>
+<span id="cb363-20"><a href="circular.html#cb363-20"></a><span class="co">## #   MS &lt;dbl&gt;, SS &lt;dbl&gt;, NS &lt;dbl&gt;, MU &lt;dbl&gt;, SU &lt;dbl&gt;, NU &lt;dbl&gt;, MV &lt;dbl&gt;,</span></span>
+<span id="cb363-21"><a href="circular.html#cb363-21"></a><span class="co">## #   SV &lt;dbl&gt;, NV &lt;dbl&gt;, Название &lt;chr&gt;, Широта &lt;dbl&gt;, Долгота &lt;dbl&gt;</span></span></code></pre></div>
 <p>Создадим объект типа <code>circular</code> (из пакета <strong>circular</strong>) с направлениями ветра для анализа, и запишем его в новую переменую таблицы. Предварительно определим вспомогательную функцию, вычисляющую географический азимут на основе компонент скорости:</p>
-<pre class="sourceCode r"><code class="sourceCode r">geo_azimuth =<span class="st"> </span><span class="cf">function</span>(dx, dy) {
-  a =<span class="st"> </span><span class="kw">atan2</span>(dx, dy)
-  <span class="kw">ifelse</span>(a <span class="op">&lt;=</span><span class="st"> </span>pi<span class="op">/</span><span class="dv">2</span>, pi<span class="op">/</span><span class="dv">2</span> <span class="op">-</span><span class="st"> </span>a,  <span class="dv">5</span><span class="op">*</span>pi<span class="op">/</span><span class="dv">2</span> <span class="op">-</span><span class="st"> </span>a)
-}
-
-(<span class="dt">winds =</span> tab <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">wind =</span> <span class="kw">circular</span>(<span class="kw">geo_azimuth</span>(MV, MU), <span class="dt">template =</span> <span class="st">&#39;geographics&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">select</span>(INDEX, <span class="dt">name =</span> Название, GGGG, MM, HH, Z, MU, MV, SS, wind))
-<span class="co">## # A tibble: 77,073 x 10</span>
-<span class="co">##    INDEX name           GGGG    MM    HH     Z    MU    MV    SS wind      </span>
-<span class="co">##    &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;circular&gt;</span>
-<span class="co">##  1 20674 Остров Диксон  2007     1     0  2000    33    31    45 0.8166380 </span>
-<span class="co">##  2 20674 Остров Диксон  2007     1     0  1900    32    32    45 0.7853982 </span>
-<span class="co">##  3 20674 Остров Диксон  2007     1     0  1800    30    33    46 0.7378151 </span>
-<span class="co">##  4 20674 Остров Диксон  2007     1     0  1700    29    35    47 0.6919214 </span>
-<span class="co">##  5 20674 Остров Диксон  2007     1     0  1600    28    38    49 0.6350267 </span>
-<span class="co">##  6 20674 Остров Диксон  2007     1     0  1500    26    40    50 0.5763752 </span>
-<span class="co">##  7 20674 Остров Диксон  2007     1     0  1400    25    41    51 0.5475622 </span>
-<span class="co">##  8 20674 Остров Диксон  2007     1     0  1300    25    42    54 0.5369107 </span>
-<span class="co">##  9 20674 Остров Диксон  2007     1     0  1200    24    45    56 0.4899573 </span>
-<span class="co">## 10 20674 Остров Диксон  2007     1     0  1100    24    49    58 0.4554511 </span>
-<span class="co">## # … with 77,063 more rows</span></code></pre>
+<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb364-1"><a href="circular.html#cb364-1"></a>geo_azimuth =<span class="st"> </span><span class="cf">function</span>(dx, dy) {</span>
+<span id="cb364-2"><a href="circular.html#cb364-2"></a>  a =<span class="st"> </span><span class="kw">atan2</span>(dx, dy)</span>
+<span id="cb364-3"><a href="circular.html#cb364-3"></a>  <span class="kw">ifelse</span>(a <span class="op">&lt;=</span><span class="st"> </span>pi<span class="op">/</span><span class="dv">2</span>, pi<span class="op">/</span><span class="dv">2</span> <span class="op">-</span><span class="st"> </span>a,  <span class="dv">5</span><span class="op">*</span>pi<span class="op">/</span><span class="dv">2</span> <span class="op">-</span><span class="st"> </span>a)</span>
+<span id="cb364-4"><a href="circular.html#cb364-4"></a>}</span>
+<span id="cb364-5"><a href="circular.html#cb364-5"></a></span>
+<span id="cb364-6"><a href="circular.html#cb364-6"></a>(<span class="dt">winds =</span> tab <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb364-7"><a href="circular.html#cb364-7"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">wind =</span> <span class="kw">circular</span>(<span class="kw">geo_azimuth</span>(MV, MU), <span class="dt">template =</span> <span class="st">&#39;geographics&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb364-8"><a href="circular.html#cb364-8"></a><span class="st">  </span><span class="kw">select</span>(INDEX, <span class="dt">name =</span> Название, GGGG, MM, HH, Z, MU, MV, SS, wind))</span>
+<span id="cb364-9"><a href="circular.html#cb364-9"></a><span class="co">## # A tibble: 77,073 x 10</span></span>
+<span id="cb364-10"><a href="circular.html#cb364-10"></a><span class="co">##    INDEX name           GGGG    MM    HH     Z    MU    MV    SS wind      </span></span>
+<span id="cb364-11"><a href="circular.html#cb364-11"></a><span class="co">##    &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;circular&gt;</span></span>
+<span id="cb364-12"><a href="circular.html#cb364-12"></a><span class="co">##  1 20674 Остров Диксон  2007     1     0  2000    33    31    45 0.8166380 </span></span>
+<span id="cb364-13"><a href="circular.html#cb364-13"></a><span class="co">##  2 20674 Остров Диксон  2007     1     0  1900    32    32    45 0.7853982 </span></span>
+<span id="cb364-14"><a href="circular.html#cb364-14"></a><span class="co">##  3 20674 Остров Диксон  2007     1     0  1800    30    33    46 0.7378151 </span></span>
+<span id="cb364-15"><a href="circular.html#cb364-15"></a><span class="co">##  4 20674 Остров Диксон  2007     1     0  1700    29    35    47 0.6919214 </span></span>
+<span id="cb364-16"><a href="circular.html#cb364-16"></a><span class="co">##  5 20674 Остров Диксон  2007     1     0  1600    28    38    49 0.6350267 </span></span>
+<span id="cb364-17"><a href="circular.html#cb364-17"></a><span class="co">##  6 20674 Остров Диксон  2007     1     0  1500    26    40    50 0.5763752 </span></span>
+<span id="cb364-18"><a href="circular.html#cb364-18"></a><span class="co">##  7 20674 Остров Диксон  2007     1     0  1400    25    41    51 0.5475622 </span></span>
+<span id="cb364-19"><a href="circular.html#cb364-19"></a><span class="co">##  8 20674 Остров Диксон  2007     1     0  1300    25    42    54 0.5369107 </span></span>
+<span id="cb364-20"><a href="circular.html#cb364-20"></a><span class="co">##  9 20674 Остров Диксон  2007     1     0  1200    24    45    56 0.4899573 </span></span>
+<span id="cb364-21"><a href="circular.html#cb364-21"></a><span class="co">## 10 20674 Остров Диксон  2007     1     0  1100    24    49    58 0.4554511 </span></span>
+<span id="cb364-22"><a href="circular.html#cb364-22"></a><span class="co">## # … with 77,063 more rows</span></span></code></pre></div>
 <p>Выберем данные по высоте 0 метров за 12 часов дня для поселка Тикси, сохранив только составляющие скорости и ее скалярную величину:</p>
-<pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">tiksi_wind =</span> winds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> &#39;Тикси&#39;</span>, HH <span class="op">==</span><span class="st"> </span><span class="dv">12</span>, Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span>))
-<span class="co">## # A tibble: 136 x 10</span>
-<span class="co">##    INDEX name   GGGG    MM    HH     Z    MU    MV    SS wind      </span>
-<span class="co">##    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;circular&gt;</span>
-<span class="co">##  1 21824 Тикси  2007     1    12     0    36    35    48 0.7994817 </span>
-<span class="co">##  2 21824 Тикси  2007     2    12     0    16    11    27 0.9685090 </span>
-<span class="co">##  3 21824 Тикси  2007     3    12     0    23    22    34 0.8076167 </span>
-<span class="co">##  4 21824 Тикси  2007     4    12     0    17     9    30 1.0838971 </span>
-<span class="co">##  5 21824 Тикси  2007     5    12     0   -17    -3    34 4.5377168 </span>
-<span class="co">##  6 21824 Тикси  2007     6    12     0   -23   -25    27 3.8853482 </span>
-<span class="co">##  7 21824 Тикси  2007     7    12     0    -5   -11    27 3.5682201 </span>
-<span class="co">##  8 21824 Тикси  2007     8    12     0     4     5    25 0.6747409 </span>
-<span class="co">##  9 21824 Тикси  2007     9    12     0    24    14    34 1.0427219 </span>
-<span class="co">## 10 21824 Тикси  2007    10    12     0    41    47    40 0.7173217 </span>
-<span class="co">## # … with 126 more rows</span></code></pre>
+<div class="sourceCode" id="cb365"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb365-1"><a href="circular.html#cb365-1"></a>(<span class="dt">tiksi_wind =</span> winds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> &#39;Тикси&#39;</span>, HH <span class="op">==</span><span class="st"> </span><span class="dv">12</span>, Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span>))</span>
+<span id="cb365-2"><a href="circular.html#cb365-2"></a><span class="co">## # A tibble: 136 x 10</span></span>
+<span id="cb365-3"><a href="circular.html#cb365-3"></a><span class="co">##    INDEX name   GGGG    MM    HH     Z    MU    MV    SS wind      </span></span>
+<span id="cb365-4"><a href="circular.html#cb365-4"></a><span class="co">##    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;circular&gt;</span></span>
+<span id="cb365-5"><a href="circular.html#cb365-5"></a><span class="co">##  1 21824 Тикси  2007     1    12     0    36    35    48 0.7994817 </span></span>
+<span id="cb365-6"><a href="circular.html#cb365-6"></a><span class="co">##  2 21824 Тикси  2007     2    12     0    16    11    27 0.9685090 </span></span>
+<span id="cb365-7"><a href="circular.html#cb365-7"></a><span class="co">##  3 21824 Тикси  2007     3    12     0    23    22    34 0.8076167 </span></span>
+<span id="cb365-8"><a href="circular.html#cb365-8"></a><span class="co">##  4 21824 Тикси  2007     4    12     0    17     9    30 1.0838971 </span></span>
+<span id="cb365-9"><a href="circular.html#cb365-9"></a><span class="co">##  5 21824 Тикси  2007     5    12     0   -17    -3    34 4.5377168 </span></span>
+<span id="cb365-10"><a href="circular.html#cb365-10"></a><span class="co">##  6 21824 Тикси  2007     6    12     0   -23   -25    27 3.8853482 </span></span>
+<span id="cb365-11"><a href="circular.html#cb365-11"></a><span class="co">##  7 21824 Тикси  2007     7    12     0    -5   -11    27 3.5682201 </span></span>
+<span id="cb365-12"><a href="circular.html#cb365-12"></a><span class="co">##  8 21824 Тикси  2007     8    12     0     4     5    25 0.6747409 </span></span>
+<span id="cb365-13"><a href="circular.html#cb365-13"></a><span class="co">##  9 21824 Тикси  2007     9    12     0    24    14    34 1.0427219 </span></span>
+<span id="cb365-14"><a href="circular.html#cb365-14"></a><span class="co">## 10 21824 Тикси  2007    10    12     0    41    47    40 0.7173217 </span></span>
+<span id="cb365-15"><a href="circular.html#cb365-15"></a><span class="co">## # … with 126 more rows</span></span></code></pre></div>
 <p>Отобразим распределение направлений, розу-диаграмму и плотность распределения. Для построени графиков используем функции <code>plot.circular()</code> и <code>rose.diag</code> из пакета <strong>circular</strong>. Для аппроксимации плотности распределения направлений воспользуемся функцией <code>kern.den.circ()</code> из пакета <strong>NPCirc</strong>. Эта функция использует функцию плотности распределения <em>фон Мизеса</em> в качестве ядра и по умолчанию разбивает круг на 250 направлений, по которым производится оценка плотности (при необходимости это значение можно изменить в параметре <code>len</code>):</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot.circular</span>(tiksi_wind<span class="op">$</span>wind, 
-     <span class="dt">cex =</span> <span class="fl">0.5</span>, 
-     <span class="dt">stack =</span> <span class="ot">TRUE</span>, 
-     <span class="dt">sep =</span> <span class="fl">0.035</span>,
-     <span class="dt">axes =</span> <span class="ot">FALSE</span>,
-     <span class="dt">main =</span> <span class="st">&#39;Среднемноголетняя роза ветров в Тикси&#39;</span>,
-     <span class="dt">sub =</span> <span class="st">&#39;Измерения за период с 2007 по 2018 г, высота 0 м&#39;</span>)
-
-<span class="kw">rose.diag</span>(tiksi_wind<span class="op">$</span>wind, 
-          <span class="dt">bins =</span> <span class="dv">8</span>, 
-          <span class="dt">col =</span> <span class="st">&#39;gray70&#39;</span>,
-          <span class="dt">border =</span> <span class="st">&#39;gray30&#39;</span>,
-          <span class="dt">prop =</span> <span class="dv">1</span>, 
-          <span class="dt">add =</span> <span class="ot">TRUE</span>, 
-          <span class="dt">tick =</span> <span class="ot">FALSE</span>,
-          <span class="dt">lwd =</span> <span class="fl">0.5</span>)
-
-kden =<span class="st"> </span><span class="kw">kern.den.circ</span>(tiksi_wind<span class="op">$</span>wind)
-
-<span class="kw">lines</span>(kden, <span class="dt">shrink =</span> <span class="dv">3</span>, <span class="co"># параметр shrink отвечает за масштаб радиус-вектора</span>
-      <span class="dt">join =</span> F,
-      <span class="dt">col =</span> <span class="st">&#39;steelblue&#39;</span>)</code></pre>
+<div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb366-1"><a href="circular.html#cb366-1"></a><span class="kw">plot.circular</span>(tiksi_wind<span class="op">$</span>wind, </span>
+<span id="cb366-2"><a href="circular.html#cb366-2"></a>     <span class="dt">cex =</span> <span class="fl">0.5</span>, </span>
+<span id="cb366-3"><a href="circular.html#cb366-3"></a>     <span class="dt">stack =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb366-4"><a href="circular.html#cb366-4"></a>     <span class="dt">sep =</span> <span class="fl">0.035</span>,</span>
+<span id="cb366-5"><a href="circular.html#cb366-5"></a>     <span class="dt">axes =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb366-6"><a href="circular.html#cb366-6"></a>     <span class="dt">main =</span> <span class="st">&#39;Среднемноголетняя роза ветров в Тикси&#39;</span>,</span>
+<span id="cb366-7"><a href="circular.html#cb366-7"></a>     <span class="dt">sub =</span> <span class="st">&#39;Измерения за период с 2007 по 2018 г, высота 0 м&#39;</span>)</span>
+<span id="cb366-8"><a href="circular.html#cb366-8"></a></span>
+<span id="cb366-9"><a href="circular.html#cb366-9"></a><span class="kw">rose.diag</span>(tiksi_wind<span class="op">$</span>wind, </span>
+<span id="cb366-10"><a href="circular.html#cb366-10"></a>          <span class="dt">bins =</span> <span class="dv">8</span>, </span>
+<span id="cb366-11"><a href="circular.html#cb366-11"></a>          <span class="dt">col =</span> <span class="st">&#39;gray70&#39;</span>,</span>
+<span id="cb366-12"><a href="circular.html#cb366-12"></a>          <span class="dt">border =</span> <span class="st">&#39;gray30&#39;</span>,</span>
+<span id="cb366-13"><a href="circular.html#cb366-13"></a>          <span class="dt">prop =</span> <span class="dv">1</span>, </span>
+<span id="cb366-14"><a href="circular.html#cb366-14"></a>          <span class="dt">add =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb366-15"><a href="circular.html#cb366-15"></a>          <span class="dt">tick =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb366-16"><a href="circular.html#cb366-16"></a>          <span class="dt">lwd =</span> <span class="fl">0.5</span>)</span>
+<span id="cb366-17"><a href="circular.html#cb366-17"></a></span>
+<span id="cb366-18"><a href="circular.html#cb366-18"></a>kden =<span class="st"> </span><span class="kw">kern.den.circ</span>(tiksi_wind<span class="op">$</span>wind)</span>
+<span id="cb366-19"><a href="circular.html#cb366-19"></a></span>
+<span id="cb366-20"><a href="circular.html#cb366-20"></a><span class="kw">lines</span>(kden, <span class="dt">shrink =</span> <span class="dv">3</span>, <span class="co"># параметр shrink отвечает за масштаб радиус-вектора</span></span>
+<span id="cb366-21"><a href="circular.html#cb366-21"></a>      <span class="dt">join =</span> F,</span>
+<span id="cb366-22"><a href="circular.html#cb366-22"></a>      <span class="dt">col =</span> <span class="st">&#39;steelblue&#39;</span>)</span></code></pre></div>
 <p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <blockquote>
 <p>Параметр <code>shrink</code> отвечает за масштаб радиус-вектора на графиках из пакета <strong>circular</strong>. Чем больше его величина, тем сильнее будет сжат график относительно центра круга.</p>
 </blockquote>
 <p>Так же как и в случае с обычными данными, плотность распределения удобно использовать для определения модальных направлений, то есть наиболее часто встречающихся. Для этого воспользуемся функцией <code>findpeaks()</code> из пакета <strong>pracma</strong>:</p>
-<pre class="sourceCode r"><code class="sourceCode r">peak =<span class="st"> </span><span class="kw">findpeaks</span>(kden<span class="op">$</span>y, <span class="dt">sortstr =</span> T)[<span class="dv">1</span>,<span class="dv">2</span>] <span class="co"># находим индекс самого высокого пика плотности распределения</span>
-
-(<span class="dt">modal =</span> kden<span class="op">$</span>x[peak]) <span class="co"># извлекаем сам угол</span>
-<span class="co">## Circular Data: </span>
-<span class="co">## Type = angles </span>
-<span class="co">## Units = radians </span>
-<span class="co">## Template = geographics </span>
-<span class="co">## Modulo = asis </span>
-<span class="co">## Zero = 1.570796 </span>
-<span class="co">## Rotation = clock </span>
-<span class="co">## [1] 0.813786</span>
-
-<span class="co"># раскладываем на составляющие для отрисовки линии</span>
-xp =<span class="st"> </span><span class="kw">sin</span>(modal)
-yp =<span class="st"> </span><span class="kw">cos</span>(modal)
-
-<span class="kw">plot.circular</span>(tiksi_wind<span class="op">$</span>wind, 
-     <span class="dt">cex =</span> <span class="fl">0.5</span>, 
-     <span class="dt">stack =</span> <span class="ot">TRUE</span>, 
-     <span class="dt">sep =</span> <span class="fl">0.035</span>,
-     <span class="dt">axes =</span> <span class="ot">FALSE</span>,
-     <span class="dt">main =</span> <span class="st">&#39;Среднемноголетняя роза ветров в Тикси&#39;</span>,
-     <span class="dt">sub =</span> <span class="st">&#39;Измерения за период с 2007 по 2018 г, высота 0 м&#39;</span>)
-
-<span class="kw">rose.diag</span>(tiksi_wind<span class="op">$</span>wind, 
-          <span class="dt">bins =</span> <span class="dv">8</span>, 
-          <span class="dt">col =</span> <span class="st">&#39;gray70&#39;</span>,
-          <span class="dt">border =</span> <span class="st">&#39;gray30&#39;</span>,
-          <span class="dt">prop =</span> <span class="dv">1</span>, 
-          <span class="dt">add =</span> <span class="ot">TRUE</span>, 
-          <span class="dt">tick =</span> <span class="ot">FALSE</span>,
-          <span class="dt">lwd =</span> <span class="fl">0.5</span>)
-
-<span class="kw">lines</span>(kden, <span class="dt">shrink =</span> <span class="dv">3</span>, 
-      <span class="dt">join =</span> F, <span class="dt">col =</span> <span class="st">&#39;steelblue&#39;</span>)
-
-<span class="kw">lines</span>(<span class="kw">c</span>(<span class="dv">0</span>, xp), <span class="kw">c</span>(<span class="dv">0</span>, yp),
-      <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>)
-
-<span class="kw">text</span>(<span class="dt">x =</span> <span class="fl">1.4</span> <span class="op">*</span><span class="st"> </span>xp, <span class="dt">y =</span> <span class="fl">1.4</span> <span class="op">*</span><span class="st"> </span>yp, 
-     <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>,
-     <span class="dt">labels =</span> <span class="kw">paste0</span>(<span class="kw">round</span>(<span class="dv">180</span> <span class="op">*</span><span class="st"> </span>modal <span class="op">/</span><span class="st"> </span>pi, <span class="dv">0</span>), <span class="st">&#39;°&#39;</span>)) <span class="co"># приводим к целым градусам</span></code></pre>
+<div class="sourceCode" id="cb367"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb367-1"><a href="circular.html#cb367-1"></a>peak =<span class="st"> </span><span class="kw">findpeaks</span>(kden<span class="op">$</span>y, <span class="dt">sortstr =</span> T)[<span class="dv">1</span>,<span class="dv">2</span>] <span class="co"># находим индекс самого высокого пика плотности распределения</span></span>
+<span id="cb367-2"><a href="circular.html#cb367-2"></a></span>
+<span id="cb367-3"><a href="circular.html#cb367-3"></a>(<span class="dt">modal =</span> kden<span class="op">$</span>x[peak]) <span class="co"># извлекаем сам угол</span></span>
+<span id="cb367-4"><a href="circular.html#cb367-4"></a><span class="co">## Circular Data: </span></span>
+<span id="cb367-5"><a href="circular.html#cb367-5"></a><span class="co">## Type = angles </span></span>
+<span id="cb367-6"><a href="circular.html#cb367-6"></a><span class="co">## Units = radians </span></span>
+<span id="cb367-7"><a href="circular.html#cb367-7"></a><span class="co">## Template = geographics </span></span>
+<span id="cb367-8"><a href="circular.html#cb367-8"></a><span class="co">## Modulo = asis </span></span>
+<span id="cb367-9"><a href="circular.html#cb367-9"></a><span class="co">## Zero = 1.570796 </span></span>
+<span id="cb367-10"><a href="circular.html#cb367-10"></a><span class="co">## Rotation = clock </span></span>
+<span id="cb367-11"><a href="circular.html#cb367-11"></a><span class="co">## [1] 0.813786</span></span>
+<span id="cb367-12"><a href="circular.html#cb367-12"></a></span>
+<span id="cb367-13"><a href="circular.html#cb367-13"></a><span class="co"># раскладываем на составляющие для отрисовки линии</span></span>
+<span id="cb367-14"><a href="circular.html#cb367-14"></a>xp =<span class="st"> </span><span class="kw">sin</span>(modal)</span>
+<span id="cb367-15"><a href="circular.html#cb367-15"></a>yp =<span class="st"> </span><span class="kw">cos</span>(modal)</span>
+<span id="cb367-16"><a href="circular.html#cb367-16"></a></span>
+<span id="cb367-17"><a href="circular.html#cb367-17"></a><span class="kw">plot.circular</span>(tiksi_wind<span class="op">$</span>wind, </span>
+<span id="cb367-18"><a href="circular.html#cb367-18"></a>     <span class="dt">cex =</span> <span class="fl">0.5</span>, </span>
+<span id="cb367-19"><a href="circular.html#cb367-19"></a>     <span class="dt">stack =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb367-20"><a href="circular.html#cb367-20"></a>     <span class="dt">sep =</span> <span class="fl">0.035</span>,</span>
+<span id="cb367-21"><a href="circular.html#cb367-21"></a>     <span class="dt">axes =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb367-22"><a href="circular.html#cb367-22"></a>     <span class="dt">main =</span> <span class="st">&#39;Среднемноголетняя роза ветров в Тикси&#39;</span>,</span>
+<span id="cb367-23"><a href="circular.html#cb367-23"></a>     <span class="dt">sub =</span> <span class="st">&#39;Измерения за период с 2007 по 2018 г, высота 0 м&#39;</span>)</span>
+<span id="cb367-24"><a href="circular.html#cb367-24"></a></span>
+<span id="cb367-25"><a href="circular.html#cb367-25"></a><span class="kw">rose.diag</span>(tiksi_wind<span class="op">$</span>wind, </span>
+<span id="cb367-26"><a href="circular.html#cb367-26"></a>          <span class="dt">bins =</span> <span class="dv">8</span>, </span>
+<span id="cb367-27"><a href="circular.html#cb367-27"></a>          <span class="dt">col =</span> <span class="st">&#39;gray70&#39;</span>,</span>
+<span id="cb367-28"><a href="circular.html#cb367-28"></a>          <span class="dt">border =</span> <span class="st">&#39;gray30&#39;</span>,</span>
+<span id="cb367-29"><a href="circular.html#cb367-29"></a>          <span class="dt">prop =</span> <span class="dv">1</span>, </span>
+<span id="cb367-30"><a href="circular.html#cb367-30"></a>          <span class="dt">add =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb367-31"><a href="circular.html#cb367-31"></a>          <span class="dt">tick =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb367-32"><a href="circular.html#cb367-32"></a>          <span class="dt">lwd =</span> <span class="fl">0.5</span>)</span>
+<span id="cb367-33"><a href="circular.html#cb367-33"></a></span>
+<span id="cb367-34"><a href="circular.html#cb367-34"></a><span class="kw">lines</span>(kden, <span class="dt">shrink =</span> <span class="dv">3</span>, </span>
+<span id="cb367-35"><a href="circular.html#cb367-35"></a>      <span class="dt">join =</span> F, <span class="dt">col =</span> <span class="st">&#39;steelblue&#39;</span>)</span>
+<span id="cb367-36"><a href="circular.html#cb367-36"></a></span>
+<span id="cb367-37"><a href="circular.html#cb367-37"></a><span class="kw">lines</span>(<span class="kw">c</span>(<span class="dv">0</span>, xp), <span class="kw">c</span>(<span class="dv">0</span>, yp),</span>
+<span id="cb367-38"><a href="circular.html#cb367-38"></a>      <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>)</span>
+<span id="cb367-39"><a href="circular.html#cb367-39"></a></span>
+<span id="cb367-40"><a href="circular.html#cb367-40"></a><span class="kw">text</span>(<span class="dt">x =</span> <span class="fl">1.4</span> <span class="op">*</span><span class="st"> </span>xp, <span class="dt">y =</span> <span class="fl">1.4</span> <span class="op">*</span><span class="st"> </span>yp, </span>
+<span id="cb367-41"><a href="circular.html#cb367-41"></a>     <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>,</span>
+<span id="cb367-42"><a href="circular.html#cb367-42"></a>     <span class="dt">labels =</span> <span class="kw">paste0</span>(<span class="kw">round</span>(<span class="dv">180</span> <span class="op">*</span><span class="st"> </span>modal <span class="op">/</span><span class="st"> </span>pi, <span class="dv">0</span>), <span class="st">&#39;°&#39;</span>)) <span class="co"># приводим к целым градусам</span></span></code></pre></div>
 <p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>Проведем анализ направлений для всех станций. Для этого рассчитаем функции плотности распределения и разместим их в новом фрейме данных с лист-колонкой.</p>
 <blockquote>
 <p><strong>Лист-колонка</strong> (<em>list-column</em>) позволяет хранить в ячейках таблицы данные произвольного типа. В частности, используя лист-колонку, вы можете хранить в каждой ячейке не один объект, а множество объектов, например записать в нее вектор. Лист-колонка имеет тип <code>list</code>, и каждая ячейка в этой колонке так же, соответственно, имеет тип <code>list</code>. Что (и в каком количестве) располагать внутри ячейки — уже ваше дело. Лист-колонки оказываются неожиданно удобны в самых разнообразных сценариях, в том числе для представления статистических моделей (соответствующих каждой строке таблицы) и для хранения пространственных данных (об этом — в следующей лекции). Вместо хранения этих данных в отдельных переменных вы можете записать их в ячейки.</p>
 </blockquote>
 <p>В приведенном ниже коде мы группируем все измерения по имени аэрологической обсерватории, вычисляем вектор плотности распределения, записываем его в список, и этот список уже помещается функцией <code>summarise()</code> в <em>единственную</em> ячейку столбца <em>kden</em>, соответствующую данной аэрологической станции. Далее полученная лист-колонка используется для нахождения модальных значений (тут оказывается полезно знание функционалов семейства <code>apply</code>):</p>
-<pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">dens =</span> winds <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(HH <span class="op">==</span><span class="st"> </span><span class="dv">12</span>, Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">group_by</span>(name) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">kden =</span> <span class="kw">list</span>(<span class="kw">kern.den.circ</span>(wind))) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">peak =</span> <span class="kw">sapply</span>(kden, <span class="cf">function</span>(X) {
-                  peak =<span class="st"> </span><span class="kw">findpeaks</span>(X<span class="op">$</span>y, <span class="dt">sortstr =</span> T)[<span class="dv">1</span>,<span class="dv">2</span>]
-                  X<span class="op">$</span>x[peak]
-                })
-  )
-)
-<span class="co">## # A tibble: 13 x 3</span>
-<span class="co">##    name            kden         peak</span>
-<span class="co">##    &lt;chr&gt;           &lt;list&gt;      &lt;dbl&gt;</span>
-<span class="co">##  1 Верхоянск       &lt;dnsty.cr&gt; -2.97 </span>
-<span class="co">##  2 Жиганск         &lt;dnsty.cr&gt; -3.20 </span>
-<span class="co">##  3 Кандалакша      &lt;dnsty.cr&gt; -0.347</span>
-<span class="co">##  4 Мирный          &lt;dnsty.cr&gt; -0.826</span>
-<span class="co">##  5 Мурманск        &lt;dnsty.cr&gt;  0.814</span>
-<span class="co">##  6 Нарьян-Мар      &lt;dnsty.cr&gt;  1.04 </span>
-<span class="co">##  7 Новолазаревская &lt;dnsty.cr&gt; -0.902</span>
-<span class="co">##  8 Норильск        &lt;dnsty.cr&gt; -0.877</span>
-<span class="co">##  9 Оленек          &lt;dnsty.cr&gt; -3.48 </span>
-<span class="co">## 10 Остров Диксон   &lt;dnsty.cr&gt; -0.145</span>
-<span class="co">## 11 Салехард        &lt;dnsty.cr&gt; -2.82 </span>
-<span class="co">## 12 Тикси           &lt;dnsty.cr&gt;  0.814</span>
-<span class="co">## 13 Шойна           &lt;dnsty.cr&gt;  0.561</span></code></pre>
+<div class="sourceCode" id="cb368"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb368-1"><a href="circular.html#cb368-1"></a>(<span class="dt">dens =</span> winds <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb368-2"><a href="circular.html#cb368-2"></a><span class="st">  </span><span class="kw">filter</span>(HH <span class="op">==</span><span class="st"> </span><span class="dv">12</span>, Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span></span>
+<span id="cb368-3"><a href="circular.html#cb368-3"></a><span class="st">  </span><span class="kw">group_by</span>(name) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb368-4"><a href="circular.html#cb368-4"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">kden =</span> <span class="kw">list</span>(<span class="kw">kern.den.circ</span>(wind))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb368-5"><a href="circular.html#cb368-5"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">peak =</span> <span class="kw">sapply</span>(kden, <span class="cf">function</span>(X) {</span>
+<span id="cb368-6"><a href="circular.html#cb368-6"></a>                  peak =<span class="st"> </span><span class="kw">findpeaks</span>(X<span class="op">$</span>y, <span class="dt">sortstr =</span> T)[<span class="dv">1</span>,<span class="dv">2</span>]</span>
+<span id="cb368-7"><a href="circular.html#cb368-7"></a>                  X<span class="op">$</span>x[peak]</span>
+<span id="cb368-8"><a href="circular.html#cb368-8"></a>                })</span>
+<span id="cb368-9"><a href="circular.html#cb368-9"></a>  )</span>
+<span id="cb368-10"><a href="circular.html#cb368-10"></a>)</span>
+<span id="cb368-11"><a href="circular.html#cb368-11"></a><span class="co">## # A tibble: 13 x 3</span></span>
+<span id="cb368-12"><a href="circular.html#cb368-12"></a><span class="co">##    name            kden         peak</span></span>
+<span id="cb368-13"><a href="circular.html#cb368-13"></a><span class="co">##    &lt;chr&gt;           &lt;list&gt;      &lt;dbl&gt;</span></span>
+<span id="cb368-14"><a href="circular.html#cb368-14"></a><span class="co">##  1 Верхоянск       &lt;dnsty.cr&gt; -2.97 </span></span>
+<span id="cb368-15"><a href="circular.html#cb368-15"></a><span class="co">##  2 Жиганск         &lt;dnsty.cr&gt; -3.20 </span></span>
+<span id="cb368-16"><a href="circular.html#cb368-16"></a><span class="co">##  3 Кандалакша      &lt;dnsty.cr&gt; -0.347</span></span>
+<span id="cb368-17"><a href="circular.html#cb368-17"></a><span class="co">##  4 Мирный          &lt;dnsty.cr&gt; -0.826</span></span>
+<span id="cb368-18"><a href="circular.html#cb368-18"></a><span class="co">##  5 Мурманск        &lt;dnsty.cr&gt;  0.814</span></span>
+<span id="cb368-19"><a href="circular.html#cb368-19"></a><span class="co">##  6 Нарьян-Мар      &lt;dnsty.cr&gt;  1.04 </span></span>
+<span id="cb368-20"><a href="circular.html#cb368-20"></a><span class="co">##  7 Новолазаревская &lt;dnsty.cr&gt; -0.902</span></span>
+<span id="cb368-21"><a href="circular.html#cb368-21"></a><span class="co">##  8 Норильск        &lt;dnsty.cr&gt; -0.877</span></span>
+<span id="cb368-22"><a href="circular.html#cb368-22"></a><span class="co">##  9 Оленек          &lt;dnsty.cr&gt; -3.48 </span></span>
+<span id="cb368-23"><a href="circular.html#cb368-23"></a><span class="co">## 10 Остров Диксон   &lt;dnsty.cr&gt; -0.145</span></span>
+<span id="cb368-24"><a href="circular.html#cb368-24"></a><span class="co">## 11 Салехард        &lt;dnsty.cr&gt; -2.82 </span></span>
+<span id="cb368-25"><a href="circular.html#cb368-25"></a><span class="co">## 12 Тикси           &lt;dnsty.cr&gt;  0.814</span></span>
+<span id="cb368-26"><a href="circular.html#cb368-26"></a><span class="co">## 13 Шойна           &lt;dnsty.cr&gt;  0.561</span></span></code></pre></div>
 <p>После этого построим розы-диаграммы для всех станций. В данном случае оправдано использование обычного цикла, т.к. итераций немного:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># устанавливаем параметры компоновки</span>
-<span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>),
-    <span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
-
-<span class="co"># строим графики в цикле</span>
-<span class="cf">for</span> (obs_name <span class="cf">in</span> dens<span class="op">$</span>name) {
-  
-  wind_df =<span class="st"> </span>winds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> </span>obs_name, HH <span class="op">==</span><span class="st"> </span><span class="dv">12</span>, Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)
-  dens_df =<span class="st"> </span>dens <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> </span>obs_name)
-  
-  modal =<span class="st"> </span>dens_df<span class="op">$</span>peak
-
-  xp =<span class="st"> </span><span class="kw">sin</span>(modal)
-  yp =<span class="st"> </span><span class="kw">cos</span>(modal)
-  
-  <span class="kw">plot.circular</span>(wind_df<span class="op">$</span>wind, 
-       <span class="dt">shrink =</span> <span class="fl">1.2</span>,
-       <span class="dt">cex =</span> <span class="fl">0.5</span>, 
-       <span class="dt">stack =</span> <span class="ot">TRUE</span>, 
-       <span class="dt">sep =</span> <span class="fl">0.035</span>,
-       <span class="dt">axes =</span> <span class="ot">FALSE</span>,
-       <span class="dt">main =</span> obs_name)
-  
-  <span class="kw">rose.diag</span>(wind_df<span class="op">$</span>wind, 
-            <span class="dt">bins =</span> <span class="dv">8</span>, 
-            <span class="dt">col =</span> <span class="st">&#39;gray70&#39;</span>,
-            <span class="dt">border =</span> <span class="st">&#39;gray30&#39;</span>,
-            <span class="dt">prop =</span> <span class="dv">1</span>, 
-            <span class="dt">add =</span> <span class="ot">TRUE</span>, 
-            <span class="dt">tick =</span> <span class="ot">FALSE</span>,
-            <span class="dt">lwd =</span> <span class="fl">0.5</span>)
-  
-  <span class="kw">lines</span>(dens_df<span class="op">$</span>kden[[<span class="dv">1</span>]], 
-        <span class="dt">shrink =</span> <span class="dv">3</span>, <span class="dt">join=</span>F,
-        <span class="dt">col =</span> <span class="st">&#39;steelblue&#39;</span>)
-  
-  <span class="kw">lines</span>(<span class="kw">c</span>(<span class="dv">0</span>, xp), <span class="kw">c</span>(<span class="dv">0</span>, yp),
-        <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>)
-  
-  <span class="kw">text</span>(<span class="dt">x =</span> <span class="fl">1.4</span> <span class="op">*</span><span class="st"> </span>xp, <span class="dt">y =</span> <span class="fl">1.4</span> <span class="op">*</span><span class="st"> </span>yp, 
-       <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>,
-       <span class="dt">labels =</span> <span class="kw">paste0</span>(<span class="kw">round</span>(<span class="dv">180</span> <span class="op">*</span><span class="st"> </span>modal <span class="op">/</span><span class="st"> </span>pi, <span class="dv">0</span>), <span class="st">&#39;°&#39;</span>)) <span class="co"># приводим к целым градусам</span>
-}</code></pre>
+<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb369-1"><a href="circular.html#cb369-1"></a><span class="co"># устанавливаем параметры компоновки</span></span>
+<span id="cb369-2"><a href="circular.html#cb369-2"></a><span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb369-3"><a href="circular.html#cb369-3"></a>    <span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb369-4"><a href="circular.html#cb369-4"></a></span>
+<span id="cb369-5"><a href="circular.html#cb369-5"></a><span class="co"># строим графики в цикле</span></span>
+<span id="cb369-6"><a href="circular.html#cb369-6"></a><span class="cf">for</span> (obs_name <span class="cf">in</span> dens<span class="op">$</span>name) {</span>
+<span id="cb369-7"><a href="circular.html#cb369-7"></a>  </span>
+<span id="cb369-8"><a href="circular.html#cb369-8"></a>  wind_df =<span class="st"> </span>winds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> </span>obs_name, HH <span class="op">==</span><span class="st"> </span><span class="dv">12</span>, Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</span>
+<span id="cb369-9"><a href="circular.html#cb369-9"></a>  dens_df =<span class="st"> </span>dens <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> </span>obs_name)</span>
+<span id="cb369-10"><a href="circular.html#cb369-10"></a>  </span>
+<span id="cb369-11"><a href="circular.html#cb369-11"></a>  modal =<span class="st"> </span>dens_df<span class="op">$</span>peak</span>
+<span id="cb369-12"><a href="circular.html#cb369-12"></a></span>
+<span id="cb369-13"><a href="circular.html#cb369-13"></a>  xp =<span class="st"> </span><span class="kw">sin</span>(modal)</span>
+<span id="cb369-14"><a href="circular.html#cb369-14"></a>  yp =<span class="st"> </span><span class="kw">cos</span>(modal)</span>
+<span id="cb369-15"><a href="circular.html#cb369-15"></a>  </span>
+<span id="cb369-16"><a href="circular.html#cb369-16"></a>  <span class="kw">plot.circular</span>(wind_df<span class="op">$</span>wind, </span>
+<span id="cb369-17"><a href="circular.html#cb369-17"></a>       <span class="dt">shrink =</span> <span class="fl">1.2</span>,</span>
+<span id="cb369-18"><a href="circular.html#cb369-18"></a>       <span class="dt">cex =</span> <span class="fl">0.5</span>, </span>
+<span id="cb369-19"><a href="circular.html#cb369-19"></a>       <span class="dt">stack =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb369-20"><a href="circular.html#cb369-20"></a>       <span class="dt">sep =</span> <span class="fl">0.035</span>,</span>
+<span id="cb369-21"><a href="circular.html#cb369-21"></a>       <span class="dt">axes =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb369-22"><a href="circular.html#cb369-22"></a>       <span class="dt">main =</span> obs_name)</span>
+<span id="cb369-23"><a href="circular.html#cb369-23"></a>  </span>
+<span id="cb369-24"><a href="circular.html#cb369-24"></a>  <span class="kw">rose.diag</span>(wind_df<span class="op">$</span>wind, </span>
+<span id="cb369-25"><a href="circular.html#cb369-25"></a>            <span class="dt">bins =</span> <span class="dv">8</span>, </span>
+<span id="cb369-26"><a href="circular.html#cb369-26"></a>            <span class="dt">col =</span> <span class="st">&#39;gray70&#39;</span>,</span>
+<span id="cb369-27"><a href="circular.html#cb369-27"></a>            <span class="dt">border =</span> <span class="st">&#39;gray30&#39;</span>,</span>
+<span id="cb369-28"><a href="circular.html#cb369-28"></a>            <span class="dt">prop =</span> <span class="dv">1</span>, </span>
+<span id="cb369-29"><a href="circular.html#cb369-29"></a>            <span class="dt">add =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb369-30"><a href="circular.html#cb369-30"></a>            <span class="dt">tick =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb369-31"><a href="circular.html#cb369-31"></a>            <span class="dt">lwd =</span> <span class="fl">0.5</span>)</span>
+<span id="cb369-32"><a href="circular.html#cb369-32"></a>  </span>
+<span id="cb369-33"><a href="circular.html#cb369-33"></a>  <span class="kw">lines</span>(dens_df<span class="op">$</span>kden[[<span class="dv">1</span>]], </span>
+<span id="cb369-34"><a href="circular.html#cb369-34"></a>        <span class="dt">shrink =</span> <span class="dv">3</span>, <span class="dt">join=</span>F,</span>
+<span id="cb369-35"><a href="circular.html#cb369-35"></a>        <span class="dt">col =</span> <span class="st">&#39;steelblue&#39;</span>)</span>
+<span id="cb369-36"><a href="circular.html#cb369-36"></a>  </span>
+<span id="cb369-37"><a href="circular.html#cb369-37"></a>  <span class="kw">lines</span>(<span class="kw">c</span>(<span class="dv">0</span>, xp), <span class="kw">c</span>(<span class="dv">0</span>, yp),</span>
+<span id="cb369-38"><a href="circular.html#cb369-38"></a>        <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>)</span>
+<span id="cb369-39"><a href="circular.html#cb369-39"></a>  </span>
+<span id="cb369-40"><a href="circular.html#cb369-40"></a>  <span class="kw">text</span>(<span class="dt">x =</span> <span class="fl">1.4</span> <span class="op">*</span><span class="st"> </span>xp, <span class="dt">y =</span> <span class="fl">1.4</span> <span class="op">*</span><span class="st"> </span>yp, </span>
+<span id="cb369-41"><a href="circular.html#cb369-41"></a>       <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>,</span>
+<span id="cb369-42"><a href="circular.html#cb369-42"></a>       <span class="dt">labels =</span> <span class="kw">paste0</span>(<span class="kw">round</span>(<span class="dv">180</span> <span class="op">*</span><span class="st"> </span>modal <span class="op">/</span><span class="st"> </span>pi, <span class="dv">0</span>), <span class="st">&#39;°&#39;</span>)) <span class="co"># приводим к целым градусам</span></span>
+<span id="cb369-43"><a href="circular.html#cb369-43"></a>}</span></code></pre></div>
 <p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-1.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-2.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-3.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-4.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-5.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-6.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-7.png" width="672" /></p>
 <p>Таким образом, мы провели графический и статистический анализ среднемноголетних направлений ветра по данным полярных аэрологических станций России. Выявлены модальные направлений, выполнена аппроксимация функции плотности вероятности направлений ветра.</p>
 </div>

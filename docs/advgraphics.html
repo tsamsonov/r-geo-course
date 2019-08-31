@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Глава 6 Продвинутая графика в R | Визуализация и анализ географических данных на языке R</title>
   <meta name="description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
-  <meta name="generator" content="bookdown 0.10 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Глава 6 Продвинутая графика в R | Визуализация и анализ географических данных на языке R" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Тимофей Самсонов" />
 
 
-<meta name="date" content="2019-05-16" />
+<meta name="date" content="2019-08-31" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -72,26 +72,27 @@
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
 code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -100,9 +101,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -184,10 +185,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="1.4" data-path="data-types.html"><a href="data-types.html#ifelse"><i class="fa fa-check"></i><b>1.4</b> Условный оператор</a></li>
 <li class="chapter" data-level="1.5" data-path="data-types.html"><a href="data-types.html#switch"><i class="fa fa-check"></i><b>1.5</b> Оператор переключения</a></li>
-<li class="chapter" data-level="1.6" data-path="data-types.html"><a href="data-types.html#review"><i class="fa fa-check"></i><b>1.6</b> Краткий обзор</a></li>
-<li class="chapter" data-level="1.7" data-path="data-types.html"><a href="data-types.html#questions_tasks_basics"><i class="fa fa-check"></i><b>1.7</b> Контрольные вопросы и упражнения</a><ul>
-<li class="chapter" data-level="1.7.1" data-path="data-types.html"><a href="data-types.html#questions_basics"><i class="fa fa-check"></i><b>1.7.1</b> Вопросы</a></li>
-<li class="chapter" data-level="1.7.2" data-path="data-types.html"><a href="data-types.html#tasks_basic"><i class="fa fa-check"></i><b>1.7.2</b> Упражнения</a></li>
+<li class="chapter" data-level="1.6" data-path="data-types.html"><a href="data-types.html#basics-detail"><i class="fa fa-check"></i><b>1.6</b> Технические детали</a></li>
+<li class="chapter" data-level="1.7" data-path="data-types.html"><a href="data-types.html#review"><i class="fa fa-check"></i><b>1.7</b> Краткий обзор</a></li>
+<li class="chapter" data-level="1.8" data-path="data-types.html"><a href="data-types.html#questions_tasks_basics"><i class="fa fa-check"></i><b>1.8</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="1.8.1" data-path="data-types.html"><a href="data-types.html#questions_basics"><i class="fa fa-check"></i><b>1.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="1.8.2" data-path="data-types.html"><a href="data-types.html#tasks_basic"><i class="fa fa-check"></i><b>1.8.2</b> Упражнения</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="data-structures.html"><a href="data-structures.html"><i class="fa fa-check"></i><b>2</b> Структуры данных и циклы</a><ul>
@@ -443,59 +445,52 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="14" data-path="kriging.html"><a href="kriging.html"><i class="fa fa-check"></i><b>14</b> Геостатистическая интерполяция</a><ul>
-<li class="chapter" data-level="14.1" data-path="kriging.html"><a href="kriging.html#section-15"><i class="fa fa-check"></i><b>14.1</b> Теоретические сведения</a><ul>
-<li class="chapter" data-level="14.1.1" data-path="kriging.html"><a href="kriging.html#section-16"><i class="fa fa-check"></i><b>14.1.1</b> Базовые компоненты</a></li>
-<li class="chapter" data-level="14.1.2" data-path="kriging.html"><a href="kriging.html#section-17"><i class="fa fa-check"></i><b>14.1.2</b> Случайная величина</a></li>
-<li class="chapter" data-level="14.1.3" data-path="kriging.html"><a href="kriging.html#section-18"><i class="fa fa-check"></i><b>14.1.3</b> Пространственная модель</a></li>
-<li class="chapter" data-level="14.1.4" data-path="kriging.html"><a href="kriging.html#section-19"><i class="fa fa-check"></i><b>14.1.4</b> Случайный процесс (функция)</a></li>
-<li class="chapter" data-level="14.1.5" data-path="kriging.html"><a href="kriging.html#section-20"><i class="fa fa-check"></i><b>14.1.5</b> Автокорреляция</a></li>
-<li class="chapter" data-level="14.1.6" data-path="kriging.html"><a href="kriging.html#section-21"><i class="fa fa-check"></i><b>14.1.6</b> Пространственная статистика</a></li>
-<li class="chapter" data-level="14.1.7" data-path="kriging.html"><a href="kriging.html#section-22"><i class="fa fa-check"></i><b>14.1.7</b> Геостатистическое оценивание</a></li>
-<li class="chapter" data-level="14.1.8" data-path="kriging.html"><a href="kriging.html#section-23"><i class="fa fa-check"></i><b>14.1.8</b> Математическое ожидание</a></li>
-<li class="chapter" data-level="14.1.9" data-path="kriging.html"><a href="kriging.html#section-24"><i class="fa fa-check"></i><b>14.1.9</b> Дисперсия</a></li>
-<li class="chapter" data-level="14.1.10" data-path="kriging.html"><a href="kriging.html#section-25"><i class="fa fa-check"></i><b>14.1.10</b> Ковариация</a></li>
-<li class="chapter" data-level="14.1.11" data-path="kriging.html"><a href="kriging.html#section-26"><i class="fa fa-check"></i><b>14.1.11</b> Свойства моментов случайных процессов</a></li>
-<li class="chapter" data-level="14.1.12" data-path="kriging.html"><a href="kriging.html#section-27"><i class="fa fa-check"></i><b>14.1.12</b> Гипотеза стационарности</a></li>
-<li class="chapter" data-level="14.1.13" data-path="kriging.html"><a href="kriging.html#section-28"><i class="fa fa-check"></i><b>14.1.13</b> Стационарность</a></li>
-<li class="chapter" data-level="14.1.14" data-path="kriging.html"><a href="kriging.html#section-29"><i class="fa fa-check"></i><b>14.1.14</b> Стационарность</a></li>
-<li class="chapter" data-level="14.1.15" data-path="kriging.html"><a href="kriging.html#section-30"><i class="fa fa-check"></i><b>14.1.15</b> Стационарность второго порядка</a></li>
-<li class="chapter" data-level="14.1.16" data-path="kriging.html"><a href="kriging.html#section-31"><i class="fa fa-check"></i><b>14.1.16</b> Эргодичность</a></li>
-<li class="chapter" data-level="14.1.17" data-path="kriging.html"><a href="kriging.html#section-32"><i class="fa fa-check"></i><b>14.1.17</b> Простой кригинг</a></li>
-<li class="chapter" data-level="14.1.18" data-path="kriging.html"><a href="kriging.html#section-33"><i class="fa fa-check"></i><b>14.1.18</b> Дисперсия простого кригинга</a></li>
-<li class="chapter" data-level="14.1.19" data-path="kriging.html"><a href="kriging.html#section-34"><i class="fa fa-check"></i><b>14.1.19</b> Стационарность приращений</a></li>
-<li class="chapter" data-level="14.1.20" data-path="kriging.html"><a href="kriging.html#section-35"><i class="fa fa-check"></i><b>14.1.20</b> Положительная определенность</a></li>
-<li class="chapter" data-level="14.1.21" data-path="kriging.html"><a href="kriging.html#section-36"><i class="fa fa-check"></i><b>14.1.21</b> Допустимые линейные комбинации</a></li>
-<li class="chapter" data-level="14.1.22" data-path="kriging.html"><a href="kriging.html#section-37"><i class="fa fa-check"></i><b>14.1.22</b> Условная положительная определенность</a></li>
-<li class="chapter" data-level="14.1.23" data-path="kriging.html"><a href="kriging.html#section-38"><i class="fa fa-check"></i><b>14.1.23</b> Переход от ковариации к вариограмме</a></li>
-<li class="chapter" data-level="14.1.24" data-path="kriging.html"><a href="kriging.html#section-39"><i class="fa fa-check"></i><b>14.1.24</b> Обычный кригинг</a></li>
-<li class="chapter" data-level="14.1.25" data-path="kriging.html"><a href="kriging.html#section-40"><i class="fa fa-check"></i><b>14.1.25</b> Дисперсия обычного кригинга</a></li>
-<li class="chapter" data-level="14.1.26" data-path="kriging.html"><a href="kriging.html#section-41"><i class="fa fa-check"></i><b>14.1.26</b> Универсальный кригинг</a></li>
-<li class="chapter" data-level="14.1.27" data-path="kriging.html"><a href="kriging.html#section-42"><i class="fa fa-check"></i><b>14.1.27</b> Дисперсия универсального кригинга</a></li>
-<li class="chapter" data-level="14.1.28" data-path="kriging.html"><a href="kriging.html#section-43"><i class="fa fa-check"></i><b>14.1.28</b> Кросс-валидация</a></li>
-<li class="chapter" data-level="14.1.29" data-path="kriging.html"><a href="kriging.html#section-44"><i class="fa fa-check"></i><b>14.1.29</b> Вариограмма</a></li>
-<li class="chapter" data-level="14.1.30" data-path="kriging.html"><a href="kriging.html#section-45"><i class="fa fa-check"></i><b>14.1.30</b> Сферическая модель</a></li>
-<li class="chapter" data-level="14.1.31" data-path="kriging.html"><a href="kriging.html#section-46"><i class="fa fa-check"></i><b>14.1.31</b> Экспоненциальная модель</a></li>
-<li class="chapter" data-level="14.1.32" data-path="kriging.html"><a href="kriging.html#section-47"><i class="fa fa-check"></i><b>14.1.32</b> Гауссова модель</a></li>
-<li class="chapter" data-level="14.1.33" data-path="kriging.html"><a href="kriging.html#section-48"><i class="fa fa-check"></i><b>14.1.33</b> Степенная модель</a></li>
-<li class="chapter" data-level="14.1.34" data-path="kriging.html"><a href="kriging.html#section-49"><i class="fa fa-check"></i><b>14.1.34</b> Эффект самородка (модель наггет)</a></li>
-<li class="chapter" data-level="14.1.35" data-path="kriging.html"><a href="kriging.html#section-50"><i class="fa fa-check"></i><b>14.1.35</b> Диаграмма рассеяния с лагом</a></li>
-<li class="chapter" data-level="14.1.36" data-path="kriging.html"><a href="kriging.html#section-51"><i class="fa fa-check"></i><b>14.1.36</b> Вариограммное облако</a></li>
-<li class="chapter" data-level="14.1.37" data-path="kriging.html"><a href="kriging.html#section-52"><i class="fa fa-check"></i><b>14.1.37</b> Эмпирическая вариограмма</a></li>
-<li class="chapter" data-level="14.1.38" data-path="kriging.html"><a href="kriging.html#section-53"><i class="fa fa-check"></i><b>14.1.38</b> Вариокарта</a></li>
-<li class="chapter" data-level="14.1.39" data-path="kriging.html"><a href="kriging.html#section-54"><i class="fa fa-check"></i><b>14.1.39</b> Приближение теоретической модели</a></li>
-<li class="chapter" data-level="14.1.40" data-path="kriging.html"><a href="kriging.html#section-55"><i class="fa fa-check"></i><b>14.1.40</b> Обычный кригинг</a></li>
-<li class="chapter" data-level="14.1.41" data-path="kriging.html"><a href="kriging.html#section-56"><i class="fa fa-check"></i><b>14.1.41</b> Обычный кригинг</a></li>
-<li class="chapter" data-level="14.1.42" data-path="kriging.html"><a href="kriging.html#section-57"><i class="fa fa-check"></i><b>14.1.42</b> Оценка и дисперсия кригинга</a></li>
-<li class="chapter" data-level="14.1.43" data-path="kriging.html"><a href="kriging.html#section-58"><i class="fa fa-check"></i><b>14.1.43</b> Кросс-валидация</a></li>
-<li class="chapter" data-level="14.1.44" data-path="kriging.html"><a href="kriging.html#section-59"><i class="fa fa-check"></i><b>14.1.44</b> Кросс-валидация</a></li>
-<li class="chapter" data-level="14.1.45" data-path="kriging.html"><a href="kriging.html#section-60"><i class="fa fa-check"></i><b>14.1.45</b> Кросс-валидация</a></li>
-<li class="chapter" data-level="14.1.46" data-path="kriging.html"><a href="kriging.html#section-61"><i class="fa fa-check"></i><b>14.1.46</b> Кросс-валидация</a></li>
-<li class="chapter" data-level="14.1.47" data-path="kriging.html"><a href="kriging.html#section-62"><i class="fa fa-check"></i><b>14.1.47</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.1" data-path="kriging.html"><a href="kriging.html#section-15"><i class="fa fa-check"></i><b>14.1</b> Введение</a></li>
+<li class="chapter" data-level="14.2" data-path="kriging.html"><a href="kriging.html#section-16"><i class="fa fa-check"></i><b>14.2</b> Базовые понятия и элементы геостатистики</a><ul>
+<li class="chapter" data-level="14.2.1" data-path="kriging.html"><a href="kriging.html#section-17"><i class="fa fa-check"></i><b>14.2.1</b> Базовые понятия</a></li>
+<li class="chapter" data-level="14.2.2" data-path="kriging.html"><a href="kriging.html#section-18"><i class="fa fa-check"></i><b>14.2.2</b> Случайный процесс в пространстве и его моменты</a></li>
 </ul></li>
-<li class="chapter" data-level="14.2" data-path="kriging.html"><a href="kriging.html#geostat_review"><i class="fa fa-check"></i><b>14.2</b> Краткий обзор</a></li>
-<li class="chapter" data-level="14.3" data-path="kriging.html"><a href="kriging.html#geostat_qt"><i class="fa fa-check"></i><b>14.3</b> Контрольные вопросы и упражнения</a><ul>
-<li class="chapter" data-level="14.3.1" data-path="kriging.html"><a href="kriging.html#geostat_q"><i class="fa fa-check"></i><b>14.3.1</b> Вопросы</a></li>
-<li class="chapter" data-level="14.3.2" data-path="kriging.html"><a href="kriging.html#geostat_t"><i class="fa fa-check"></i><b>14.3.2</b> Упражнения</a></li>
+<li class="chapter" data-level="14.3" data-path="kriging.html"><a href="kriging.html#section-19"><i class="fa fa-check"></i><b>14.3</b> Стационарность и эргодичность</a><ul>
+<li class="chapter" data-level="14.3.1" data-path="kriging.html"><a href="kriging.html#section-20"><i class="fa fa-check"></i><b>14.3.1</b> Стационарность</a></li>
+<li class="chapter" data-level="14.3.2" data-path="kriging.html"><a href="kriging.html#section-21"><i class="fa fa-check"></i><b>14.3.2</b> Эргодичность</a></li>
+</ul></li>
+<li class="chapter" data-level="14.4" data-path="kriging.html"><a href="kriging.html#section-22"><i class="fa fa-check"></i><b>14.4</b> Геостатистическое оценивание</a><ul>
+<li class="chapter" data-level="14.4.1" data-path="kriging.html"><a href="kriging.html#section-23"><i class="fa fa-check"></i><b>14.4.1</b> Простой кригинг</a></li>
+<li class="chapter" data-level="14.4.2" data-path="kriging.html"><a href="kriging.html#section-24"><i class="fa fa-check"></i><b>14.4.2</b> Дисперсия простого кригинга</a></li>
+<li class="chapter" data-level="14.4.3" data-path="kriging.html"><a href="kriging.html#section-25"><i class="fa fa-check"></i><b>14.4.3</b> Стационарность приращений</a></li>
+<li class="chapter" data-level="14.4.4" data-path="kriging.html"><a href="kriging.html#section-26"><i class="fa fa-check"></i><b>14.4.4</b> Положительная определенность</a></li>
+<li class="chapter" data-level="14.4.5" data-path="kriging.html"><a href="kriging.html#section-27"><i class="fa fa-check"></i><b>14.4.5</b> Допустимые линейные комбинации</a></li>
+<li class="chapter" data-level="14.4.6" data-path="kriging.html"><a href="kriging.html#section-28"><i class="fa fa-check"></i><b>14.4.6</b> Условная положительная определенность</a></li>
+<li class="chapter" data-level="14.4.7" data-path="kriging.html"><a href="kriging.html#section-29"><i class="fa fa-check"></i><b>14.4.7</b> Переход от ковариации к вариограмме</a></li>
+<li class="chapter" data-level="14.4.8" data-path="kriging.html"><a href="kriging.html#section-30"><i class="fa fa-check"></i><b>14.4.8</b> Обычный кригинг</a></li>
+<li class="chapter" data-level="14.4.9" data-path="kriging.html"><a href="kriging.html#section-31"><i class="fa fa-check"></i><b>14.4.9</b> Дисперсия обычного кригинга</a></li>
+<li class="chapter" data-level="14.4.10" data-path="kriging.html"><a href="kriging.html#section-32"><i class="fa fa-check"></i><b>14.4.10</b> Универсальный кригинг</a></li>
+<li class="chapter" data-level="14.4.11" data-path="kriging.html"><a href="kriging.html#section-33"><i class="fa fa-check"></i><b>14.4.11</b> Дисперсия универсального кригинга</a></li>
+<li class="chapter" data-level="14.4.12" data-path="kriging.html"><a href="kriging.html#section-34"><i class="fa fa-check"></i><b>14.4.12</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.4.13" data-path="kriging.html"><a href="kriging.html#section-35"><i class="fa fa-check"></i><b>14.4.13</b> Вариограмма</a></li>
+<li class="chapter" data-level="14.4.14" data-path="kriging.html"><a href="kriging.html#section-36"><i class="fa fa-check"></i><b>14.4.14</b> Сферическая модель</a></li>
+<li class="chapter" data-level="14.4.15" data-path="kriging.html"><a href="kriging.html#section-37"><i class="fa fa-check"></i><b>14.4.15</b> Экспоненциальная модель</a></li>
+<li class="chapter" data-level="14.4.16" data-path="kriging.html"><a href="kriging.html#section-38"><i class="fa fa-check"></i><b>14.4.16</b> Гауссова модель</a></li>
+<li class="chapter" data-level="14.4.17" data-path="kriging.html"><a href="kriging.html#section-39"><i class="fa fa-check"></i><b>14.4.17</b> Степенная модель</a></li>
+<li class="chapter" data-level="14.4.18" data-path="kriging.html"><a href="kriging.html#section-40"><i class="fa fa-check"></i><b>14.4.18</b> Эффект самородка (модель наггет)</a></li>
+<li class="chapter" data-level="14.4.19" data-path="kriging.html"><a href="kriging.html#section-41"><i class="fa fa-check"></i><b>14.4.19</b> Диаграмма рассеяния с лагом</a></li>
+<li class="chapter" data-level="14.4.20" data-path="kriging.html"><a href="kriging.html#section-42"><i class="fa fa-check"></i><b>14.4.20</b> Вариограммное облако</a></li>
+<li class="chapter" data-level="14.4.21" data-path="kriging.html"><a href="kriging.html#section-43"><i class="fa fa-check"></i><b>14.4.21</b> Эмпирическая вариограмма</a></li>
+<li class="chapter" data-level="14.4.22" data-path="kriging.html"><a href="kriging.html#section-44"><i class="fa fa-check"></i><b>14.4.22</b> Вариокарта</a></li>
+<li class="chapter" data-level="14.4.23" data-path="kriging.html"><a href="kriging.html#section-45"><i class="fa fa-check"></i><b>14.4.23</b> Приближение теоретической модели</a></li>
+<li class="chapter" data-level="14.4.24" data-path="kriging.html"><a href="kriging.html#section-46"><i class="fa fa-check"></i><b>14.4.24</b> Обычный кригинг</a></li>
+<li class="chapter" data-level="14.4.25" data-path="kriging.html"><a href="kriging.html#section-47"><i class="fa fa-check"></i><b>14.4.25</b> Обычный кригинг</a></li>
+<li class="chapter" data-level="14.4.26" data-path="kriging.html"><a href="kriging.html#section-48"><i class="fa fa-check"></i><b>14.4.26</b> Оценка и дисперсия кригинга</a></li>
+<li class="chapter" data-level="14.4.27" data-path="kriging.html"><a href="kriging.html#section-49"><i class="fa fa-check"></i><b>14.4.27</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.4.28" data-path="kriging.html"><a href="kriging.html#section-50"><i class="fa fa-check"></i><b>14.4.28</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.4.29" data-path="kriging.html"><a href="kriging.html#section-51"><i class="fa fa-check"></i><b>14.4.29</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.4.30" data-path="kriging.html"><a href="kriging.html#section-52"><i class="fa fa-check"></i><b>14.4.30</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.4.31" data-path="kriging.html"><a href="kriging.html#section-53"><i class="fa fa-check"></i><b>14.4.31</b> Кросс-валидация</a></li>
+</ul></li>
+<li class="chapter" data-level="14.5" data-path="kriging.html"><a href="kriging.html#geostat_review"><i class="fa fa-check"></i><b>14.5</b> Краткий обзор</a></li>
+<li class="chapter" data-level="14.6" data-path="kriging.html"><a href="kriging.html#geostat_qt"><i class="fa fa-check"></i><b>14.6</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="14.6.1" data-path="kriging.html"><a href="kriging.html#geostat_q"><i class="fa fa-check"></i><b>14.6.1</b> Вопросы</a></li>
+<li class="chapter" data-level="14.6.2" data-path="kriging.html"><a href="kriging.html#geostat_t"><i class="fa fa-check"></i><b>14.6.2</b> Упражнения</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="15" data-path="autocorrelation.html"><a href="autocorrelation.html"><i class="fa fa-check"></i><b>15</b> Пространственная и географически взвешенная регрессия</a><ul>
@@ -549,10 +544,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="advgraphics_prerequisites" class="section level2">
 <h2><span class="header-section-number">6.1</span> Предварительные требования</h2>
 <p>Для работы по теме текущей лекции вам понадобятся пакеты <strong>ggplot2</strong> и <strong>dplyr</strong> из <strong>tidyverse</strong>. Помимо этого, мы будем работать напрямую с данными <a href="https://ec.europa.eu/eurostat/web/main/home"><strong>Евростата</strong></a>, к которым можно обращаться напрямую с использованием пакета <a href="https://ropengov.github.io/eurostat/"><strong>eurostat</strong></a>:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&#39;eurostat&#39;</span>)
-<span class="kw">library</span>(<span class="st">&#39;dplyr&#39;</span>)
-<span class="kw">library</span>(<span class="st">&#39;tidyr&#39;</span>)
-<span class="kw">library</span>(<span class="st">&#39;ggplot2&#39;</span>)</code></pre>
+<div class="sourceCode" id="cb272"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb272-1"><a href="advgraphics.html#cb272-1"></a><span class="kw">library</span>(<span class="st">&#39;eurostat&#39;</span>)</span>
+<span id="cb272-2"><a href="advgraphics.html#cb272-2"></a><span class="kw">library</span>(<span class="st">&#39;dplyr&#39;</span>)</span>
+<span id="cb272-3"><a href="advgraphics.html#cb272-3"></a><span class="kw">library</span>(<span class="st">&#39;tidyr&#39;</span>)</span>
+<span id="cb272-4"><a href="advgraphics.html#cb272-4"></a><span class="kw">library</span>(<span class="st">&#39;ggplot2&#39;</span>)</span></code></pre></div>
 <p>В настоящей главе мы кратко познакомимся с системой <a href="https://ggplot2.tidyverse.org/"><strong>ggplot2</strong></a>. <strong>gg</strong> расшифровывается как <em>grammar of graphics</em>. Под этим понимается определенная (какая — мы узнаем далее) система правил, позволяющих описывать и строить графики. ggplot довольно сильно отличается от стандартной графической подсистемы R. Прежде всего — модульным подходом к построению изображений. В ggplot вы собираете графики «по кирпичикам», отдельно определяя источник данных, способы изображения, параметры системы координат и т.д. – путем вызова и <em>сложения</em> результатов соответствующих функций.</p>
 <p>При построении элементарных графиков <strong>ggplot</strong> может показаться (и по факту так и есть) сложнее, чем стандартная графическая подсистема. Однако при усложнении требований к внешнему виду и информационному насыщению графика сложность ggplot оказывается преимуществом, и с ее помощью <em>относительно просто</em> можно получать элегантные и информативные визуализации, на создание которых с помощью стандартной подсистемы пришлось бы затратить невероятные усилия! В этой главе мы кратко познакомимся с ggplot, а далее на протяжении курса будем регулярно ее использовать, осваивая новые возможности.</p>
 </div>
@@ -560,35 +555,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">6.2</span> Загрузка данных Евростата</h2>
 <p>Таблицы данных Евростата имеют уникальные коды, по которым их можно загружать, используя API (Application programming interface). В этой лекции мы будем работать с данными о крупнейших международных партнерах Евросоюза по импорту и экспорту основных видов товаров. Например, <a href="https://ec.europa.eu/eurostat/tgm/table.do?tab=table&amp;init=1&amp;language=en&amp;pcode=tet00034&amp;plugin=1">таблица данных по продуктам питания, напиткам и табаку</a> имеет код <strong>tet00034</strong>.</p>
 <p>Для чтения таблиц по кодам в пакете eurostat имеется функция <code>get_eurostat()</code>. Чтобы год измерения получить в виде числа, а не объекта типа <code>Date</code>, используем второй параметр <code>time_format = num</code>. Для перехода от кодов продукции и стран к их полным наименованиям, дополнительно вызовем функцию <code>label_eurostat()</code> из того же пакета:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(eurostat)
-
-tables =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;tet00034&#39;</span>, <span class="st">&#39;tet00033&#39;</span>, <span class="st">&#39;tet00032&#39;</span>, <span class="st">&#39;tet00031&#39;</span>,<span class="st">&#39;tet00030&#39;</span>, <span class="st">&#39;tet00029&#39;</span>)
-
-trades =<span class="st"> </span><span class="kw">lapply</span>(tables, <span class="cf">function</span>(X) { <span class="co"># прочтем несколько таблиц в список</span>
-  <span class="kw">get_eurostat</span>(X) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">label_eurostat</span>()
-}) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># объединим прочитанные таблицы в одну</span>
-<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>geo) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># убираем столбец с территорией торговли, т.к. там только Евросоюз</span>
-<span class="st">  </span><span class="kw">filter</span>(stringr<span class="op">::</span><span class="kw">str_detect</span>(indic_et, <span class="st">&#39;Exports in|Imports in&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># оставим только экспорт и импорт</span>
-<span class="st">  </span><span class="kw">spread</span>(indic_et, values) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># вынесем данные по экспорту и импорту в отдельные переменные</span>
-<span class="st">  </span><span class="kw">rename</span>(<span class="dt">export =</span> <span class="st">`</span><span class="dt">Exports in million of ECU/EURO</span><span class="st">`</span>, <span class="co"># дадим им краткие названия</span>
-         <span class="dt">import =</span> <span class="st">`</span><span class="dt">Imports in million of ECU/EURO</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">partner =</span> <span class="kw">as.factor</span>(partner))</code></pre>
+<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb273-1"><a href="advgraphics.html#cb273-1"></a><span class="kw">library</span>(eurostat)</span>
+<span id="cb273-2"><a href="advgraphics.html#cb273-2"></a></span>
+<span id="cb273-3"><a href="advgraphics.html#cb273-3"></a>tables =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;tet00034&#39;</span>, <span class="st">&#39;tet00033&#39;</span>, <span class="st">&#39;tet00032&#39;</span>, <span class="st">&#39;tet00031&#39;</span>,<span class="st">&#39;tet00030&#39;</span>, <span class="st">&#39;tet00029&#39;</span>)</span>
+<span id="cb273-4"><a href="advgraphics.html#cb273-4"></a></span>
+<span id="cb273-5"><a href="advgraphics.html#cb273-5"></a>trades =<span class="st"> </span><span class="kw">lapply</span>(tables, <span class="cf">function</span>(X) { <span class="co"># прочтем несколько таблиц в список</span></span>
+<span id="cb273-6"><a href="advgraphics.html#cb273-6"></a>  <span class="kw">get_eurostat</span>(X) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">label_eurostat</span>()</span>
+<span id="cb273-7"><a href="advgraphics.html#cb273-7"></a>}) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb273-8"><a href="advgraphics.html#cb273-8"></a><span class="st">  </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># объединим прочитанные таблицы в одну</span></span>
+<span id="cb273-9"><a href="advgraphics.html#cb273-9"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>geo) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># убираем столбец с территорией торговли, т.к. там только Евросоюз</span></span>
+<span id="cb273-10"><a href="advgraphics.html#cb273-10"></a><span class="st">  </span><span class="kw">filter</span>(stringr<span class="op">::</span><span class="kw">str_detect</span>(indic_et, <span class="st">&#39;Exports in|Imports in&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># оставим только экспорт и импорт</span></span>
+<span id="cb273-11"><a href="advgraphics.html#cb273-11"></a><span class="st">  </span><span class="kw">spread</span>(indic_et, values) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># вынесем данные по экспорту и импорту в отдельные переменные</span></span>
+<span id="cb273-12"><a href="advgraphics.html#cb273-12"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">export =</span> <span class="st">`</span><span class="dt">Exports in million of ECU/EURO</span><span class="st">`</span>, <span class="co"># дадим им краткие названия</span></span>
+<span id="cb273-13"><a href="advgraphics.html#cb273-13"></a>         <span class="dt">import =</span> <span class="st">`</span><span class="dt">Imports in million of ECU/EURO</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb273-14"><a href="advgraphics.html#cb273-14"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">partner =</span> <span class="kw">as.factor</span>(partner))</span></code></pre></div>
 </div>
 <div id="advgraphics_template" class="section level2">
 <h2><span class="header-section-number">6.3</span> Базовый шаблон ggplot</h2>
 <p>Для начала посмотрим, как можно показать суммарный экспорт по годам:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trades_total =<span class="st"> </span>trades <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">group_by</span>(time) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">export =</span> <span class="kw">sum</span>(export),
-            <span class="dt">import =</span> <span class="kw">sum</span>(import))
-  
-<span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export))</code></pre>
+<div class="sourceCode" id="cb274"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb274-1"><a href="advgraphics.html#cb274-1"></a>trades_total =<span class="st"> </span>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb274-2"><a href="advgraphics.html#cb274-2"></a><span class="st">  </span><span class="kw">group_by</span>(time) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb274-3"><a href="advgraphics.html#cb274-3"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">export =</span> <span class="kw">sum</span>(export),</span>
+<span id="cb274-4"><a href="advgraphics.html#cb274-4"></a>            <span class="dt">import =</span> <span class="kw">sum</span>(import))</span>
+<span id="cb274-5"><a href="advgraphics.html#cb274-5"></a>  </span>
+<span id="cb274-6"><a href="advgraphics.html#cb274-6"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total) <span class="op">+</span></span>
+<span id="cb274-7"><a href="advgraphics.html#cb274-7"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export))</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>Базовый (минимально необходимый) шаблон построения графика через <strong>ggplot</strong> выглядит следующим образом:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> <span class="op">&lt;</span>DATA<span class="op">&gt;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="er">&lt;</span>GEOM_FUNCTION<span class="op">&gt;</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="op">&lt;</span>MAPPINGS<span class="op">&gt;</span>))</code></pre>
+<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb275-1"><a href="advgraphics.html#cb275-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> <span class="op">&lt;</span>DATA<span class="op">&gt;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb275-2"><a href="advgraphics.html#cb275-2"></a><span class="st">  </span><span class="er">&lt;</span>GEOM_FUNCTION<span class="op">&gt;</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="op">&lt;</span>MAPPINGS<span class="op">&gt;</span>))</span></code></pre></div>
 <p>где:</p>
 <ul>
 <li><code>DATA</code> — источник данных (фрейм, тиббл)</li>
@@ -600,155 +595,155 @@ trades =<span class="st"> </span><span class="kw">lapply</span>(tables, <span cl
 <h2><span class="header-section-number">6.4</span> Геометрические типы и преобразования</h2>
 <p>ggplot предлагает несколько десятков различных видов геометрий для отображения данных. С их полным перечнем можно познакомиться <a href="https://ggplot2.tidyverse.org/reference/">тут</a>. Мы рассмотрим несколько наиболее употребительных, а геометрии, связанные со статистическими преобразованиями, оставим для следующей темы.</p>
 <p>В первом примере мы отображали данные по экспорту за разные года, однако точечный тип не очень подходит для данного типа графика, поскольку он показывает динамику изменения. А это означает, что желательно соединить точки линиями. Для этого используем геометрию <code>geom_line()</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export))</code></pre>
+<div class="sourceCode" id="cb276"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb276-1"><a href="advgraphics.html#cb276-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total) <span class="op">+</span></span>
+<span id="cb276-2"><a href="advgraphics.html#cb276-2"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export))</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>Поскольку в данном случае величина является агрегированной за год, более правильным может быть показ ее изменений в виде ступенчатого линейного графика, который получается через геометрию <code>geom_step()</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_step</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export))</code></pre>
+<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb277-1"><a href="advgraphics.html#cb277-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total) <span class="op">+</span></span>
+<span id="cb277-2"><a href="advgraphics.html#cb277-2"></a><span class="st">  </span><span class="kw">geom_step</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export))</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>Можно совместить несколько геометрий, добавив их последовательно на график:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export))</code></pre>
+<div class="sourceCode" id="cb278"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb278-1"><a href="advgraphics.html#cb278-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total) <span class="op">+</span></span>
+<span id="cb278-2"><a href="advgraphics.html#cb278-2"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span></span>
+<span id="cb278-3"><a href="advgraphics.html#cb278-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export))</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>Если у нескольких геометрий одинаковые отображения, их можно вынести в вызов функции <code>ggplot()</code> (чтобы не дублировать):</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>()</code></pre>
+<div class="sourceCode" id="cb279"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb279-1"><a href="advgraphics.html#cb279-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span></span>
+<span id="cb279-2"><a href="advgraphics.html#cb279-2"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
+<span id="cb279-3"><a href="advgraphics.html#cb279-3"></a><span class="st">  </span><span class="kw">geom_point</span>()</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>Наглядность линейного графика можно усилить, добавив “заливку” области с использованием <code>geom_area()</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span>
-<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>()</code></pre>
+<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb280-1"><a href="advgraphics.html#cb280-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span></span>
+<span id="cb280-2"><a href="advgraphics.html#cb280-2"></a><span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span></span>
+<span id="cb280-3"><a href="advgraphics.html#cb280-3"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
+<span id="cb280-4"><a href="advgraphics.html#cb280-4"></a><span class="st">  </span><span class="kw">geom_point</span>()</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>Для построения столбчатой диаграммы следует использовать геометрию <code>geom_col()</code>. Например, вот так выглядит структура экспорта продукции машиностроения из Евросоюза по ведущим партнерам:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trades <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_col</span>()</code></pre>
+<div class="sourceCode" id="cb281"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb281-1"><a href="advgraphics.html#cb281-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb281-2"><a href="advgraphics.html#cb281-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb281-3"><a href="advgraphics.html#cb281-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export)) <span class="op">+</span></span>
+<span id="cb281-4"><a href="advgraphics.html#cb281-4"></a><span class="st">  </span><span class="kw">geom_col</span>()</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>Развернуть диаграмму можно, используя функцию <code>coord_flip()</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trades <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">coord_flip</span>()</code></pre>
+<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb282-1"><a href="advgraphics.html#cb282-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb282-2"><a href="advgraphics.html#cb282-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb282-3"><a href="advgraphics.html#cb282-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export)) <span class="op">+</span></span>
+<span id="cb282-4"><a href="advgraphics.html#cb282-4"></a><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span></span>
+<span id="cb282-5"><a href="advgraphics.html#cb282-5"></a><span class="st">  </span><span class="kw">coord_flip</span>()</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 </div>
 <div id="advgraphics_aes" class="section level2">
 <h2><span class="header-section-number">6.5</span> Графические переменные и группировки</h2>
 <p>Графические переменные — это параметры, определяющие внешний вид символов. К ним относятся цвет (тон, насыщенность и светлота), размер, форма, ориентировка, внутренняя структура символа. В ggplot значения графических переменных могут быть едиными для всех измерений, а могут зависеть от величины измерений. С точки зрения управления здесь все просто: если вы хотите, чтобы какой-то графический параметр зависел от значения показателя, он должен быть указан внутри конструкции <code>mapping = aes(...)</code>. Если необходимо, чтобы этот параметр был одинаковым для всех измерений, вы должны его указать внутри <code>&lt;GEOM_FUNCTION&gt;(...)</code>, то есть не передавать в <code>mapping</code>.</p>
 <p>Для управления цветом, формой и размером (толщиной) графического примитива следует использовать параметры <em>color</em>, <em>shape</em> и <em>size</em> соответственно. Посмотрим, как они работают внутри и за пределами функции <code>aes()</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># один цвет для графика (параметр за пределами aes)</span>
-<span class="kw">ggplot</span>(trades_total) <span class="op">+</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export), <span class="dt">color =</span> <span class="st">&#39;blue&#39;</span>)</code></pre>
+<div class="sourceCode" id="cb283"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb283-1"><a href="advgraphics.html#cb283-1"></a><span class="co"># один цвет для графика (параметр за пределами aes)</span></span>
+<span id="cb283-2"><a href="advgraphics.html#cb283-2"></a><span class="kw">ggplot</span>(trades_total) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb283-3"><a href="advgraphics.html#cb283-3"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export), <span class="dt">color =</span> <span class="st">&#39;blue&#39;</span>)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<pre class="sourceCode r"><code class="sourceCode r">
-trade_russia =<span class="st"> </span>trades <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(partner <span class="op">==</span><span class="st"> &#39;Russia&#39;</span>)
-
-<span class="kw">ggplot</span>(trade_russia) <span class="op">+</span><span class="st"> </span><span class="co"># у каждой группы данных свой цвет (параметр внутри aes)</span>
-<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export, <span class="dt">color =</span> sitc06))</code></pre>
+<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb284-1"><a href="advgraphics.html#cb284-1"></a></span>
+<span id="cb284-2"><a href="advgraphics.html#cb284-2"></a>trade_russia =<span class="st"> </span>trades <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(partner <span class="op">==</span><span class="st"> &#39;Russia&#39;</span>)</span>
+<span id="cb284-3"><a href="advgraphics.html#cb284-3"></a></span>
+<span id="cb284-4"><a href="advgraphics.html#cb284-4"></a><span class="kw">ggplot</span>(trade_russia) <span class="op">+</span><span class="st"> </span><span class="co"># у каждой группы данных свой цвет (параметр внутри aes)</span></span>
+<span id="cb284-5"><a href="advgraphics.html#cb284-5"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export, <span class="dt">color =</span> sitc06))</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
-<pre class="sourceCode r"><code class="sourceCode r">
-<span class="kw">ggplot</span>(trade_russia, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export, <span class="dt">color =</span> sitc06)) <span class="op">+</span><span class="st"> </span><span class="co"># а теперь и с точками</span>
-<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>()</code></pre>
+<div class="sourceCode" id="cb285"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb285-1"><a href="advgraphics.html#cb285-1"></a></span>
+<span id="cb285-2"><a href="advgraphics.html#cb285-2"></a><span class="kw">ggplot</span>(trade_russia, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export, <span class="dt">color =</span> sitc06)) <span class="op">+</span><span class="st"> </span><span class="co"># а теперь и с точками</span></span>
+<span id="cb285-3"><a href="advgraphics.html#cb285-3"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
+<span id="cb285-4"><a href="advgraphics.html#cb285-4"></a><span class="st">  </span><span class="kw">geom_point</span>()</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-12-3.png" width="672" /></p>
 <p>Аналогичным образом работает параметр формы значка:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># один значок для графика</span>
-<span class="kw">ggplot</span>(trades_total) <span class="op">+</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export), <span class="dt">shape =</span> <span class="dv">15</span>)</code></pre>
+<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb286-1"><a href="advgraphics.html#cb286-1"></a><span class="co"># один значок для графика</span></span>
+<span id="cb286-2"><a href="advgraphics.html#cb286-2"></a><span class="kw">ggplot</span>(trades_total) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb286-3"><a href="advgraphics.html#cb286-3"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export), <span class="dt">shape =</span> <span class="dv">15</span>)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-<pre class="sourceCode r"><code class="sourceCode r">    
-
-<span class="kw">ggplot</span>(trade_russia) <span class="op">+</span><span class="st"> </span><span class="co"># у каждой группы данных свой значок</span>
-<span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export, <span class="dt">shape =</span> sitc06))</code></pre>
+<div class="sourceCode" id="cb287"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb287-1"><a href="advgraphics.html#cb287-1"></a>    </span>
+<span id="cb287-2"><a href="advgraphics.html#cb287-2"></a></span>
+<span id="cb287-3"><a href="advgraphics.html#cb287-3"></a><span class="kw">ggplot</span>(trade_russia) <span class="op">+</span><span class="st"> </span><span class="co"># у каждой группы данных свой значок</span></span>
+<span id="cb287-4"><a href="advgraphics.html#cb287-4"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export, <span class="dt">shape =</span> sitc06))</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
 <p>Для изменения размера значка или линии используйте параметр <code>size</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># изменение размера значка и линии</span>
-<span class="kw">ggplot</span>(trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">5</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_line</span>(<span class="dt">size =</span> <span class="dv">2</span>)</code></pre>
+<div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb288-1"><a href="advgraphics.html#cb288-1"></a><span class="co"># изменение размера значка и линии</span></span>
+<span id="cb288-2"><a href="advgraphics.html#cb288-2"></a><span class="kw">ggplot</span>(trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb288-3"><a href="advgraphics.html#cb288-3"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">5</span>) <span class="op">+</span></span>
+<span id="cb288-4"><a href="advgraphics.html#cb288-4"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="dt">size =</span> <span class="dv">2</span>)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>Если вы используете зависимые от значений графические переменные и при этом хотите добавить на график еще одну геометрию (c постоянными параметрами), то вам необходимо сгруппировать объекты второй геометрии по той же переменной, по которой вы осуществляете разбиение в первой геометрии. Для этого используйте параметр <code>group</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trade_russia, <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">shape =</span> sitc06)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> sitc06))</code></pre>
+<div class="sourceCode" id="cb289"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb289-1"><a href="advgraphics.html#cb289-1"></a><span class="kw">ggplot</span>(trade_russia, <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb289-2"><a href="advgraphics.html#cb289-2"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">shape =</span> sitc06)) <span class="op">+</span></span>
+<span id="cb289-3"><a href="advgraphics.html#cb289-3"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> sitc06))</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>Для изменения цвета столбчатых диаграмм следует использовать параметр <code>fill</code>, а цвет и толщина обводки определяются параметрами <code>color</code> и <code>size</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trades <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">fill =</span> <span class="st">&#39;plum4&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">coord_flip</span>()</code></pre>
+<div class="sourceCode" id="cb290"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb290-1"><a href="advgraphics.html#cb290-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb290-2"><a href="advgraphics.html#cb290-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb290-3"><a href="advgraphics.html#cb290-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export)) <span class="op">+</span></span>
+<span id="cb290-4"><a href="advgraphics.html#cb290-4"></a><span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">fill =</span> <span class="st">&#39;plum4&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span></span>
+<span id="cb290-5"><a href="advgraphics.html#cb290-5"></a><span class="st">  </span><span class="kw">coord_flip</span>()</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>Цвет на столбчатых диаграммах можно использовать для отображения дополнительных переменных, например типа экспортируемой продукции. По умолчанию столбики будут образовывать стек</p>
-<pre class="sourceCode r"><code class="sourceCode r">trades <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export, <span class="dt">fill =</span> sitc06)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">coord_flip</span>()</code></pre>
+<div class="sourceCode" id="cb291"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb291-1"><a href="advgraphics.html#cb291-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb291-2"><a href="advgraphics.html#cb291-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb291-3"><a href="advgraphics.html#cb291-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export, <span class="dt">fill =</span> sitc06)) <span class="op">+</span></span>
+<span id="cb291-4"><a href="advgraphics.html#cb291-4"></a><span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span></span>
+<span id="cb291-5"><a href="advgraphics.html#cb291-5"></a><span class="st">  </span><span class="kw">coord_flip</span>()</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <p>Если вам важно не абсолютное количество, а процентное соотношение величин, вы можете применить вид группировки <code>position == 'fill</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trades <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export, <span class="dt">fill =</span> sitc06)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_col</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="st">&#39;fill&#39;</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw">coord_flip</span>()</code></pre>
+<div class="sourceCode" id="cb292"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb292-1"><a href="advgraphics.html#cb292-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb292-2"><a href="advgraphics.html#cb292-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb292-3"><a href="advgraphics.html#cb292-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export, <span class="dt">fill =</span> sitc06)) <span class="op">+</span></span>
+<span id="cb292-4"><a href="advgraphics.html#cb292-4"></a><span class="st">    </span><span class="kw">geom_col</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="st">&#39;fill&#39;</span>) <span class="op">+</span></span>
+<span id="cb292-5"><a href="advgraphics.html#cb292-5"></a><span class="st">    </span><span class="kw">coord_flip</span>()</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <p>Еще один вид группировки — это группировка по соседству. Чтобы использовать ее, применить метод <code>position == 'dodge</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trade_russia <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(time <span class="op">&gt;=</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2013-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export, <span class="dt">fill =</span> sitc06)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_col</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="st">&#39;dodge&#39;</span>)</code></pre>
+<div class="sourceCode" id="cb293"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb293-1"><a href="advgraphics.html#cb293-1"></a>trade_russia <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb293-2"><a href="advgraphics.html#cb293-2"></a><span class="st">  </span><span class="kw">filter</span>(time <span class="op">&gt;=</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2013-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb293-3"><a href="advgraphics.html#cb293-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export, <span class="dt">fill =</span> sitc06)) <span class="op">+</span></span>
+<span id="cb293-4"><a href="advgraphics.html#cb293-4"></a><span class="st">    </span><span class="kw">geom_col</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="st">&#39;dodge&#39;</span>)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 </div>
 <div id="advgraphics_coords" class="section level2">
 <h2><span class="header-section-number">6.6</span> Системы координат</h2>
 <p><strong>ggplot</strong> поддерживает множество полезных преобразований координат, таких как смена осей X и Y, переход к логарифмическим координатам и использование полярной системы вместо декартовой прямоугольной.</p>
 <p>Смена переменных происходит благодаря уже знакомой нам функции <code>coord_flip()</code>. Рассмотрим, например, как изменилась структура экспорта/импорта по годам:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trades_type =<span class="st"> </span>trades <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">group_by</span>(sitc06, time) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">export =</span> <span class="kw">sum</span>(export),
-            <span class="dt">import =</span> <span class="kw">sum</span>(import))
-
-<span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>)</code></pre>
+<div class="sourceCode" id="cb294"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb294-1"><a href="advgraphics.html#cb294-1"></a>trades_type =<span class="st"> </span>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb294-2"><a href="advgraphics.html#cb294-2"></a><span class="st">  </span><span class="kw">group_by</span>(sitc06, time) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb294-3"><a href="advgraphics.html#cb294-3"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">export =</span> <span class="kw">sum</span>(export),</span>
+<span id="cb294-4"><a href="advgraphics.html#cb294-4"></a>            <span class="dt">import =</span> <span class="kw">sum</span>(import))</span>
+<span id="cb294-5"><a href="advgraphics.html#cb294-5"></a></span>
+<span id="cb294-6"><a href="advgraphics.html#cb294-6"></a><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb294-7"><a href="advgraphics.html#cb294-7"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
-<pre class="sourceCode r"><code class="sourceCode r">
-<span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw">coord_flip</span>()</code></pre>
+<div class="sourceCode" id="cb295"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb295-1"><a href="advgraphics.html#cb295-1"></a></span>
+<span id="cb295-2"><a href="advgraphics.html#cb295-2"></a><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb295-3"><a href="advgraphics.html#cb295-3"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb295-4"><a href="advgraphics.html#cb295-4"></a><span class="st">    </span><span class="kw">coord_flip</span>()</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-20-2.png" width="672" /></p>
 <p>Поскольку объемы продукции различаются <em>на порядки</em>, для различимости малых объемов целесообразно перейти к логарифмической шкале. Для этого используем <code>scale_log_x()</code> и <code>scale_log_y()</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_y_log10</span>()</code></pre>
+<div class="sourceCode" id="cb296"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb296-1"><a href="advgraphics.html#cb296-1"></a><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb296-2"><a href="advgraphics.html#cb296-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb296-3"><a href="advgraphics.html#cb296-3"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb296-4"><a href="advgraphics.html#cb296-4"></a><span class="st">  </span><span class="kw">scale_y_log10</span>()</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 <p>Преобразование в полярную систему координат используется для того чтобы получить круговую секторную диаграмму Найтингейл (<em>coxcomb chart</em>):</p>
-<pre class="sourceCode r"><code class="sourceCode r">trades <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export, <span class="dt">fill =</span> partner)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">coord_polar</span>()</code></pre>
+<div class="sourceCode" id="cb297"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb297-1"><a href="advgraphics.html#cb297-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb297-2"><a href="advgraphics.html#cb297-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb297-3"><a href="advgraphics.html#cb297-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export, <span class="dt">fill =</span> partner)) <span class="op">+</span></span>
+<span id="cb297-4"><a href="advgraphics.html#cb297-4"></a><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span></span>
+<span id="cb297-5"><a href="advgraphics.html#cb297-5"></a><span class="st">  </span><span class="kw">coord_polar</span>()</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 <p>Разумеется, здесь тоже можно использовать преобразование шкалы по оси <em>Y</em> (которая теперь отвечает за радиус). Применим правило квадратного корня, добавив вызов функции <code>scale_y_sqrt()</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trades <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export, <span class="dt">fill =</span> partner)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">coord_polar</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_y_sqrt</span>()</code></pre>
+<div class="sourceCode" id="cb298"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb298-1"><a href="advgraphics.html#cb298-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb298-2"><a href="advgraphics.html#cb298-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb298-3"><a href="advgraphics.html#cb298-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export, <span class="dt">fill =</span> partner)) <span class="op">+</span></span>
+<span id="cb298-4"><a href="advgraphics.html#cb298-4"></a><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span></span>
+<span id="cb298-5"><a href="advgraphics.html#cb298-5"></a><span class="st">  </span><span class="kw">coord_polar</span>() <span class="op">+</span></span>
+<span id="cb298-6"><a href="advgraphics.html#cb298-6"></a><span class="st">  </span><span class="kw">scale_y_sqrt</span>()</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 <p>Чтобы построить классическую секторную диаграмму, необходимо, чтобы угол поворота соответствовал величине показателя (оси <em>Y</em>), а не названию категории (оси <em>X</em>). Для этого при вызове функции <code>coord_polar()</code> следует указать параметр <code>theta = 'y'</code>, а при вызове <code>geom_col()</code> оставить параметр <code>x</code> пустым:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trades <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">&#39;&#39;</span>, <span class="dt">y =</span> export, <span class="dt">fill =</span> partner), <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">coord_polar</span>(<span class="dt">theta =</span> <span class="st">&#39;y&#39;</span>)</code></pre>
+<div class="sourceCode" id="cb299"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb299-1"><a href="advgraphics.html#cb299-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb299-2"><a href="advgraphics.html#cb299-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb299-3"><a href="advgraphics.html#cb299-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">&#39;&#39;</span>, <span class="dt">y =</span> export, <span class="dt">fill =</span> partner), <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span></span>
+<span id="cb299-4"><a href="advgraphics.html#cb299-4"></a><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span></span>
+<span id="cb299-5"><a href="advgraphics.html#cb299-5"></a><span class="st">  </span><span class="kw">coord_polar</span>(<span class="dt">theta =</span> <span class="st">&#39;y&#39;</span>)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 </div>
 <div id="advgraphics_titles" class="section level2">
@@ -761,147 +756,147 @@ trade_russia =<span class="st"> </span>trades <span class="op">%&gt;%</span><spa
 <li><code>ggtitle(label, subtitle = NULL)</code> модифицирует заголовок и подзаголовок графика</li>
 </ul>
 <p>Создадим подписи легенд, отвечающих за цвет и размер значка на графике соотношения импорта и экспорта разных видов продукции:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>)</code></pre>
+<div class="sourceCode" id="cb300"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb300-1"><a href="advgraphics.html#cb300-1"></a><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb300-2"><a href="advgraphics.html#cb300-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb300-3"><a href="advgraphics.html#cb300-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <p>Добавим заголовок и подзаголовок графика:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)&#39;</span>,
-          <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>)</code></pre>
+<div class="sourceCode" id="cb301"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb301-1"><a href="advgraphics.html#cb301-1"></a><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb301-2"><a href="advgraphics.html#cb301-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb301-3"><a href="advgraphics.html#cb301-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>) <span class="op">+</span></span>
+<span id="cb301-4"><a href="advgraphics.html#cb301-4"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)&#39;</span>,</span>
+<span id="cb301-5"><a href="advgraphics.html#cb301-5"></a>          <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
 <p>Изменим подписи осей:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)&#39;</span>,
-          <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Экспорт&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Импорт&#39;</span>)</code></pre>
+<div class="sourceCode" id="cb302"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb302-1"><a href="advgraphics.html#cb302-1"></a><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb302-2"><a href="advgraphics.html#cb302-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb302-3"><a href="advgraphics.html#cb302-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>) <span class="op">+</span></span>
+<span id="cb302-4"><a href="advgraphics.html#cb302-4"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)&#39;</span>,</span>
+<span id="cb302-5"><a href="advgraphics.html#cb302-5"></a>          <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>) <span class="op">+</span></span>
+<span id="cb302-6"><a href="advgraphics.html#cb302-6"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Экспорт&#39;</span>) <span class="op">+</span></span>
+<span id="cb302-7"><a href="advgraphics.html#cb302-7"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Импорт&#39;</span>)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
 </div>
 <div id="advgraphics_axes" class="section level2">
 <h2><span class="header-section-number">6.8</span> Разметка осей</h2>
 <p>Первое, что вам скорее всего захочется убрать — это экспоненциальная запись чисел. На самом деле, эта запись не является параметром <strong>ggplot</strong> или стандартной системы <strong>graphics</strong>. Количество значащих цифр, после которых число автоматически представляется в экспоненциальном виде, управляется параметром <code>scipen</code>. Мы можем задать его достаточно большим, чтобы запретить переводить любые разумные числа в экспоненциальный вид:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>)
-<span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)&#39;</span>,
-          <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Экспорт&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Импорт&#39;</span>)</code></pre>
+<div class="sourceCode" id="cb303"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb303-1"><a href="advgraphics.html#cb303-1"></a><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>)</span>
+<span id="cb303-2"><a href="advgraphics.html#cb303-2"></a><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb303-3"><a href="advgraphics.html#cb303-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb303-4"><a href="advgraphics.html#cb303-4"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>) <span class="op">+</span></span>
+<span id="cb303-5"><a href="advgraphics.html#cb303-5"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)&#39;</span>,</span>
+<span id="cb303-6"><a href="advgraphics.html#cb303-6"></a>          <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>) <span class="op">+</span></span>
+<span id="cb303-7"><a href="advgraphics.html#cb303-7"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Экспорт&#39;</span>) <span class="op">+</span></span>
+<span id="cb303-8"><a href="advgraphics.html#cb303-8"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Импорт&#39;</span>)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
 <p>Для управления разметкой осей необходимо использовать функции <code>scale_x_continuous()</code>, <code>scale_y_continuous()</code>, <code>scale_x_log10(...)</code>, <code>scale_y_log10(...)</code>, <code>scale_x_reverse(...)</code>, <code>scale_y_reverse(...)</code>, <code>scale_x_sqrt(...)</code>, <code>scale_y_sqrt(...)</code>, которые, с одной стороны, указывают тип оси, а с другой стороны — позволяют управлять параметрами сетки координат и подписями.</p>
 <p>Для изменения координат линий сетки и подписей необходимо использовать, соответственно, параметры <code>breaks</code> и <code>labels</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_x_log10</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">500000</span>, <span class="dv">100000</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_y_log10</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">500000</span>, <span class="dv">100000</span>))</code></pre>
+<div class="sourceCode" id="cb304"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb304-1"><a href="advgraphics.html#cb304-1"></a><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb304-2"><a href="advgraphics.html#cb304-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb304-3"><a href="advgraphics.html#cb304-3"></a><span class="st">  </span><span class="kw">scale_x_log10</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">500000</span>, <span class="dv">100000</span>)) <span class="op">+</span></span>
+<span id="cb304-4"><a href="advgraphics.html#cb304-4"></a><span class="st">  </span><span class="kw">scale_y_log10</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">500000</span>, <span class="dv">100000</span>))</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 <p>В данном случае, как раз, будет достаточно полезным параметр <code>labels</code>, поскольку метки можно сделать более компактными, поделив их на 1000 (и не забыть потом указать, что объемы теперь указаны не в миллионах, а в миллиардах долларов):</p>
-<pre class="sourceCode r"><code class="sourceCode r">brks =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">500000</span>, <span class="dv">100000</span>)
-<span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_x_log10</span>(<span class="dt">breaks =</span> brks, <span class="dt">labels =</span> brks <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_y_log10</span>(<span class="dt">breaks =</span> brks, <span class="dt">labels =</span> brks <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)</code></pre>
+<div class="sourceCode" id="cb305"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb305-1"><a href="advgraphics.html#cb305-1"></a>brks =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">500000</span>, <span class="dv">100000</span>)</span>
+<span id="cb305-2"><a href="advgraphics.html#cb305-2"></a><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb305-3"><a href="advgraphics.html#cb305-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb305-4"><a href="advgraphics.html#cb305-4"></a><span class="st">  </span><span class="kw">scale_x_log10</span>(<span class="dt">breaks =</span> brks, <span class="dt">labels =</span> brks <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>) <span class="op">+</span></span>
+<span id="cb305-5"><a href="advgraphics.html#cb305-5"></a><span class="st">  </span><span class="kw">scale_y_log10</span>(<span class="dt">breaks =</span> brks, <span class="dt">labels =</span> brks <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
 <p>Для обычной шкалы используйте функции <code>scale_x_continuous()</code> и <code>scale_y_continuous()</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> brks, <span class="dt">labels =</span> brks <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> brks, <span class="dt">labels =</span> brks <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)</code></pre>
+<div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb306-1"><a href="advgraphics.html#cb306-1"></a><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb306-2"><a href="advgraphics.html#cb306-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb306-3"><a href="advgraphics.html#cb306-3"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> brks, <span class="dt">labels =</span> brks <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>) <span class="op">+</span></span>
+<span id="cb306-4"><a href="advgraphics.html#cb306-4"></a><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> brks, <span class="dt">labels =</span> brks <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
 <p>Для того чтобы принудительно указать диапазоны осей и графических переменных, следует использовать функции <code>lims(...)</code>, <code>xlim(...)</code> и <code>ylim(...)</code>. Например, мы можем приблизиться в левый нижний угол графика, задав диапазон 0-200000 по обеим осям:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">xlim</span>(<span class="dv">0</span>, <span class="dv">75000</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ylim</span>(<span class="dv">0</span>, <span class="dv">75000</span>)</code></pre>
+<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb307-1"><a href="advgraphics.html#cb307-1"></a><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb307-2"><a href="advgraphics.html#cb307-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb307-3"><a href="advgraphics.html#cb307-3"></a><span class="st">  </span><span class="kw">xlim</span>(<span class="dv">0</span>, <span class="dv">75000</span>) <span class="op">+</span></span>
+<span id="cb307-4"><a href="advgraphics.html#cb307-4"></a><span class="st">  </span><span class="kw">ylim</span>(<span class="dv">0</span>, <span class="dv">75000</span>)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
 <p>Функция <code>lims()</code> работает еще хитрее: она позволяет применять графические переменные только к ограниченному набору значений исходных данных. Например, таким путем я могу выделить на графике продукцию машиностроения:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">lims</span>(<span class="dt">color =</span> <span class="st">&#39;Machinery and transport equipment&#39;</span>)</code></pre>
+<div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb308-1"><a href="advgraphics.html#cb308-1"></a><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb308-2"><a href="advgraphics.html#cb308-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb308-3"><a href="advgraphics.html#cb308-3"></a><span class="st">  </span><span class="kw">lims</span>(<span class="dt">color =</span> <span class="st">&#39;Machinery and transport equipment&#39;</span>)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
 </div>
 <div id="advgraphics_labels" class="section level2">
 <h2><span class="header-section-number">6.9</span> Подписи и аннотации</h2>
 <p>С точки зрения <strong>ggplot</strong> текст на графике, отображающий входные данные, является одной из разновидностей геометрии. Размещается он с помощью функции <code>geom_text()</code>. Как и в случае с другими геометриями, параметры, зависящие от исходных данных, должны быть переданы внутри <code>mapping = aes(...)</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span>
-<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>))) <span class="co"># добавляем подписи</span></code></pre>
+<div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb309-1"><a href="advgraphics.html#cb309-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span></span>
+<span id="cb309-2"><a href="advgraphics.html#cb309-2"></a><span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span></span>
+<span id="cb309-3"><a href="advgraphics.html#cb309-3"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
+<span id="cb309-4"><a href="advgraphics.html#cb309-4"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
+<span id="cb309-5"><a href="advgraphics.html#cb309-5"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>))) <span class="co"># добавляем подписи</span></span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
 <p>Выравнивание подписи относительно якорной точки (снизу, сверху, справа, слева) по горизонтали и вертикали управляется параметрами <code>hjust</code> и <code>vjust</code>, а смещения по осям X (в координатах графика) — параметрами <code>nudge_x</code> и <code>nudge_y</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span>
-<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)), 
-            <span class="dt">vjust =</span> <span class="dv">0</span>, <span class="dt">nudge_y =</span> <span class="dv">40000</span>) <span class="co"># добавляем подписи</span></code></pre>
+<div class="sourceCode" id="cb310"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb310-1"><a href="advgraphics.html#cb310-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span></span>
+<span id="cb310-2"><a href="advgraphics.html#cb310-2"></a><span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span></span>
+<span id="cb310-3"><a href="advgraphics.html#cb310-3"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
+<span id="cb310-4"><a href="advgraphics.html#cb310-4"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
+<span id="cb310-5"><a href="advgraphics.html#cb310-5"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)), </span>
+<span id="cb310-6"><a href="advgraphics.html#cb310-6"></a>            <span class="dt">vjust =</span> <span class="dv">0</span>, <span class="dt">nudge_y =</span> <span class="dv">40000</span>) <span class="co"># добавляем подписи</span></span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
 <p>Подписи с фоновой плашкой добавляются через функцию <code>geom_label()</code>, которая имеет аналогичный синтаксис:</p>
-<pre class="sourceCode r"><code class="sourceCode r">trades <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">fill =</span> <span class="st">&#39;plum4&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_label</span>(<span class="kw">aes</span>(<span class="dt">y =</span> export <span class="op">/</span><span class="st"> </span><span class="dv">2</span>, <span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>))) <span class="co"># добавляем подписи</span></code></pre>
+<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb311-1"><a href="advgraphics.html#cb311-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb311-2"><a href="advgraphics.html#cb311-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb311-3"><a href="advgraphics.html#cb311-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export)) <span class="op">+</span></span>
+<span id="cb311-4"><a href="advgraphics.html#cb311-4"></a><span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">fill =</span> <span class="st">&#39;plum4&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span></span>
+<span id="cb311-5"><a href="advgraphics.html#cb311-5"></a><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span></span>
+<span id="cb311-6"><a href="advgraphics.html#cb311-6"></a><span class="st">  </span><span class="kw">geom_label</span>(<span class="kw">aes</span>(<span class="dt">y =</span> export <span class="op">/</span><span class="st"> </span><span class="dv">2</span>, <span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>))) <span class="co"># добавляем подписи</span></span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
 <p><strong>Аннотации</strong> представляют собой объекты, размещаемые на графике вручную, и используемые, как правило, для выделения объектов и областей. Для размещения аннотаций используется функция <code>annotate()</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span>
-<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)), 
-            <span class="dt">vjust =</span> <span class="dv">0</span>, <span class="dt">nudge_y =</span> <span class="dv">40000</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="kw">as.Date</span>(<span class="st">&#39;2009-01-01&#39;</span>), <span class="dt">y =</span> <span class="dv">550000</span>, <span class="dt">label =</span> <span class="st">&quot;Это провал&quot;</span>, <span class="dt">color =</span> <span class="st">&#39;red&#39;</span>)</code></pre>
+<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb312-1"><a href="advgraphics.html#cb312-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span></span>
+<span id="cb312-2"><a href="advgraphics.html#cb312-2"></a><span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span></span>
+<span id="cb312-3"><a href="advgraphics.html#cb312-3"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
+<span id="cb312-4"><a href="advgraphics.html#cb312-4"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
+<span id="cb312-5"><a href="advgraphics.html#cb312-5"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)), </span>
+<span id="cb312-6"><a href="advgraphics.html#cb312-6"></a>            <span class="dt">vjust =</span> <span class="dv">0</span>, <span class="dt">nudge_y =</span> <span class="dv">40000</span>) <span class="op">+</span></span>
+<span id="cb312-7"><a href="advgraphics.html#cb312-7"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="kw">as.Date</span>(<span class="st">&#39;2009-01-01&#39;</span>), <span class="dt">y =</span> <span class="dv">550000</span>, <span class="dt">label =</span> <span class="st">&quot;Это провал&quot;</span>, <span class="dt">color =</span> <span class="st">&#39;red&#39;</span>)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
 <p>Аннотировать можно не только подписями, но и регионами. Например, мы можем выделить область, которая соответствует импорту/экспорту продукции химической промышленности:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;rect&quot;</span>, <span class="dt">xmin =</span> <span class="dv">100000</span>, <span class="dt">xmax =</span> <span class="dv">250000</span>, <span class="dt">ymin =</span> <span class="dv">75000</span>, <span class="dt">ymax =</span> <span class="dv">175000</span>,  <span class="dt">alpha =</span> <span class="fl">.2</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="dv">175000</span>, <span class="dt">y =</span> <span class="dv">190000</span>, <span class="dt">label =</span> <span class="st">&quot;Chemicals&quot;</span>, <span class="dt">color =</span> <span class="st">&#39;coral&#39;</span>)</code></pre>
+<div class="sourceCode" id="cb313"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb313-1"><a href="advgraphics.html#cb313-1"></a><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb313-2"><a href="advgraphics.html#cb313-2"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;rect&quot;</span>, <span class="dt">xmin =</span> <span class="dv">100000</span>, <span class="dt">xmax =</span> <span class="dv">250000</span>, <span class="dt">ymin =</span> <span class="dv">75000</span>, <span class="dt">ymax =</span> <span class="dv">175000</span>,  <span class="dt">alpha =</span> <span class="fl">.2</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb313-3"><a href="advgraphics.html#cb313-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb313-4"><a href="advgraphics.html#cb313-4"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="dv">175000</span>, <span class="dt">y =</span> <span class="dv">190000</span>, <span class="dt">label =</span> <span class="st">&quot;Chemicals&quot;</span>, <span class="dt">color =</span> <span class="st">&#39;coral&#39;</span>)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
 </div>
 <div id="advgraphics_facets" class="section level2">
 <h2><span class="header-section-number">6.10</span> Фасеты</h2>
 <p>Фасеты представляют собой множество графиков, каждый из которых отображает свою переменную или набор значений. Для разбиения на фасеты используется функция facet_wrap(), которой необходимо передать переменную разбиения с <em>тильдой</em>. Например, рассмотрим изменение структуры импорта по годам:</p>
-<pre class="sourceCode r"><code class="sourceCode r">brks =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">150</span>, <span class="dv">200</span>)
-trades <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> import)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> brks <span class="op">*</span><span class="st"> </span><span class="fl">1e3</span>, <span class="dt">labels =</span> brks) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Импорт продукции машиностроения (мдрд долл. США)&#39;</span>,
-        <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>time)</code></pre>
+<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb314-1"><a href="advgraphics.html#cb314-1"></a>brks =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">150</span>, <span class="dv">200</span>)</span>
+<span id="cb314-2"><a href="advgraphics.html#cb314-2"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb314-3"><a href="advgraphics.html#cb314-3"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb314-4"><a href="advgraphics.html#cb314-4"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> import)) <span class="op">+</span></span>
+<span id="cb314-5"><a href="advgraphics.html#cb314-5"></a><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span></span>
+<span id="cb314-6"><a href="advgraphics.html#cb314-6"></a><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> brks <span class="op">*</span><span class="st"> </span><span class="fl">1e3</span>, <span class="dt">labels =</span> brks) <span class="op">+</span></span>
+<span id="cb314-7"><a href="advgraphics.html#cb314-7"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Импорт продукции машиностроения (мдрд долл. США)&#39;</span>,</span>
+<span id="cb314-8"><a href="advgraphics.html#cb314-8"></a>        <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>) <span class="op">+</span></span>
+<span id="cb314-9"><a href="advgraphics.html#cb314-9"></a><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span></span>
+<span id="cb314-10"><a href="advgraphics.html#cb314-10"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>time)</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
 </div>
 <div id="advgraphics_themes" class="section level2">
 <h2><span class="header-section-number">6.11</span> Темы</h2>
 <p>Система <strong>ggplot</strong> интересна также тем, что для нее существует множество предопределенных “тем” или скинов для оформления графиков. <a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">Часть из них</a> входит в состав самой библиотеки. Дополнительные темы можно установить через пакет <a href="https://cran.r-project.org/web/packages/ggthemes/index.html"><strong>ggthemes</strong></a>. Чтобы изменить тему оформления ggplot, достаточно прибавить в конце построения графика соответствующую функцию. Например, классическая черно-белая тема получается прибавлением функции <code>theme_bw()</code>:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span>
-<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)), 
-            <span class="dt">vjust =</span> <span class="dv">0</span>, <span class="dt">nudge_y =</span> <span class="dv">40000</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_bw</span>()</code></pre>
+<div class="sourceCode" id="cb315"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb315-1"><a href="advgraphics.html#cb315-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span></span>
+<span id="cb315-2"><a href="advgraphics.html#cb315-2"></a><span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span></span>
+<span id="cb315-3"><a href="advgraphics.html#cb315-3"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
+<span id="cb315-4"><a href="advgraphics.html#cb315-4"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
+<span id="cb315-5"><a href="advgraphics.html#cb315-5"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)), </span>
+<span id="cb315-6"><a href="advgraphics.html#cb315-6"></a>            <span class="dt">vjust =</span> <span class="dv">0</span>, <span class="dt">nudge_y =</span> <span class="dv">40000</span>) <span class="op">+</span></span>
+<span id="cb315-7"><a href="advgraphics.html#cb315-7"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
-<pre class="sourceCode r"><code class="sourceCode r">
-<span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)&#39;</span>,
-          <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Экспорт&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Импорт&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_bw</span>()</code></pre>
+<div class="sourceCode" id="cb316"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb316-1"><a href="advgraphics.html#cb316-1"></a></span>
+<span id="cb316-2"><a href="advgraphics.html#cb316-2"></a><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb316-3"><a href="advgraphics.html#cb316-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb316-4"><a href="advgraphics.html#cb316-4"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>) <span class="op">+</span></span>
+<span id="cb316-5"><a href="advgraphics.html#cb316-5"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)&#39;</span>,</span>
+<span id="cb316-6"><a href="advgraphics.html#cb316-6"></a>          <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>) <span class="op">+</span></span>
+<span id="cb316-7"><a href="advgraphics.html#cb316-7"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Экспорт&#39;</span>) <span class="op">+</span></span>
+<span id="cb316-8"><a href="advgraphics.html#cb316-8"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Импорт&#39;</span>) <span class="op">+</span></span>
+<span id="cb316-9"><a href="advgraphics.html#cb316-9"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
 <p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-40-2.png" width="672" /></p>
 </div>
 <div id="questions_tasks_advgraphics" class="section level2">
