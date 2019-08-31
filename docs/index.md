@@ -5,7 +5,7 @@ date: "2019-08-31"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
-bibliography: [bibliography.bib, packages.bib]
+bibliography: [references.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
 github-repo: tsamsonov/r-geo-course
