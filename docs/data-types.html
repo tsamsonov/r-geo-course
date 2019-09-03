@@ -738,6 +738,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb28-5"><a href="data-types.html#cb28-5"></a>s</span>
 <span id="cb28-6"><a href="data-types.html#cb28-6"></a><span class="co">## [1] &quot;Максимальная численность населения в Детройте пришлась на 1950 год и составила 1850 тыс. чел&quot;</span></span></code></pre></div>
 <p>Обратите внимание на то что мы конкатенировали строки с числами. Конвертация типов осуществилась автоматически. Помимо этого, функция сама вставила пробелы между строками.</p>
+<blockquote>
+<p>Функция <code>paste()</code> содержит параметр <code>sep</code>, отвечающий за символ, который будет вставляться между конкатенируемыми строками. По умолчанию <code>sep = " "</code>, то есть, между строками будет вставляться пробел. Подобное поведение желательно не всегда. Например, если после переменной у вас идет запятая, то между ними будет вставлен пробел. В таком случае при вызове <code>paste()</code> необходимо указать <code>sep = ""</code>, то есть <em>пустую строку</em>: <code>paste(... sep = "")</code>. Вы также можете воспользоваться функцией <code>paste0()</code>, которая делает [почти] то же самое, что и <code>paste(..., sep = "")</code>, но избавляет вас от задания параметра <code>sep</code>.</p>
+</blockquote>
 </div>
 <div id="dates" class="section level3">
 <h3><span class="header-section-number">1.1.3</span> Даты</h3>
@@ -909,7 +912,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <p>Весьма полезной особенностью <code>readline()</code> является возможность указания строки запроса (чтобы пользователь понимал, что от него хотят). Строку запроса можно указать при вызове функции:</p>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="data-types.html#cb44-1"></a>lat =<span class="st"> </span><span class="kw">readline</span>(<span class="st">&#39;Введите широту точки:&#39;</span>)</span>
-<span id="cb44-2"><a href="data-types.html#cb44-2"></a><span class="co">## Введите координату точки:</span></span>
+<span id="cb44-2"><a href="data-types.html#cb44-2"></a><span class="co">## Введите широту точки:</span></span>
 <span id="cb44-3"><a href="data-types.html#cb44-3"></a><span class="co">## 54</span></span>
 <span id="cb44-4"><a href="data-types.html#cb44-4"></a>lat</span>
 <span id="cb44-5"><a href="data-types.html#cb44-5"></a><span class="co">## [1] &quot;54&quot;</span></span></code></pre></div>
@@ -969,9 +972,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Можно видеть, что в последнем случае <code>cat()</code> напечатала отнюдь не дату в ее привычном представлении, а некое число, которое является внутренним представлением даты в типе данных <code>Date</code>. Такие типы данных являются классами объектов в R, и у них есть своя функция <code>print()</code>, которая и выдает содержимое объекта в виде, который ожидается пользователем. Поэтому пользоваться функцией <code>cat()</code> надо с некоторой осторожностью.</p>
 <p>Заключительная возможность — вывод с помощью заключения выражения в круглые скобки — очень удобна на стадии отладки программы. При этом переменная, которая создается в выражении, остается доступной в программе:</p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="data-types.html#cb47-1"></a>(<span class="dt">a =</span> <span class="kw">rnorm</span>(<span class="dv">5</span>)) <span class="co"># сгенерируем 5 случайных чисел, запишем их в переменную a и выведем на экран</span></span>
-<span id="cb47-2"><a href="data-types.html#cb47-2"></a><span class="co">## [1]  0.1301045 -1.8220339  0.6661047 -1.1469891 -0.1256561</span></span>
+<span id="cb47-2"><a href="data-types.html#cb47-2"></a><span class="co">## [1] -0.4304227 -0.5038167 -0.5288365  0.5977110 -0.3115979</span></span>
 <span id="cb47-3"><a href="data-types.html#cb47-3"></a>(<span class="dt">b =</span> <span class="dv">2</span> <span class="op">*</span><span class="st"> </span>a) <span class="co"># переменная a доступна, ее можно использовать и далее для вычислений</span></span>
-<span id="cb47-4"><a href="data-types.html#cb47-4"></a><span class="co">## [1]  0.2602091 -3.6440677  1.3322095 -2.2939782 -0.2513123</span></span></code></pre></div>
+<span id="cb47-4"><a href="data-types.html#cb47-4"></a><span class="co">## [1] -0.8608455 -1.0076335 -1.0576731  1.1954220 -0.6231959</span></span></code></pre></div>
 </div>
 </div>
 <div id="ifelse" class="section level2">
@@ -990,7 +993,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <p>Например, сгенерируем случайное число, округлим его до одного знака после запятой и проверим относительно нуля:</p>
 <div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="data-types.html#cb49-1"></a>(<span class="dt">a =</span> <span class="kw">round</span>(<span class="kw">rnorm</span>(<span class="dv">1</span>), <span class="dv">1</span>))</span>
-<span id="cb49-2"><a href="data-types.html#cb49-2"></a><span class="co">## [1] 0.8</span></span>
+<span id="cb49-2"><a href="data-types.html#cb49-2"></a><span class="co">## [1] 1.3</span></span>
 <span id="cb49-3"><a href="data-types.html#cb49-3"></a></span>
 <span id="cb49-4"><a href="data-types.html#cb49-4"></a><span class="cf">if</span> (a <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>){</span>
 <span id="cb49-5"><a href="data-types.html#cb49-5"></a>  <span class="kw">cat</span>(<span class="st">&#39;Получилось отрицательное число!&#39;</span>)</span>
@@ -1043,14 +1046,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="data-types.html#cb55-1"></a>a =<span class="st"> </span><span class="dv">1</span></span>
 <span id="cb55-2"><a href="data-types.html#cb55-2"></a>b =<span class="st"> </span>a</span>
 <span id="cb55-3"><a href="data-types.html#cb55-3"></a><span class="kw">cat</span>(<span class="st">&#39;a:&#39;</span>, <span class="kw">tracemem</span>(a), <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>)</span>
-<span id="cb55-4"><a href="data-types.html#cb55-4"></a><span class="co">## a: &lt;0x7fb097838608&gt;</span></span>
+<span id="cb55-4"><a href="data-types.html#cb55-4"></a><span class="co">## a: &lt;0x7ff4a0e59070&gt;</span></span>
 <span id="cb55-5"><a href="data-types.html#cb55-5"></a><span class="kw">cat</span>(<span class="st">&#39;b:&#39;</span>, <span class="kw">tracemem</span>(b), <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>)</span>
-<span id="cb55-6"><a href="data-types.html#cb55-6"></a><span class="co">## b: &lt;0x7fb097838608&gt;</span></span>
+<span id="cb55-6"><a href="data-types.html#cb55-6"></a><span class="co">## b: &lt;0x7ff4a0e59070&gt;</span></span>
 <span id="cb55-7"><a href="data-types.html#cb55-7"></a>a =<span class="st"> </span><span class="dv">2</span></span>
 <span id="cb55-8"><a href="data-types.html#cb55-8"></a><span class="kw">cat</span>(<span class="st">&#39;a:&#39;</span>, <span class="kw">tracemem</span>(a), <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>) <span class="co"># объект скопирован в другую область памяти</span></span>
-<span id="cb55-9"><a href="data-types.html#cb55-9"></a><span class="co">## a: &lt;0x7fb097838250&gt;</span></span>
+<span id="cb55-9"><a href="data-types.html#cb55-9"></a><span class="co">## a: &lt;0x7ff4a0cc0a70&gt;</span></span>
 <span id="cb55-10"><a href="data-types.html#cb55-10"></a><span class="kw">cat</span>(<span class="st">&#39;b:&#39;</span>, <span class="kw">tracemem</span>(b), <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>)</span>
-<span id="cb55-11"><a href="data-types.html#cb55-11"></a><span class="co">## b: &lt;0x7fb097838608&gt;</span></span></code></pre></div>
+<span id="cb55-11"><a href="data-types.html#cb55-11"></a><span class="co">## b: &lt;0x7ff4a0e59070&gt;</span></span></code></pre></div>
 <blockquote>
 <p>Подобное поведение называется <em>copy-on-modify</em>. Оно позволяет экономить на вычислениях в случае, когда копия и оригинал остаются неизменными. Аналогичное правило применяется когда вы копируете структуры данных, такие как векторы, списки и фреймы данных (см. Главу <a href="data-structures.html#data-structures">2</a>). Более подробно см. параграф 2.3 в <span class="citation">(Wickham <a href="#ref-wickham:2019" role="doc-biblioref">2019</a>)</span>.</p>
 </blockquote>
