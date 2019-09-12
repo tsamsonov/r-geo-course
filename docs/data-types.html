@@ -973,9 +973,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Можно видеть, что в последнем случае <code>cat()</code> напечатала отнюдь не дату в ее привычном представлении, а некое число, которое является внутренним представлением даты в типе данных <code>Date</code>. Такие типы данных являются классами объектов в R, и у них есть своя функция <code>print()</code>, которая и выдает содержимое объекта в виде, который ожидается пользователем. Поэтому пользоваться функцией <code>cat()</code> надо с некоторой осторожностью.</p>
 <p>Заключительная возможность — вывод с помощью заключения выражения в круглые скобки — очень удобна на стадии отладки программы. При этом переменная, которая создается в выражении, остается доступной в программе:</p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="data-types.html#cb47-1"></a>(<span class="dt">a =</span> <span class="kw">rnorm</span>(<span class="dv">5</span>)) <span class="co"># сгенерируем 5 случайных чисел, запишем их в переменную a и выведем на экран</span></span>
-<span id="cb47-2"><a href="data-types.html#cb47-2"></a><span class="co">## [1]  0.5403670  2.5208026  0.4868229  1.7177913 -0.5386939</span></span>
+<span id="cb47-2"><a href="data-types.html#cb47-2"></a><span class="co">## [1]  0.2975431 -1.9307171  0.9566631  0.6152346  0.6324323</span></span>
 <span id="cb47-3"><a href="data-types.html#cb47-3"></a>(<span class="dt">b =</span> <span class="dv">2</span> <span class="op">*</span><span class="st"> </span>a) <span class="co"># переменная a доступна, ее можно использовать и далее для вычислений</span></span>
-<span id="cb47-4"><a href="data-types.html#cb47-4"></a><span class="co">## [1]  1.0807340  5.0416051  0.9736458  3.4355827 -1.0773879</span></span></code></pre></div>
+<span id="cb47-4"><a href="data-types.html#cb47-4"></a><span class="co">## [1]  0.5950861 -3.8614343  1.9133262  1.2304692  1.2648645</span></span></code></pre></div>
 </div>
 </div>
 <div id="ifelse" class="section level2">
@@ -994,7 +994,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <p>Например, сгенерируем случайное число, округлим его до одного знака после запятой и проверим относительно нуля:</p>
 <div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="data-types.html#cb49-1"></a>(<span class="dt">a =</span> <span class="kw">round</span>(<span class="kw">rnorm</span>(<span class="dv">1</span>), <span class="dv">1</span>))</span>
-<span id="cb49-2"><a href="data-types.html#cb49-2"></a><span class="co">## [1] -1.4</span></span>
+<span id="cb49-2"><a href="data-types.html#cb49-2"></a><span class="co">## [1] 0.9</span></span>
 <span id="cb49-3"><a href="data-types.html#cb49-3"></a></span>
 <span id="cb49-4"><a href="data-types.html#cb49-4"></a><span class="cf">if</span> (a <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) {</span>
 <span id="cb49-5"><a href="data-types.html#cb49-5"></a>  <span class="kw">cat</span>(<span class="st">&#39;Получилось отрицательное число!&#39;</span>)</span>
@@ -1003,7 +1003,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb49-8"><a href="data-types.html#cb49-8"></a>} <span class="cf">else</span> {</span>
 <span id="cb49-9"><a href="data-types.html#cb49-9"></a>  <span class="kw">cat</span>(<span class="st">&#39;Получился нуль!&#39;</span>)</span>
 <span id="cb49-10"><a href="data-types.html#cb49-10"></a>}</span>
-<span id="cb49-11"><a href="data-types.html#cb49-11"></a><span class="co">## Получилось отрицательное число!</span></span></code></pre></div>
+<span id="cb49-11"><a href="data-types.html#cb49-11"></a><span class="co">## Получилось положительное число!</span></span></code></pre></div>
 <p>Условия можно использовать, в частности, для того чтобы обрабатывать пользовательский ввод в программе. Например, охарактеризуем положение точки относительно Полярного круга:</p>
 <div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="data-types.html#cb50-1"></a>phi =<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">readline</span>(<span class="st">&#39;Введите широту вашей точки:&#39;</span>))</span></code></pre></div>
 <p>Пользователь вводит <code>68</code>, а мы оцениваем результат:</p>
@@ -1041,27 +1041,39 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="stop" class="section level2">
 <h2><span class="header-section-number">1.6</span> Прерывание программы</h2>
-<p>В процессе выполнения программы могут возникнуть ситуации, при которых дальнейшее выполнение программы невозможно. Например, пользователь вместо числа ввёл строковое значение. Хорошим тоном в данном случае будет не продолжить выполнение и ждать, пока программа сама споткнется и выдаст системное сообщение об ошибке, а обработать некорректный ввод сразу, сообщить об этом пользователю и остановить программу явным образом.</p>
-<p>Для контроля за выполнением программы существует множество опций. Приведем несколько полезных функций:</p>
+<p>В процессе выполнения программы могут возникнуть ситуации, при которых дальнейшее выполнение программы невозможно или недопустимо. Например, пользователь вместо числа ввёл в консоли букву. Хорошим тоном разработчика в данном случае будет не пускать ситуацию на самотёк и ждать пока программа сама споткнется и выдаст системное сообщение об ошибке, а обработать некорректный ввод сразу, сообщить об этом пользователю и остановить программу явным образом.</p>
+<p>Прервать выполнение программы можно разными способами. Рассмотрим две часто используемые для этого функции:</p>
 <ul>
-<li><code>stop(...)</code> выводит на экран объекты, перечисленные через запятую в <code>...</code> и завершает выполнение программы. При ручном вызове этой функции в <code>...</code> обычно передают текстовую строку с сообщением о причине остановки программы.</li>
+<li><code>stop(...)</code> выводит на экран объекты, перечисленные через запятую в <code>...</code> и завершает выполнение программы. При ручном вызове этой функции в <code>...</code> целесообразно передать текстовую строку с сообщением о причине остановки программы. Вызов <code>stop()</code> происходит обычно после проверки некоторого условия оператором <code>if-else</code>.</li>
 <li><code>stopifnot(...)</code> вызывает <code>stop()</code>, если хотя бы одно из выражений, перечисленных через запятую в <code>...</code> имеет значение <code>FALSE</code>. При этом в <code>stop()</code> передается <em>первое</em> выражение, которое было оценено в <code>FALSE</code>.</li>
 </ul>
+<p>Реализуем вышеописанный пример с контролем пользовательского ввода:</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="data-types.html#cb55-1"></a>n =<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">readline</span>(<span class="st">&#39;Введите число:&#39;</span>))</span>
+<span id="cb55-2"><a href="data-types.html#cb55-2"></a><span class="kw">stopifnot</span>(<span class="kw">is.numeric</span>(n)) <span class="co"># остановим выполнение, если получилось не число</span></span>
+<span id="cb55-3"><a href="data-types.html#cb55-3"></a><span class="kw">cat</span>(n<span class="op">^</span><span class="dv">2</span>) <span class="co"># возведем в квадрат и выведем на экран, если все ОК</span></span></code></pre></div>
+<p>Если пользователь введет <code>abc</code>, программа остановит выполнение:</p>
+<pre><code>## Error: is.numeric(n) не TRUE</code></pre>
+<p>Обратите внимание, что <strong>R</strong> напечатал также и само выражение, которое было оценено как <code>FALSE</code>. Вышеприведенный код можно сделать более дружелюбным для пользователя, если воспользоваться непосредственно функцией <code>stop()</code>:</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="data-types.html#cb57-1"></a>n =<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">readline</span>(<span class="st">&#39;Введите число:&#39;</span>))</span>
+<span id="cb57-2"><a href="data-types.html#cb57-2"></a><span class="cf">if</span> (<span class="op">!</span><span class="kw">is.numeric</span>(n)) <span class="kw">stop</span>(<span class="st">&#39;Введенная строка не является числом&#39;</span>) <span class="co"># остановим выполнение</span></span>
+<span id="cb57-3"><a href="data-types.html#cb57-3"></a><span class="kw">cat</span>(n<span class="op">^</span><span class="dv">2</span>) <span class="co"># возведем в квадрат и выведем на экран, если все ОК</span></span></code></pre></div>
+<p>Вывод программы в случае ввода строки <code>abc</code> будет следующим:</p>
+<pre><code>## Error in eval(expr, envir, enclos): Введенная строка не является числом</code></pre>
 </div>
 <div id="basics-detail" class="section level2">
 <h2><span class="header-section-number">1.7</span> Технические детали</h2>
 <p>Когда вы присваиваете значение переменной другой переменной, копирования не происходит. Оба имени будут ссылаться на один и тот же объект, до тех пор, пока через одно из имен не будет предпринята попытка модифицировать объект. Это можно легко проверить с помощью функции <code>tracemem()</code>:</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="data-types.html#cb55-1"></a>a =<span class="st"> </span><span class="dv">1</span></span>
-<span id="cb55-2"><a href="data-types.html#cb55-2"></a>b =<span class="st"> </span>a</span>
-<span id="cb55-3"><a href="data-types.html#cb55-3"></a><span class="kw">cat</span>(<span class="st">&#39;a:&#39;</span>, <span class="kw">tracemem</span>(a), <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>)</span>
-<span id="cb55-4"><a href="data-types.html#cb55-4"></a><span class="co">## a: &lt;0x7fabf21b46e8&gt;</span></span>
-<span id="cb55-5"><a href="data-types.html#cb55-5"></a><span class="kw">cat</span>(<span class="st">&#39;b:&#39;</span>, <span class="kw">tracemem</span>(b), <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>)</span>
-<span id="cb55-6"><a href="data-types.html#cb55-6"></a><span class="co">## b: &lt;0x7fabf21b46e8&gt;</span></span>
-<span id="cb55-7"><a href="data-types.html#cb55-7"></a>a =<span class="st"> </span><span class="dv">2</span></span>
-<span id="cb55-8"><a href="data-types.html#cb55-8"></a><span class="kw">cat</span>(<span class="st">&#39;a:&#39;</span>, <span class="kw">tracemem</span>(a), <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>) <span class="co"># объект скопирован в другую область памяти</span></span>
-<span id="cb55-9"><a href="data-types.html#cb55-9"></a><span class="co">## a: &lt;0x7fabf21b3ca0&gt;</span></span>
-<span id="cb55-10"><a href="data-types.html#cb55-10"></a><span class="kw">cat</span>(<span class="st">&#39;b:&#39;</span>, <span class="kw">tracemem</span>(b), <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>)</span>
-<span id="cb55-11"><a href="data-types.html#cb55-11"></a><span class="co">## b: &lt;0x7fabf21b46e8&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="data-types.html#cb59-1"></a>a =<span class="st"> </span><span class="dv">1</span></span>
+<span id="cb59-2"><a href="data-types.html#cb59-2"></a>b =<span class="st"> </span>a</span>
+<span id="cb59-3"><a href="data-types.html#cb59-3"></a><span class="kw">cat</span>(<span class="st">&#39;a:&#39;</span>, <span class="kw">tracemem</span>(a), <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb59-4"><a href="data-types.html#cb59-4"></a><span class="co">## a: &lt;0x7ff056f08dc8&gt;</span></span>
+<span id="cb59-5"><a href="data-types.html#cb59-5"></a><span class="kw">cat</span>(<span class="st">&#39;b:&#39;</span>, <span class="kw">tracemem</span>(b), <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb59-6"><a href="data-types.html#cb59-6"></a><span class="co">## b: &lt;0x7ff056f08dc8&gt;</span></span>
+<span id="cb59-7"><a href="data-types.html#cb59-7"></a>a =<span class="st"> </span><span class="dv">2</span></span>
+<span id="cb59-8"><a href="data-types.html#cb59-8"></a><span class="kw">cat</span>(<span class="st">&#39;a:&#39;</span>, <span class="kw">tracemem</span>(a), <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>) <span class="co"># объект скопирован в другую область памяти</span></span>
+<span id="cb59-9"><a href="data-types.html#cb59-9"></a><span class="co">## a: &lt;0x7ff0568e6d58&gt;</span></span>
+<span id="cb59-10"><a href="data-types.html#cb59-10"></a><span class="kw">cat</span>(<span class="st">&#39;b:&#39;</span>, <span class="kw">tracemem</span>(b), <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb59-11"><a href="data-types.html#cb59-11"></a><span class="co">## b: &lt;0x7ff056f08dc8&gt;</span></span></code></pre></div>
 <blockquote>
 <p>Подобное поведение называется <em>copy-on-modify</em>. Оно позволяет экономить на вычислениях в случае, когда копия и оригинал остаются неизменными. Аналогичное правило применяется когда вы копируете структуры данных, такие как векторы, списки и фреймы данных (см. Главу <a href="data-structures.html#data-structures">2</a>). Более подробно см. параграф 2.3 в <span class="citation">(Wickham <a href="#ref-wickham:2019" role="doc-biblioref">2019</a>)</span>.</p>
 </blockquote>
