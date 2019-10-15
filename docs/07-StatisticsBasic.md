@@ -60,9 +60,6 @@ __Gapminder__ отлично подходит для знакомства со �
 В качестве примера возьмем данные по ВВП на душу населения, они содержатся в таблице gapminder с ниже приведенным кодом
 
 ```r
-library(googledrive)
-library(googlesheets4)
-
 ('1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg' %>% ### ВВП на душу населения
   as_id() %>% # преобразуем идентификатор в класс drive_id чтобы отличать его от пути
   drive_get() %>% 
@@ -117,21 +114,21 @@ library(googlesheets4)
 
 ```r
 (gdpdf_tidy = gdpdf %>% 
-   gather(year, gdp, `1764`:`2018`) %>% 
+   pivot_longer(cols = `1764`:`2018`, names_to = 'year', values_to = 'gdp') %>% 
    rename(Country = 1))
 ## # A tibble: 66,300 x 3
-##    Country               year    gdp
-##    <chr>                 <chr> <dbl>
-##  1 Abkhazia              1764     NA
-##  2 Afghanistan           1764     NA
-##  3 Akrotiri and Dhekelia 1764     NA
-##  4 Albania               1764     NA
-##  5 Algeria               1764     NA
-##  6 American Samoa        1764     NA
-##  7 Andorra               1764     NA
-##  8 Angola                1764     NA
-##  9 Anguilla              1764     NA
-## 10 Antigua and Barbuda   1764     NA
+##    Country  year    gdp
+##    <chr>    <chr> <dbl>
+##  1 Abkhazia 1764     NA
+##  2 Abkhazia 1765     NA
+##  3 Abkhazia 1766     NA
+##  4 Abkhazia 1767     NA
+##  5 Abkhazia 1768     NA
+##  6 Abkhazia 1769     NA
+##  7 Abkhazia 1770     NA
+##  8 Abkhazia 1771     NA
+##  9 Abkhazia 1772     NA
+## 10 Abkhazia 1773     NA
 ## # … with 66,290 more rows
 
 gdpdf15 = filter(gdpdf_tidy, year == 2015)
@@ -202,7 +199,7 @@ ggplot(gdpdf15, aes(x = gdp)) +
 
 ```r
 lifedf_tidy = lifedf %>% 
-  gather(year, lifexp, `1800`:`2016`) %>% 
+  pivot_longer(cols = `1800`:`2016`, names_to = 'year', values_to = 'lifexp') %>% 
   rename(Country = 1)
 
 lifedf15 = filter(lifedf_tidy, year == 2015)
@@ -267,18 +264,18 @@ ggplot(lifedf15, aes(x = lifexp)) +
 
 (tab = gdpdf_tidy %>% inner_join(lifedf_tidy) %>% inner_join(popdf_tidy))
 ## # A tibble: 19,359 x 5
-##    Country               year    gdp lifexp     pop
-##    <chr>                 <chr> <dbl>  <dbl>   <dbl>
-##  1 Abkhazia              1800    NA    NA        NA
-##  2 Afghanistan           1800   472.   28.2 3280000
-##  3 Akrotiri and Dhekelia 1800    NA    NA        NA
-##  4 Albania               1800   601.   35.4  410445
-##  5 Algeria               1800   766.   28.8 2503218
-##  6 American Samoa        1800   674.   NA      8170
-##  7 Andorra               1800  1260.   NA      2654
-##  8 Angola                1800   360.   27.0 1567028
-##  9 Anguilla              1800   776.   NA      2025
-## 10 Antigua and Barbuda   1800   538.   33.5   37000
+##    Country  year    gdp lifexp   pop
+##    <chr>    <chr> <dbl>  <dbl> <dbl>
+##  1 Abkhazia 1800     NA     NA    NA
+##  2 Abkhazia 1810     NA     NA    NA
+##  3 Abkhazia 1820     NA     NA    NA
+##  4 Abkhazia 1830     NA     NA    NA
+##  5 Abkhazia 1840     NA     NA    NA
+##  6 Abkhazia 1850     NA     NA    NA
+##  7 Abkhazia 1860     NA     NA    NA
+##  8 Abkhazia 1870     NA     NA    NA
+##  9 Abkhazia 1880     NA     NA    NA
+## 10 Abkhazia 1890     NA     NA    NA
 ## # … with 19,349 more rows
 ```
 

@@ -600,74 +600,71 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">7.3.1</span> Оценка распределения</h3>
 <p>Для оценки распределения случайной величины можно использовать графические и статистические способы. Выявление типа распределения важно, поскольку статистические методы не универсальны, и во многих случаях предполагают, что изучаемая переменная подчиняется определенному закону распределения (как правило, нормальному).</p>
 <p>В качестве примера возьмем данные по ВВП на душу населения, они содержатся в таблице gapminder с ниже приведенным кодом</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="stat-analysis.html#cb2-1"></a><span class="kw">library</span>(googledrive)</span>
-<span id="cb2-2"><a href="stat-analysis.html#cb2-2"></a><span class="kw">library</span>(googlesheets4)</span>
-<span id="cb2-3"><a href="stat-analysis.html#cb2-3"></a></span>
-<span id="cb2-4"><a href="stat-analysis.html#cb2-4"></a>(<span class="st">&#39;1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co">### ВВП на душу населения</span></span>
-<span id="cb2-5"><a href="stat-analysis.html#cb2-5"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
-<span id="cb2-6"><a href="stat-analysis.html#cb2-6"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb2-7"><a href="stat-analysis.html#cb2-7"></a><span class="st">  </span><span class="kw">read_sheet</span>() -&gt;<span class="st"> </span>gdpdf) <span class="co"># выгружаем данные по ВВП на душу населения и сохраняем в переменную incdf</span></span>
-<span id="cb2-8"><a href="stat-analysis.html#cb2-8"></a><span class="co">## Using an auto-discovered, cached token.</span></span>
-<span id="cb2-9"><a href="stat-analysis.html#cb2-9"></a><span class="co">## To suppress this message, modify your code or options to clearly consent to the use of a cached token.</span></span>
-<span id="cb2-10"><a href="stat-analysis.html#cb2-10"></a><span class="co">## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</span></span>
-<span id="cb2-11"><a href="stat-analysis.html#cb2-11"></a><span class="co">## https://gargle.r-lib.org/articles/non-interactive-auth.html</span></span>
-<span id="cb2-12"><a href="stat-analysis.html#cb2-12"></a><span class="co">## The googledrive package is using a cached token for iamste@yandex.ru.</span></span>
-<span id="cb2-13"><a href="stat-analysis.html#cb2-13"></a><span class="co">## Using an auto-discovered, cached token.</span></span>
-<span id="cb2-14"><a href="stat-analysis.html#cb2-14"></a><span class="co">## To suppress this message, modify your code or options to clearly consent to the use of a cached token.</span></span>
-<span id="cb2-15"><a href="stat-analysis.html#cb2-15"></a><span class="co">## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</span></span>
-<span id="cb2-16"><a href="stat-analysis.html#cb2-16"></a><span class="co">## https://gargle.r-lib.org/articles/non-interactive-auth.html</span></span>
-<span id="cb2-17"><a href="stat-analysis.html#cb2-17"></a><span class="co">## The googlesheets4 package is using a cached token for iamste@yandex.ru.</span></span>
-<span id="cb2-18"><a href="stat-analysis.html#cb2-18"></a><span class="co">## # A tibble: 260 x 256</span></span>
-<span id="cb2-19"><a href="stat-analysis.html#cb2-19"></a><span class="co">##    `GDP per capita… `1764` `1765` `1766` `1767` `1768` `1769` `1770` `1771`</span></span>
-<span id="cb2-20"><a href="stat-analysis.html#cb2-20"></a><span class="co">##    &lt;chr&gt;             &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span id="cb2-21"><a href="stat-analysis.html#cb2-21"></a><span class="co">##  1 Abkhazia             NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-22"><a href="stat-analysis.html#cb2-22"></a><span class="co">##  2 Afghanistan          NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-23"><a href="stat-analysis.html#cb2-23"></a><span class="co">##  3 Akrotiri and Dh…     NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-24"><a href="stat-analysis.html#cb2-24"></a><span class="co">##  4 Albania              NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-25"><a href="stat-analysis.html#cb2-25"></a><span class="co">##  5 Algeria              NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-26"><a href="stat-analysis.html#cb2-26"></a><span class="co">##  6 American Samoa       NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-27"><a href="stat-analysis.html#cb2-27"></a><span class="co">##  7 Andorra              NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-28"><a href="stat-analysis.html#cb2-28"></a><span class="co">##  8 Angola               NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-29"><a href="stat-analysis.html#cb2-29"></a><span class="co">##  9 Anguilla             NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-30"><a href="stat-analysis.html#cb2-30"></a><span class="co">## 10 Antigua and Bar…     NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-31"><a href="stat-analysis.html#cb2-31"></a><span class="co">## # … with 250 more rows, and 247 more variables: `1772` &lt;dbl&gt;,</span></span>
-<span id="cb2-32"><a href="stat-analysis.html#cb2-32"></a><span class="co">## #   `1773` &lt;dbl&gt;, `1774` &lt;dbl&gt;, `1775` &lt;dbl&gt;, `1776` &lt;dbl&gt;, `1777` &lt;dbl&gt;,</span></span>
-<span id="cb2-33"><a href="stat-analysis.html#cb2-33"></a><span class="co">## #   `1778` &lt;dbl&gt;, `1779` &lt;dbl&gt;, `1780` &lt;dbl&gt;, `1781` &lt;dbl&gt;, `1782` &lt;dbl&gt;,</span></span>
-<span id="cb2-34"><a href="stat-analysis.html#cb2-34"></a><span class="co">## #   `1783` &lt;dbl&gt;, `1784` &lt;dbl&gt;, `1785` &lt;dbl&gt;, `1786` &lt;dbl&gt;, `1787` &lt;dbl&gt;,</span></span>
-<span id="cb2-35"><a href="stat-analysis.html#cb2-35"></a><span class="co">## #   `1788` &lt;dbl&gt;, `1789` &lt;dbl&gt;, `1790` &lt;dbl&gt;, `1791` &lt;dbl&gt;, `1792` &lt;dbl&gt;,</span></span>
-<span id="cb2-36"><a href="stat-analysis.html#cb2-36"></a><span class="co">## #   `1793` &lt;dbl&gt;, `1794` &lt;dbl&gt;, `1795` &lt;dbl&gt;, `1796` &lt;dbl&gt;, `1797` &lt;dbl&gt;,</span></span>
-<span id="cb2-37"><a href="stat-analysis.html#cb2-37"></a><span class="co">## #   `1798` &lt;dbl&gt;, `1799` &lt;dbl&gt;, `1800` &lt;dbl&gt;, `1801` &lt;dbl&gt;, `1802` &lt;dbl&gt;,</span></span>
-<span id="cb2-38"><a href="stat-analysis.html#cb2-38"></a><span class="co">## #   `1803` &lt;dbl&gt;, `1804` &lt;dbl&gt;, `1805` &lt;dbl&gt;, `1806` &lt;dbl&gt;, `1807` &lt;dbl&gt;,</span></span>
-<span id="cb2-39"><a href="stat-analysis.html#cb2-39"></a><span class="co">## #   `1808` &lt;dbl&gt;, `1809` &lt;dbl&gt;, `1810` &lt;dbl&gt;, `1811` &lt;dbl&gt;, `1812` &lt;dbl&gt;,</span></span>
-<span id="cb2-40"><a href="stat-analysis.html#cb2-40"></a><span class="co">## #   `1813` &lt;dbl&gt;, `1814` &lt;dbl&gt;, `1815` &lt;dbl&gt;, `1816` &lt;dbl&gt;, `1817` &lt;dbl&gt;,</span></span>
-<span id="cb2-41"><a href="stat-analysis.html#cb2-41"></a><span class="co">## #   `1818` &lt;dbl&gt;, `1819` &lt;dbl&gt;, `1820` &lt;dbl&gt;, `1821` &lt;dbl&gt;, `1822` &lt;dbl&gt;,</span></span>
-<span id="cb2-42"><a href="stat-analysis.html#cb2-42"></a><span class="co">## #   `1823` &lt;dbl&gt;, `1824` &lt;dbl&gt;, `1825` &lt;dbl&gt;, `1826` &lt;dbl&gt;, `1827` &lt;dbl&gt;,</span></span>
-<span id="cb2-43"><a href="stat-analysis.html#cb2-43"></a><span class="co">## #   `1828` &lt;dbl&gt;, `1829` &lt;dbl&gt;, `1830` &lt;dbl&gt;, `1831` &lt;dbl&gt;, `1832` &lt;dbl&gt;,</span></span>
-<span id="cb2-44"><a href="stat-analysis.html#cb2-44"></a><span class="co">## #   `1833` &lt;dbl&gt;, `1834` &lt;dbl&gt;, `1835` &lt;dbl&gt;, `1836` &lt;dbl&gt;, `1837` &lt;dbl&gt;,</span></span>
-<span id="cb2-45"><a href="stat-analysis.html#cb2-45"></a><span class="co">## #   `1838` &lt;dbl&gt;, `1839` &lt;dbl&gt;, `1840` &lt;dbl&gt;, `1841` &lt;dbl&gt;, `1842` &lt;dbl&gt;,</span></span>
-<span id="cb2-46"><a href="stat-analysis.html#cb2-46"></a><span class="co">## #   `1843` &lt;dbl&gt;, `1844` &lt;dbl&gt;, `1845` &lt;dbl&gt;, `1846` &lt;dbl&gt;, `1847` &lt;dbl&gt;,</span></span>
-<span id="cb2-47"><a href="stat-analysis.html#cb2-47"></a><span class="co">## #   `1848` &lt;dbl&gt;, `1849` &lt;dbl&gt;, `1850` &lt;dbl&gt;, `1851` &lt;dbl&gt;, `1852` &lt;dbl&gt;,</span></span>
-<span id="cb2-48"><a href="stat-analysis.html#cb2-48"></a><span class="co">## #   `1853` &lt;dbl&gt;, `1854` &lt;dbl&gt;, `1855` &lt;dbl&gt;, `1856` &lt;dbl&gt;, `1857` &lt;dbl&gt;,</span></span>
-<span id="cb2-49"><a href="stat-analysis.html#cb2-49"></a><span class="co">## #   `1858` &lt;dbl&gt;, `1859` &lt;dbl&gt;, `1860` &lt;dbl&gt;, `1861` &lt;dbl&gt;, `1862` &lt;dbl&gt;,</span></span>
-<span id="cb2-50"><a href="stat-analysis.html#cb2-50"></a><span class="co">## #   `1863` &lt;dbl&gt;, `1864` &lt;dbl&gt;, `1865` &lt;dbl&gt;, `1866` &lt;dbl&gt;, `1867` &lt;dbl&gt;,</span></span>
-<span id="cb2-51"><a href="stat-analysis.html#cb2-51"></a><span class="co">## #   `1868` &lt;dbl&gt;, `1869` &lt;dbl&gt;, `1870` &lt;dbl&gt;, `1871` &lt;dbl&gt;, …</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="stat-analysis.html#cb2-1"></a>(<span class="st">&#39;1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co">### ВВП на душу населения</span></span>
+<span id="cb2-2"><a href="stat-analysis.html#cb2-2"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
+<span id="cb2-3"><a href="stat-analysis.html#cb2-3"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-4"><a href="stat-analysis.html#cb2-4"></a><span class="st">  </span><span class="kw">read_sheet</span>() -&gt;<span class="st"> </span>gdpdf) <span class="co"># выгружаем данные по ВВП на душу населения и сохраняем в переменную incdf</span></span>
+<span id="cb2-5"><a href="stat-analysis.html#cb2-5"></a><span class="co">## Using an auto-discovered, cached token.</span></span>
+<span id="cb2-6"><a href="stat-analysis.html#cb2-6"></a><span class="co">## To suppress this message, modify your code or options to clearly consent to the use of a cached token.</span></span>
+<span id="cb2-7"><a href="stat-analysis.html#cb2-7"></a><span class="co">## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</span></span>
+<span id="cb2-8"><a href="stat-analysis.html#cb2-8"></a><span class="co">## https://gargle.r-lib.org/articles/non-interactive-auth.html</span></span>
+<span id="cb2-9"><a href="stat-analysis.html#cb2-9"></a><span class="co">## The googledrive package is using a cached token for iamste@yandex.ru.</span></span>
+<span id="cb2-10"><a href="stat-analysis.html#cb2-10"></a><span class="co">## Using an auto-discovered, cached token.</span></span>
+<span id="cb2-11"><a href="stat-analysis.html#cb2-11"></a><span class="co">## To suppress this message, modify your code or options to clearly consent to the use of a cached token.</span></span>
+<span id="cb2-12"><a href="stat-analysis.html#cb2-12"></a><span class="co">## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</span></span>
+<span id="cb2-13"><a href="stat-analysis.html#cb2-13"></a><span class="co">## https://gargle.r-lib.org/articles/non-interactive-auth.html</span></span>
+<span id="cb2-14"><a href="stat-analysis.html#cb2-14"></a><span class="co">## The googlesheets4 package is using a cached token for iamste@yandex.ru.</span></span>
+<span id="cb2-15"><a href="stat-analysis.html#cb2-15"></a><span class="co">## # A tibble: 260 x 256</span></span>
+<span id="cb2-16"><a href="stat-analysis.html#cb2-16"></a><span class="co">##    `GDP per capita… `1764` `1765` `1766` `1767` `1768` `1769` `1770` `1771`</span></span>
+<span id="cb2-17"><a href="stat-analysis.html#cb2-17"></a><span class="co">##    &lt;chr&gt;             &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb2-18"><a href="stat-analysis.html#cb2-18"></a><span class="co">##  1 Abkhazia             NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb2-19"><a href="stat-analysis.html#cb2-19"></a><span class="co">##  2 Afghanistan          NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb2-20"><a href="stat-analysis.html#cb2-20"></a><span class="co">##  3 Akrotiri and Dh…     NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb2-21"><a href="stat-analysis.html#cb2-21"></a><span class="co">##  4 Albania              NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb2-22"><a href="stat-analysis.html#cb2-22"></a><span class="co">##  5 Algeria              NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb2-23"><a href="stat-analysis.html#cb2-23"></a><span class="co">##  6 American Samoa       NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb2-24"><a href="stat-analysis.html#cb2-24"></a><span class="co">##  7 Andorra              NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb2-25"><a href="stat-analysis.html#cb2-25"></a><span class="co">##  8 Angola               NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb2-26"><a href="stat-analysis.html#cb2-26"></a><span class="co">##  9 Anguilla             NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb2-27"><a href="stat-analysis.html#cb2-27"></a><span class="co">## 10 Antigua and Bar…     NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb2-28"><a href="stat-analysis.html#cb2-28"></a><span class="co">## # … with 250 more rows, and 247 more variables: `1772` &lt;dbl&gt;,</span></span>
+<span id="cb2-29"><a href="stat-analysis.html#cb2-29"></a><span class="co">## #   `1773` &lt;dbl&gt;, `1774` &lt;dbl&gt;, `1775` &lt;dbl&gt;, `1776` &lt;dbl&gt;, `1777` &lt;dbl&gt;,</span></span>
+<span id="cb2-30"><a href="stat-analysis.html#cb2-30"></a><span class="co">## #   `1778` &lt;dbl&gt;, `1779` &lt;dbl&gt;, `1780` &lt;dbl&gt;, `1781` &lt;dbl&gt;, `1782` &lt;dbl&gt;,</span></span>
+<span id="cb2-31"><a href="stat-analysis.html#cb2-31"></a><span class="co">## #   `1783` &lt;dbl&gt;, `1784` &lt;dbl&gt;, `1785` &lt;dbl&gt;, `1786` &lt;dbl&gt;, `1787` &lt;dbl&gt;,</span></span>
+<span id="cb2-32"><a href="stat-analysis.html#cb2-32"></a><span class="co">## #   `1788` &lt;dbl&gt;, `1789` &lt;dbl&gt;, `1790` &lt;dbl&gt;, `1791` &lt;dbl&gt;, `1792` &lt;dbl&gt;,</span></span>
+<span id="cb2-33"><a href="stat-analysis.html#cb2-33"></a><span class="co">## #   `1793` &lt;dbl&gt;, `1794` &lt;dbl&gt;, `1795` &lt;dbl&gt;, `1796` &lt;dbl&gt;, `1797` &lt;dbl&gt;,</span></span>
+<span id="cb2-34"><a href="stat-analysis.html#cb2-34"></a><span class="co">## #   `1798` &lt;dbl&gt;, `1799` &lt;dbl&gt;, `1800` &lt;dbl&gt;, `1801` &lt;dbl&gt;, `1802` &lt;dbl&gt;,</span></span>
+<span id="cb2-35"><a href="stat-analysis.html#cb2-35"></a><span class="co">## #   `1803` &lt;dbl&gt;, `1804` &lt;dbl&gt;, `1805` &lt;dbl&gt;, `1806` &lt;dbl&gt;, `1807` &lt;dbl&gt;,</span></span>
+<span id="cb2-36"><a href="stat-analysis.html#cb2-36"></a><span class="co">## #   `1808` &lt;dbl&gt;, `1809` &lt;dbl&gt;, `1810` &lt;dbl&gt;, `1811` &lt;dbl&gt;, `1812` &lt;dbl&gt;,</span></span>
+<span id="cb2-37"><a href="stat-analysis.html#cb2-37"></a><span class="co">## #   `1813` &lt;dbl&gt;, `1814` &lt;dbl&gt;, `1815` &lt;dbl&gt;, `1816` &lt;dbl&gt;, `1817` &lt;dbl&gt;,</span></span>
+<span id="cb2-38"><a href="stat-analysis.html#cb2-38"></a><span class="co">## #   `1818` &lt;dbl&gt;, `1819` &lt;dbl&gt;, `1820` &lt;dbl&gt;, `1821` &lt;dbl&gt;, `1822` &lt;dbl&gt;,</span></span>
+<span id="cb2-39"><a href="stat-analysis.html#cb2-39"></a><span class="co">## #   `1823` &lt;dbl&gt;, `1824` &lt;dbl&gt;, `1825` &lt;dbl&gt;, `1826` &lt;dbl&gt;, `1827` &lt;dbl&gt;,</span></span>
+<span id="cb2-40"><a href="stat-analysis.html#cb2-40"></a><span class="co">## #   `1828` &lt;dbl&gt;, `1829` &lt;dbl&gt;, `1830` &lt;dbl&gt;, `1831` &lt;dbl&gt;, `1832` &lt;dbl&gt;,</span></span>
+<span id="cb2-41"><a href="stat-analysis.html#cb2-41"></a><span class="co">## #   `1833` &lt;dbl&gt;, `1834` &lt;dbl&gt;, `1835` &lt;dbl&gt;, `1836` &lt;dbl&gt;, `1837` &lt;dbl&gt;,</span></span>
+<span id="cb2-42"><a href="stat-analysis.html#cb2-42"></a><span class="co">## #   `1838` &lt;dbl&gt;, `1839` &lt;dbl&gt;, `1840` &lt;dbl&gt;, `1841` &lt;dbl&gt;, `1842` &lt;dbl&gt;,</span></span>
+<span id="cb2-43"><a href="stat-analysis.html#cb2-43"></a><span class="co">## #   `1843` &lt;dbl&gt;, `1844` &lt;dbl&gt;, `1845` &lt;dbl&gt;, `1846` &lt;dbl&gt;, `1847` &lt;dbl&gt;,</span></span>
+<span id="cb2-44"><a href="stat-analysis.html#cb2-44"></a><span class="co">## #   `1848` &lt;dbl&gt;, `1849` &lt;dbl&gt;, `1850` &lt;dbl&gt;, `1851` &lt;dbl&gt;, `1852` &lt;dbl&gt;,</span></span>
+<span id="cb2-45"><a href="stat-analysis.html#cb2-45"></a><span class="co">## #   `1853` &lt;dbl&gt;, `1854` &lt;dbl&gt;, `1855` &lt;dbl&gt;, `1856` &lt;dbl&gt;, `1857` &lt;dbl&gt;,</span></span>
+<span id="cb2-46"><a href="stat-analysis.html#cb2-46"></a><span class="co">## #   `1858` &lt;dbl&gt;, `1859` &lt;dbl&gt;, `1860` &lt;dbl&gt;, `1861` &lt;dbl&gt;, `1862` &lt;dbl&gt;,</span></span>
+<span id="cb2-47"><a href="stat-analysis.html#cb2-47"></a><span class="co">## #   `1863` &lt;dbl&gt;, `1864` &lt;dbl&gt;, `1865` &lt;dbl&gt;, `1866` &lt;dbl&gt;, `1867` &lt;dbl&gt;,</span></span>
+<span id="cb2-48"><a href="stat-analysis.html#cb2-48"></a><span class="co">## #   `1868` &lt;dbl&gt;, `1869` &lt;dbl&gt;, `1870` &lt;dbl&gt;, `1871` &lt;dbl&gt;, …</span></span></code></pre></div>
 <p>Для дальнейшей работы целесообразно привести данные к аккуратному виду, избавившись от множества столбцов с годом измерения. Сразу получим данные за 2015 год для анализа:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="stat-analysis.html#cb3-1"></a>(<span class="dt">gdpdf_tidy =</span> gdpdf <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb3-2"><a href="stat-analysis.html#cb3-2"></a><span class="st">   </span><span class="kw">gather</span>(year, gdp, <span class="st">`</span><span class="dt">1764</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2018</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-2"><a href="stat-analysis.html#cb3-2"></a><span class="st">   </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1764</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2018</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;gdp&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb3-3"><a href="stat-analysis.html#cb3-3"></a><span class="st">   </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>))</span>
 <span id="cb3-4"><a href="stat-analysis.html#cb3-4"></a><span class="co">## # A tibble: 66,300 x 3</span></span>
-<span id="cb3-5"><a href="stat-analysis.html#cb3-5"></a><span class="co">##    Country               year    gdp</span></span>
-<span id="cb3-6"><a href="stat-analysis.html#cb3-6"></a><span class="co">##    &lt;chr&gt;                 &lt;chr&gt; &lt;dbl&gt;</span></span>
-<span id="cb3-7"><a href="stat-analysis.html#cb3-7"></a><span class="co">##  1 Abkhazia              1764     NA</span></span>
-<span id="cb3-8"><a href="stat-analysis.html#cb3-8"></a><span class="co">##  2 Afghanistan           1764     NA</span></span>
-<span id="cb3-9"><a href="stat-analysis.html#cb3-9"></a><span class="co">##  3 Akrotiri and Dhekelia 1764     NA</span></span>
-<span id="cb3-10"><a href="stat-analysis.html#cb3-10"></a><span class="co">##  4 Albania               1764     NA</span></span>
-<span id="cb3-11"><a href="stat-analysis.html#cb3-11"></a><span class="co">##  5 Algeria               1764     NA</span></span>
-<span id="cb3-12"><a href="stat-analysis.html#cb3-12"></a><span class="co">##  6 American Samoa        1764     NA</span></span>
-<span id="cb3-13"><a href="stat-analysis.html#cb3-13"></a><span class="co">##  7 Andorra               1764     NA</span></span>
-<span id="cb3-14"><a href="stat-analysis.html#cb3-14"></a><span class="co">##  8 Angola                1764     NA</span></span>
-<span id="cb3-15"><a href="stat-analysis.html#cb3-15"></a><span class="co">##  9 Anguilla              1764     NA</span></span>
-<span id="cb3-16"><a href="stat-analysis.html#cb3-16"></a><span class="co">## 10 Antigua and Barbuda   1764     NA</span></span>
+<span id="cb3-5"><a href="stat-analysis.html#cb3-5"></a><span class="co">##    Country  year    gdp</span></span>
+<span id="cb3-6"><a href="stat-analysis.html#cb3-6"></a><span class="co">##    &lt;chr&gt;    &lt;chr&gt; &lt;dbl&gt;</span></span>
+<span id="cb3-7"><a href="stat-analysis.html#cb3-7"></a><span class="co">##  1 Abkhazia 1764     NA</span></span>
+<span id="cb3-8"><a href="stat-analysis.html#cb3-8"></a><span class="co">##  2 Abkhazia 1765     NA</span></span>
+<span id="cb3-9"><a href="stat-analysis.html#cb3-9"></a><span class="co">##  3 Abkhazia 1766     NA</span></span>
+<span id="cb3-10"><a href="stat-analysis.html#cb3-10"></a><span class="co">##  4 Abkhazia 1767     NA</span></span>
+<span id="cb3-11"><a href="stat-analysis.html#cb3-11"></a><span class="co">##  5 Abkhazia 1768     NA</span></span>
+<span id="cb3-12"><a href="stat-analysis.html#cb3-12"></a><span class="co">##  6 Abkhazia 1769     NA</span></span>
+<span id="cb3-13"><a href="stat-analysis.html#cb3-13"></a><span class="co">##  7 Abkhazia 1770     NA</span></span>
+<span id="cb3-14"><a href="stat-analysis.html#cb3-14"></a><span class="co">##  8 Abkhazia 1771     NA</span></span>
+<span id="cb3-15"><a href="stat-analysis.html#cb3-15"></a><span class="co">##  9 Abkhazia 1772     NA</span></span>
+<span id="cb3-16"><a href="stat-analysis.html#cb3-16"></a><span class="co">## 10 Abkhazia 1773     NA</span></span>
 <span id="cb3-17"><a href="stat-analysis.html#cb3-17"></a><span class="co">## # … with 66,290 more rows</span></span>
 <span id="cb3-18"><a href="stat-analysis.html#cb3-18"></a></span>
 <span id="cb3-19"><a href="stat-analysis.html#cb3-19"></a>gdpdf15 =<span class="st"> </span><span class="kw">filter</span>(gdpdf_tidy, year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>)</span></code></pre></div>
@@ -720,7 +717,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-38"><a href="stat-analysis.html#cb6-38"></a><span class="co">## #   `1904` &lt;dbl&gt;, `1905` &lt;dbl&gt;, `1906` &lt;dbl&gt;, `1907` &lt;dbl&gt;, …</span></span></code></pre></div>
 <p>Преобразуем в аккуратный вид и строим гистограмму распределения:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="stat-analysis.html#cb7-1"></a>lifedf_tidy =<span class="st"> </span>lifedf <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb7-2"><a href="stat-analysis.html#cb7-2"></a><span class="st">  </span><span class="kw">gather</span>(year, lifexp, <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2016</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-2"><a href="stat-analysis.html#cb7-2"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2016</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;lifexp&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb7-3"><a href="stat-analysis.html#cb7-3"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
 <span id="cb7-4"><a href="stat-analysis.html#cb7-4"></a></span>
 <span id="cb7-5"><a href="stat-analysis.html#cb7-5"></a>lifedf15 =<span class="st"> </span><span class="kw">filter</span>(lifedf_tidy, year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>)</span>
@@ -761,18 +758,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb12-7"><a href="stat-analysis.html#cb12-7"></a></span>
 <span id="cb12-8"><a href="stat-analysis.html#cb12-8"></a>(<span class="dt">tab =</span> gdpdf_tidy <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">inner_join</span>(lifedf_tidy) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">inner_join</span>(popdf_tidy))</span>
 <span id="cb12-9"><a href="stat-analysis.html#cb12-9"></a><span class="co">## # A tibble: 19,359 x 5</span></span>
-<span id="cb12-10"><a href="stat-analysis.html#cb12-10"></a><span class="co">##    Country               year    gdp lifexp     pop</span></span>
-<span id="cb12-11"><a href="stat-analysis.html#cb12-11"></a><span class="co">##    &lt;chr&gt;                 &lt;chr&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;</span></span>
-<span id="cb12-12"><a href="stat-analysis.html#cb12-12"></a><span class="co">##  1 Abkhazia              1800    NA    NA        NA</span></span>
-<span id="cb12-13"><a href="stat-analysis.html#cb12-13"></a><span class="co">##  2 Afghanistan           1800   472.   28.2 3280000</span></span>
-<span id="cb12-14"><a href="stat-analysis.html#cb12-14"></a><span class="co">##  3 Akrotiri and Dhekelia 1800    NA    NA        NA</span></span>
-<span id="cb12-15"><a href="stat-analysis.html#cb12-15"></a><span class="co">##  4 Albania               1800   601.   35.4  410445</span></span>
-<span id="cb12-16"><a href="stat-analysis.html#cb12-16"></a><span class="co">##  5 Algeria               1800   766.   28.8 2503218</span></span>
-<span id="cb12-17"><a href="stat-analysis.html#cb12-17"></a><span class="co">##  6 American Samoa        1800   674.   NA      8170</span></span>
-<span id="cb12-18"><a href="stat-analysis.html#cb12-18"></a><span class="co">##  7 Andorra               1800  1260.   NA      2654</span></span>
-<span id="cb12-19"><a href="stat-analysis.html#cb12-19"></a><span class="co">##  8 Angola                1800   360.   27.0 1567028</span></span>
-<span id="cb12-20"><a href="stat-analysis.html#cb12-20"></a><span class="co">##  9 Anguilla              1800   776.   NA      2025</span></span>
-<span id="cb12-21"><a href="stat-analysis.html#cb12-21"></a><span class="co">## 10 Antigua and Barbuda   1800   538.   33.5   37000</span></span>
+<span id="cb12-10"><a href="stat-analysis.html#cb12-10"></a><span class="co">##    Country  year    gdp lifexp   pop</span></span>
+<span id="cb12-11"><a href="stat-analysis.html#cb12-11"></a><span class="co">##    &lt;chr&gt;    &lt;chr&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb12-12"><a href="stat-analysis.html#cb12-12"></a><span class="co">##  1 Abkhazia 1800     NA     NA    NA</span></span>
+<span id="cb12-13"><a href="stat-analysis.html#cb12-13"></a><span class="co">##  2 Abkhazia 1810     NA     NA    NA</span></span>
+<span id="cb12-14"><a href="stat-analysis.html#cb12-14"></a><span class="co">##  3 Abkhazia 1820     NA     NA    NA</span></span>
+<span id="cb12-15"><a href="stat-analysis.html#cb12-15"></a><span class="co">##  4 Abkhazia 1830     NA     NA    NA</span></span>
+<span id="cb12-16"><a href="stat-analysis.html#cb12-16"></a><span class="co">##  5 Abkhazia 1840     NA     NA    NA</span></span>
+<span id="cb12-17"><a href="stat-analysis.html#cb12-17"></a><span class="co">##  6 Abkhazia 1850     NA     NA    NA</span></span>
+<span id="cb12-18"><a href="stat-analysis.html#cb12-18"></a><span class="co">##  7 Abkhazia 1860     NA     NA    NA</span></span>
+<span id="cb12-19"><a href="stat-analysis.html#cb12-19"></a><span class="co">##  8 Abkhazia 1870     NA     NA    NA</span></span>
+<span id="cb12-20"><a href="stat-analysis.html#cb12-20"></a><span class="co">##  9 Abkhazia 1880     NA     NA    NA</span></span>
+<span id="cb12-21"><a href="stat-analysis.html#cb12-21"></a><span class="co">## 10 Abkhazia 1890     NA     NA    NA</span></span>
 <span id="cb12-22"><a href="stat-analysis.html#cb12-22"></a><span class="co">## # … with 19,349 more rows</span></span></code></pre></div>
 <p>Теперь мы можем произвести взвешенную оценку плотности распределения:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="stat-analysis.html#cb13-1"></a>tab15 =<span class="st"> </span><span class="kw">filter</span>(tab, year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">drop_na</span>() <span class="co"># все веса должны быть непустыми!</span></span>
