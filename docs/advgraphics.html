@@ -307,6 +307,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.3" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one"><i class="fa fa-check"></i><b>7.3</b> Одна переменная</a><ul>
 <li class="chapter" data-level="7.3.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one_distr"><i class="fa fa-check"></i><b>7.3.1</b> Оценка распределения</a></li>
 <li class="chapter" data-level="7.3.2" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one_summary"><i class="fa fa-check"></i><b>7.3.2</b> Описательные статистики</a></li>
+<li class="chapter" data-level="7.3.3" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one_tests"><i class="fa fa-check"></i><b>7.3.3</b> Статистические тесты</a></li>
 </ul></li>
 <li class="chapter" data-level="7.4" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_two"><i class="fa fa-check"></i><b>7.4</b> Две переменных</a><ul>
 <li class="chapter" data-level="7.4.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_two_distr"><i class="fa fa-check"></i><b>7.4.1</b> Оценка распределения</a></li>
@@ -572,7 +573,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-8"><a href="advgraphics.html#cb2-8"></a><span class="st">  </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># объединим прочитанные таблицы в одну</span></span>
 <span id="cb2-9"><a href="advgraphics.html#cb2-9"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>geo) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># убираем столбец с территорией торговли, т.к. там только Евросоюз</span></span>
 <span id="cb2-10"><a href="advgraphics.html#cb2-10"></a><span class="st">  </span><span class="kw">filter</span>(stringr<span class="op">::</span><span class="kw">str_detect</span>(indic_et, <span class="st">&#39;Exports in|Imports in&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># оставим только экспорт и импорт</span></span>
-<span id="cb2-11"><a href="advgraphics.html#cb2-11"></a><span class="st">  </span><span class="kw">spread</span>(indic_et, values) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># вынесем данные по экспорту и импорту в отдельные переменные</span></span>
+<span id="cb2-11"><a href="advgraphics.html#cb2-11"></a><span class="st">  </span><span class="kw">pivot_wider</span>(<span class="dt">names_from =</span> indic_et, <span class="dt">values_from =</span> values) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># вынесем данные по экспорту и импорту в отдельные переменные</span></span>
 <span id="cb2-12"><a href="advgraphics.html#cb2-12"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">export =</span> <span class="st">`</span><span class="dt">Exports in million of ECU/EURO</span><span class="st">`</span>, <span class="co"># дадим им краткие названия</span></span>
 <span id="cb2-13"><a href="advgraphics.html#cb2-13"></a>         <span class="dt">import =</span> <span class="st">`</span><span class="dt">Imports in million of ECU/EURO</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb2-14"><a href="advgraphics.html#cb2-14"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">partner =</span> <span class="kw">as.factor</span>(partner))</span></code></pre></div>
@@ -626,27 +627,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-6"><a href="advgraphics.html#cb4-6"></a>  <span class="dt">pars =</span> <span class="kw">c</span>(<span class="st">&quot;CLRSKY_SFC_SW_DWN&quot;</span>,</span>
 <span id="cb4-7"><a href="advgraphics.html#cb4-7"></a>           <span class="st">&quot;ALLSKY_SFC_SW_DWN&quot;</span>)</span>
 <span id="cb4-8"><a href="advgraphics.html#cb4-8"></a>)</span>
-<span id="cb4-9"><a href="advgraphics.html#cb4-9"></a>interannual_sse</span>
-<span id="cb4-10"><a href="advgraphics.html#cb4-10"></a><span class="co">## NASA/POWER SRB/FLASHFlux/MERRA2/GEOS 5.12.4 (FP-IT) 0.5 x 0.5 Degree Interannual Averages/Sums  </span></span>
-<span id="cb4-11"><a href="advgraphics.html#cb4-11"></a><span class="co">##  Dates (month/day/year): 01/01/1995 through 12/31/1996  </span></span>
-<span id="cb4-12"><a href="advgraphics.html#cb4-12"></a><span class="co">##  Location: Latitude  56.84   Longitude 60.59  </span></span>
-<span id="cb4-13"><a href="advgraphics.html#cb4-13"></a><span class="co">##  Elevation from MERRA-2: Average for 1/2x1/2 degree lat/lon region = 279.98 meters   Site = na  </span></span>
-<span id="cb4-14"><a href="advgraphics.html#cb4-14"></a><span class="co">##  Climate zone: na (reference Briggs et al: http://www.energycodes.gov)  </span></span>
-<span id="cb4-15"><a href="advgraphics.html#cb4-15"></a><span class="co">##  Value for missing model data cannot be computed or out of model availability range: NA  </span></span>
-<span id="cb4-16"><a href="advgraphics.html#cb4-16"></a><span class="co">##  </span></span>
-<span id="cb4-17"><a href="advgraphics.html#cb4-17"></a><span class="co">##  Parameters: </span></span>
-<span id="cb4-18"><a href="advgraphics.html#cb4-18"></a><span class="co">##  ALLSKY_SFC_SW_DWN SRB/FLASHFlux 1/2x1/2 All Sky Insolation Incident on a Horizontal Surface (kW-hr/m^2/day) ;</span></span>
-<span id="cb4-19"><a href="advgraphics.html#cb4-19"></a><span class="co">##  CLRSKY_SFC_SW_DWN SRB/FLASHFlux 1/2x1/2 Clear Sky Insolation Incident on a Horizontal Surface (kW-hr/m^2/day)  </span></span>
-<span id="cb4-20"><a href="advgraphics.html#cb4-20"></a><span class="co">##  </span></span>
-<span id="cb4-21"><a href="advgraphics.html#cb4-21"></a><span class="co">## # A tibble: 4 x 17</span></span>
-<span id="cb4-22"><a href="advgraphics.html#cb4-22"></a><span class="co">##     LON   LAT PARAMETER  YEAR   JAN   FEB   MAR   APR   MAY   JUN   JUL</span></span>
-<span id="cb4-23"><a href="advgraphics.html#cb4-23"></a><span class="co">##   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span id="cb4-24"><a href="advgraphics.html#cb4-24"></a><span class="co">## 1  60.6  56.8 CLRSKY_S…  1995  0.91  2.07  3.93  5.93  7.27  7.98  7.54</span></span>
-<span id="cb4-25"><a href="advgraphics.html#cb4-25"></a><span class="co">## 2  60.6  56.8 CLRSKY_S…  1996  0.94  2.12  4.02  6.24  7.37  7.93  7.42</span></span>
-<span id="cb4-26"><a href="advgraphics.html#cb4-26"></a><span class="co">## 3  60.6  56.8 ALLSKY_S…  1995  0.68  1.41  2.8   4.75  5.42  6.04  5.78</span></span>
-<span id="cb4-27"><a href="advgraphics.html#cb4-27"></a><span class="co">## 4  60.6  56.8 ALLSKY_S…  1996  0.76  1.57  3.39  4.82  5.3   6.2   5.58</span></span>
-<span id="cb4-28"><a href="advgraphics.html#cb4-28"></a><span class="co">## # … with 6 more variables: AUG &lt;dbl&gt;, SEP &lt;dbl&gt;, OCT &lt;dbl&gt;, NOV &lt;dbl&gt;,</span></span>
-<span id="cb4-29"><a href="advgraphics.html#cb4-29"></a><span class="co">## #   DEC &lt;dbl&gt;, ANN &lt;dbl&gt;</span></span></code></pre></div>
+<span id="cb4-9"><a href="advgraphics.html#cb4-9"></a>interannual_sse</span></code></pre></div>
 </div>
 <div id="advgraphics_template" class="section level2">
 <h2><span class="header-section-number">6.4</span> Базовый шаблон ggplot</h2>
@@ -1019,7 +1000,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <table>
 <tbody>
 <tr class="odd">
-<td><em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, <code>lubridate::year(Sys.Date())</code>. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a></td>
+<td><em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, 2019. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a></td>
 </tr>
 </tbody>
 </table>

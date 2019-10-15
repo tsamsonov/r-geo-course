@@ -35,7 +35,7 @@ trades = lapply(tables, function(X) { # прочтем несколько таб
   bind_rows() %>% # объединим прочитанные таблицы в одну
   select(-geo) %>% # убираем столбец с территорией торговли, т.к. там только Евросоюз
   filter(stringr::str_detect(indic_et, 'Exports in|Imports in')) %>% # оставим только экспорт и импорт
-  spread(indic_et, values) %>%  # вынесем данные по экспорту и импорту в отдельные переменные
+  pivot_wider(names_from = indic_et, values_from = values) %>%  # вынесем данные по экспорту и импорту в отдельные переменные
   rename(export = `Exports in million of ECU/EURO`, # дадим им краткие названия
          import = `Imports in million of ECU/EURO`) %>% 
   mutate(partner = as.factor(partner))
@@ -100,26 +100,6 @@ interannual_sse <- get_power(
            "ALLSKY_SFC_SW_DWN")
 )
 interannual_sse
-## NASA/POWER SRB/FLASHFlux/MERRA2/GEOS 5.12.4 (FP-IT) 0.5 x 0.5 Degree Interannual Averages/Sums  
-##  Dates (month/day/year): 01/01/1995 through 12/31/1996  
-##  Location: Latitude  56.84   Longitude 60.59  
-##  Elevation from MERRA-2: Average for 1/2x1/2 degree lat/lon region = 279.98 meters   Site = na  
-##  Climate zone: na (reference Briggs et al: http://www.energycodes.gov)  
-##  Value for missing model data cannot be computed or out of model availability range: NA  
-##  
-##  Parameters: 
-##  ALLSKY_SFC_SW_DWN SRB/FLASHFlux 1/2x1/2 All Sky Insolation Incident on a Horizontal Surface (kW-hr/m^2/day) ;
-##  CLRSKY_SFC_SW_DWN SRB/FLASHFlux 1/2x1/2 Clear Sky Insolation Incident on a Horizontal Surface (kW-hr/m^2/day)  
-##  
-## # A tibble: 4 x 17
-##     LON   LAT PARAMETER  YEAR   JAN   FEB   MAR   APR   MAY   JUN   JUL
-##   <dbl> <dbl> <chr>     <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-## 1  60.6  56.8 CLRSKY_S…  1995  0.91  2.07  3.93  5.93  7.27  7.98  7.54
-## 2  60.6  56.8 CLRSKY_S…  1996  0.94  2.12  4.02  6.24  7.37  7.93  7.42
-## 3  60.6  56.8 ALLSKY_S…  1995  0.68  1.41  2.8   4.75  5.42  6.04  5.78
-## 4  60.6  56.8 ALLSKY_S…  1996  0.76  1.57  3.39  4.82  5.3   6.2   5.58
-## # … with 6 more variables: AUG <dbl>, SEP <dbl>, OCT <dbl>, NOV <dbl>,
-## #   DEC <dbl>, ANN <dbl>
 ```
 
 
@@ -699,5 +679,5 @@ ggplot(trades_type) +
 4. Загрузите [таблицу данных по импорту/экспорту продуктов питания, напитков и табака](https://ec.europa.eu/eurostat/tgm/table.do?tab=table&init=1&language=en&pcode=tet00034&plugin=1) с портала Евростата (с использованием пакета __eurostat__). Постройте линейный график изменения _суммарных_ величин импорта и экспорта по данному показателю (у вас должно получиться 2 графика на одном изображении). Используйте _цвет_ для разделения графиков. Добавьте текстовые подписи величин импорта и экспорта.
 
 ----
-_Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, `lubridate::year(Sys.Date())`. DOI: [10.5281/zenodo.901911](https://doi.org/10.5281/zenodo.901911)
+_Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, 2019. DOI: [10.5281/zenodo.901911](https://doi.org/10.5281/zenodo.901911)
 ----
