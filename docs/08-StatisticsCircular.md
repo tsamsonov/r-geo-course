@@ -18,19 +18,6 @@ library(lubridate)
 library(gganimate)
 ```
 
-Пакет __gganimate__ пока что не опубликован на _CRAN_, но доступен на _GitHub_. Для его установки последовательно выполните в консоли (не в скрипте!) следующие команды:
-
-```r
-install.packages('devtools')
-devtools::install_github('thomasp85/gganimate')
-```
-
-После этого пакет можно подключать в привычном режиме:
-
-```r
-library(gganimate)
-```
-
 ## Статистика направлений {#circular_circ}
 
 ### Теория {#circular_circ_theory}
@@ -94,7 +81,7 @@ $$
 В системе доступны данные по следующим обсерваториям:
 
 ```r
-obs = readxl::read_excel('bound/scheme.xlsx', 2)
+obs = readxl::read_excel('data/bound/scheme.xlsx', 2)
 ```
 
  Индекс  Название           Широта   Долгота
@@ -145,9 +132,11 @@ obs = readxl::read_excel('bound/scheme.xlsx', 2)
 Загрузим данные по всем обсерваториям из текстовых файлов в папке _bound_:
 
 ```r
-files = paste('bound', list.files('bound', "*.txt"), sep = '/')
+files = paste('data/bound', list.files('data/bound', "*.txt"), sep = '/')
 
-(tab = lapply(files, function(X) readr::read_table(X, col_names = params$Обозначение)) %>% 
+(tab = lapply(files, function(X) {
+    readr::read_table(X, col_names = params$Обозначение)
+  }) %>% 
   bind_rows() %>% 
   left_join(obs, by = c('INDEX' = 'Индекс'))) # присоединим информацию о названиях станций
 ## # A tibble: 77,073 x 26
@@ -242,7 +231,7 @@ lines(kden, shrink = 3, # параметр shrink отвечает за масш
       col = 'steelblue')
 ```
 
-<img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+<img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-9-1.png" width="672" />
 
 > Параметр `shrink` отвечает за масштаб радиус-вектора на графиках из пакета __circular__. Чем больше его величина, тем сильнее будет сжат график относительно центра круга.
 
@@ -293,7 +282,7 @@ text(x = 1.4 * xp, y = 1.4 * yp,
      labels = paste0(round(180 * modal / pi, 0), '°')) # приводим к целым градусам
 ```
 
-<img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-1.png" width="672" />
+<img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-10-1.png" width="672" />
 
 Проведем анализ направлений для всех станций. Для этого рассчитаем функции плотности распределения и разместим их в новом фрейме данных с лист-колонкой.
 
@@ -378,7 +367,7 @@ for (obs_name in dens$name) {
 }
 ```
 
-<img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-1.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-2.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-3.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-4.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-5.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-6.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-7.png" width="672" />
+<img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-1.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-2.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-3.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-4.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-5.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-6.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-7.png" width="672" />
 
 Таким образом, мы провели графический и статистический анализ среднемноголетних направлений ветра по данным полярных аэрологических станций России. Выявлены модальные направлений, выполнена аппроксимация функции плотности вероятности направлений ветра.
 
@@ -469,8 +458,67 @@ ggplot(tab, aes(T2M, fill = CITY)) +
 
 ![](images/density_anim.gif)<!-- -->
 
+Загрузим ранее использованные в Главе \@ref(stat_analysis) данные Gapminder по соотношению продолжительности жизни и ВВП на душу населения, но на этот раз не будем фильтровать их по времени:
 
+```r
+library(readxl)
+library(googledrive)
+library(googlesheets4)
+countries = read_excel('data/gapminder.xlsx', 2) %>%
+  select(Country = name, Region = eight_regions) %>%
+  mutate(Country = factor(Country, levels = Country[order(.$Region)]))
 
+gdpdf_tidy = '1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg' %>% ### ВВП на душу населения
+  as_id() %>% # преобразуем идентификатор в класс drive_id чтобы отличать его от пути
+  drive_get() %>% 
+  read_sheet() %>% 
+  pivot_longer(cols = `1764`:`2018`, names_to = 'year', values_to = 'gdp') %>% 
+  rename(Country = 1)
+## Using an auto-discovered, cached token.
+## To suppress this message, modify your code or options to clearly consent to the use of a cached token.
+## See gargle's "Non-interactive auth" vignette for more details:
+## https://gargle.r-lib.org/articles/non-interactive-auth.html
+## The googledrive package is using a cached token for iamste@yandex.ru.
+## Using an auto-discovered, cached token.
+## To suppress this message, modify your code or options to clearly consent to the use of a cached token.
+## See gargle's "Non-interactive auth" vignette for more details:
+## https://gargle.r-lib.org/articles/non-interactive-auth.html
+## The googlesheets4 package is using a cached token for iamste@yandex.ru.
+
+popdf_tidy = '1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8' %>% # численность населения
+  as_id() %>% # преобразуем идентификатор в класс drive_id чтобы отличать его от пути
+  drive_get() %>% 
+  read_sheet() %>% # первый лист
+  pivot_longer(cols = `1800`:`2015`, names_to = 'year', values_to = 'pop') %>% 
+  rename(Country = 1)
+
+lifedf_tidy = '1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo' %>% # продолжительность жизни
+  as_id() %>% # преобразуем идентификатор в класс drive_id чтобы отличать его от пути
+  drive_get() %>% 
+  read_sheet() %>% 
+  pivot_longer(cols = `1800`:`2016`, names_to = 'year', values_to = 'lifexp') %>% 
+  rename(Country = 1)
+
+tab = gdpdf_tidy %>% 
+  inner_join(lifedf_tidy) %>% 
+  inner_join(popdf_tidy) %>% 
+  inner_join(countries) %>% 
+  mutate(year = as.integer(year)) %>% 
+  drop_na()
+```
+
+Теперь чтобы отобразить это соотношение в виде анимации, достаточно добавить новый переход посредством функции `transition_time()`:
+
+```r
+options(scipen = 999) # убираем экспоненциальную форму записи числа
+ggplot(tab, aes(gdp, lifexp, size = pop, color = Region)) +
+  geom_point(alpha = 0.5) +
+  scale_x_log10() +
+  labs(title = 'Year: {round(frame_time)}') +
+  theme_bw() +
+  transition_time(year)
+```
+![](images/scatter_anim.gif)<!-- -->
 
 ## Контрольные вопросы и упражнения {#questions_tasks_circular}
 

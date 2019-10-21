@@ -561,11 +561,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-5"><a href="circular.html#cb1-5"></a><span class="kw">library</span>(pracma)</span>
 <span id="cb1-6"><a href="circular.html#cb1-6"></a><span class="kw">library</span>(lubridate)</span>
 <span id="cb1-7"><a href="circular.html#cb1-7"></a><span class="kw">library</span>(gganimate)</span></code></pre></div>
-<p>Пакет <strong>gganimate</strong> пока что не опубликован на <em>CRAN</em>, но доступен на <em>GitHub</em>. Для его установки последовательно выполните в консоли (не в скрипте!) следующие команды:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="circular.html#cb2-1"></a><span class="kw">install.packages</span>(<span class="st">&#39;devtools&#39;</span>)</span>
-<span id="cb2-2"><a href="circular.html#cb2-2"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&#39;thomasp85/gganimate&#39;</span>)</span></code></pre></div>
-<p>После этого пакет можно подключать в привычном режиме:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="circular.html#cb3-1"></a><span class="kw">library</span>(gganimate)</span></code></pre></div>
 </div>
 <div id="circular_circ" class="section level2">
 <h2><span class="header-section-number">8.2</span> Статистика направлений</h2>
@@ -616,7 +611,7 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 <h3><span class="header-section-number">8.2.2</span> Практика</h3>
 <p>В практической части данного раздела мы будем работать с массивом среднемесячных значений метеопараметров в пограничном слое атмосферы по полярным аэрологическим обсерваториям России. Массив данных ежемесячно обновляется на <a href="http://aisori-m.meteo.ru">портале Аисори-М</a> <a href="http://meteo.ru/"><strong>ВНИИГМИ-МЦД</strong></a>.</p>
 <p>В системе доступны данные по следующим обсерваториям:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="circular.html#cb4-1"></a>obs =<span class="st"> </span>readxl<span class="op">::</span><span class="kw">read_excel</span>(<span class="st">&#39;bound/scheme.xlsx&#39;</span>, <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="circular.html#cb2-1"></a>obs =<span class="st"> </span>readxl<span class="op">::</span><span class="kw">read_excel</span>(<span class="st">&#39;data/bound/scheme.xlsx&#39;</span>, <span class="dv">2</span>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -883,213 +878,215 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 </tbody>
 </table>
 <p>Загрузим данные по всем обсерваториям из текстовых файлов в папке <em>bound</em>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="circular.html#cb5-1"></a>files =<span class="st"> </span><span class="kw">paste</span>(<span class="st">&#39;bound&#39;</span>, <span class="kw">list.files</span>(<span class="st">&#39;bound&#39;</span>, <span class="st">&quot;*.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&#39;/&#39;</span>)</span>
-<span id="cb5-2"><a href="circular.html#cb5-2"></a></span>
-<span id="cb5-3"><a href="circular.html#cb5-3"></a>(<span class="dt">tab =</span> <span class="kw">lapply</span>(files, <span class="cf">function</span>(X) readr<span class="op">::</span><span class="kw">read_table</span>(X, <span class="dt">col_names =</span> params<span class="op">$</span>Обозначение)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb5-4"><a href="circular.html#cb5-4"></a><span class="st">  </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb5-5"><a href="circular.html#cb5-5"></a><span class="st">  </span><span class="kw">left_join</span>(obs, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;INDEX&#39;</span> =<span class="st"> &#39;Индекс&#39;</span>))) <span class="co"># присоединим информацию о названиях станций</span></span>
-<span id="cb5-6"><a href="circular.html#cb5-6"></a><span class="co">## # A tibble: 77,073 x 26</span></span>
-<span id="cb5-7"><a href="circular.html#cb5-7"></a><span class="co">##    INDEX  GGGG    MM    HH     Z    MP    SP    NP    MT    ST    NT    MD</span></span>
-<span id="cb5-8"><a href="circular.html#cb5-8"></a><span class="co">##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span id="cb5-9"><a href="circular.html#cb5-9"></a><span class="co">##  1 20674  2007     1     0  2000  7629    78    27  -187    35    27    53</span></span>
-<span id="cb5-10"><a href="circular.html#cb5-10"></a><span class="co">##  2 20674  2007     1     0  1900  7732    79    27  -182    36    27    52</span></span>
-<span id="cb5-11"><a href="circular.html#cb5-11"></a><span class="co">##  3 20674  2007     1     0  1800  7836    79    27  -178    36    27    51</span></span>
-<span id="cb5-12"><a href="circular.html#cb5-12"></a><span class="co">##  4 20674  2007     1     0  1700  7942    80    27  -173    36    27    49</span></span>
-<span id="cb5-13"><a href="circular.html#cb5-13"></a><span class="co">##  5 20674  2007     1     0  1600  8048    81    27  -168    36    27    48</span></span>
-<span id="cb5-14"><a href="circular.html#cb5-14"></a><span class="co">##  6 20674  2007     1     0  1500  8157    81    27  -164    38    27    47</span></span>
-<span id="cb5-15"><a href="circular.html#cb5-15"></a><span class="co">##  7 20674  2007     1     0  1400  8266    82    27  -160    39    27    45</span></span>
-<span id="cb5-16"><a href="circular.html#cb5-16"></a><span class="co">##  8 20674  2007     1     0  1300  8376    82    27  -156    39    27    43</span></span>
-<span id="cb5-17"><a href="circular.html#cb5-17"></a><span class="co">##  9 20674  2007     1     0  1200  8488    83    27  -152    40    27    40</span></span>
-<span id="cb5-18"><a href="circular.html#cb5-18"></a><span class="co">## 10 20674  2007     1     0  1100  8601    83    27  -148    41    27    37</span></span>
-<span id="cb5-19"><a href="circular.html#cb5-19"></a><span class="co">## # … with 77,063 more rows, and 14 more variables: SD &lt;dbl&gt;, ND &lt;dbl&gt;,</span></span>
-<span id="cb5-20"><a href="circular.html#cb5-20"></a><span class="co">## #   MS &lt;dbl&gt;, SS &lt;dbl&gt;, NS &lt;dbl&gt;, MU &lt;dbl&gt;, SU &lt;dbl&gt;, NU &lt;dbl&gt;, MV &lt;dbl&gt;,</span></span>
-<span id="cb5-21"><a href="circular.html#cb5-21"></a><span class="co">## #   SV &lt;dbl&gt;, NV &lt;dbl&gt;, Название &lt;chr&gt;, Широта &lt;dbl&gt;, Долгота &lt;dbl&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="circular.html#cb3-1"></a>files =<span class="st"> </span><span class="kw">paste</span>(<span class="st">&#39;data/bound&#39;</span>, <span class="kw">list.files</span>(<span class="st">&#39;data/bound&#39;</span>, <span class="st">&quot;*.txt&quot;</span>), <span class="dt">sep =</span> <span class="st">&#39;/&#39;</span>)</span>
+<span id="cb3-2"><a href="circular.html#cb3-2"></a></span>
+<span id="cb3-3"><a href="circular.html#cb3-3"></a>(<span class="dt">tab =</span> <span class="kw">lapply</span>(files, <span class="cf">function</span>(X) {</span>
+<span id="cb3-4"><a href="circular.html#cb3-4"></a>    readr<span class="op">::</span><span class="kw">read_table</span>(X, <span class="dt">col_names =</span> params<span class="op">$</span>Обозначение)</span>
+<span id="cb3-5"><a href="circular.html#cb3-5"></a>  }) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-6"><a href="circular.html#cb3-6"></a><span class="st">  </span><span class="kw">bind_rows</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-7"><a href="circular.html#cb3-7"></a><span class="st">  </span><span class="kw">left_join</span>(obs, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;INDEX&#39;</span> =<span class="st"> &#39;Индекс&#39;</span>))) <span class="co"># присоединим информацию о названиях станций</span></span>
+<span id="cb3-8"><a href="circular.html#cb3-8"></a><span class="co">## # A tibble: 77,073 x 26</span></span>
+<span id="cb3-9"><a href="circular.html#cb3-9"></a><span class="co">##    INDEX  GGGG    MM    HH     Z    MP    SP    NP    MT    ST    NT    MD</span></span>
+<span id="cb3-10"><a href="circular.html#cb3-10"></a><span class="co">##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb3-11"><a href="circular.html#cb3-11"></a><span class="co">##  1 20674  2007     1     0  2000  7629    78    27  -187    35    27    53</span></span>
+<span id="cb3-12"><a href="circular.html#cb3-12"></a><span class="co">##  2 20674  2007     1     0  1900  7732    79    27  -182    36    27    52</span></span>
+<span id="cb3-13"><a href="circular.html#cb3-13"></a><span class="co">##  3 20674  2007     1     0  1800  7836    79    27  -178    36    27    51</span></span>
+<span id="cb3-14"><a href="circular.html#cb3-14"></a><span class="co">##  4 20674  2007     1     0  1700  7942    80    27  -173    36    27    49</span></span>
+<span id="cb3-15"><a href="circular.html#cb3-15"></a><span class="co">##  5 20674  2007     1     0  1600  8048    81    27  -168    36    27    48</span></span>
+<span id="cb3-16"><a href="circular.html#cb3-16"></a><span class="co">##  6 20674  2007     1     0  1500  8157    81    27  -164    38    27    47</span></span>
+<span id="cb3-17"><a href="circular.html#cb3-17"></a><span class="co">##  7 20674  2007     1     0  1400  8266    82    27  -160    39    27    45</span></span>
+<span id="cb3-18"><a href="circular.html#cb3-18"></a><span class="co">##  8 20674  2007     1     0  1300  8376    82    27  -156    39    27    43</span></span>
+<span id="cb3-19"><a href="circular.html#cb3-19"></a><span class="co">##  9 20674  2007     1     0  1200  8488    83    27  -152    40    27    40</span></span>
+<span id="cb3-20"><a href="circular.html#cb3-20"></a><span class="co">## 10 20674  2007     1     0  1100  8601    83    27  -148    41    27    37</span></span>
+<span id="cb3-21"><a href="circular.html#cb3-21"></a><span class="co">## # … with 77,063 more rows, and 14 more variables: SD &lt;dbl&gt;, ND &lt;dbl&gt;,</span></span>
+<span id="cb3-22"><a href="circular.html#cb3-22"></a><span class="co">## #   MS &lt;dbl&gt;, SS &lt;dbl&gt;, NS &lt;dbl&gt;, MU &lt;dbl&gt;, SU &lt;dbl&gt;, NU &lt;dbl&gt;, MV &lt;dbl&gt;,</span></span>
+<span id="cb3-23"><a href="circular.html#cb3-23"></a><span class="co">## #   SV &lt;dbl&gt;, NV &lt;dbl&gt;, Название &lt;chr&gt;, Широта &lt;dbl&gt;, Долгота &lt;dbl&gt;</span></span></code></pre></div>
 <p>Создадим объект типа <code>circular</code> (из пакета <strong>circular</strong>) с направлениями ветра для анализа, и запишем его в новую переменую таблицы. Предварительно определим вспомогательную функцию, вычисляющую географический азимут на основе компонент скорости:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="circular.html#cb6-1"></a>geo_azimuth =<span class="st"> </span><span class="cf">function</span>(dx, dy) {</span>
-<span id="cb6-2"><a href="circular.html#cb6-2"></a>  a =<span class="st"> </span><span class="kw">atan2</span>(dx, dy)</span>
-<span id="cb6-3"><a href="circular.html#cb6-3"></a>  <span class="kw">ifelse</span>(a <span class="op">&lt;=</span><span class="st"> </span>pi<span class="op">/</span><span class="dv">2</span>, pi<span class="op">/</span><span class="dv">2</span> <span class="op">-</span><span class="st"> </span>a,  <span class="dv">5</span><span class="op">*</span>pi<span class="op">/</span><span class="dv">2</span> <span class="op">-</span><span class="st"> </span>a)</span>
-<span id="cb6-4"><a href="circular.html#cb6-4"></a>}</span>
-<span id="cb6-5"><a href="circular.html#cb6-5"></a></span>
-<span id="cb6-6"><a href="circular.html#cb6-6"></a>(<span class="dt">winds =</span> tab <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-7"><a href="circular.html#cb6-7"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">wind =</span> <span class="kw">circular</span>(<span class="kw">geo_azimuth</span>(MV, MU), <span class="dt">template =</span> <span class="st">&#39;geographics&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-8"><a href="circular.html#cb6-8"></a><span class="st">  </span><span class="kw">select</span>(INDEX, <span class="dt">name =</span> Название, GGGG, MM, HH, Z, MU, MV, SS, wind))</span>
-<span id="cb6-9"><a href="circular.html#cb6-9"></a><span class="co">## # A tibble: 77,073 x 10</span></span>
-<span id="cb6-10"><a href="circular.html#cb6-10"></a><span class="co">##    INDEX name           GGGG    MM    HH     Z    MU    MV    SS wind      </span></span>
-<span id="cb6-11"><a href="circular.html#cb6-11"></a><span class="co">##    &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;circular&gt;</span></span>
-<span id="cb6-12"><a href="circular.html#cb6-12"></a><span class="co">##  1 20674 Остров Диксон  2007     1     0  2000    33    31    45 0.8166380 </span></span>
-<span id="cb6-13"><a href="circular.html#cb6-13"></a><span class="co">##  2 20674 Остров Диксон  2007     1     0  1900    32    32    45 0.7853982 </span></span>
-<span id="cb6-14"><a href="circular.html#cb6-14"></a><span class="co">##  3 20674 Остров Диксон  2007     1     0  1800    30    33    46 0.7378151 </span></span>
-<span id="cb6-15"><a href="circular.html#cb6-15"></a><span class="co">##  4 20674 Остров Диксон  2007     1     0  1700    29    35    47 0.6919214 </span></span>
-<span id="cb6-16"><a href="circular.html#cb6-16"></a><span class="co">##  5 20674 Остров Диксон  2007     1     0  1600    28    38    49 0.6350267 </span></span>
-<span id="cb6-17"><a href="circular.html#cb6-17"></a><span class="co">##  6 20674 Остров Диксон  2007     1     0  1500    26    40    50 0.5763752 </span></span>
-<span id="cb6-18"><a href="circular.html#cb6-18"></a><span class="co">##  7 20674 Остров Диксон  2007     1     0  1400    25    41    51 0.5475622 </span></span>
-<span id="cb6-19"><a href="circular.html#cb6-19"></a><span class="co">##  8 20674 Остров Диксон  2007     1     0  1300    25    42    54 0.5369107 </span></span>
-<span id="cb6-20"><a href="circular.html#cb6-20"></a><span class="co">##  9 20674 Остров Диксон  2007     1     0  1200    24    45    56 0.4899573 </span></span>
-<span id="cb6-21"><a href="circular.html#cb6-21"></a><span class="co">## 10 20674 Остров Диксон  2007     1     0  1100    24    49    58 0.4554511 </span></span>
-<span id="cb6-22"><a href="circular.html#cb6-22"></a><span class="co">## # … with 77,063 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="circular.html#cb4-1"></a>geo_azimuth =<span class="st"> </span><span class="cf">function</span>(dx, dy) {</span>
+<span id="cb4-2"><a href="circular.html#cb4-2"></a>  a =<span class="st"> </span><span class="kw">atan2</span>(dx, dy)</span>
+<span id="cb4-3"><a href="circular.html#cb4-3"></a>  <span class="kw">ifelse</span>(a <span class="op">&lt;=</span><span class="st"> </span>pi<span class="op">/</span><span class="dv">2</span>, pi<span class="op">/</span><span class="dv">2</span> <span class="op">-</span><span class="st"> </span>a,  <span class="dv">5</span><span class="op">*</span>pi<span class="op">/</span><span class="dv">2</span> <span class="op">-</span><span class="st"> </span>a)</span>
+<span id="cb4-4"><a href="circular.html#cb4-4"></a>}</span>
+<span id="cb4-5"><a href="circular.html#cb4-5"></a></span>
+<span id="cb4-6"><a href="circular.html#cb4-6"></a>(<span class="dt">winds =</span> tab <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-7"><a href="circular.html#cb4-7"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">wind =</span> <span class="kw">circular</span>(<span class="kw">geo_azimuth</span>(MV, MU), <span class="dt">template =</span> <span class="st">&#39;geographics&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-8"><a href="circular.html#cb4-8"></a><span class="st">  </span><span class="kw">select</span>(INDEX, <span class="dt">name =</span> Название, GGGG, MM, HH, Z, MU, MV, SS, wind))</span>
+<span id="cb4-9"><a href="circular.html#cb4-9"></a><span class="co">## # A tibble: 77,073 x 10</span></span>
+<span id="cb4-10"><a href="circular.html#cb4-10"></a><span class="co">##    INDEX name           GGGG    MM    HH     Z    MU    MV    SS wind      </span></span>
+<span id="cb4-11"><a href="circular.html#cb4-11"></a><span class="co">##    &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;circular&gt;</span></span>
+<span id="cb4-12"><a href="circular.html#cb4-12"></a><span class="co">##  1 20674 Остров Диксон  2007     1     0  2000    33    31    45 0.8166380 </span></span>
+<span id="cb4-13"><a href="circular.html#cb4-13"></a><span class="co">##  2 20674 Остров Диксон  2007     1     0  1900    32    32    45 0.7853982 </span></span>
+<span id="cb4-14"><a href="circular.html#cb4-14"></a><span class="co">##  3 20674 Остров Диксон  2007     1     0  1800    30    33    46 0.7378151 </span></span>
+<span id="cb4-15"><a href="circular.html#cb4-15"></a><span class="co">##  4 20674 Остров Диксон  2007     1     0  1700    29    35    47 0.6919214 </span></span>
+<span id="cb4-16"><a href="circular.html#cb4-16"></a><span class="co">##  5 20674 Остров Диксон  2007     1     0  1600    28    38    49 0.6350267 </span></span>
+<span id="cb4-17"><a href="circular.html#cb4-17"></a><span class="co">##  6 20674 Остров Диксон  2007     1     0  1500    26    40    50 0.5763752 </span></span>
+<span id="cb4-18"><a href="circular.html#cb4-18"></a><span class="co">##  7 20674 Остров Диксон  2007     1     0  1400    25    41    51 0.5475622 </span></span>
+<span id="cb4-19"><a href="circular.html#cb4-19"></a><span class="co">##  8 20674 Остров Диксон  2007     1     0  1300    25    42    54 0.5369107 </span></span>
+<span id="cb4-20"><a href="circular.html#cb4-20"></a><span class="co">##  9 20674 Остров Диксон  2007     1     0  1200    24    45    56 0.4899573 </span></span>
+<span id="cb4-21"><a href="circular.html#cb4-21"></a><span class="co">## 10 20674 Остров Диксон  2007     1     0  1100    24    49    58 0.4554511 </span></span>
+<span id="cb4-22"><a href="circular.html#cb4-22"></a><span class="co">## # … with 77,063 more rows</span></span></code></pre></div>
 <p>Выберем данные по высоте 0 метров за 12 часов дня для поселка Тикси, сохранив только составляющие скорости и ее скалярную величину:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="circular.html#cb7-1"></a>(<span class="dt">tiksi_wind =</span> winds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> &#39;Тикси&#39;</span>, HH <span class="op">==</span><span class="st"> </span><span class="dv">12</span>, Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span>))</span>
-<span id="cb7-2"><a href="circular.html#cb7-2"></a><span class="co">## # A tibble: 136 x 10</span></span>
-<span id="cb7-3"><a href="circular.html#cb7-3"></a><span class="co">##    INDEX name   GGGG    MM    HH     Z    MU    MV    SS wind      </span></span>
-<span id="cb7-4"><a href="circular.html#cb7-4"></a><span class="co">##    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;circular&gt;</span></span>
-<span id="cb7-5"><a href="circular.html#cb7-5"></a><span class="co">##  1 21824 Тикси  2007     1    12     0    36    35    48 0.7994817 </span></span>
-<span id="cb7-6"><a href="circular.html#cb7-6"></a><span class="co">##  2 21824 Тикси  2007     2    12     0    16    11    27 0.9685090 </span></span>
-<span id="cb7-7"><a href="circular.html#cb7-7"></a><span class="co">##  3 21824 Тикси  2007     3    12     0    23    22    34 0.8076167 </span></span>
-<span id="cb7-8"><a href="circular.html#cb7-8"></a><span class="co">##  4 21824 Тикси  2007     4    12     0    17     9    30 1.0838971 </span></span>
-<span id="cb7-9"><a href="circular.html#cb7-9"></a><span class="co">##  5 21824 Тикси  2007     5    12     0   -17    -3    34 4.5377168 </span></span>
-<span id="cb7-10"><a href="circular.html#cb7-10"></a><span class="co">##  6 21824 Тикси  2007     6    12     0   -23   -25    27 3.8853482 </span></span>
-<span id="cb7-11"><a href="circular.html#cb7-11"></a><span class="co">##  7 21824 Тикси  2007     7    12     0    -5   -11    27 3.5682201 </span></span>
-<span id="cb7-12"><a href="circular.html#cb7-12"></a><span class="co">##  8 21824 Тикси  2007     8    12     0     4     5    25 0.6747409 </span></span>
-<span id="cb7-13"><a href="circular.html#cb7-13"></a><span class="co">##  9 21824 Тикси  2007     9    12     0    24    14    34 1.0427219 </span></span>
-<span id="cb7-14"><a href="circular.html#cb7-14"></a><span class="co">## 10 21824 Тикси  2007    10    12     0    41    47    40 0.7173217 </span></span>
-<span id="cb7-15"><a href="circular.html#cb7-15"></a><span class="co">## # … with 126 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="circular.html#cb5-1"></a>(<span class="dt">tiksi_wind =</span> winds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> &#39;Тикси&#39;</span>, HH <span class="op">==</span><span class="st"> </span><span class="dv">12</span>, Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span>))</span>
+<span id="cb5-2"><a href="circular.html#cb5-2"></a><span class="co">## # A tibble: 136 x 10</span></span>
+<span id="cb5-3"><a href="circular.html#cb5-3"></a><span class="co">##    INDEX name   GGGG    MM    HH     Z    MU    MV    SS wind      </span></span>
+<span id="cb5-4"><a href="circular.html#cb5-4"></a><span class="co">##    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;circular&gt;</span></span>
+<span id="cb5-5"><a href="circular.html#cb5-5"></a><span class="co">##  1 21824 Тикси  2007     1    12     0    36    35    48 0.7994817 </span></span>
+<span id="cb5-6"><a href="circular.html#cb5-6"></a><span class="co">##  2 21824 Тикси  2007     2    12     0    16    11    27 0.9685090 </span></span>
+<span id="cb5-7"><a href="circular.html#cb5-7"></a><span class="co">##  3 21824 Тикси  2007     3    12     0    23    22    34 0.8076167 </span></span>
+<span id="cb5-8"><a href="circular.html#cb5-8"></a><span class="co">##  4 21824 Тикси  2007     4    12     0    17     9    30 1.0838971 </span></span>
+<span id="cb5-9"><a href="circular.html#cb5-9"></a><span class="co">##  5 21824 Тикси  2007     5    12     0   -17    -3    34 4.5377168 </span></span>
+<span id="cb5-10"><a href="circular.html#cb5-10"></a><span class="co">##  6 21824 Тикси  2007     6    12     0   -23   -25    27 3.8853482 </span></span>
+<span id="cb5-11"><a href="circular.html#cb5-11"></a><span class="co">##  7 21824 Тикси  2007     7    12     0    -5   -11    27 3.5682201 </span></span>
+<span id="cb5-12"><a href="circular.html#cb5-12"></a><span class="co">##  8 21824 Тикси  2007     8    12     0     4     5    25 0.6747409 </span></span>
+<span id="cb5-13"><a href="circular.html#cb5-13"></a><span class="co">##  9 21824 Тикси  2007     9    12     0    24    14    34 1.0427219 </span></span>
+<span id="cb5-14"><a href="circular.html#cb5-14"></a><span class="co">## 10 21824 Тикси  2007    10    12     0    41    47    40 0.7173217 </span></span>
+<span id="cb5-15"><a href="circular.html#cb5-15"></a><span class="co">## # … with 126 more rows</span></span></code></pre></div>
 <p>Отобразим распределение направлений, розу-диаграмму и плотность распределения. Для построени графиков используем функции <code>plot.circular()</code> и <code>rose.diag</code> из пакета <strong>circular</strong>. Для аппроксимации плотности распределения направлений воспользуемся функцией <code>kern.den.circ()</code> из пакета <strong>NPCirc</strong>. Эта функция использует функцию плотности распределения <em>фон Мизеса</em> в качестве ядра и по умолчанию разбивает круг на 250 направлений, по которым производится оценка плотности (при необходимости это значение можно изменить в параметре <code>len</code>):</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="circular.html#cb8-1"></a><span class="kw">plot.circular</span>(tiksi_wind<span class="op">$</span>wind, </span>
-<span id="cb8-2"><a href="circular.html#cb8-2"></a>     <span class="dt">cex =</span> <span class="fl">0.5</span>, </span>
-<span id="cb8-3"><a href="circular.html#cb8-3"></a>     <span class="dt">stack =</span> <span class="ot">TRUE</span>, </span>
-<span id="cb8-4"><a href="circular.html#cb8-4"></a>     <span class="dt">sep =</span> <span class="fl">0.035</span>,</span>
-<span id="cb8-5"><a href="circular.html#cb8-5"></a>     <span class="dt">axes =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb8-6"><a href="circular.html#cb8-6"></a>     <span class="dt">main =</span> <span class="st">&#39;Среднемноголетняя роза ветров в Тикси&#39;</span>,</span>
-<span id="cb8-7"><a href="circular.html#cb8-7"></a>     <span class="dt">sub =</span> <span class="st">&#39;Измерения за период с 2007 по 2018 г, высота 0 м&#39;</span>)</span>
-<span id="cb8-8"><a href="circular.html#cb8-8"></a></span>
-<span id="cb8-9"><a href="circular.html#cb8-9"></a><span class="kw">rose.diag</span>(tiksi_wind<span class="op">$</span>wind, </span>
-<span id="cb8-10"><a href="circular.html#cb8-10"></a>          <span class="dt">bins =</span> <span class="dv">8</span>, </span>
-<span id="cb8-11"><a href="circular.html#cb8-11"></a>          <span class="dt">col =</span> <span class="st">&#39;gray70&#39;</span>,</span>
-<span id="cb8-12"><a href="circular.html#cb8-12"></a>          <span class="dt">border =</span> <span class="st">&#39;gray30&#39;</span>,</span>
-<span id="cb8-13"><a href="circular.html#cb8-13"></a>          <span class="dt">prop =</span> <span class="dv">1</span>, </span>
-<span id="cb8-14"><a href="circular.html#cb8-14"></a>          <span class="dt">add =</span> <span class="ot">TRUE</span>, </span>
-<span id="cb8-15"><a href="circular.html#cb8-15"></a>          <span class="dt">tick =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb8-16"><a href="circular.html#cb8-16"></a>          <span class="dt">lwd =</span> <span class="fl">0.5</span>)</span>
-<span id="cb8-17"><a href="circular.html#cb8-17"></a></span>
-<span id="cb8-18"><a href="circular.html#cb8-18"></a>kden =<span class="st"> </span><span class="kw">kern.den.circ</span>(tiksi_wind<span class="op">$</span>wind)</span>
-<span id="cb8-19"><a href="circular.html#cb8-19"></a></span>
-<span id="cb8-20"><a href="circular.html#cb8-20"></a><span class="kw">lines</span>(kden, <span class="dt">shrink =</span> <span class="dv">3</span>, <span class="co"># параметр shrink отвечает за масштаб радиус-вектора</span></span>
-<span id="cb8-21"><a href="circular.html#cb8-21"></a>      <span class="dt">join =</span> F,</span>
-<span id="cb8-22"><a href="circular.html#cb8-22"></a>      <span class="dt">col =</span> <span class="st">&#39;steelblue&#39;</span>)</span></code></pre></div>
-<p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="circular.html#cb6-1"></a><span class="kw">plot.circular</span>(tiksi_wind<span class="op">$</span>wind, </span>
+<span id="cb6-2"><a href="circular.html#cb6-2"></a>     <span class="dt">cex =</span> <span class="fl">0.5</span>, </span>
+<span id="cb6-3"><a href="circular.html#cb6-3"></a>     <span class="dt">stack =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb6-4"><a href="circular.html#cb6-4"></a>     <span class="dt">sep =</span> <span class="fl">0.035</span>,</span>
+<span id="cb6-5"><a href="circular.html#cb6-5"></a>     <span class="dt">axes =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb6-6"><a href="circular.html#cb6-6"></a>     <span class="dt">main =</span> <span class="st">&#39;Среднемноголетняя роза ветров в Тикси&#39;</span>,</span>
+<span id="cb6-7"><a href="circular.html#cb6-7"></a>     <span class="dt">sub =</span> <span class="st">&#39;Измерения за период с 2007 по 2018 г, высота 0 м&#39;</span>)</span>
+<span id="cb6-8"><a href="circular.html#cb6-8"></a></span>
+<span id="cb6-9"><a href="circular.html#cb6-9"></a><span class="kw">rose.diag</span>(tiksi_wind<span class="op">$</span>wind, </span>
+<span id="cb6-10"><a href="circular.html#cb6-10"></a>          <span class="dt">bins =</span> <span class="dv">8</span>, </span>
+<span id="cb6-11"><a href="circular.html#cb6-11"></a>          <span class="dt">col =</span> <span class="st">&#39;gray70&#39;</span>,</span>
+<span id="cb6-12"><a href="circular.html#cb6-12"></a>          <span class="dt">border =</span> <span class="st">&#39;gray30&#39;</span>,</span>
+<span id="cb6-13"><a href="circular.html#cb6-13"></a>          <span class="dt">prop =</span> <span class="dv">1</span>, </span>
+<span id="cb6-14"><a href="circular.html#cb6-14"></a>          <span class="dt">add =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb6-15"><a href="circular.html#cb6-15"></a>          <span class="dt">tick =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb6-16"><a href="circular.html#cb6-16"></a>          <span class="dt">lwd =</span> <span class="fl">0.5</span>)</span>
+<span id="cb6-17"><a href="circular.html#cb6-17"></a></span>
+<span id="cb6-18"><a href="circular.html#cb6-18"></a>kden =<span class="st"> </span><span class="kw">kern.den.circ</span>(tiksi_wind<span class="op">$</span>wind)</span>
+<span id="cb6-19"><a href="circular.html#cb6-19"></a></span>
+<span id="cb6-20"><a href="circular.html#cb6-20"></a><span class="kw">lines</span>(kden, <span class="dt">shrink =</span> <span class="dv">3</span>, <span class="co"># параметр shrink отвечает за масштаб радиус-вектора</span></span>
+<span id="cb6-21"><a href="circular.html#cb6-21"></a>      <span class="dt">join =</span> F,</span>
+<span id="cb6-22"><a href="circular.html#cb6-22"></a>      <span class="dt">col =</span> <span class="st">&#39;steelblue&#39;</span>)</span></code></pre></div>
+<p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <blockquote>
 <p>Параметр <code>shrink</code> отвечает за масштаб радиус-вектора на графиках из пакета <strong>circular</strong>. Чем больше его величина, тем сильнее будет сжат график относительно центра круга.</p>
 </blockquote>
 <p>Так же как и в случае с обычными данными, плотность распределения удобно использовать для определения модальных направлений, то есть наиболее часто встречающихся. Для этого воспользуемся функцией <code>findpeaks()</code> из пакета <strong>pracma</strong>:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="circular.html#cb9-1"></a>peak =<span class="st"> </span><span class="kw">findpeaks</span>(kden<span class="op">$</span>y, <span class="dt">sortstr =</span> T)[<span class="dv">1</span>,<span class="dv">2</span>] <span class="co"># находим индекс самого высокого пика плотности распределения</span></span>
-<span id="cb9-2"><a href="circular.html#cb9-2"></a></span>
-<span id="cb9-3"><a href="circular.html#cb9-3"></a>(<span class="dt">modal =</span> kden<span class="op">$</span>x[peak]) <span class="co"># извлекаем сам угол</span></span>
-<span id="cb9-4"><a href="circular.html#cb9-4"></a><span class="co">## Circular Data: </span></span>
-<span id="cb9-5"><a href="circular.html#cb9-5"></a><span class="co">## Type = angles </span></span>
-<span id="cb9-6"><a href="circular.html#cb9-6"></a><span class="co">## Units = radians </span></span>
-<span id="cb9-7"><a href="circular.html#cb9-7"></a><span class="co">## Template = geographics </span></span>
-<span id="cb9-8"><a href="circular.html#cb9-8"></a><span class="co">## Modulo = asis </span></span>
-<span id="cb9-9"><a href="circular.html#cb9-9"></a><span class="co">## Zero = 1.570796 </span></span>
-<span id="cb9-10"><a href="circular.html#cb9-10"></a><span class="co">## Rotation = clock </span></span>
-<span id="cb9-11"><a href="circular.html#cb9-11"></a><span class="co">## [1] 0.813786</span></span>
-<span id="cb9-12"><a href="circular.html#cb9-12"></a></span>
-<span id="cb9-13"><a href="circular.html#cb9-13"></a><span class="co"># раскладываем на составляющие для отрисовки линии</span></span>
-<span id="cb9-14"><a href="circular.html#cb9-14"></a>xp =<span class="st"> </span><span class="kw">sin</span>(modal)</span>
-<span id="cb9-15"><a href="circular.html#cb9-15"></a>yp =<span class="st"> </span><span class="kw">cos</span>(modal)</span>
-<span id="cb9-16"><a href="circular.html#cb9-16"></a></span>
-<span id="cb9-17"><a href="circular.html#cb9-17"></a><span class="kw">plot.circular</span>(tiksi_wind<span class="op">$</span>wind, </span>
-<span id="cb9-18"><a href="circular.html#cb9-18"></a>     <span class="dt">cex =</span> <span class="fl">0.5</span>, </span>
-<span id="cb9-19"><a href="circular.html#cb9-19"></a>     <span class="dt">stack =</span> <span class="ot">TRUE</span>, </span>
-<span id="cb9-20"><a href="circular.html#cb9-20"></a>     <span class="dt">sep =</span> <span class="fl">0.035</span>,</span>
-<span id="cb9-21"><a href="circular.html#cb9-21"></a>     <span class="dt">axes =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb9-22"><a href="circular.html#cb9-22"></a>     <span class="dt">main =</span> <span class="st">&#39;Среднемноголетняя роза ветров в Тикси&#39;</span>,</span>
-<span id="cb9-23"><a href="circular.html#cb9-23"></a>     <span class="dt">sub =</span> <span class="st">&#39;Измерения за период с 2007 по 2018 г, высота 0 м&#39;</span>)</span>
-<span id="cb9-24"><a href="circular.html#cb9-24"></a></span>
-<span id="cb9-25"><a href="circular.html#cb9-25"></a><span class="kw">rose.diag</span>(tiksi_wind<span class="op">$</span>wind, </span>
-<span id="cb9-26"><a href="circular.html#cb9-26"></a>          <span class="dt">bins =</span> <span class="dv">8</span>, </span>
-<span id="cb9-27"><a href="circular.html#cb9-27"></a>          <span class="dt">col =</span> <span class="st">&#39;gray70&#39;</span>,</span>
-<span id="cb9-28"><a href="circular.html#cb9-28"></a>          <span class="dt">border =</span> <span class="st">&#39;gray30&#39;</span>,</span>
-<span id="cb9-29"><a href="circular.html#cb9-29"></a>          <span class="dt">prop =</span> <span class="dv">1</span>, </span>
-<span id="cb9-30"><a href="circular.html#cb9-30"></a>          <span class="dt">add =</span> <span class="ot">TRUE</span>, </span>
-<span id="cb9-31"><a href="circular.html#cb9-31"></a>          <span class="dt">tick =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb9-32"><a href="circular.html#cb9-32"></a>          <span class="dt">lwd =</span> <span class="fl">0.5</span>)</span>
-<span id="cb9-33"><a href="circular.html#cb9-33"></a></span>
-<span id="cb9-34"><a href="circular.html#cb9-34"></a><span class="kw">lines</span>(kden, <span class="dt">shrink =</span> <span class="dv">3</span>, </span>
-<span id="cb9-35"><a href="circular.html#cb9-35"></a>      <span class="dt">join =</span> F, <span class="dt">col =</span> <span class="st">&#39;steelblue&#39;</span>)</span>
-<span id="cb9-36"><a href="circular.html#cb9-36"></a></span>
-<span id="cb9-37"><a href="circular.html#cb9-37"></a><span class="kw">lines</span>(<span class="kw">c</span>(<span class="dv">0</span>, xp), <span class="kw">c</span>(<span class="dv">0</span>, yp),</span>
-<span id="cb9-38"><a href="circular.html#cb9-38"></a>      <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>)</span>
-<span id="cb9-39"><a href="circular.html#cb9-39"></a></span>
-<span id="cb9-40"><a href="circular.html#cb9-40"></a><span class="kw">text</span>(<span class="dt">x =</span> <span class="fl">1.4</span> <span class="op">*</span><span class="st"> </span>xp, <span class="dt">y =</span> <span class="fl">1.4</span> <span class="op">*</span><span class="st"> </span>yp, </span>
-<span id="cb9-41"><a href="circular.html#cb9-41"></a>     <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>,</span>
-<span id="cb9-42"><a href="circular.html#cb9-42"></a>     <span class="dt">labels =</span> <span class="kw">paste0</span>(<span class="kw">round</span>(<span class="dv">180</span> <span class="op">*</span><span class="st"> </span>modal <span class="op">/</span><span class="st"> </span>pi, <span class="dv">0</span>), <span class="st">&#39;°&#39;</span>)) <span class="co"># приводим к целым градусам</span></span></code></pre></div>
-<p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="circular.html#cb7-1"></a>peak =<span class="st"> </span><span class="kw">findpeaks</span>(kden<span class="op">$</span>y, <span class="dt">sortstr =</span> T)[<span class="dv">1</span>,<span class="dv">2</span>] <span class="co"># находим индекс самого высокого пика плотности распределения</span></span>
+<span id="cb7-2"><a href="circular.html#cb7-2"></a></span>
+<span id="cb7-3"><a href="circular.html#cb7-3"></a>(<span class="dt">modal =</span> kden<span class="op">$</span>x[peak]) <span class="co"># извлекаем сам угол</span></span>
+<span id="cb7-4"><a href="circular.html#cb7-4"></a><span class="co">## Circular Data: </span></span>
+<span id="cb7-5"><a href="circular.html#cb7-5"></a><span class="co">## Type = angles </span></span>
+<span id="cb7-6"><a href="circular.html#cb7-6"></a><span class="co">## Units = radians </span></span>
+<span id="cb7-7"><a href="circular.html#cb7-7"></a><span class="co">## Template = geographics </span></span>
+<span id="cb7-8"><a href="circular.html#cb7-8"></a><span class="co">## Modulo = asis </span></span>
+<span id="cb7-9"><a href="circular.html#cb7-9"></a><span class="co">## Zero = 1.570796 </span></span>
+<span id="cb7-10"><a href="circular.html#cb7-10"></a><span class="co">## Rotation = clock </span></span>
+<span id="cb7-11"><a href="circular.html#cb7-11"></a><span class="co">## [1] 0.813786</span></span>
+<span id="cb7-12"><a href="circular.html#cb7-12"></a></span>
+<span id="cb7-13"><a href="circular.html#cb7-13"></a><span class="co"># раскладываем на составляющие для отрисовки линии</span></span>
+<span id="cb7-14"><a href="circular.html#cb7-14"></a>xp =<span class="st"> </span><span class="kw">sin</span>(modal)</span>
+<span id="cb7-15"><a href="circular.html#cb7-15"></a>yp =<span class="st"> </span><span class="kw">cos</span>(modal)</span>
+<span id="cb7-16"><a href="circular.html#cb7-16"></a></span>
+<span id="cb7-17"><a href="circular.html#cb7-17"></a><span class="kw">plot.circular</span>(tiksi_wind<span class="op">$</span>wind, </span>
+<span id="cb7-18"><a href="circular.html#cb7-18"></a>     <span class="dt">cex =</span> <span class="fl">0.5</span>, </span>
+<span id="cb7-19"><a href="circular.html#cb7-19"></a>     <span class="dt">stack =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb7-20"><a href="circular.html#cb7-20"></a>     <span class="dt">sep =</span> <span class="fl">0.035</span>,</span>
+<span id="cb7-21"><a href="circular.html#cb7-21"></a>     <span class="dt">axes =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb7-22"><a href="circular.html#cb7-22"></a>     <span class="dt">main =</span> <span class="st">&#39;Среднемноголетняя роза ветров в Тикси&#39;</span>,</span>
+<span id="cb7-23"><a href="circular.html#cb7-23"></a>     <span class="dt">sub =</span> <span class="st">&#39;Измерения за период с 2007 по 2018 г, высота 0 м&#39;</span>)</span>
+<span id="cb7-24"><a href="circular.html#cb7-24"></a></span>
+<span id="cb7-25"><a href="circular.html#cb7-25"></a><span class="kw">rose.diag</span>(tiksi_wind<span class="op">$</span>wind, </span>
+<span id="cb7-26"><a href="circular.html#cb7-26"></a>          <span class="dt">bins =</span> <span class="dv">8</span>, </span>
+<span id="cb7-27"><a href="circular.html#cb7-27"></a>          <span class="dt">col =</span> <span class="st">&#39;gray70&#39;</span>,</span>
+<span id="cb7-28"><a href="circular.html#cb7-28"></a>          <span class="dt">border =</span> <span class="st">&#39;gray30&#39;</span>,</span>
+<span id="cb7-29"><a href="circular.html#cb7-29"></a>          <span class="dt">prop =</span> <span class="dv">1</span>, </span>
+<span id="cb7-30"><a href="circular.html#cb7-30"></a>          <span class="dt">add =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb7-31"><a href="circular.html#cb7-31"></a>          <span class="dt">tick =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb7-32"><a href="circular.html#cb7-32"></a>          <span class="dt">lwd =</span> <span class="fl">0.5</span>)</span>
+<span id="cb7-33"><a href="circular.html#cb7-33"></a></span>
+<span id="cb7-34"><a href="circular.html#cb7-34"></a><span class="kw">lines</span>(kden, <span class="dt">shrink =</span> <span class="dv">3</span>, </span>
+<span id="cb7-35"><a href="circular.html#cb7-35"></a>      <span class="dt">join =</span> F, <span class="dt">col =</span> <span class="st">&#39;steelblue&#39;</span>)</span>
+<span id="cb7-36"><a href="circular.html#cb7-36"></a></span>
+<span id="cb7-37"><a href="circular.html#cb7-37"></a><span class="kw">lines</span>(<span class="kw">c</span>(<span class="dv">0</span>, xp), <span class="kw">c</span>(<span class="dv">0</span>, yp),</span>
+<span id="cb7-38"><a href="circular.html#cb7-38"></a>      <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>)</span>
+<span id="cb7-39"><a href="circular.html#cb7-39"></a></span>
+<span id="cb7-40"><a href="circular.html#cb7-40"></a><span class="kw">text</span>(<span class="dt">x =</span> <span class="fl">1.4</span> <span class="op">*</span><span class="st"> </span>xp, <span class="dt">y =</span> <span class="fl">1.4</span> <span class="op">*</span><span class="st"> </span>yp, </span>
+<span id="cb7-41"><a href="circular.html#cb7-41"></a>     <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>,</span>
+<span id="cb7-42"><a href="circular.html#cb7-42"></a>     <span class="dt">labels =</span> <span class="kw">paste0</span>(<span class="kw">round</span>(<span class="dv">180</span> <span class="op">*</span><span class="st"> </span>modal <span class="op">/</span><span class="st"> </span>pi, <span class="dv">0</span>), <span class="st">&#39;°&#39;</span>)) <span class="co"># приводим к целым градусам</span></span></code></pre></div>
+<p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>Проведем анализ направлений для всех станций. Для этого рассчитаем функции плотности распределения и разместим их в новом фрейме данных с лист-колонкой.</p>
 <blockquote>
 <p><strong>Лист-колонка</strong> (<em>list-column</em>) позволяет хранить в ячейках таблицы данные произвольного типа. В частности, используя лист-колонку, вы можете хранить в каждой ячейке не один объект, а множество объектов, например записать в нее вектор. Лист-колонка имеет тип <code>list</code>, и каждая ячейка в этой колонке так же, соответственно, имеет тип <code>list</code>. Что (и в каком количестве) располагать внутри ячейки — уже ваше дело. Лист-колонки оказываются неожиданно удобны в самых разнообразных сценариях, в том числе для представления статистических моделей (соответствующих каждой строке таблицы) и для хранения пространственных данных (об этом — в следующей лекции). Вместо хранения этих данных в отдельных переменных вы можете записать их в ячейки.</p>
 </blockquote>
 <p>В приведенном ниже коде мы группируем все измерения по имени аэрологической обсерватории, вычисляем вектор плотности распределения, записываем его в список, и этот список уже помещается функцией <code>summarise()</code> в <em>единственную</em> ячейку столбца <em>kden</em>, соответствующую данной аэрологической станции. Далее полученная лист-колонка используется для нахождения модальных значений (тут оказывается полезно знание функционалов семейства <code>apply</code>):</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="circular.html#cb10-1"></a>(<span class="dt">dens =</span> winds <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb10-2"><a href="circular.html#cb10-2"></a><span class="st">  </span><span class="kw">filter</span>(HH <span class="op">==</span><span class="st"> </span><span class="dv">12</span>, Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span></span>
-<span id="cb10-3"><a href="circular.html#cb10-3"></a><span class="st">  </span><span class="kw">group_by</span>(name) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb10-4"><a href="circular.html#cb10-4"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">kden =</span> <span class="kw">list</span>(<span class="kw">kern.den.circ</span>(wind))) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb10-5"><a href="circular.html#cb10-5"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">peak =</span> <span class="kw">sapply</span>(kden, <span class="cf">function</span>(X) {</span>
-<span id="cb10-6"><a href="circular.html#cb10-6"></a>                  peak =<span class="st"> </span><span class="kw">findpeaks</span>(X<span class="op">$</span>y, <span class="dt">sortstr =</span> T)[<span class="dv">1</span>,<span class="dv">2</span>]</span>
-<span id="cb10-7"><a href="circular.html#cb10-7"></a>                  X<span class="op">$</span>x[peak]</span>
-<span id="cb10-8"><a href="circular.html#cb10-8"></a>                })</span>
-<span id="cb10-9"><a href="circular.html#cb10-9"></a>  )</span>
-<span id="cb10-10"><a href="circular.html#cb10-10"></a>)</span>
-<span id="cb10-11"><a href="circular.html#cb10-11"></a><span class="co">## # A tibble: 13 x 3</span></span>
-<span id="cb10-12"><a href="circular.html#cb10-12"></a><span class="co">##    name            kden         peak</span></span>
-<span id="cb10-13"><a href="circular.html#cb10-13"></a><span class="co">##    &lt;chr&gt;           &lt;list&gt;      &lt;dbl&gt;</span></span>
-<span id="cb10-14"><a href="circular.html#cb10-14"></a><span class="co">##  1 Верхоянск       &lt;dnsty.cr&gt; -2.97 </span></span>
-<span id="cb10-15"><a href="circular.html#cb10-15"></a><span class="co">##  2 Жиганск         &lt;dnsty.cr&gt; -3.20 </span></span>
-<span id="cb10-16"><a href="circular.html#cb10-16"></a><span class="co">##  3 Кандалакша      &lt;dnsty.cr&gt; -0.347</span></span>
-<span id="cb10-17"><a href="circular.html#cb10-17"></a><span class="co">##  4 Мирный          &lt;dnsty.cr&gt; -0.826</span></span>
-<span id="cb10-18"><a href="circular.html#cb10-18"></a><span class="co">##  5 Мурманск        &lt;dnsty.cr&gt;  0.814</span></span>
-<span id="cb10-19"><a href="circular.html#cb10-19"></a><span class="co">##  6 Нарьян-Мар      &lt;dnsty.cr&gt;  1.04 </span></span>
-<span id="cb10-20"><a href="circular.html#cb10-20"></a><span class="co">##  7 Новолазаревская &lt;dnsty.cr&gt; -0.902</span></span>
-<span id="cb10-21"><a href="circular.html#cb10-21"></a><span class="co">##  8 Норильск        &lt;dnsty.cr&gt; -0.877</span></span>
-<span id="cb10-22"><a href="circular.html#cb10-22"></a><span class="co">##  9 Оленек          &lt;dnsty.cr&gt; -3.48 </span></span>
-<span id="cb10-23"><a href="circular.html#cb10-23"></a><span class="co">## 10 Остров Диксон   &lt;dnsty.cr&gt; -0.145</span></span>
-<span id="cb10-24"><a href="circular.html#cb10-24"></a><span class="co">## 11 Салехард        &lt;dnsty.cr&gt; -2.82 </span></span>
-<span id="cb10-25"><a href="circular.html#cb10-25"></a><span class="co">## 12 Тикси           &lt;dnsty.cr&gt;  0.814</span></span>
-<span id="cb10-26"><a href="circular.html#cb10-26"></a><span class="co">## 13 Шойна           &lt;dnsty.cr&gt;  0.561</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="circular.html#cb8-1"></a>(<span class="dt">dens =</span> winds <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-2"><a href="circular.html#cb8-2"></a><span class="st">  </span><span class="kw">filter</span>(HH <span class="op">==</span><span class="st"> </span><span class="dv">12</span>, Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span></span>
+<span id="cb8-3"><a href="circular.html#cb8-3"></a><span class="st">  </span><span class="kw">group_by</span>(name) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-4"><a href="circular.html#cb8-4"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">kden =</span> <span class="kw">list</span>(<span class="kw">kern.den.circ</span>(wind))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-5"><a href="circular.html#cb8-5"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">peak =</span> <span class="kw">sapply</span>(kden, <span class="cf">function</span>(X) {</span>
+<span id="cb8-6"><a href="circular.html#cb8-6"></a>                  peak =<span class="st"> </span><span class="kw">findpeaks</span>(X<span class="op">$</span>y, <span class="dt">sortstr =</span> T)[<span class="dv">1</span>,<span class="dv">2</span>]</span>
+<span id="cb8-7"><a href="circular.html#cb8-7"></a>                  X<span class="op">$</span>x[peak]</span>
+<span id="cb8-8"><a href="circular.html#cb8-8"></a>                })</span>
+<span id="cb8-9"><a href="circular.html#cb8-9"></a>  )</span>
+<span id="cb8-10"><a href="circular.html#cb8-10"></a>)</span>
+<span id="cb8-11"><a href="circular.html#cb8-11"></a><span class="co">## # A tibble: 13 x 3</span></span>
+<span id="cb8-12"><a href="circular.html#cb8-12"></a><span class="co">##    name            kden         peak</span></span>
+<span id="cb8-13"><a href="circular.html#cb8-13"></a><span class="co">##    &lt;chr&gt;           &lt;list&gt;      &lt;dbl&gt;</span></span>
+<span id="cb8-14"><a href="circular.html#cb8-14"></a><span class="co">##  1 Верхоянск       &lt;dnsty.cr&gt; -2.97 </span></span>
+<span id="cb8-15"><a href="circular.html#cb8-15"></a><span class="co">##  2 Жиганск         &lt;dnsty.cr&gt; -3.20 </span></span>
+<span id="cb8-16"><a href="circular.html#cb8-16"></a><span class="co">##  3 Кандалакша      &lt;dnsty.cr&gt; -0.347</span></span>
+<span id="cb8-17"><a href="circular.html#cb8-17"></a><span class="co">##  4 Мирный          &lt;dnsty.cr&gt; -0.826</span></span>
+<span id="cb8-18"><a href="circular.html#cb8-18"></a><span class="co">##  5 Мурманск        &lt;dnsty.cr&gt;  0.814</span></span>
+<span id="cb8-19"><a href="circular.html#cb8-19"></a><span class="co">##  6 Нарьян-Мар      &lt;dnsty.cr&gt;  1.04 </span></span>
+<span id="cb8-20"><a href="circular.html#cb8-20"></a><span class="co">##  7 Новолазаревская &lt;dnsty.cr&gt; -0.902</span></span>
+<span id="cb8-21"><a href="circular.html#cb8-21"></a><span class="co">##  8 Норильск        &lt;dnsty.cr&gt; -0.877</span></span>
+<span id="cb8-22"><a href="circular.html#cb8-22"></a><span class="co">##  9 Оленек          &lt;dnsty.cr&gt; -3.48 </span></span>
+<span id="cb8-23"><a href="circular.html#cb8-23"></a><span class="co">## 10 Остров Диксон   &lt;dnsty.cr&gt; -0.145</span></span>
+<span id="cb8-24"><a href="circular.html#cb8-24"></a><span class="co">## 11 Салехард        &lt;dnsty.cr&gt; -2.82 </span></span>
+<span id="cb8-25"><a href="circular.html#cb8-25"></a><span class="co">## 12 Тикси           &lt;dnsty.cr&gt;  0.814</span></span>
+<span id="cb8-26"><a href="circular.html#cb8-26"></a><span class="co">## 13 Шойна           &lt;dnsty.cr&gt;  0.561</span></span></code></pre></div>
 <p>После этого построим розы-диаграммы для всех станций. В данном случае оправдано использование обычного цикла, т.к. итераций немного:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="circular.html#cb11-1"></a><span class="co"># устанавливаем параметры компоновки</span></span>
-<span id="cb11-2"><a href="circular.html#cb11-2"></a><span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>),</span>
-<span id="cb11-3"><a href="circular.html#cb11-3"></a>    <span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
-<span id="cb11-4"><a href="circular.html#cb11-4"></a></span>
-<span id="cb11-5"><a href="circular.html#cb11-5"></a><span class="co"># строим графики в цикле</span></span>
-<span id="cb11-6"><a href="circular.html#cb11-6"></a><span class="cf">for</span> (obs_name <span class="cf">in</span> dens<span class="op">$</span>name) {</span>
-<span id="cb11-7"><a href="circular.html#cb11-7"></a>  </span>
-<span id="cb11-8"><a href="circular.html#cb11-8"></a>  wind_df =<span class="st"> </span>winds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> </span>obs_name, HH <span class="op">==</span><span class="st"> </span><span class="dv">12</span>, Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</span>
-<span id="cb11-9"><a href="circular.html#cb11-9"></a>  dens_df =<span class="st"> </span>dens <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> </span>obs_name)</span>
-<span id="cb11-10"><a href="circular.html#cb11-10"></a>  </span>
-<span id="cb11-11"><a href="circular.html#cb11-11"></a>  modal =<span class="st"> </span>dens_df<span class="op">$</span>peak</span>
-<span id="cb11-12"><a href="circular.html#cb11-12"></a></span>
-<span id="cb11-13"><a href="circular.html#cb11-13"></a>  xp =<span class="st"> </span><span class="kw">sin</span>(modal)</span>
-<span id="cb11-14"><a href="circular.html#cb11-14"></a>  yp =<span class="st"> </span><span class="kw">cos</span>(modal)</span>
-<span id="cb11-15"><a href="circular.html#cb11-15"></a>  </span>
-<span id="cb11-16"><a href="circular.html#cb11-16"></a>  <span class="kw">plot.circular</span>(wind_df<span class="op">$</span>wind, </span>
-<span id="cb11-17"><a href="circular.html#cb11-17"></a>       <span class="dt">shrink =</span> <span class="fl">1.2</span>,</span>
-<span id="cb11-18"><a href="circular.html#cb11-18"></a>       <span class="dt">cex =</span> <span class="fl">0.5</span>, </span>
-<span id="cb11-19"><a href="circular.html#cb11-19"></a>       <span class="dt">stack =</span> <span class="ot">TRUE</span>, </span>
-<span id="cb11-20"><a href="circular.html#cb11-20"></a>       <span class="dt">sep =</span> <span class="fl">0.035</span>,</span>
-<span id="cb11-21"><a href="circular.html#cb11-21"></a>       <span class="dt">axes =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb11-22"><a href="circular.html#cb11-22"></a>       <span class="dt">main =</span> obs_name)</span>
-<span id="cb11-23"><a href="circular.html#cb11-23"></a>  </span>
-<span id="cb11-24"><a href="circular.html#cb11-24"></a>  <span class="kw">rose.diag</span>(wind_df<span class="op">$</span>wind, </span>
-<span id="cb11-25"><a href="circular.html#cb11-25"></a>            <span class="dt">bins =</span> <span class="dv">8</span>, </span>
-<span id="cb11-26"><a href="circular.html#cb11-26"></a>            <span class="dt">col =</span> <span class="st">&#39;gray70&#39;</span>,</span>
-<span id="cb11-27"><a href="circular.html#cb11-27"></a>            <span class="dt">border =</span> <span class="st">&#39;gray30&#39;</span>,</span>
-<span id="cb11-28"><a href="circular.html#cb11-28"></a>            <span class="dt">prop =</span> <span class="dv">1</span>, </span>
-<span id="cb11-29"><a href="circular.html#cb11-29"></a>            <span class="dt">add =</span> <span class="ot">TRUE</span>, </span>
-<span id="cb11-30"><a href="circular.html#cb11-30"></a>            <span class="dt">tick =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb11-31"><a href="circular.html#cb11-31"></a>            <span class="dt">lwd =</span> <span class="fl">0.5</span>)</span>
-<span id="cb11-32"><a href="circular.html#cb11-32"></a>  </span>
-<span id="cb11-33"><a href="circular.html#cb11-33"></a>  <span class="kw">lines</span>(dens_df<span class="op">$</span>kden[[<span class="dv">1</span>]], </span>
-<span id="cb11-34"><a href="circular.html#cb11-34"></a>        <span class="dt">shrink =</span> <span class="dv">3</span>, <span class="dt">join=</span>F,</span>
-<span id="cb11-35"><a href="circular.html#cb11-35"></a>        <span class="dt">col =</span> <span class="st">&#39;steelblue&#39;</span>)</span>
-<span id="cb11-36"><a href="circular.html#cb11-36"></a>  </span>
-<span id="cb11-37"><a href="circular.html#cb11-37"></a>  <span class="kw">lines</span>(<span class="kw">c</span>(<span class="dv">0</span>, xp), <span class="kw">c</span>(<span class="dv">0</span>, yp),</span>
-<span id="cb11-38"><a href="circular.html#cb11-38"></a>        <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>)</span>
-<span id="cb11-39"><a href="circular.html#cb11-39"></a>  </span>
-<span id="cb11-40"><a href="circular.html#cb11-40"></a>  <span class="kw">text</span>(<span class="dt">x =</span> <span class="fl">1.4</span> <span class="op">*</span><span class="st"> </span>xp, <span class="dt">y =</span> <span class="fl">1.4</span> <span class="op">*</span><span class="st"> </span>yp, </span>
-<span id="cb11-41"><a href="circular.html#cb11-41"></a>       <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>,</span>
-<span id="cb11-42"><a href="circular.html#cb11-42"></a>       <span class="dt">labels =</span> <span class="kw">paste0</span>(<span class="kw">round</span>(<span class="dv">180</span> <span class="op">*</span><span class="st"> </span>modal <span class="op">/</span><span class="st"> </span>pi, <span class="dv">0</span>), <span class="st">&#39;°&#39;</span>)) <span class="co"># приводим к целым градусам</span></span>
-<span id="cb11-43"><a href="circular.html#cb11-43"></a>}</span></code></pre></div>
-<p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-1.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-2.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-3.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-4.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-5.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-6.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-14-7.png" width="672" /></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="circular.html#cb9-1"></a><span class="co"># устанавливаем параметры компоновки</span></span>
+<span id="cb9-2"><a href="circular.html#cb9-2"></a><span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb9-3"><a href="circular.html#cb9-3"></a>    <span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb9-4"><a href="circular.html#cb9-4"></a></span>
+<span id="cb9-5"><a href="circular.html#cb9-5"></a><span class="co"># строим графики в цикле</span></span>
+<span id="cb9-6"><a href="circular.html#cb9-6"></a><span class="cf">for</span> (obs_name <span class="cf">in</span> dens<span class="op">$</span>name) {</span>
+<span id="cb9-7"><a href="circular.html#cb9-7"></a>  </span>
+<span id="cb9-8"><a href="circular.html#cb9-8"></a>  wind_df =<span class="st"> </span>winds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> </span>obs_name, HH <span class="op">==</span><span class="st"> </span><span class="dv">12</span>, Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</span>
+<span id="cb9-9"><a href="circular.html#cb9-9"></a>  dens_df =<span class="st"> </span>dens <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> </span>obs_name)</span>
+<span id="cb9-10"><a href="circular.html#cb9-10"></a>  </span>
+<span id="cb9-11"><a href="circular.html#cb9-11"></a>  modal =<span class="st"> </span>dens_df<span class="op">$</span>peak</span>
+<span id="cb9-12"><a href="circular.html#cb9-12"></a></span>
+<span id="cb9-13"><a href="circular.html#cb9-13"></a>  xp =<span class="st"> </span><span class="kw">sin</span>(modal)</span>
+<span id="cb9-14"><a href="circular.html#cb9-14"></a>  yp =<span class="st"> </span><span class="kw">cos</span>(modal)</span>
+<span id="cb9-15"><a href="circular.html#cb9-15"></a>  </span>
+<span id="cb9-16"><a href="circular.html#cb9-16"></a>  <span class="kw">plot.circular</span>(wind_df<span class="op">$</span>wind, </span>
+<span id="cb9-17"><a href="circular.html#cb9-17"></a>       <span class="dt">shrink =</span> <span class="fl">1.2</span>,</span>
+<span id="cb9-18"><a href="circular.html#cb9-18"></a>       <span class="dt">cex =</span> <span class="fl">0.5</span>, </span>
+<span id="cb9-19"><a href="circular.html#cb9-19"></a>       <span class="dt">stack =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb9-20"><a href="circular.html#cb9-20"></a>       <span class="dt">sep =</span> <span class="fl">0.035</span>,</span>
+<span id="cb9-21"><a href="circular.html#cb9-21"></a>       <span class="dt">axes =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb9-22"><a href="circular.html#cb9-22"></a>       <span class="dt">main =</span> obs_name)</span>
+<span id="cb9-23"><a href="circular.html#cb9-23"></a>  </span>
+<span id="cb9-24"><a href="circular.html#cb9-24"></a>  <span class="kw">rose.diag</span>(wind_df<span class="op">$</span>wind, </span>
+<span id="cb9-25"><a href="circular.html#cb9-25"></a>            <span class="dt">bins =</span> <span class="dv">8</span>, </span>
+<span id="cb9-26"><a href="circular.html#cb9-26"></a>            <span class="dt">col =</span> <span class="st">&#39;gray70&#39;</span>,</span>
+<span id="cb9-27"><a href="circular.html#cb9-27"></a>            <span class="dt">border =</span> <span class="st">&#39;gray30&#39;</span>,</span>
+<span id="cb9-28"><a href="circular.html#cb9-28"></a>            <span class="dt">prop =</span> <span class="dv">1</span>, </span>
+<span id="cb9-29"><a href="circular.html#cb9-29"></a>            <span class="dt">add =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb9-30"><a href="circular.html#cb9-30"></a>            <span class="dt">tick =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb9-31"><a href="circular.html#cb9-31"></a>            <span class="dt">lwd =</span> <span class="fl">0.5</span>)</span>
+<span id="cb9-32"><a href="circular.html#cb9-32"></a>  </span>
+<span id="cb9-33"><a href="circular.html#cb9-33"></a>  <span class="kw">lines</span>(dens_df<span class="op">$</span>kden[[<span class="dv">1</span>]], </span>
+<span id="cb9-34"><a href="circular.html#cb9-34"></a>        <span class="dt">shrink =</span> <span class="dv">3</span>, <span class="dt">join=</span>F,</span>
+<span id="cb9-35"><a href="circular.html#cb9-35"></a>        <span class="dt">col =</span> <span class="st">&#39;steelblue&#39;</span>)</span>
+<span id="cb9-36"><a href="circular.html#cb9-36"></a>  </span>
+<span id="cb9-37"><a href="circular.html#cb9-37"></a>  <span class="kw">lines</span>(<span class="kw">c</span>(<span class="dv">0</span>, xp), <span class="kw">c</span>(<span class="dv">0</span>, yp),</span>
+<span id="cb9-38"><a href="circular.html#cb9-38"></a>        <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>)</span>
+<span id="cb9-39"><a href="circular.html#cb9-39"></a>  </span>
+<span id="cb9-40"><a href="circular.html#cb9-40"></a>  <span class="kw">text</span>(<span class="dt">x =</span> <span class="fl">1.4</span> <span class="op">*</span><span class="st"> </span>xp, <span class="dt">y =</span> <span class="fl">1.4</span> <span class="op">*</span><span class="st"> </span>yp, </span>
+<span id="cb9-41"><a href="circular.html#cb9-41"></a>       <span class="dt">col =</span> <span class="st">&#39;orangered&#39;</span>,</span>
+<span id="cb9-42"><a href="circular.html#cb9-42"></a>       <span class="dt">labels =</span> <span class="kw">paste0</span>(<span class="kw">round</span>(<span class="dv">180</span> <span class="op">*</span><span class="st"> </span>modal <span class="op">/</span><span class="st"> </span>pi, <span class="dv">0</span>), <span class="st">&#39;°&#39;</span>)) <span class="co"># приводим к целым градусам</span></span>
+<span id="cb9-43"><a href="circular.html#cb9-43"></a>}</span></code></pre></div>
+<p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-1.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-2.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-3.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-4.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-5.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-6.png" width="672" /><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-12-7.png" width="672" /></p>
 <p>Таким образом, мы провели графический и статистический анализ среднемноголетних направлений ветра по данным полярных аэрологических станций России. Выявлены модальные направлений, выполнена аппроксимация функции плотности вероятности направлений ветра.</p>
 </div>
 <div id="circular_tests" class="section level3">
@@ -1109,7 +1106,7 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 <h2><span class="header-section-number">8.3</span> Статистика временных данных</h2>
 <div id="circular_time_lubridate" class="section level3">
 <h3><span class="header-section-number">8.3.1</span> Работа с датами в lubridate</h3>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="circular.html#cb12-1"></a><span class="kw">library</span>(lubridate)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="circular.html#cb10-1"></a><span class="kw">library</span>(lubridate)</span></code></pre></div>
 </div>
 <div id="circular_time_tests" class="section level3">
 <h3><span class="header-section-number">8.3.2</span> Проверка гипотез</h3>
@@ -1126,44 +1123,98 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 <li><code>ease_aes()</code> — порядок смягчения (интерполяции) графических переменных в моменты перехода.</li>
 </ul>
 <p>В качестве первого примера используем уже знакомые нам данные реанализа NASA POWER суточного осреднения, выгрузив информацию по точкам в трех городах (Мурманск, Москва, Краснодар) за 2018 год:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="circular.html#cb13-1"></a><span class="kw">library</span>(nasapower)</span>
-<span id="cb13-2"><a href="circular.html#cb13-2"></a><span class="kw">library</span>(ggplot2)</span>
-<span id="cb13-3"><a href="circular.html#cb13-3"></a></span>
-<span id="cb13-4"><a href="circular.html#cb13-4"></a>cities =<span class="st"> </span><span class="kw">list</span>(</span>
-<span id="cb13-5"><a href="circular.html#cb13-5"></a>  Мурманск =<span class="st"> </span><span class="kw">c</span>(<span class="dv">33</span>, <span class="dv">69</span>),</span>
-<span id="cb13-6"><a href="circular.html#cb13-6"></a>  Москва =<span class="st"> </span><span class="kw">c</span>(<span class="dv">38</span>, <span class="dv">56</span>),</span>
-<span id="cb13-7"><a href="circular.html#cb13-7"></a>  Краснодар =<span class="st"> </span><span class="kw">c</span>(<span class="dv">39</span>, <span class="dv">45</span>)</span>
-<span id="cb13-8"><a href="circular.html#cb13-8"></a>)</span>
-<span id="cb13-9"><a href="circular.html#cb13-9"></a></span>
-<span id="cb13-10"><a href="circular.html#cb13-10"></a>tab =<span class="st"> </span>purrr<span class="op">::</span><span class="kw">imap</span>(cities, <span class="cf">function</span>(coords, city){</span>
-<span id="cb13-11"><a href="circular.html#cb13-11"></a>  <span class="kw">get_power</span>(</span>
-<span id="cb13-12"><a href="circular.html#cb13-12"></a>    <span class="dt">community =</span> <span class="st">&quot;AG&quot;</span>,</span>
-<span id="cb13-13"><a href="circular.html#cb13-13"></a>    <span class="dt">lonlat =</span> coords,</span>
-<span id="cb13-14"><a href="circular.html#cb13-14"></a>    <span class="dt">pars =</span> <span class="kw">c</span>(<span class="st">&quot;RH2M&quot;</span>, <span class="st">&quot;T2M&quot;</span>, <span class="st">&quot;PRECTOT&quot;</span>),</span>
-<span id="cb13-15"><a href="circular.html#cb13-15"></a>    <span class="dt">dates =</span> <span class="kw">c</span>(<span class="st">&quot;2018-01-01&quot;</span>, <span class="st">&quot;2018-12-31&quot;</span>),</span>
-<span id="cb13-16"><a href="circular.html#cb13-16"></a>    <span class="dt">temporal_average =</span> <span class="st">&quot;DAILY&quot;</span></span>
-<span id="cb13-17"><a href="circular.html#cb13-17"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">CITY =</span> city,</span>
-<span id="cb13-18"><a href="circular.html#cb13-18"></a>               <span class="dt">MONTH =</span> <span class="kw">month</span>(YYYYMMDD))</span>
-<span id="cb13-19"><a href="circular.html#cb13-19"></a>}) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">bind_rows</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="circular.html#cb11-1"></a><span class="kw">library</span>(nasapower)</span>
+<span id="cb11-2"><a href="circular.html#cb11-2"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb11-3"><a href="circular.html#cb11-3"></a></span>
+<span id="cb11-4"><a href="circular.html#cb11-4"></a>cities =<span class="st"> </span><span class="kw">list</span>(</span>
+<span id="cb11-5"><a href="circular.html#cb11-5"></a>  Мурманск =<span class="st"> </span><span class="kw">c</span>(<span class="dv">33</span>, <span class="dv">69</span>),</span>
+<span id="cb11-6"><a href="circular.html#cb11-6"></a>  Москва =<span class="st"> </span><span class="kw">c</span>(<span class="dv">38</span>, <span class="dv">56</span>),</span>
+<span id="cb11-7"><a href="circular.html#cb11-7"></a>  Краснодар =<span class="st"> </span><span class="kw">c</span>(<span class="dv">39</span>, <span class="dv">45</span>)</span>
+<span id="cb11-8"><a href="circular.html#cb11-8"></a>)</span>
+<span id="cb11-9"><a href="circular.html#cb11-9"></a></span>
+<span id="cb11-10"><a href="circular.html#cb11-10"></a>tab =<span class="st"> </span>purrr<span class="op">::</span><span class="kw">imap</span>(cities, <span class="cf">function</span>(coords, city){</span>
+<span id="cb11-11"><a href="circular.html#cb11-11"></a>  <span class="kw">get_power</span>(</span>
+<span id="cb11-12"><a href="circular.html#cb11-12"></a>    <span class="dt">community =</span> <span class="st">&quot;AG&quot;</span>,</span>
+<span id="cb11-13"><a href="circular.html#cb11-13"></a>    <span class="dt">lonlat =</span> coords,</span>
+<span id="cb11-14"><a href="circular.html#cb11-14"></a>    <span class="dt">pars =</span> <span class="kw">c</span>(<span class="st">&quot;RH2M&quot;</span>, <span class="st">&quot;T2M&quot;</span>, <span class="st">&quot;PRECTOT&quot;</span>),</span>
+<span id="cb11-15"><a href="circular.html#cb11-15"></a>    <span class="dt">dates =</span> <span class="kw">c</span>(<span class="st">&quot;2018-01-01&quot;</span>, <span class="st">&quot;2018-12-31&quot;</span>),</span>
+<span id="cb11-16"><a href="circular.html#cb11-16"></a>    <span class="dt">temporal_average =</span> <span class="st">&quot;DAILY&quot;</span></span>
+<span id="cb11-17"><a href="circular.html#cb11-17"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">CITY =</span> city,</span>
+<span id="cb11-18"><a href="circular.html#cb11-18"></a>               <span class="dt">MONTH =</span> <span class="kw">month</span>(YYYYMMDD))</span>
+<span id="cb11-19"><a href="circular.html#cb11-19"></a>}) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">bind_rows</span>()</span></code></pre></div>
 <p>Рассмотрим колебания температуры по 12 месяцам посредством диаграммы размаха:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="circular.html#cb14-1"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(CITY, T2M)) <span class="op">+</span></span>
-<span id="cb14-2"><a href="circular.html#cb14-2"></a><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span></span>
-<span id="cb14-3"><a href="circular.html#cb14-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Температура воздуха в 2018 году по данным NASA POWER&quot;</span>,</span>
-<span id="cb14-4"><a href="circular.html#cb14-4"></a>       <span class="dt">subtitle =</span> <span class="st">&#39;Месяц: {round(frame_time)}&#39;</span>) <span class="op">+</span></span>
-<span id="cb14-5"><a href="circular.html#cb14-5"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Город&#39;</span>) <span class="op">+</span></span>
-<span id="cb14-6"><a href="circular.html#cb14-6"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Т, °С&#39;</span>) <span class="op">+</span></span>
-<span id="cb14-7"><a href="circular.html#cb14-7"></a><span class="st">  </span><span class="kw">transition_time</span>(MONTH)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="circular.html#cb12-1"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(CITY, T2M)) <span class="op">+</span></span>
+<span id="cb12-2"><a href="circular.html#cb12-2"></a><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span></span>
+<span id="cb12-3"><a href="circular.html#cb12-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Температура воздуха в 2018 году по данным NASA POWER&quot;</span>,</span>
+<span id="cb12-4"><a href="circular.html#cb12-4"></a>       <span class="dt">subtitle =</span> <span class="st">&#39;Месяц: {round(frame_time)}&#39;</span>) <span class="op">+</span></span>
+<span id="cb12-5"><a href="circular.html#cb12-5"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Город&#39;</span>) <span class="op">+</span></span>
+<span id="cb12-6"><a href="circular.html#cb12-6"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Т, °С&#39;</span>) <span class="op">+</span></span>
+<span id="cb12-7"><a href="circular.html#cb12-7"></a><span class="st">  </span><span class="kw">transition_time</span>(MONTH)</span></code></pre></div>
 <p><img src="images/boxplot_anim.gif" /><!-- --></p>
 <p>Аналогичную анимацию можно провести и на примере функции плотности распределения:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="circular.html#cb15-1"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(T2M, <span class="dt">fill =</span> CITY)) <span class="op">+</span></span>
-<span id="cb15-2"><a href="circular.html#cb15-2"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb15-3"><a href="circular.html#cb15-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Температура воздуха в 2018 году по данным NASA POWER&quot;</span>,</span>
-<span id="cb15-4"><a href="circular.html#cb15-4"></a>       <span class="dt">subtitle =</span> <span class="st">&#39;Месяц: {round(frame_time)}&#39;</span>,</span>
-<span id="cb15-5"><a href="circular.html#cb15-5"></a>       <span class="dt">fill =</span> <span class="st">&#39;Город&#39;</span>) <span class="op">+</span></span>
-<span id="cb15-6"><a href="circular.html#cb15-6"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Т, °С&#39;</span>) <span class="op">+</span></span>
-<span id="cb15-7"><a href="circular.html#cb15-7"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Плотность распределения&#39;</span>) <span class="op">+</span></span>
-<span id="cb15-8"><a href="circular.html#cb15-8"></a><span class="st">  </span><span class="kw">transition_time</span>(MONTH)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="circular.html#cb13-1"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(T2M, <span class="dt">fill =</span> CITY)) <span class="op">+</span></span>
+<span id="cb13-2"><a href="circular.html#cb13-2"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb13-3"><a href="circular.html#cb13-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Температура воздуха в 2018 году по данным NASA POWER&quot;</span>,</span>
+<span id="cb13-4"><a href="circular.html#cb13-4"></a>       <span class="dt">subtitle =</span> <span class="st">&#39;Месяц: {round(frame_time)}&#39;</span>,</span>
+<span id="cb13-5"><a href="circular.html#cb13-5"></a>       <span class="dt">fill =</span> <span class="st">&#39;Город&#39;</span>) <span class="op">+</span></span>
+<span id="cb13-6"><a href="circular.html#cb13-6"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Т, °С&#39;</span>) <span class="op">+</span></span>
+<span id="cb13-7"><a href="circular.html#cb13-7"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Плотность распределения&#39;</span>) <span class="op">+</span></span>
+<span id="cb13-8"><a href="circular.html#cb13-8"></a><span class="st">  </span><span class="kw">transition_time</span>(MONTH)</span></code></pre></div>
 <p><img src="images/density_anim.gif" /><!-- --></p>
+<p>Загрузим ранее использованные в Главе @ref(stat_analysis) данные Gapminder по соотношению продолжительности жизни и ВВП на душу населения, но на этот раз не будем фильтровать их по времени:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="circular.html#cb14-1"></a><span class="kw">library</span>(readxl)</span>
+<span id="cb14-2"><a href="circular.html#cb14-2"></a><span class="kw">library</span>(googledrive)</span>
+<span id="cb14-3"><a href="circular.html#cb14-3"></a><span class="kw">library</span>(googlesheets4)</span>
+<span id="cb14-4"><a href="circular.html#cb14-4"></a>countries =<span class="st"> </span><span class="kw">read_excel</span>(<span class="st">&#39;data/gapminder.xlsx&#39;</span>, <span class="dv">2</span>) <span class="op">%&gt;%</span></span>
+<span id="cb14-5"><a href="circular.html#cb14-5"></a><span class="st">  </span><span class="kw">select</span>(<span class="dt">Country =</span> name, <span class="dt">Region =</span> eight_regions) <span class="op">%&gt;%</span></span>
+<span id="cb14-6"><a href="circular.html#cb14-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Country =</span> <span class="kw">factor</span>(Country, <span class="dt">levels =</span> Country[<span class="kw">order</span>(.<span class="op">$</span>Region)]))</span>
+<span id="cb14-7"><a href="circular.html#cb14-7"></a></span>
+<span id="cb14-8"><a href="circular.html#cb14-8"></a>gdpdf_tidy =<span class="st"> &#39;1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co">### ВВП на душу населения</span></span>
+<span id="cb14-9"><a href="circular.html#cb14-9"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
+<span id="cb14-10"><a href="circular.html#cb14-10"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-11"><a href="circular.html#cb14-11"></a><span class="st">  </span><span class="kw">read_sheet</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-12"><a href="circular.html#cb14-12"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1764</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2018</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;gdp&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-13"><a href="circular.html#cb14-13"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
+<span id="cb14-14"><a href="circular.html#cb14-14"></a><span class="co">## Using an auto-discovered, cached token.</span></span>
+<span id="cb14-15"><a href="circular.html#cb14-15"></a><span class="co">## To suppress this message, modify your code or options to clearly consent to the use of a cached token.</span></span>
+<span id="cb14-16"><a href="circular.html#cb14-16"></a><span class="co">## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</span></span>
+<span id="cb14-17"><a href="circular.html#cb14-17"></a><span class="co">## https://gargle.r-lib.org/articles/non-interactive-auth.html</span></span>
+<span id="cb14-18"><a href="circular.html#cb14-18"></a><span class="co">## The googledrive package is using a cached token for iamste@yandex.ru.</span></span>
+<span id="cb14-19"><a href="circular.html#cb14-19"></a><span class="co">## Using an auto-discovered, cached token.</span></span>
+<span id="cb14-20"><a href="circular.html#cb14-20"></a><span class="co">## To suppress this message, modify your code or options to clearly consent to the use of a cached token.</span></span>
+<span id="cb14-21"><a href="circular.html#cb14-21"></a><span class="co">## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</span></span>
+<span id="cb14-22"><a href="circular.html#cb14-22"></a><span class="co">## https://gargle.r-lib.org/articles/non-interactive-auth.html</span></span>
+<span id="cb14-23"><a href="circular.html#cb14-23"></a><span class="co">## The googlesheets4 package is using a cached token for iamste@yandex.ru.</span></span>
+<span id="cb14-24"><a href="circular.html#cb14-24"></a></span>
+<span id="cb14-25"><a href="circular.html#cb14-25"></a>popdf_tidy =<span class="st"> &#39;1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># численность населения</span></span>
+<span id="cb14-26"><a href="circular.html#cb14-26"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
+<span id="cb14-27"><a href="circular.html#cb14-27"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-28"><a href="circular.html#cb14-28"></a><span class="st">  </span><span class="kw">read_sheet</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># первый лист</span></span>
+<span id="cb14-29"><a href="circular.html#cb14-29"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2015</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;pop&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-30"><a href="circular.html#cb14-30"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
+<span id="cb14-31"><a href="circular.html#cb14-31"></a></span>
+<span id="cb14-32"><a href="circular.html#cb14-32"></a>lifedf_tidy =<span class="st"> &#39;1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># продолжительность жизни</span></span>
+<span id="cb14-33"><a href="circular.html#cb14-33"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
+<span id="cb14-34"><a href="circular.html#cb14-34"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-35"><a href="circular.html#cb14-35"></a><span class="st">  </span><span class="kw">read_sheet</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-36"><a href="circular.html#cb14-36"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2016</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;lifexp&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-37"><a href="circular.html#cb14-37"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
+<span id="cb14-38"><a href="circular.html#cb14-38"></a></span>
+<span id="cb14-39"><a href="circular.html#cb14-39"></a>tab =<span class="st"> </span>gdpdf_tidy <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-40"><a href="circular.html#cb14-40"></a><span class="st">  </span><span class="kw">inner_join</span>(lifedf_tidy) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-41"><a href="circular.html#cb14-41"></a><span class="st">  </span><span class="kw">inner_join</span>(popdf_tidy) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-42"><a href="circular.html#cb14-42"></a><span class="st">  </span><span class="kw">inner_join</span>(countries) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-43"><a href="circular.html#cb14-43"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">year =</span> <span class="kw">as.integer</span>(year)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-44"><a href="circular.html#cb14-44"></a><span class="st">  </span><span class="kw">drop_na</span>()</span></code></pre></div>
+<p>Теперь чтобы отобразить это соотношение в виде анимации, достаточно добавить новый переход посредством функции <code>transition_time()</code>:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="circular.html#cb15-1"></a><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>) <span class="co"># убираем экспоненциальную форму записи числа</span></span>
+<span id="cb15-2"><a href="circular.html#cb15-2"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(gdp, lifexp, <span class="dt">size =</span> pop, <span class="dt">color =</span> Region)) <span class="op">+</span></span>
+<span id="cb15-3"><a href="circular.html#cb15-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb15-4"><a href="circular.html#cb15-4"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb15-5"><a href="circular.html#cb15-5"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Year: {round(frame_time)}&#39;</span>) <span class="op">+</span></span>
+<span id="cb15-6"><a href="circular.html#cb15-6"></a><span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span></span>
+<span id="cb15-7"><a href="circular.html#cb15-7"></a><span class="st">  </span><span class="kw">transition_time</span>(year)</span></code></pre></div>
+<p><img src="images/scatter_anim.gif" /><!-- --></p>
 </div>
 </div>
 <div id="questions_tasks_circular" class="section level2">

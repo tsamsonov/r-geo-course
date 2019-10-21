@@ -3,7 +3,7 @@
 ```{r setup, echo = FALSE, purl = FALSE, cache = FALSE, include=FALSE}
 library(datasets)
 knitr::opts_knit$set(global.par = TRUE)
-knitr::opts_knit$set(root.dir = "data/")
+# knitr::opts_knit$set(root.dir = "data/")
 knitr::opts_chunk$set(warning=FALSE, message = FALSE, collapse=TRUE)
 ```
 
@@ -19,17 +19,6 @@ library(readxl)
 library(NPCirc)
 library(pracma)
 library(lubridate)
-library(gganimate)
-```
-
-Пакет __gganimate__ пока что не опубликован на _CRAN_, но доступен на _GitHub_. Для его установки последовательно выполните в консоли (не в скрипте!) следующие команды:
-```{r, eval = FALSE}
-install.packages('devtools')
-devtools::install_github('thomasp85/gganimate')
-```
-
-После этого пакет можно подключать в привычном режиме:
-```{r}
 library(gganimate)
 ```
 
@@ -95,7 +84,7 @@ $$
 
 В системе доступны данные по следующим обсерваториям:
 ```{r}
-obs = readxl::read_excel('bound/scheme.xlsx', 2)
+obs = readxl::read_excel('data/bound/scheme.xlsx', 2)
 ```
 ```{r, echo = FALSE}
 knitr::kable(obs)
@@ -103,7 +92,7 @@ knitr::kable(obs)
 
 Для каждой обсерватории даны следующие параметры:
 ```{r, echo = FALSE}
-params = read_excel('bound/scheme.xlsx', 1)
+params = read_excel('data/bound/scheme.xlsx', 1)
 ```
 ```{r, echo = FALSE}
 knitr::kable(params)
@@ -111,9 +100,11 @@ knitr::kable(params)
 
 Загрузим данные по всем обсерваториям из текстовых файлов в папке _bound_:
 ```{r}
-files = paste('bound', list.files('bound', "*.txt"), sep = '/')
+files = paste('data/bound', list.files('data/bound', "*.txt"), sep = '/')
 
-(tab = lapply(files, function(X) readr::read_table(X, col_names = params$Обозначение)) %>% 
+(tab = lapply(files, function(X) {
+    readr::read_table(X, col_names = params$Обозначение)
+  }) %>% 
   bind_rows() %>% 
   left_join(obs, by = c('INDEX' = 'Индекс'))) # присоединим информацию о названиях станций
 ```
@@ -374,8 +365,66 @@ anim_save('images/density_anim.gif',
 knitr::include_graphics('images/density_anim.gif')
 ```
 
+Загрузим ранее использованные в Главе \@ref(stat_analysis) данные Gapminder по соотношению продолжительности жизни и ВВП на душу населения, но на этот раз не будем фильтровать их по времени:
+```{r}
+library(readxl)
+library(googledrive)
+library(googlesheets4)
+countries = read_excel('data/gapminder.xlsx', 2) %>%
+  select(Country = name, Region = eight_regions) %>%
+  mutate(Country = factor(Country, levels = Country[order(.$Region)]))
 
+gdpdf_tidy = '1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg' %>% ### ВВП на душу населения
+  as_id() %>% # преобразуем идентификатор в класс drive_id чтобы отличать его от пути
+  drive_get() %>% 
+  read_sheet() %>% 
+  pivot_longer(cols = `1764`:`2018`, names_to = 'year', values_to = 'gdp') %>% 
+  rename(Country = 1)
 
+popdf_tidy = '1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8' %>% # численность населения
+  as_id() %>% # преобразуем идентификатор в класс drive_id чтобы отличать его от пути
+  drive_get() %>% 
+  read_sheet() %>% # первый лист
+  pivot_longer(cols = `1800`:`2015`, names_to = 'year', values_to = 'pop') %>% 
+  rename(Country = 1)
+
+lifedf_tidy = '1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo' %>% # продолжительность жизни
+  as_id() %>% # преобразуем идентификатор в класс drive_id чтобы отличать его от пути
+  drive_get() %>% 
+  read_sheet() %>% 
+  pivot_longer(cols = `1800`:`2016`, names_to = 'year', values_to = 'lifexp') %>% 
+  rename(Country = 1)
+
+tab = gdpdf_tidy %>% 
+  inner_join(lifedf_tidy) %>% 
+  inner_join(popdf_tidy) %>% 
+  inner_join(countries) %>% 
+  mutate(year = as.integer(year)) %>% 
+  drop_na()
+```
+
+Теперь чтобы отобразить это соотношение в виде анимации, достаточно добавить новый переход посредством функции `transition_time()`:
+```{r, eval = FALSE}
+options(scipen = 999) # убираем экспоненциальную форму записи числа
+ggplot(tab, aes(gdp, lifexp, size = pop, color = Region)) +
+  geom_point(alpha = 0.5) +
+  scale_x_log10() +
+  labs(title = 'Year: {round(frame_time)}') +
+  theme_bw() +
+  transition_time(year)
+```
+```{r, echo=FALSE}
+options(scipen = 999)
+anim = ggplot(tab, aes(gdp, lifexp, size = pop, color = Region)) +
+  geom_point(alpha = 0.5) +
+  scale_x_log10() +
+  labs(title = 'Year: {round(frame_time)}') +
+  theme_bw() +
+  transition_time(year)
+anim_save('images/scatter_anim.gif',
+          animation = animate(anim))
+knitr::include_graphics('images/scatter_anim.gif')
+```
 
 ## Контрольные вопросы и упражнения {#questions_tasks_circular}
 
