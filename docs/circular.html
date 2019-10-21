@@ -1109,21 +1109,61 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 <h2><span class="header-section-number">8.3</span> Статистика временных данных</h2>
 <div id="circular_time_lubridate" class="section level3">
 <h3><span class="header-section-number">8.3.1</span> Работа с датами в lubridate</h3>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="circular.html#cb12-1"></a><span class="kw">library</span>(lubridate)</span></code></pre></div>
 </div>
 <div id="circular_time_tests" class="section level3">
 <h3><span class="header-section-number">8.3.2</span> Проверка гипотез</h3>
 </div>
 <div id="circular_time_animation" class="section level3">
 <h3><span class="header-section-number">8.3.3</span> Анимация</h3>
-<p>Анимационная графика возволяет наглядно визуализировать изменения. Наиболее часто речь идет об изменениях по времени. В этом случае время работает в роли невидимой переменной, которая влияет на положение графических примитивов на изображении. Данный подход органично вписывается в концепцию грамматики графики, на основе которой построен пакет <strong>ggplot2</strong> (см. Главу <a href="advgraphics.html#advgraphics">6</a>). Соответствующую реализацию грамматики анимаций предоставляет пакет <a href="https://gganimate.com/"><strong>gganimate</strong></a>.</p>
-<p>Возможности анимаций в <strong>gganimate</strong> реализуются посредством добавления новых грамматик к построенному графику <strong>ggplot2</strong>. К числу этих грамматик относятся <span class="citation">(Pedersen and Robinson <a href="#ref-R-gganimate" role="doc-biblioref">2019</a>)</span>:</p>
+<p>Анимационная графика возволяет наглядно визуализировать изменения. Наиболее часто речь идет об изменениях по времени. В этом случае время работает в роли невидимой переменной, которая влияет на положение графических примитивов на изображении. Данный подход органично вписывается в концепцию грамматики графики, на основе которой построен пакет <strong>ggplot2</strong> (см. Главу <a href="advgraphics.html#advgraphics">6</a>). Соответствующую реализацию грамматики анимаций предоставляет пакет <a href="https://gganimate.com/"><strong>gganimate</strong></a><span class="citation">(Pedersen and Robinson <a href="#ref-R-gganimate" role="doc-biblioref">2019</a>)</span>.</p>
+<p>Возможности анимаций в <strong>gganimate</strong> реализуются посредством добавления новых грамматик к построенному графику <strong>ggplot2</strong>. К числу этих грамматик относятся:</p>
 <ul>
 <li><code>transition_*()</code> — распределение данных по времени;</li>
 <li><code>view_*()</code> — поведение осей координат во времени;</li>
 <li><code>shadow_*()</code> — отображение данных, не относящихся к текущему временному срезу;</li>
 <li><code>enter_*()/exit_*()</code> — характер появления/исчезновения данных в процессе анимации;</li>
-<li><code>ease_aes()</code> — порядок смягчения (интерполяции) графических переменных (эстетик) в моменты перехода.</li>
+<li><code>ease_aes()</code> — порядок смягчения (интерполяции) графических переменных в моменты перехода.</li>
 </ul>
+<p>В качестве первого примера используем уже знакомые нам данные реанализа NASA POWER суточного осреднения, выгрузив информацию по точкам в трех городах (Мурманск, Москва, Краснодар) за 2018 год:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="circular.html#cb13-1"></a><span class="kw">library</span>(nasapower)</span>
+<span id="cb13-2"><a href="circular.html#cb13-2"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb13-3"><a href="circular.html#cb13-3"></a></span>
+<span id="cb13-4"><a href="circular.html#cb13-4"></a>cities =<span class="st"> </span><span class="kw">list</span>(</span>
+<span id="cb13-5"><a href="circular.html#cb13-5"></a>  Мурманск =<span class="st"> </span><span class="kw">c</span>(<span class="dv">33</span>, <span class="dv">69</span>),</span>
+<span id="cb13-6"><a href="circular.html#cb13-6"></a>  Москва =<span class="st"> </span><span class="kw">c</span>(<span class="dv">38</span>, <span class="dv">56</span>),</span>
+<span id="cb13-7"><a href="circular.html#cb13-7"></a>  Краснодар =<span class="st"> </span><span class="kw">c</span>(<span class="dv">39</span>, <span class="dv">45</span>)</span>
+<span id="cb13-8"><a href="circular.html#cb13-8"></a>)</span>
+<span id="cb13-9"><a href="circular.html#cb13-9"></a></span>
+<span id="cb13-10"><a href="circular.html#cb13-10"></a>tab =<span class="st"> </span>purrr<span class="op">::</span><span class="kw">imap</span>(cities, <span class="cf">function</span>(coords, city){</span>
+<span id="cb13-11"><a href="circular.html#cb13-11"></a>  <span class="kw">get_power</span>(</span>
+<span id="cb13-12"><a href="circular.html#cb13-12"></a>    <span class="dt">community =</span> <span class="st">&quot;AG&quot;</span>,</span>
+<span id="cb13-13"><a href="circular.html#cb13-13"></a>    <span class="dt">lonlat =</span> coords,</span>
+<span id="cb13-14"><a href="circular.html#cb13-14"></a>    <span class="dt">pars =</span> <span class="kw">c</span>(<span class="st">&quot;RH2M&quot;</span>, <span class="st">&quot;T2M&quot;</span>, <span class="st">&quot;PRECTOT&quot;</span>),</span>
+<span id="cb13-15"><a href="circular.html#cb13-15"></a>    <span class="dt">dates =</span> <span class="kw">c</span>(<span class="st">&quot;2018-01-01&quot;</span>, <span class="st">&quot;2018-12-31&quot;</span>),</span>
+<span id="cb13-16"><a href="circular.html#cb13-16"></a>    <span class="dt">temporal_average =</span> <span class="st">&quot;DAILY&quot;</span></span>
+<span id="cb13-17"><a href="circular.html#cb13-17"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">CITY =</span> city,</span>
+<span id="cb13-18"><a href="circular.html#cb13-18"></a>               <span class="dt">MONTH =</span> <span class="kw">month</span>(YYYYMMDD))</span>
+<span id="cb13-19"><a href="circular.html#cb13-19"></a>}) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">bind_rows</span>()</span></code></pre></div>
+<p>Рассмотрим колебания температуры по 12 месяцам посредством диаграммы размаха:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="circular.html#cb14-1"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(CITY, T2M)) <span class="op">+</span></span>
+<span id="cb14-2"><a href="circular.html#cb14-2"></a><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span></span>
+<span id="cb14-3"><a href="circular.html#cb14-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Температура воздуха в 2018 году по данным NASA POWER&quot;</span>,</span>
+<span id="cb14-4"><a href="circular.html#cb14-4"></a>       <span class="dt">subtitle =</span> <span class="st">&#39;Месяц: {round(frame_time)}&#39;</span>) <span class="op">+</span></span>
+<span id="cb14-5"><a href="circular.html#cb14-5"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Город&#39;</span>) <span class="op">+</span></span>
+<span id="cb14-6"><a href="circular.html#cb14-6"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Т, °С&#39;</span>) <span class="op">+</span></span>
+<span id="cb14-7"><a href="circular.html#cb14-7"></a><span class="st">  </span><span class="kw">transition_time</span>(MONTH)</span></code></pre></div>
+<p><img src="images/boxplot_anim.gif" /><!-- --></p>
+<p>Аналогичную анимацию можно провести и на примере функции плотности распределения:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="circular.html#cb15-1"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(T2M, <span class="dt">fill =</span> CITY)) <span class="op">+</span></span>
+<span id="cb15-2"><a href="circular.html#cb15-2"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb15-3"><a href="circular.html#cb15-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Температура воздуха в 2018 году по данным NASA POWER&quot;</span>,</span>
+<span id="cb15-4"><a href="circular.html#cb15-4"></a>       <span class="dt">subtitle =</span> <span class="st">&#39;Месяц: {round(frame_time)}&#39;</span>,</span>
+<span id="cb15-5"><a href="circular.html#cb15-5"></a>       <span class="dt">fill =</span> <span class="st">&#39;Город&#39;</span>) <span class="op">+</span></span>
+<span id="cb15-6"><a href="circular.html#cb15-6"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Т, °С&#39;</span>) <span class="op">+</span></span>
+<span id="cb15-7"><a href="circular.html#cb15-7"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Плотность распределения&#39;</span>) <span class="op">+</span></span>
+<span id="cb15-8"><a href="circular.html#cb15-8"></a><span class="st">  </span><span class="kw">transition_time</span>(MONTH)</span></code></pre></div>
+<p><img src="images/density_anim.gif" /><!-- --></p>
 </div>
 </div>
 <div id="questions_tasks_circular" class="section level2">

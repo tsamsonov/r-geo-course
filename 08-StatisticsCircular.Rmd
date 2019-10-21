@@ -325,7 +325,7 @@ tab = purrr::imap(cities, function(coords, city){
 ```
 
 Рассмотрим колебания температуры по 12 месяцам посредством диаграммы размаха:
-```{r}
+```{r, eval = FALSE}
 ggplot(tab, aes(CITY, T2M)) +
   geom_boxplot() +
   labs(title = "Температура воздуха в 2018 году по данным NASA POWER",
@@ -333,6 +333,45 @@ ggplot(tab, aes(CITY, T2M)) +
   xlab('Город') +
   ylab('Т, °С') +
   transition_time(MONTH)
+```
+
+```{r, echo = FALSE, dpi=300}
+anim = ggplot(tab, aes(CITY, T2M)) +
+  geom_boxplot() +
+  labs(title = "Температура воздуха в 2018 году по данным NASA POWER",
+       subtitle = 'Месяц: {round(frame_time)}') +
+  xlab('Город') +
+  ylab('Т, °С') +
+  transition_time(MONTH)
+anim_save('images/boxplot_anim.gif',
+          animation = animate(anim))
+knitr::include_graphics('images/boxplot_anim.gif')
+```
+
+Аналогичную анимацию можно провести и на примере функции плотности распределения:
+```{r, eval = FALSE}
+ggplot(tab, aes(T2M, fill = CITY)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Температура воздуха в 2018 году по данным NASA POWER",
+       subtitle = 'Месяц: {round(frame_time)}',
+       fill = 'Город') +
+  xlab('Т, °С') +
+  ylab('Плотность распределения') +
+  transition_time(MONTH)
+```
+
+```{r, echo = FALSE, dpi=300}
+anim = ggplot(tab, aes(T2M, fill = CITY)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Температура воздуха в 2018 году по данным NASA POWER",
+       subtitle = 'Месяц: {round(frame_time)}',
+       fill = 'Город') +
+  xlab('Т, °С') +
+  ylab('Плотность распределения') +
+  transition_time(MONTH)
+anim_save('images/density_anim.gif',
+          animation = animate(anim))
+knitr::include_graphics('images/density_anim.gif')
 ```
 
 
