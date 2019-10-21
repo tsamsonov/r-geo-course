@@ -282,6 +282,11 @@ for (obs_name in dens$name) {
 
 ### Работа с датами в lubridate {#circular_time_lubridate}
 
+```{r}
+library(lubridate)
+```
+
+
 ### Проверка гипотез {#circular_time_tests}
 
 ### Анимация {#circular_time_animation}
@@ -295,6 +300,41 @@ for (obs_name in dens$name) {
 - `shadow_*()` — отображение данных, не относящихся к текущему временному срезу;
 - `enter_*()/exit_*()` — характер появления/исчезновения данных в процессе анимации;
 - `ease_aes()` — порядок смягчения (интерполяции) графических переменных в моменты перехода.
+
+В качестве первого примера используем уже знакомые нам данные реанализа NASA POWER суточного осреднения, выгрузив информацию по точкам в трех городах (Мурманск, Москва, Краснодар) за 2018 год:
+```{r}
+library(nasapower)
+library(ggplot2)
+
+cities = list(
+  Мурманск = c(33, 69),
+  Москва = c(38, 56),
+  Краснодар = c(39, 45)
+)
+
+tab = purrr::imap(cities, function(coords, city){
+  get_power(
+    community = "AG",
+    lonlat = coords,
+    pars = c("RH2M", "T2M", "PRECTOT"),
+    dates = c("2018-01-01", "2018-12-31"),
+    temporal_average = "DAILY"
+  ) %>% mutate(CITY = city,
+               MONTH = month(YYYYMMDD))
+}) %>% bind_rows()
+```
+
+Рассмотрим колебания температуры по 12 месяцам посредством диаграммы размаха:
+```{r}
+ggplot(tab, aes(CITY, T2M)) +
+  geom_boxplot() +
+  labs(title = "Температура воздуха в 2018 году по данным NASA POWER",
+       subtitle = 'Месяц: {round(frame_time)}') +
+  xlab('Город') +
+  ylab('Т, °С') +
+  transition_time(MONTH)
+```
+
 
 
 
