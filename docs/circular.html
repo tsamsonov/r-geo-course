@@ -327,9 +327,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.2.4" data-path="circular.html"><a href="circular.html#circular_correlation"><i class="fa fa-check"></i><b>8.2.4</b> Корреляция и регрессия</a></li>
 </ul></li>
 <li class="chapter" data-level="8.3" data-path="circular.html"><a href="circular.html#circular_time"><i class="fa fa-check"></i><b>8.3</b> Статистика временных данных</a><ul>
-<li class="chapter" data-level="8.3.1" data-path="circular.html"><a href="circular.html#circular_time_lubridate"><i class="fa fa-check"></i><b>8.3.1</b> Создание и преобразование временных данных</a></li>
-<li class="chapter" data-level="8.3.2" data-path="circular.html"><a href="circular.html#circular_time_tests"><i class="fa fa-check"></i><b>8.3.2</b> Проверка гипотез</a></li>
-<li class="chapter" data-level="8.3.3" data-path="circular.html"><a href="circular.html#circular_time_animation"><i class="fa fa-check"></i><b>8.3.3</b> Анимация</a></li>
+<li class="chapter" data-level="8.3.1" data-path="circular.html"><a href="circular.html#circular_time_lubridate"><i class="fa fa-check"></i><b>8.3.1</b> Преобразование дат и времени</a></li>
+<li class="chapter" data-level="8.3.2" data-path="circular.html"><a href="circular.html#circular_time_interp"><i class="fa fa-check"></i><b>8.3.2</b> Интерполяция по времени</a></li>
+<li class="chapter" data-level="8.3.3" data-path="circular.html"><a href="circular.html#circular_time_tests"><i class="fa fa-check"></i><b>8.3.3</b> Статистики</a></li>
+<li class="chapter" data-level="8.3.4" data-path="circular.html"><a href="circular.html#circular_time_animation"><i class="fa fa-check"></i><b>8.3.4</b> Анимация</a></li>
 </ul></li>
 <li class="chapter" data-level="8.4" data-path="circular.html"><a href="circular.html#questions_tasks_circular"><i class="fa fa-check"></i><b>8.4</b> Контрольные вопросы и упражнения</a><ul>
 <li class="chapter" data-level="8.4.1" data-path="circular.html"><a href="circular.html#questions_circular"><i class="fa fa-check"></i><b>8.4.1</b> Вопросы</a></li>
@@ -1105,12 +1106,12 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 <div id="circular_time" class="section level2">
 <h2><span class="header-section-number">8.3</span> Статистика временных данных</h2>
 <div id="circular_time_lubridate" class="section level3">
-<h3><span class="header-section-number">8.3.1</span> Создание и преобразование временных данных</h3>
+<h3><span class="header-section-number">8.3.1</span> Преобразование дат и времени</h3>
 <p>Напомним, что текущее время и дату можно получить с помощью системных функций <code>Sys.Date()</code> и <code>Sys.time()</code>:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="circular.html#cb10-1"></a>(<span class="dt">date =</span> <span class="kw">Sys.Date</span>())</span>
 <span id="cb10-2"><a href="circular.html#cb10-2"></a><span class="co">## [1] &quot;2019-10-22&quot;</span></span>
 <span id="cb10-3"><a href="circular.html#cb10-3"></a>(<span class="dt">time =</span> <span class="kw">Sys.time</span>())</span>
-<span id="cb10-4"><a href="circular.html#cb10-4"></a><span class="co">## [1] &quot;2019-10-22 11:55:46 MSK&quot;</span></span></code></pre></div>
+<span id="cb10-4"><a href="circular.html#cb10-4"></a><span class="co">## [1] &quot;2019-10-22 12:57:48 MSK&quot;</span></span></code></pre></div>
 <p>Полученные объекты имеют типы <code>Date</code> и <code>POSIXct</code>:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="circular.html#cb11-1"></a><span class="kw">class</span>(date)</span>
 <span id="cb11-2"><a href="circular.html#cb11-2"></a><span class="co">## [1] &quot;Date&quot;</span></span>
@@ -1123,9 +1124,9 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 <span id="cb12-4"><a href="circular.html#cb12-4"></a><span class="co">## Time difference of 18191 days</span></span>
 <span id="cb12-5"><a href="circular.html#cb12-5"></a></span>
 <span id="cb12-6"><a href="circular.html#cb12-6"></a><span class="kw">as.integer</span>(time)</span>
-<span id="cb12-7"><a href="circular.html#cb12-7"></a><span class="co">## [1] 1571734546</span></span>
+<span id="cb12-7"><a href="circular.html#cb12-7"></a><span class="co">## [1] 1571738268</span></span>
 <span id="cb12-8"><a href="circular.html#cb12-8"></a><span class="kw">difftime</span>(time, <span class="kw">as.POSIXct</span>(<span class="st">&#39;1970-01-01 00:00:00&#39;</span>, <span class="dt">tz =</span> <span class="st">&#39;UTC&#39;</span>), <span class="dt">units =</span> <span class="st">&#39;secs&#39;</span>)</span>
-<span id="cb12-9"><a href="circular.html#cb12-9"></a><span class="co">## Time difference of 1571734546 secs</span></span></code></pre></div>
+<span id="cb12-9"><a href="circular.html#cb12-9"></a><span class="co">## Time difference of 1571738269 secs</span></span></code></pre></div>
 <p>Работа с датами и временем может быть достаточно утомительной при отсутствии специализированных средств. Пакет <a href="https://lubridate.tidyverse.org/"><strong>lubridate</strong></a><span class="citation">(Spinu, Grolemund, and Wickham <a href="#ref-R-lubridate" role="doc-biblioref">2018</a>)</span> значительно облегчает эту работу. Основные функции lubridate включают синтаксический разбор (“парсинг”) дат в разных форматах, извлечение разных компонент даты и времени (секунд, минут, часов, суток, недель, годов), вычисление разностей и периодов, а также множество вспомогательных функций (хелперов), облегачающих преобразование временных данных.</p>
 <p>Рассмотрим базовые возможности пакета на нескольких примерах.</p>
 <p><strong>Создание</strong> дат возможно на основе целочисленных и строковых значений:</p>
@@ -1150,9 +1151,9 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 <span id="cb15-7"><a href="circular.html#cb15-7"></a><span class="kw">day</span>(time)</span>
 <span id="cb15-8"><a href="circular.html#cb15-8"></a><span class="co">## [1] 22</span></span>
 <span id="cb15-9"><a href="circular.html#cb15-9"></a><span class="kw">hour</span>(time)</span>
-<span id="cb15-10"><a href="circular.html#cb15-10"></a><span class="co">## [1] 11</span></span>
+<span id="cb15-10"><a href="circular.html#cb15-10"></a><span class="co">## [1] 12</span></span>
 <span id="cb15-11"><a href="circular.html#cb15-11"></a><span class="kw">second</span>(time)</span>
-<span id="cb15-12"><a href="circular.html#cb15-12"></a><span class="co">## [1] 46.49385</span></span></code></pre></div>
+<span id="cb15-12"><a href="circular.html#cb15-12"></a><span class="co">## [1] 48.71819</span></span></code></pre></div>
 <p>Обратите внимание на то, что недели отсчитываются от начала года, а не месяца.</p>
 <p>Отдельно следует отметить функцию <code>yday()</code>, которая позволяет определить номер дня в году:</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="circular.html#cb16-1"></a><span class="kw">yday</span>(date)</span>
@@ -1161,7 +1162,7 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="circular.html#cb17-1"></a><span class="kw">year</span>(time) &lt;-<span class="st"> </span><span class="dv">2015</span></span>
 <span id="cb17-2"><a href="circular.html#cb17-2"></a><span class="kw">month</span>(time) &lt;-<span class="st"> </span><span class="dv">01</span></span>
 <span id="cb17-3"><a href="circular.html#cb17-3"></a>time</span>
-<span id="cb17-4"><a href="circular.html#cb17-4"></a><span class="co">## [1] &quot;2015-01-22 11:55:46 MSK&quot;</span></span></code></pre></div>
+<span id="cb17-4"><a href="circular.html#cb17-4"></a><span class="co">## [1] &quot;2015-01-22 12:57:48 MSK&quot;</span></span></code></pre></div>
 <p><strong>Округление</strong> дат и времени выполняется с помощью функций <code>round_date()</code>, <code>floor_date()</code> и <code>ceiling_date()</code> соответственно. Например, получить первый день в текущем году можно так:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="circular.html#cb18-1"></a><span class="kw">floor_date</span>(<span class="kw">Sys.Date</span>(), <span class="dt">unit =</span> <span class="st">&#39;year&#39;</span>)</span>
 <span id="cb18-2"><a href="circular.html#cb18-2"></a><span class="co">## [1] &quot;2019-01-01&quot;</span></span></code></pre></div>
@@ -1174,24 +1175,122 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="circular.html#cb20-1"></a><span class="kw">dweeks</span>(<span class="dv">1</span>)</span>
 <span id="cb20-2"><a href="circular.html#cb20-2"></a><span class="co">## [1] &quot;604800s (~1 weeks)&quot;</span></span>
 <span id="cb20-3"><a href="circular.html#cb20-3"></a>time</span>
-<span id="cb20-4"><a href="circular.html#cb20-4"></a><span class="co">## [1] &quot;2015-01-22 11:55:46 MSK&quot;</span></span>
+<span id="cb20-4"><a href="circular.html#cb20-4"></a><span class="co">## [1] &quot;2015-01-22 12:57:48 MSK&quot;</span></span>
 <span id="cb20-5"><a href="circular.html#cb20-5"></a>time <span class="op">+</span><span class="st"> </span><span class="kw">dweeks</span>(<span class="dv">1</span>)</span>
-<span id="cb20-6"><a href="circular.html#cb20-6"></a><span class="co">## [1] &quot;2015-01-29 11:55:46 MSK&quot;</span></span>
+<span id="cb20-6"><a href="circular.html#cb20-6"></a><span class="co">## [1] &quot;2015-01-29 12:57:48 MSK&quot;</span></span>
 <span id="cb20-7"><a href="circular.html#cb20-7"></a>time <span class="op">+</span><span class="st"> </span><span class="kw">weeks</span>(<span class="dv">1</span>)</span>
-<span id="cb20-8"><a href="circular.html#cb20-8"></a><span class="co">## [1] &quot;2015-01-29 11:55:46 MSK&quot;</span></span></code></pre></div>
+<span id="cb20-8"><a href="circular.html#cb20-8"></a><span class="co">## [1] &quot;2015-01-29 12:57:48 MSK&quot;</span></span></code></pre></div>
 <p><strong>Интервалы</strong> — это отрезки между двумя датами. Интервал можно преобразовывать в периоды и длительности:</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="circular.html#cb21-1"></a>(<span class="dt">int =</span> <span class="kw">interval</span>(<span class="kw">Sys.time</span>(), time))</span>
-<span id="cb21-2"><a href="circular.html#cb21-2"></a><span class="co">## [1] 2019-10-22 11:55:46 MSK--2015-01-22 11:55:46 MSK</span></span>
+<span id="cb21-2"><a href="circular.html#cb21-2"></a><span class="co">## [1] 2019-10-22 12:57:48 MSK--2015-01-22 12:57:48 MSK</span></span>
 <span id="cb21-3"><a href="circular.html#cb21-3"></a><span class="kw">as.period</span>(int, <span class="st">&#39;days&#39;</span>)</span>
-<span id="cb21-4"><a href="circular.html#cb21-4"></a><span class="co">## [1] &quot;-1734d 0H 0M -0.115594863891602S&quot;</span></span>
+<span id="cb21-4"><a href="circular.html#cb21-4"></a><span class="co">## [1] &quot;-1734d 0H 0M -0.105149030685425S&quot;</span></span>
 <span id="cb21-5"><a href="circular.html#cb21-5"></a><span class="kw">as.duration</span>(int)</span>
-<span id="cb21-6"><a href="circular.html#cb21-6"></a><span class="co">## [1] &quot;149817600.115595s (~4.75 years)&quot;</span></span></code></pre></div>
+<span id="cb21-6"><a href="circular.html#cb21-6"></a><span class="co">## [1] &quot;149817600.105149s (~4.75 years)&quot;</span></span></code></pre></div>
+</div>
+<div id="circular_time_interp" class="section level3">
+<h3><span class="header-section-number">8.3.2</span> Интерполяция по времени</h3>
+<p>Одна из распространенных задач при работе с временными данными — это интерполяция по времени. Часто она возникает в ситуации, когда нерегулярно распределенные по времени данные надо интерполировать на регулярные сроки (скажем, через час), чтобы обеспечить их сравнимость с другими рядами данных. Также задача интерполяции может использоваться для заполнения пропусков в данных. И в том и в другом случае необходимо учитывать автокорреляционные свойства временного ряда и с осторожностью подходить к интерполяции на длительных промежутках времени, поскольку такая интерполяция может не иметь под собой физических оснований.</p>
 </div>
 <div id="circular_time_tests" class="section level3">
-<h3><span class="header-section-number">8.3.2</span> Проверка гипотез</h3>
+<h3><span class="header-section-number">8.3.3</span> Статистики</h3>
+<p>Существует ряд статистик и статистических тестов, которые часто используются для временных данных. Среди них мы рассмотрим следующие:</p>
+<ul>
+<li>Тест Манна-Кендалла на значимость линейного тренда</li>
+<li>Тест Петтитт на точку перелома
+— Оценка тренда по методу Тейла-Сена</li>
+<li>Построение автокорреляционной функции</li>
+</ul>
+<p>Рассмотрим вычисление временных статистик на примере межгодичных и суточных данных по стоку реки Мезень на посту Малонисогорская<a href="package-troubles.html#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="circular.html#cb22-1"></a><span class="kw">library</span>(readr)</span>
+<span id="cb22-2"><a href="circular.html#cb22-2"></a></span>
+<span id="cb22-3"><a href="circular.html#cb22-3"></a>(<span class="dt">tab =</span> <span class="kw">read_csv</span>(<span class="st">&#39;data/Mezen.csv&#39;</span>))</span>
+<span id="cb22-4"><a href="circular.html#cb22-4"></a><span class="co">## # A tibble: 75 x 57</span></span>
+<span id="cb22-5"><a href="circular.html#cb22-5"></a><span class="co">##    year_number Year1 Year2 datestart  datepolend    Qy  Qmax datemax   </span></span>
+<span id="cb22-6"><a href="circular.html#cb22-6"></a><span class="co">##          &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;date&gt;     &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;date&gt;    </span></span>
+<span id="cb22-7"><a href="circular.html#cb22-7"></a><span class="co">##  1           1  1938  1939 2000-03-23 2000-06-08  98.1   747 2000-04-03</span></span>
+<span id="cb22-8"><a href="circular.html#cb22-8"></a><span class="co">##  2           2  1939  1940 2000-03-16 2000-07-11  66.9   487 2000-04-28</span></span>
+<span id="cb22-9"><a href="circular.html#cb22-9"></a><span class="co">##  3           3  1940  1941 2000-03-09 2000-07-12  97.4   995 2000-04-28</span></span>
+<span id="cb22-10"><a href="circular.html#cb22-10"></a><span class="co">##  4           4  1941  1942 2000-03-24 2000-07-21 214.   2030 2000-05-01</span></span>
+<span id="cb22-11"><a href="circular.html#cb22-11"></a><span class="co">##  5           5  1942  1943 2000-04-02 2000-07-31 242.   2790 2000-05-08</span></span>
+<span id="cb22-12"><a href="circular.html#cb22-12"></a><span class="co">##  6           6  1943  1944 2000-03-24 2000-06-15  71.3   451 2000-05-02</span></span>
+<span id="cb22-13"><a href="circular.html#cb22-13"></a><span class="co">##  7           7  1944  1945 2000-02-26 2000-06-30  89.0   530 2000-04-28</span></span>
+<span id="cb22-14"><a href="circular.html#cb22-14"></a><span class="co">##  8           8  1945  1946 2000-03-25 2000-07-13 128.   1220 2000-04-27</span></span>
+<span id="cb22-15"><a href="circular.html#cb22-15"></a><span class="co">##  9           9  1946  1947 2000-03-15 2000-06-30 179.   2150 2000-04-28</span></span>
+<span id="cb22-16"><a href="circular.html#cb22-16"></a><span class="co">## 10          10  1947  1948 2000-03-06 2000-07-15 153.   1720 2000-04-16</span></span>
+<span id="cb22-17"><a href="circular.html#cb22-17"></a><span class="co">## # … with 65 more rows, and 49 more variables: Qygr &lt;dbl&gt;, Qmmsummer &lt;dbl&gt;,</span></span>
+<span id="cb22-18"><a href="circular.html#cb22-18"></a><span class="co">## #   monmmsummer &lt;date&gt;, Qmmwin &lt;dbl&gt;, nommwin &lt;date&gt;, Q30s &lt;dbl&gt;,</span></span>
+<span id="cb22-19"><a href="circular.html#cb22-19"></a><span class="co">## #   date30s1 &lt;date&gt;, date30s2 &lt;date&gt;, Q30w &lt;dbl&gt;, date30w1 &lt;date&gt;,</span></span>
+<span id="cb22-20"><a href="circular.html#cb22-20"></a><span class="co">## #   date30w2 &lt;date&gt;, Q10s &lt;dbl&gt;, date10s1 &lt;date&gt;, date10s2 &lt;date&gt;,</span></span>
+<span id="cb22-21"><a href="circular.html#cb22-21"></a><span class="co">## #   Q10w &lt;dbl&gt;, date10w1 &lt;date&gt;, date10w2 &lt;date&gt;, Q5s &lt;dbl&gt;,</span></span>
+<span id="cb22-22"><a href="circular.html#cb22-22"></a><span class="co">## #   date5s1 &lt;date&gt;, date5s2 &lt;date&gt;, Q5w &lt;dbl&gt;, date5w1 &lt;date&gt;,</span></span>
+<span id="cb22-23"><a href="circular.html#cb22-23"></a><span class="co">## #   date5w2 &lt;date&gt;, Wy &lt;dbl&gt;, Wgr &lt;dbl&gt;, Wpol1 &lt;dbl&gt;, Wpol2 &lt;dbl&gt;,</span></span>
+<span id="cb22-24"><a href="circular.html#cb22-24"></a><span class="co">## #   Wpol3 &lt;dbl&gt;, Wpavs1 &lt;dbl&gt;, Wpavs2 &lt;dbl&gt;, Wpavthaw1 &lt;dbl&gt;,</span></span>
+<span id="cb22-25"><a href="circular.html#cb22-25"></a><span class="co">## #   Wpavthaw2 &lt;dbl&gt;, WgrS &lt;dbl&gt;, WS &lt;dbl&gt;, WgrW &lt;dbl&gt;, WW &lt;dbl&gt;,</span></span>
+<span id="cb22-26"><a href="circular.html#cb22-26"></a><span class="co">## #   Qmaxpavs &lt;dbl&gt;, datemaxpavs &lt;date&gt;, Qmaxpavthaw &lt;dbl&gt;,</span></span>
+<span id="cb22-27"><a href="circular.html#cb22-27"></a><span class="co">## #   datemaxpavthaw &lt;date&gt;, SumProd &lt;dbl&gt;, DaysPavsSum &lt;dbl&gt;,</span></span>
+<span id="cb22-28"><a href="circular.html#cb22-28"></a><span class="co">## #   WinProd &lt;dbl&gt;, DaysThawWin &lt;dbl&gt;, CvWin &lt;dbl&gt;, CvSum &lt;dbl&gt;,</span></span>
+<span id="cb22-29"><a href="circular.html#cb22-29"></a><span class="co">## #   CountPavs &lt;dbl&gt;, CountThaws &lt;dbl&gt;, PolProd &lt;dbl&gt;</span></span></code></pre></div>
+<p>Построим график межгодичной изменчивости объема грунтового стока (переменная <code>Wgr</code> в <span class="math inline">\(км^3\)</span>):</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="circular.html#cb23-1"></a><span class="kw">ggplot</span>(tab, <span class="dt">mapping =</span> <span class="kw">aes</span>(Year1, Wgr)) <span class="op">+</span></span>
+<span id="cb23-2"><a href="circular.html#cb23-2"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
+<span id="cb23-3"><a href="circular.html#cb23-3"></a><span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb23-4"><a href="circular.html#cb23-4"></a><span class="st">  </span><span class="kw">geom_smooth</span>() <span class="op">+</span></span>
+<span id="cb23-5"><a href="circular.html#cb23-5"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Объем грунтового стока на р. Мезень в д. Малонисогорская&#39;</span>,</span>
+<span id="cb23-6"><a href="circular.html#cb23-6"></a>       <span class="dt">x =</span> <span class="st">&#39;Год&#39;</span>,</span>
+<span id="cb23-7"><a href="circular.html#cb23-7"></a>       <span class="dt">y =</span> <span class="st">&#39;куб. км&#39;</span>)</span></code></pre></div>
+<p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p>Для выполнения тестов Манна-Кендалла, Петтитт и оценки тренда по методу Тейла-Сена подключим пакет <strong>trend</strong>:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="circular.html#cb24-1"></a><span class="kw">library</span>(trend)</span>
+<span id="cb24-2"><a href="circular.html#cb24-2"></a>(<span class="dt">mk =</span> <span class="kw">mk.test</span>(tab<span class="op">$</span>Wgr))</span>
+<span id="cb24-3"><a href="circular.html#cb24-3"></a><span class="co">## </span></span>
+<span id="cb24-4"><a href="circular.html#cb24-4"></a><span class="co">##  Mann-Kendall trend test</span></span>
+<span id="cb24-5"><a href="circular.html#cb24-5"></a><span class="co">## </span></span>
+<span id="cb24-6"><a href="circular.html#cb24-6"></a><span class="co">## data:  tab$Wgr</span></span>
+<span id="cb24-7"><a href="circular.html#cb24-7"></a><span class="co">## z = 7.8129, n = 75, p-value = 5.589e-15</span></span>
+<span id="cb24-8"><a href="circular.html#cb24-8"></a><span class="co">## alternative hypothesis: true S is not equal to 0</span></span>
+<span id="cb24-9"><a href="circular.html#cb24-9"></a><span class="co">## sample estimates:</span></span>
+<span id="cb24-10"><a href="circular.html#cb24-10"></a><span class="co">##            S         varS          tau </span></span>
+<span id="cb24-11"><a href="circular.html#cb24-11"></a><span class="co">## 1.709000e+03 4.779167e+04 6.158559e-01</span></span>
+<span id="cb24-12"><a href="circular.html#cb24-12"></a>(<span class="dt">pt =</span> <span class="kw">pettitt.test</span>(tab<span class="op">$</span>Wgr))</span>
+<span id="cb24-13"><a href="circular.html#cb24-13"></a><span class="co">## </span></span>
+<span id="cb24-14"><a href="circular.html#cb24-14"></a><span class="co">##  Pettitt&#39;s test for single change-point detection</span></span>
+<span id="cb24-15"><a href="circular.html#cb24-15"></a><span class="co">## </span></span>
+<span id="cb24-16"><a href="circular.html#cb24-16"></a><span class="co">## data:  tab$Wgr</span></span>
+<span id="cb24-17"><a href="circular.html#cb24-17"></a><span class="co">## U* = 1324, p-value = 4.131e-11</span></span>
+<span id="cb24-18"><a href="circular.html#cb24-18"></a><span class="co">## alternative hypothesis: two.sided</span></span>
+<span id="cb24-19"><a href="circular.html#cb24-19"></a><span class="co">## sample estimates:</span></span>
+<span id="cb24-20"><a href="circular.html#cb24-20"></a><span class="co">## probable change point at time K </span></span>
+<span id="cb24-21"><a href="circular.html#cb24-21"></a><span class="co">##                              38</span></span>
+<span id="cb24-22"><a href="circular.html#cb24-22"></a>(<span class="dt">ts =</span> trend<span class="op">::</span><span class="kw">sens.slope</span>(tab<span class="op">$</span>Wgr))</span>
+<span id="cb24-23"><a href="circular.html#cb24-23"></a><span class="co">## </span></span>
+<span id="cb24-24"><a href="circular.html#cb24-24"></a><span class="co">##  Sen&#39;s slope</span></span>
+<span id="cb24-25"><a href="circular.html#cb24-25"></a><span class="co">## </span></span>
+<span id="cb24-26"><a href="circular.html#cb24-26"></a><span class="co">## data:  tab$Wgr</span></span>
+<span id="cb24-27"><a href="circular.html#cb24-27"></a><span class="co">## z = 7.8129, n = 75, p-value = 5.589e-15</span></span>
+<span id="cb24-28"><a href="circular.html#cb24-28"></a><span class="co">## alternative hypothesis: true z is not equal to 0</span></span>
+<span id="cb24-29"><a href="circular.html#cb24-29"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb24-30"><a href="circular.html#cb24-30"></a><span class="co">##  0.01378903 0.02202750</span></span>
+<span id="cb24-31"><a href="circular.html#cb24-31"></a><span class="co">## sample estimates:</span></span>
+<span id="cb24-32"><a href="circular.html#cb24-32"></a><span class="co">## Sen&#39;s slope </span></span>
+<span id="cb24-33"><a href="circular.html#cb24-33"></a><span class="co">##  0.01810404</span></span></code></pre></div>
+<p>Все три теста в данном случе дают высокую статистическую значимость временных изменений (p-значения), при этом тест Петтитт говорит, что точка перелома находится в 38-й позиции ряда. Если разделить исследуемый временной ряд на две выборки этой точкой, то они будут иметь статистически значимое отличие в характеристиках среднего значения показателя. Метод Тейла-Сена также говорит нам, что грунтовый сток увеличивается ежегодно примерно на <span class="math inline">\(1,8%\)</span> (величина тренда равна <span class="math inline">\(0.0181\)</span>), что за период 70 лет даёт абсолютный прирост грунтового стока более чем в 2 раза.</p>
+<p>Для наглядности нанесем линию тренда и точку перелома на график:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="circular.html#cb25-1"></a><span class="kw">ggplot</span>(tab, <span class="dt">mapping =</span> <span class="kw">aes</span>(Year1, Wgr)) <span class="op">+</span></span>
+<span id="cb25-2"><a href="circular.html#cb25-2"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
+<span id="cb25-3"><a href="circular.html#cb25-3"></a><span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb25-4"><a href="circular.html#cb25-4"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&#39;lm&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;red&#39;</span>) <span class="op">+</span></span>
+<span id="cb25-5"><a href="circular.html#cb25-5"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> tab<span class="op">$</span>Year1[pt<span class="op">$</span>estimate], <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">size =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb25-6"><a href="circular.html#cb25-6"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">label =</span> tab<span class="op">$</span>Year1[pt<span class="op">$</span>estimate], </span>
+<span id="cb25-7"><a href="circular.html#cb25-7"></a>           <span class="dt">x =</span> tab<span class="op">$</span>Year1[pt<span class="op">$</span>estimate] <span class="op">+</span><span class="st"> </span><span class="dv">4</span>, <span class="dt">y =</span> <span class="kw">max</span>(tab<span class="op">$</span>Wgr), </span>
+<span id="cb25-8"><a href="circular.html#cb25-8"></a>           <span class="dt">size =</span> <span class="dv">4</span>, <span class="dt">colour =</span> <span class="st">&quot;red&quot;</span>) <span class="op">+</span></span>
+<span id="cb25-9"><a href="circular.html#cb25-9"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Объем грунтового стока на р. Мезень в д. Малонисогорская&#39;</span>,</span>
+<span id="cb25-10"><a href="circular.html#cb25-10"></a>     <span class="dt">x =</span> <span class="st">&#39;Год&#39;</span>,</span>
+<span id="cb25-11"><a href="circular.html#cb25-11"></a>     <span class="dt">y =</span> <span class="st">&#39;куб. км&#39;</span>)</span></code></pre></div>
+<p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
 </div>
 <div id="circular_time_animation" class="section level3">
-<h3><span class="header-section-number">8.3.3</span> Анимация</h3>
+<h3><span class="header-section-number">8.3.4</span> Анимация</h3>
 <p>Анимационная графика возволяет наглядно визуализировать изменения. Наиболее часто речь идет об изменениях по времени. В этом случае время работает в роли невидимой переменной, которая влияет на положение графических примитивов на изображении. Данный подход органично вписывается в концепцию грамматики графики, на основе которой построен пакет <strong>ggplot2</strong> (см. Главу <a href="advgraphics.html#advgraphics">6</a>). Соответствующую реализацию грамматики анимаций предоставляет пакет <a href="https://gganimate.com/"><strong>gganimate</strong></a><span class="citation">(Pedersen and Robinson <a href="#ref-R-gganimate" role="doc-biblioref">2019</a>)</span>.</p>
 <p>Возможности анимаций в <strong>gganimate</strong> реализуются посредством добавления новых грамматик к построенному графику <strong>ggplot2</strong>. К числу этих грамматик относятся:</p>
 <ul>
@@ -1202,97 +1301,97 @@ g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i
 <li><code>ease_aes()</code> — порядок смягчения (интерполяции) графических переменных в моменты перехода.</li>
 </ul>
 <p>В качестве первого примера используем уже знакомые нам данные реанализа NASA POWER суточного осреднения, выгрузив информацию по точкам в трех городах (Мурманск, Москва, Краснодар) за 2018 год:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="circular.html#cb22-1"></a><span class="kw">library</span>(nasapower)</span>
-<span id="cb22-2"><a href="circular.html#cb22-2"></a><span class="kw">library</span>(ggplot2)</span>
-<span id="cb22-3"><a href="circular.html#cb22-3"></a></span>
-<span id="cb22-4"><a href="circular.html#cb22-4"></a>cities =<span class="st"> </span><span class="kw">list</span>(</span>
-<span id="cb22-5"><a href="circular.html#cb22-5"></a>  Мурманск =<span class="st"> </span><span class="kw">c</span>(<span class="dv">33</span>, <span class="dv">69</span>),</span>
-<span id="cb22-6"><a href="circular.html#cb22-6"></a>  Москва =<span class="st"> </span><span class="kw">c</span>(<span class="dv">38</span>, <span class="dv">56</span>),</span>
-<span id="cb22-7"><a href="circular.html#cb22-7"></a>  Краснодар =<span class="st"> </span><span class="kw">c</span>(<span class="dv">39</span>, <span class="dv">45</span>)</span>
-<span id="cb22-8"><a href="circular.html#cb22-8"></a>)</span>
-<span id="cb22-9"><a href="circular.html#cb22-9"></a></span>
-<span id="cb22-10"><a href="circular.html#cb22-10"></a>tab =<span class="st"> </span>purrr<span class="op">::</span><span class="kw">imap</span>(cities, <span class="cf">function</span>(coords, city){</span>
-<span id="cb22-11"><a href="circular.html#cb22-11"></a>  <span class="kw">get_power</span>(</span>
-<span id="cb22-12"><a href="circular.html#cb22-12"></a>    <span class="dt">community =</span> <span class="st">&quot;AG&quot;</span>,</span>
-<span id="cb22-13"><a href="circular.html#cb22-13"></a>    <span class="dt">lonlat =</span> coords,</span>
-<span id="cb22-14"><a href="circular.html#cb22-14"></a>    <span class="dt">pars =</span> <span class="kw">c</span>(<span class="st">&quot;RH2M&quot;</span>, <span class="st">&quot;T2M&quot;</span>, <span class="st">&quot;PRECTOT&quot;</span>),</span>
-<span id="cb22-15"><a href="circular.html#cb22-15"></a>    <span class="dt">dates =</span> <span class="kw">c</span>(<span class="st">&quot;2018-01-01&quot;</span>, <span class="st">&quot;2018-12-31&quot;</span>),</span>
-<span id="cb22-16"><a href="circular.html#cb22-16"></a>    <span class="dt">temporal_average =</span> <span class="st">&quot;DAILY&quot;</span></span>
-<span id="cb22-17"><a href="circular.html#cb22-17"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">CITY =</span> city,</span>
-<span id="cb22-18"><a href="circular.html#cb22-18"></a>               <span class="dt">MONTH =</span> <span class="kw">month</span>(YYYYMMDD))</span>
-<span id="cb22-19"><a href="circular.html#cb22-19"></a>}) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">bind_rows</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="circular.html#cb26-1"></a><span class="kw">library</span>(nasapower)</span>
+<span id="cb26-2"><a href="circular.html#cb26-2"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb26-3"><a href="circular.html#cb26-3"></a></span>
+<span id="cb26-4"><a href="circular.html#cb26-4"></a>cities =<span class="st"> </span><span class="kw">list</span>(</span>
+<span id="cb26-5"><a href="circular.html#cb26-5"></a>  Мурманск =<span class="st"> </span><span class="kw">c</span>(<span class="dv">33</span>, <span class="dv">69</span>),</span>
+<span id="cb26-6"><a href="circular.html#cb26-6"></a>  Москва =<span class="st"> </span><span class="kw">c</span>(<span class="dv">38</span>, <span class="dv">56</span>),</span>
+<span id="cb26-7"><a href="circular.html#cb26-7"></a>  Краснодар =<span class="st"> </span><span class="kw">c</span>(<span class="dv">39</span>, <span class="dv">45</span>)</span>
+<span id="cb26-8"><a href="circular.html#cb26-8"></a>)</span>
+<span id="cb26-9"><a href="circular.html#cb26-9"></a></span>
+<span id="cb26-10"><a href="circular.html#cb26-10"></a>tab =<span class="st"> </span>purrr<span class="op">::</span><span class="kw">imap</span>(cities, <span class="cf">function</span>(coords, city){</span>
+<span id="cb26-11"><a href="circular.html#cb26-11"></a>  <span class="kw">get_power</span>(</span>
+<span id="cb26-12"><a href="circular.html#cb26-12"></a>    <span class="dt">community =</span> <span class="st">&quot;AG&quot;</span>,</span>
+<span id="cb26-13"><a href="circular.html#cb26-13"></a>    <span class="dt">lonlat =</span> coords,</span>
+<span id="cb26-14"><a href="circular.html#cb26-14"></a>    <span class="dt">pars =</span> <span class="kw">c</span>(<span class="st">&quot;RH2M&quot;</span>, <span class="st">&quot;T2M&quot;</span>, <span class="st">&quot;PRECTOT&quot;</span>),</span>
+<span id="cb26-15"><a href="circular.html#cb26-15"></a>    <span class="dt">dates =</span> <span class="kw">c</span>(<span class="st">&quot;2018-01-01&quot;</span>, <span class="st">&quot;2018-12-31&quot;</span>),</span>
+<span id="cb26-16"><a href="circular.html#cb26-16"></a>    <span class="dt">temporal_average =</span> <span class="st">&quot;DAILY&quot;</span></span>
+<span id="cb26-17"><a href="circular.html#cb26-17"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">CITY =</span> city,</span>
+<span id="cb26-18"><a href="circular.html#cb26-18"></a>               <span class="dt">MONTH =</span> <span class="kw">month</span>(YYYYMMDD))</span>
+<span id="cb26-19"><a href="circular.html#cb26-19"></a>}) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">bind_rows</span>()</span></code></pre></div>
 <p>Рассмотрим колебания температуры по 12 месяцам посредством диаграммы размаха:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="circular.html#cb23-1"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(CITY, T2M)) <span class="op">+</span></span>
-<span id="cb23-2"><a href="circular.html#cb23-2"></a><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span></span>
-<span id="cb23-3"><a href="circular.html#cb23-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Температура воздуха в 2018 году по данным NASA POWER&quot;</span>,</span>
-<span id="cb23-4"><a href="circular.html#cb23-4"></a>       <span class="dt">subtitle =</span> <span class="st">&#39;Месяц: {round(frame_time)}&#39;</span>) <span class="op">+</span></span>
-<span id="cb23-5"><a href="circular.html#cb23-5"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Город&#39;</span>) <span class="op">+</span></span>
-<span id="cb23-6"><a href="circular.html#cb23-6"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Т, °С&#39;</span>) <span class="op">+</span></span>
-<span id="cb23-7"><a href="circular.html#cb23-7"></a><span class="st">  </span><span class="kw">transition_time</span>(MONTH)</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="circular.html#cb27-1"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(CITY, T2M)) <span class="op">+</span></span>
+<span id="cb27-2"><a href="circular.html#cb27-2"></a><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span></span>
+<span id="cb27-3"><a href="circular.html#cb27-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Температура воздуха в 2018 году по данным NASA POWER&quot;</span>,</span>
+<span id="cb27-4"><a href="circular.html#cb27-4"></a>       <span class="dt">subtitle =</span> <span class="st">&#39;Месяц: {round(frame_time)}&#39;</span>) <span class="op">+</span></span>
+<span id="cb27-5"><a href="circular.html#cb27-5"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Город&#39;</span>) <span class="op">+</span></span>
+<span id="cb27-6"><a href="circular.html#cb27-6"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Т, °С&#39;</span>) <span class="op">+</span></span>
+<span id="cb27-7"><a href="circular.html#cb27-7"></a><span class="st">  </span><span class="kw">transition_time</span>(MONTH)</span></code></pre></div>
 <p><img src="images/boxplot_anim.gif" /><!-- --></p>
 <p>Аналогичную анимацию можно провести и на примере функции плотности распределения:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="circular.html#cb24-1"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(T2M, <span class="dt">fill =</span> CITY)) <span class="op">+</span></span>
-<span id="cb24-2"><a href="circular.html#cb24-2"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb24-3"><a href="circular.html#cb24-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Температура воздуха в 2018 году по данным NASA POWER&quot;</span>,</span>
-<span id="cb24-4"><a href="circular.html#cb24-4"></a>       <span class="dt">subtitle =</span> <span class="st">&#39;Месяц: {round(frame_time)}&#39;</span>,</span>
-<span id="cb24-5"><a href="circular.html#cb24-5"></a>       <span class="dt">fill =</span> <span class="st">&#39;Город&#39;</span>) <span class="op">+</span></span>
-<span id="cb24-6"><a href="circular.html#cb24-6"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Т, °С&#39;</span>) <span class="op">+</span></span>
-<span id="cb24-7"><a href="circular.html#cb24-7"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Плотность распределения&#39;</span>) <span class="op">+</span></span>
-<span id="cb24-8"><a href="circular.html#cb24-8"></a><span class="st">  </span><span class="kw">transition_time</span>(MONTH)</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="circular.html#cb28-1"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(T2M, <span class="dt">fill =</span> CITY)) <span class="op">+</span></span>
+<span id="cb28-2"><a href="circular.html#cb28-2"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb28-3"><a href="circular.html#cb28-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Температура воздуха в 2018 году по данным NASA POWER&quot;</span>,</span>
+<span id="cb28-4"><a href="circular.html#cb28-4"></a>       <span class="dt">subtitle =</span> <span class="st">&#39;Месяц: {round(frame_time)}&#39;</span>,</span>
+<span id="cb28-5"><a href="circular.html#cb28-5"></a>       <span class="dt">fill =</span> <span class="st">&#39;Город&#39;</span>) <span class="op">+</span></span>
+<span id="cb28-6"><a href="circular.html#cb28-6"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Т, °С&#39;</span>) <span class="op">+</span></span>
+<span id="cb28-7"><a href="circular.html#cb28-7"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Плотность распределения&#39;</span>) <span class="op">+</span></span>
+<span id="cb28-8"><a href="circular.html#cb28-8"></a><span class="st">  </span><span class="kw">transition_time</span>(MONTH)</span></code></pre></div>
 <p><img src="images/density_anim.gif" /><!-- --></p>
 <p>Загрузим ранее использованные в Главе @ref(stat_analysis) данные Gapminder по соотношению продолжительности жизни и ВВП на душу населения, но на этот раз не будем фильтровать их по времени:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="circular.html#cb25-1"></a><span class="kw">library</span>(readxl)</span>
-<span id="cb25-2"><a href="circular.html#cb25-2"></a><span class="kw">library</span>(googledrive)</span>
-<span id="cb25-3"><a href="circular.html#cb25-3"></a><span class="kw">library</span>(googlesheets4)</span>
-<span id="cb25-4"><a href="circular.html#cb25-4"></a>countries =<span class="st"> </span><span class="kw">read_excel</span>(<span class="st">&#39;data/gapminder.xlsx&#39;</span>, <span class="dv">2</span>) <span class="op">%&gt;%</span></span>
-<span id="cb25-5"><a href="circular.html#cb25-5"></a><span class="st">  </span><span class="kw">select</span>(<span class="dt">Country =</span> name, <span class="dt">Region =</span> eight_regions) <span class="op">%&gt;%</span></span>
-<span id="cb25-6"><a href="circular.html#cb25-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Country =</span> <span class="kw">factor</span>(Country, <span class="dt">levels =</span> Country[<span class="kw">order</span>(.<span class="op">$</span>Region)]))</span>
-<span id="cb25-7"><a href="circular.html#cb25-7"></a></span>
-<span id="cb25-8"><a href="circular.html#cb25-8"></a>gdpdf_tidy =<span class="st"> &#39;1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co">### ВВП на душу населения</span></span>
-<span id="cb25-9"><a href="circular.html#cb25-9"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
-<span id="cb25-10"><a href="circular.html#cb25-10"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb25-11"><a href="circular.html#cb25-11"></a><span class="st">  </span><span class="kw">read_sheet</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb25-12"><a href="circular.html#cb25-12"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1764</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2018</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;gdp&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb25-13"><a href="circular.html#cb25-13"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
-<span id="cb25-14"><a href="circular.html#cb25-14"></a><span class="co">## Using an auto-discovered, cached token.</span></span>
-<span id="cb25-15"><a href="circular.html#cb25-15"></a><span class="co">## To suppress this message, modify your code or options to clearly consent to the use of a cached token.</span></span>
-<span id="cb25-16"><a href="circular.html#cb25-16"></a><span class="co">## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</span></span>
-<span id="cb25-17"><a href="circular.html#cb25-17"></a><span class="co">## https://gargle.r-lib.org/articles/non-interactive-auth.html</span></span>
-<span id="cb25-18"><a href="circular.html#cb25-18"></a><span class="co">## The googledrive package is using a cached token for iamste@yandex.ru.</span></span>
-<span id="cb25-19"><a href="circular.html#cb25-19"></a><span class="co">## Using an auto-discovered, cached token.</span></span>
-<span id="cb25-20"><a href="circular.html#cb25-20"></a><span class="co">## To suppress this message, modify your code or options to clearly consent to the use of a cached token.</span></span>
-<span id="cb25-21"><a href="circular.html#cb25-21"></a><span class="co">## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</span></span>
-<span id="cb25-22"><a href="circular.html#cb25-22"></a><span class="co">## https://gargle.r-lib.org/articles/non-interactive-auth.html</span></span>
-<span id="cb25-23"><a href="circular.html#cb25-23"></a><span class="co">## The googlesheets4 package is using a cached token for iamste@yandex.ru.</span></span>
-<span id="cb25-24"><a href="circular.html#cb25-24"></a></span>
-<span id="cb25-25"><a href="circular.html#cb25-25"></a>popdf_tidy =<span class="st"> &#39;1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># численность населения</span></span>
-<span id="cb25-26"><a href="circular.html#cb25-26"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
-<span id="cb25-27"><a href="circular.html#cb25-27"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb25-28"><a href="circular.html#cb25-28"></a><span class="st">  </span><span class="kw">read_sheet</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># первый лист</span></span>
-<span id="cb25-29"><a href="circular.html#cb25-29"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2015</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;pop&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb25-30"><a href="circular.html#cb25-30"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
-<span id="cb25-31"><a href="circular.html#cb25-31"></a></span>
-<span id="cb25-32"><a href="circular.html#cb25-32"></a>lifedf_tidy =<span class="st"> &#39;1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># продолжительность жизни</span></span>
-<span id="cb25-33"><a href="circular.html#cb25-33"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
-<span id="cb25-34"><a href="circular.html#cb25-34"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb25-35"><a href="circular.html#cb25-35"></a><span class="st">  </span><span class="kw">read_sheet</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb25-36"><a href="circular.html#cb25-36"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2016</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;lifexp&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb25-37"><a href="circular.html#cb25-37"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
-<span id="cb25-38"><a href="circular.html#cb25-38"></a></span>
-<span id="cb25-39"><a href="circular.html#cb25-39"></a>tab =<span class="st"> </span>gdpdf_tidy <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb25-40"><a href="circular.html#cb25-40"></a><span class="st">  </span><span class="kw">inner_join</span>(lifedf_tidy) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb25-41"><a href="circular.html#cb25-41"></a><span class="st">  </span><span class="kw">inner_join</span>(popdf_tidy) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb25-42"><a href="circular.html#cb25-42"></a><span class="st">  </span><span class="kw">inner_join</span>(countries) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb25-43"><a href="circular.html#cb25-43"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">year =</span> <span class="kw">as.integer</span>(year)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb25-44"><a href="circular.html#cb25-44"></a><span class="st">  </span><span class="kw">drop_na</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="circular.html#cb29-1"></a><span class="kw">library</span>(readxl)</span>
+<span id="cb29-2"><a href="circular.html#cb29-2"></a><span class="kw">library</span>(googledrive)</span>
+<span id="cb29-3"><a href="circular.html#cb29-3"></a><span class="kw">library</span>(googlesheets4)</span>
+<span id="cb29-4"><a href="circular.html#cb29-4"></a>countries =<span class="st"> </span><span class="kw">read_excel</span>(<span class="st">&#39;data/gapminder.xlsx&#39;</span>, <span class="dv">2</span>) <span class="op">%&gt;%</span></span>
+<span id="cb29-5"><a href="circular.html#cb29-5"></a><span class="st">  </span><span class="kw">select</span>(<span class="dt">Country =</span> name, <span class="dt">Region =</span> eight_regions) <span class="op">%&gt;%</span></span>
+<span id="cb29-6"><a href="circular.html#cb29-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Country =</span> <span class="kw">factor</span>(Country, <span class="dt">levels =</span> Country[<span class="kw">order</span>(.<span class="op">$</span>Region)]))</span>
+<span id="cb29-7"><a href="circular.html#cb29-7"></a></span>
+<span id="cb29-8"><a href="circular.html#cb29-8"></a>gdpdf_tidy =<span class="st"> &#39;1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co">### ВВП на душу населения</span></span>
+<span id="cb29-9"><a href="circular.html#cb29-9"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
+<span id="cb29-10"><a href="circular.html#cb29-10"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb29-11"><a href="circular.html#cb29-11"></a><span class="st">  </span><span class="kw">read_sheet</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb29-12"><a href="circular.html#cb29-12"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1764</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2018</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;gdp&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb29-13"><a href="circular.html#cb29-13"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
+<span id="cb29-14"><a href="circular.html#cb29-14"></a><span class="co">## Using an auto-discovered, cached token.</span></span>
+<span id="cb29-15"><a href="circular.html#cb29-15"></a><span class="co">## To suppress this message, modify your code or options to clearly consent to the use of a cached token.</span></span>
+<span id="cb29-16"><a href="circular.html#cb29-16"></a><span class="co">## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</span></span>
+<span id="cb29-17"><a href="circular.html#cb29-17"></a><span class="co">## https://gargle.r-lib.org/articles/non-interactive-auth.html</span></span>
+<span id="cb29-18"><a href="circular.html#cb29-18"></a><span class="co">## The googledrive package is using a cached token for iamste@yandex.ru.</span></span>
+<span id="cb29-19"><a href="circular.html#cb29-19"></a><span class="co">## Using an auto-discovered, cached token.</span></span>
+<span id="cb29-20"><a href="circular.html#cb29-20"></a><span class="co">## To suppress this message, modify your code or options to clearly consent to the use of a cached token.</span></span>
+<span id="cb29-21"><a href="circular.html#cb29-21"></a><span class="co">## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</span></span>
+<span id="cb29-22"><a href="circular.html#cb29-22"></a><span class="co">## https://gargle.r-lib.org/articles/non-interactive-auth.html</span></span>
+<span id="cb29-23"><a href="circular.html#cb29-23"></a><span class="co">## The googlesheets4 package is using a cached token for iamste@yandex.ru.</span></span>
+<span id="cb29-24"><a href="circular.html#cb29-24"></a></span>
+<span id="cb29-25"><a href="circular.html#cb29-25"></a>popdf_tidy =<span class="st"> &#39;1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># численность населения</span></span>
+<span id="cb29-26"><a href="circular.html#cb29-26"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
+<span id="cb29-27"><a href="circular.html#cb29-27"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb29-28"><a href="circular.html#cb29-28"></a><span class="st">  </span><span class="kw">read_sheet</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># первый лист</span></span>
+<span id="cb29-29"><a href="circular.html#cb29-29"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2015</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;pop&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb29-30"><a href="circular.html#cb29-30"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
+<span id="cb29-31"><a href="circular.html#cb29-31"></a></span>
+<span id="cb29-32"><a href="circular.html#cb29-32"></a>lifedf_tidy =<span class="st"> &#39;1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># продолжительность жизни</span></span>
+<span id="cb29-33"><a href="circular.html#cb29-33"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
+<span id="cb29-34"><a href="circular.html#cb29-34"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb29-35"><a href="circular.html#cb29-35"></a><span class="st">  </span><span class="kw">read_sheet</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb29-36"><a href="circular.html#cb29-36"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2016</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;lifexp&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb29-37"><a href="circular.html#cb29-37"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
+<span id="cb29-38"><a href="circular.html#cb29-38"></a></span>
+<span id="cb29-39"><a href="circular.html#cb29-39"></a>tab =<span class="st"> </span>gdpdf_tidy <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb29-40"><a href="circular.html#cb29-40"></a><span class="st">  </span><span class="kw">inner_join</span>(lifedf_tidy) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb29-41"><a href="circular.html#cb29-41"></a><span class="st">  </span><span class="kw">inner_join</span>(popdf_tidy) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb29-42"><a href="circular.html#cb29-42"></a><span class="st">  </span><span class="kw">inner_join</span>(countries) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb29-43"><a href="circular.html#cb29-43"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">year =</span> <span class="kw">as.integer</span>(year)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb29-44"><a href="circular.html#cb29-44"></a><span class="st">  </span><span class="kw">drop_na</span>()</span></code></pre></div>
 <p>Теперь чтобы отобразить это соотношение в виде анимации, достаточно добавить новый переход посредством функции <code>transition_time()</code>:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="circular.html#cb26-1"></a><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>) <span class="co"># убираем экспоненциальную форму записи числа</span></span>
-<span id="cb26-2"><a href="circular.html#cb26-2"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(gdp, lifexp, <span class="dt">size =</span> pop, <span class="dt">color =</span> Region)) <span class="op">+</span></span>
-<span id="cb26-3"><a href="circular.html#cb26-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb26-4"><a href="circular.html#cb26-4"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
-<span id="cb26-5"><a href="circular.html#cb26-5"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Year: {round(frame_time)}&#39;</span>) <span class="op">+</span></span>
-<span id="cb26-6"><a href="circular.html#cb26-6"></a><span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span></span>
-<span id="cb26-7"><a href="circular.html#cb26-7"></a><span class="st">  </span><span class="kw">transition_time</span>(year)</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="circular.html#cb30-1"></a><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>) <span class="co"># убираем экспоненциальную форму записи числа</span></span>
+<span id="cb30-2"><a href="circular.html#cb30-2"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(gdp, lifexp, <span class="dt">size =</span> pop, <span class="dt">color =</span> Region)) <span class="op">+</span></span>
+<span id="cb30-3"><a href="circular.html#cb30-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb30-4"><a href="circular.html#cb30-4"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb30-5"><a href="circular.html#cb30-5"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Year: {round(frame_time)}&#39;</span>) <span class="op">+</span></span>
+<span id="cb30-6"><a href="circular.html#cb30-6"></a><span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span></span>
+<span id="cb30-7"><a href="circular.html#cb30-7"></a><span class="st">  </span><span class="kw">transition_time</span>(year)</span></code></pre></div>
 <p><img src="images/scatter_anim.gif" /><!-- --></p>
 </div>
 </div>
