@@ -51,6 +51,13 @@
 
 
 <script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.9/datatables.js"></script>
+<link href="libs/dt-core-1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.19/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.19/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
 <link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
 <script src="libs/leaflet-1.3.1/leaflet.js"></script>
 <link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
@@ -68,8 +75,6 @@
 <script src="libs/pagedtable-1.1/js/pagedtable.js"></script>
 <script src="libs/plotly-binding-4.9.0/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
 <link href="libs/plotly-htmlwidgets-css-1.46.1/plotly-htmlwidgets.css" rel="stylesheet" />
 <script src="libs/plotly-main-1.46.1/plotly-latest.min.js"></script>
 
@@ -326,11 +331,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.2.3" data-path="circular.html"><a href="circular.html#circular_tests"><i class="fa fa-check"></i><b>8.2.3</b> Статистические тесты</a></li>
 <li class="chapter" data-level="8.2.4" data-path="circular.html"><a href="circular.html#circular_correlation"><i class="fa fa-check"></i><b>8.2.4</b> Корреляция и регрессия</a></li>
 </ul></li>
-<li class="chapter" data-level="8.3" data-path="circular.html"><a href="circular.html#circular_time"><i class="fa fa-check"></i><b>8.3</b> Статистика временных данных</a><ul>
-<li class="chapter" data-level="8.3.1" data-path="circular.html"><a href="circular.html#circular_time_lubridate"><i class="fa fa-check"></i><b>8.3.1</b> Преобразование дат и времени</a></li>
-<li class="chapter" data-level="8.3.2" data-path="circular.html"><a href="circular.html#circular_time_tests"><i class="fa fa-check"></i><b>8.3.2</b> Статистики</a></li>
-<li class="chapter" data-level="8.3.3" data-path="circular.html"><a href="circular.html#circular_time_complete"><i class="fa fa-check"></i><b>8.3.3</b> Восстановление пропусков и проверка корректности дат</a></li>
-<li class="chapter" data-level="8.3.4" data-path="circular.html"><a href="circular.html#circular_time_interp"><i class="fa fa-check"></i><b>8.3.4</b> Интерполяция по времени</a></li>
+<li class="chapter" data-level="8.3" data-path="circular.html"><a href="circular.html#circular_time"><i class="fa fa-check"></i><b>8.3</b> Временные ряды</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="circular.html"><a href="circular.html#circular_time_lubridate"><i class="fa fa-check"></i><b>8.3.1</b> Создание и преобразование дат и времени</a></li>
+<li class="chapter" data-level="8.3.2" data-path="circular.html"><a href="circular.html#circular_time_complete"><i class="fa fa-check"></i><b>8.3.2</b> Восстановление пропусков и проверка корректности дат</a></li>
+<li class="chapter" data-level="8.3.3" data-path="circular.html"><a href="circular.html#circular_time_interp"><i class="fa fa-check"></i><b>8.3.3</b> Интерполяция по времени</a></li>
+<li class="chapter" data-level="8.3.4" data-path="circular.html"><a href="circular.html#circular_time_tests"><i class="fa fa-check"></i><b>8.3.4</b> Статистики</a></li>
 <li class="chapter" data-level="8.3.5" data-path="circular.html"><a href="circular.html#circular_time_animation"><i class="fa fa-check"></i><b>8.3.5</b> Анимация</a></li>
 </ul></li>
 <li class="chapter" data-level="8.4" data-path="circular.html"><a href="circular.html#questions_tasks_circular"><i class="fa fa-check"></i><b>8.4</b> Контрольные вопросы и упражнения</a><ul>
@@ -1103,14 +1108,14 @@ S = \frac{1}{n} \sum_{j=1}^{n} \sin \theta_j.\]</span></p>
 </div>
 </div>
 <div id="circular_time" class="section level2">
-<h2><span class="header-section-number">8.3</span> Статистика временных данных</h2>
+<h2><span class="header-section-number">8.3</span> Временные ряды</h2>
 <div id="circular_time_lubridate" class="section level3">
-<h3><span class="header-section-number">8.3.1</span> Преобразование дат и времени</h3>
+<h3><span class="header-section-number">8.3.1</span> Создание и преобразование дат и времени</h3>
 <p>Напомним, что текущее время и дату можно получить с помощью системных функций <code>Sys.Date()</code> и <code>Sys.time()</code>:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="circular.html#cb10-1"></a>(<span class="dt">date =</span> <span class="kw">Sys.Date</span>())</span>
 <span id="cb10-2"><a href="circular.html#cb10-2"></a><span class="co">## [1] &quot;2019-10-23&quot;</span></span>
 <span id="cb10-3"><a href="circular.html#cb10-3"></a>(<span class="dt">time =</span> <span class="kw">Sys.time</span>())</span>
-<span id="cb10-4"><a href="circular.html#cb10-4"></a><span class="co">## [1] &quot;2019-10-23 20:00:36 MSK&quot;</span></span></code></pre></div>
+<span id="cb10-4"><a href="circular.html#cb10-4"></a><span class="co">## [1] &quot;2019-10-23 21:27:13 MSK&quot;</span></span></code></pre></div>
 <p>Полученные объекты имеют типы <code>Date</code> и <code>POSIXct</code>:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="circular.html#cb11-1"></a><span class="kw">class</span>(date)</span>
 <span id="cb11-2"><a href="circular.html#cb11-2"></a><span class="co">## [1] &quot;Date&quot;</span></span>
@@ -1123,9 +1128,9 @@ S = \frac{1}{n} \sum_{j=1}^{n} \sin \theta_j.\]</span></p>
 <span id="cb12-4"><a href="circular.html#cb12-4"></a><span class="co">## Time difference of 18192 days</span></span>
 <span id="cb12-5"><a href="circular.html#cb12-5"></a></span>
 <span id="cb12-6"><a href="circular.html#cb12-6"></a><span class="kw">as.integer</span>(time)</span>
-<span id="cb12-7"><a href="circular.html#cb12-7"></a><span class="co">## [1] 1571850036</span></span>
+<span id="cb12-7"><a href="circular.html#cb12-7"></a><span class="co">## [1] 1571855233</span></span>
 <span id="cb12-8"><a href="circular.html#cb12-8"></a><span class="kw">difftime</span>(time, <span class="kw">as.POSIXct</span>(<span class="st">&#39;1970-01-01 00:00:00&#39;</span>, <span class="dt">tz =</span> <span class="st">&#39;UTC&#39;</span>), <span class="dt">units =</span> <span class="st">&#39;secs&#39;</span>)</span>
-<span id="cb12-9"><a href="circular.html#cb12-9"></a><span class="co">## Time difference of 1571850036 secs</span></span></code></pre></div>
+<span id="cb12-9"><a href="circular.html#cb12-9"></a><span class="co">## Time difference of 1571855234 secs</span></span></code></pre></div>
 <p>Работа с датами и временем может быть достаточно утомительной при отсутствии специализированных средств. Пакет <a href="https://lubridate.tidyverse.org/"><strong>lubridate</strong></a><span class="citation">(Spinu, Grolemund, and Wickham <a href="#ref-R-lubridate" role="doc-biblioref">2018</a>)</span> значительно облегчает эту работу. Основные функции lubridate включают синтаксический разбор (“парсинг”) дат в разных форматах, извлечение разных компонент даты и времени (секунд, минут, часов, суток, недель, годов), вычисление разностей и периодов, а также множество вспомогательных функций (хелперов), облегачающих преобразование временных данных.</p>
 <p>Рассмотрим базовые возможности пакета на нескольких примерах.</p>
 <p><strong>Создание</strong> дат возможно на основе целочисленных и строковых значений:</p>
@@ -1150,9 +1155,9 @@ S = \frac{1}{n} \sum_{j=1}^{n} \sin \theta_j.\]</span></p>
 <span id="cb15-7"><a href="circular.html#cb15-7"></a><span class="kw">day</span>(time)</span>
 <span id="cb15-8"><a href="circular.html#cb15-8"></a><span class="co">## [1] 23</span></span>
 <span id="cb15-9"><a href="circular.html#cb15-9"></a><span class="kw">hour</span>(time)</span>
-<span id="cb15-10"><a href="circular.html#cb15-10"></a><span class="co">## [1] 20</span></span>
+<span id="cb15-10"><a href="circular.html#cb15-10"></a><span class="co">## [1] 21</span></span>
 <span id="cb15-11"><a href="circular.html#cb15-11"></a><span class="kw">second</span>(time)</span>
-<span id="cb15-12"><a href="circular.html#cb15-12"></a><span class="co">## [1] 36.12566</span></span></code></pre></div>
+<span id="cb15-12"><a href="circular.html#cb15-12"></a><span class="co">## [1] 13.96866</span></span></code></pre></div>
 <p>Обратите внимание на то, что недели отсчитываются от начала года, а не месяца.</p>
 <p>Отдельно следует отметить функцию <code>yday()</code>, которая позволяет определить номер дня в году:</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="circular.html#cb16-1"></a><span class="kw">yday</span>(date)</span>
@@ -1161,7 +1166,7 @@ S = \frac{1}{n} \sum_{j=1}^{n} \sin \theta_j.\]</span></p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="circular.html#cb17-1"></a><span class="kw">year</span>(time) &lt;-<span class="st"> </span><span class="dv">2015</span></span>
 <span id="cb17-2"><a href="circular.html#cb17-2"></a><span class="kw">month</span>(time) &lt;-<span class="st"> </span><span class="dv">01</span></span>
 <span id="cb17-3"><a href="circular.html#cb17-3"></a>time</span>
-<span id="cb17-4"><a href="circular.html#cb17-4"></a><span class="co">## [1] &quot;2015-01-23 20:00:36 MSK&quot;</span></span></code></pre></div>
+<span id="cb17-4"><a href="circular.html#cb17-4"></a><span class="co">## [1] &quot;2015-01-23 21:27:13 MSK&quot;</span></span></code></pre></div>
 <p><strong>Округление</strong> дат и времени выполняется с помощью функций <code>round_date()</code>, <code>floor_date()</code> и <code>ceiling_date()</code> соответственно. Например, получить первый день в текущем году можно так:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="circular.html#cb18-1"></a><span class="kw">floor_date</span>(<span class="kw">Sys.Date</span>(), <span class="dt">unit =</span> <span class="st">&#39;year&#39;</span>)</span>
 <span id="cb18-2"><a href="circular.html#cb18-2"></a><span class="co">## [1] &quot;2019-01-01&quot;</span></span></code></pre></div>
@@ -1174,173 +1179,239 @@ S = \frac{1}{n} \sum_{j=1}^{n} \sin \theta_j.\]</span></p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="circular.html#cb20-1"></a><span class="kw">dweeks</span>(<span class="dv">1</span>)</span>
 <span id="cb20-2"><a href="circular.html#cb20-2"></a><span class="co">## [1] &quot;604800s (~1 weeks)&quot;</span></span>
 <span id="cb20-3"><a href="circular.html#cb20-3"></a>time</span>
-<span id="cb20-4"><a href="circular.html#cb20-4"></a><span class="co">## [1] &quot;2015-01-23 20:00:36 MSK&quot;</span></span>
+<span id="cb20-4"><a href="circular.html#cb20-4"></a><span class="co">## [1] &quot;2015-01-23 21:27:13 MSK&quot;</span></span>
 <span id="cb20-5"><a href="circular.html#cb20-5"></a>time <span class="op">+</span><span class="st"> </span><span class="kw">dweeks</span>(<span class="dv">1</span>)</span>
-<span id="cb20-6"><a href="circular.html#cb20-6"></a><span class="co">## [1] &quot;2015-01-30 20:00:36 MSK&quot;</span></span>
+<span id="cb20-6"><a href="circular.html#cb20-6"></a><span class="co">## [1] &quot;2015-01-30 21:27:13 MSK&quot;</span></span>
 <span id="cb20-7"><a href="circular.html#cb20-7"></a>time <span class="op">+</span><span class="st"> </span><span class="kw">weeks</span>(<span class="dv">1</span>)</span>
-<span id="cb20-8"><a href="circular.html#cb20-8"></a><span class="co">## [1] &quot;2015-01-30 20:00:36 MSK&quot;</span></span></code></pre></div>
+<span id="cb20-8"><a href="circular.html#cb20-8"></a><span class="co">## [1] &quot;2015-01-30 21:27:13 MSK&quot;</span></span></code></pre></div>
 <p><strong>Интервалы</strong> — это отрезки между двумя датами. Интервал можно преобразовывать в периоды и длительности:</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="circular.html#cb21-1"></a>(<span class="dt">int =</span> <span class="kw">interval</span>(<span class="kw">Sys.time</span>(), time))</span>
-<span id="cb21-2"><a href="circular.html#cb21-2"></a><span class="co">## [1] 2019-10-23 20:00:36 MSK--2015-01-23 20:00:36 MSK</span></span>
+<span id="cb21-2"><a href="circular.html#cb21-2"></a><span class="co">## [1] 2019-10-23 21:27:14 MSK--2015-01-23 21:27:13 MSK</span></span>
 <span id="cb21-3"><a href="circular.html#cb21-3"></a><span class="kw">as.period</span>(int, <span class="st">&#39;days&#39;</span>)</span>
-<span id="cb21-4"><a href="circular.html#cb21-4"></a><span class="co">## [1] &quot;-1734d 0H 0M -0.109624147415161S&quot;</span></span>
+<span id="cb21-4"><a href="circular.html#cb21-4"></a><span class="co">## [1] &quot;-1734d 0H 0M -0.115016937255859S&quot;</span></span>
 <span id="cb21-5"><a href="circular.html#cb21-5"></a><span class="kw">as.duration</span>(int)</span>
-<span id="cb21-6"><a href="circular.html#cb21-6"></a><span class="co">## [1] &quot;149817600.109624s (~4.75 years)&quot;</span></span></code></pre></div>
+<span id="cb21-6"><a href="circular.html#cb21-6"></a><span class="co">## [1] &quot;149817600.115017s (~4.75 years)&quot;</span></span></code></pre></div>
+</div>
+<div id="circular_time_complete" class="section level3">
+<h3><span class="header-section-number">8.3.2</span> Восстановление пропусков и проверка корректности дат</h3>
+<p>Данные во временных рядах часто соответствуют <em>равноотстоящим по времени</em> срезам (раз в несколько часов, раз в день, раз в три месяца и т.д.), что обусловлено регулярным характером сбора информации (наблюдения, предоставление отчетности и т.д.). Соответствующее предположение лежит и в основе многих функций временного анализа (таких как автокорреляционная функция). Если в данных отсутствуют некоторые временные срезы, это нарушает регулярность временного ряда, что может привести к его некорректной интерпретации. Необходимо восстановить пропущенные сроки, явным образом указав, что данных на эти сроки нет.</p>
+<p>Помимо этого, дата может быть записана в <em>некорректной</em> форме. Например, оператор ввода данных перепутал месяц и день 18 марта, что привело к созданию несуществующей даты 03.18 в одной из строк.</p>
+<p>Подобные несовершенства временных рядов важно выявить на самых ранних стадиях анализа данных. Рассмотрим, как эту задачу можно решить средствами R. В качестве источника данных будем использовать данные<a href="package-troubles.html#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> об уровне воды на гидропосте Паялка (р. Умба, Мурманская область) с 1932 по 2014 год. Отсутствие информации в файле данных закодировано числом <code>9999</code>:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="circular.html#cb22-1"></a>(<span class="dt">src =</span> <span class="kw">read_delim</span>(<span class="st">&#39;data/in_Umba.txt&#39;</span>, <span class="dt">delim =</span> <span class="st">&#39; &#39;</span>, </span>
+<span id="cb22-2"><a href="circular.html#cb22-2"></a>                 <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&#39;day&#39;</span>, <span class="st">&#39;month&#39;</span>, <span class="st">&#39;year&#39;</span>, <span class="st">&#39;level&#39;</span>), <span class="dt">na =</span> <span class="st">&#39;9999&#39;</span>))</span>
+<span id="cb22-3"><a href="circular.html#cb22-3"></a><span class="co">## # A tibble: 30,316 x 4</span></span>
+<span id="cb22-4"><a href="circular.html#cb22-4"></a><span class="co">##      day month  year level</span></span>
+<span id="cb22-5"><a href="circular.html#cb22-5"></a><span class="co">##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb22-6"><a href="circular.html#cb22-6"></a><span class="co">##  1     1     1  1932  49.4</span></span>
+<span id="cb22-7"><a href="circular.html#cb22-7"></a><span class="co">##  2     2     1  1932  NA  </span></span>
+<span id="cb22-8"><a href="circular.html#cb22-8"></a><span class="co">##  3     3     1  1932  NA  </span></span>
+<span id="cb22-9"><a href="circular.html#cb22-9"></a><span class="co">##  4     4     1  1932  NA  </span></span>
+<span id="cb22-10"><a href="circular.html#cb22-10"></a><span class="co">##  5     5     1  1932  NA  </span></span>
+<span id="cb22-11"><a href="circular.html#cb22-11"></a><span class="co">##  6     6     1  1932  NA  </span></span>
+<span id="cb22-12"><a href="circular.html#cb22-12"></a><span class="co">##  7     7     1  1932  NA  </span></span>
+<span id="cb22-13"><a href="circular.html#cb22-13"></a><span class="co">##  8     8     1  1932  NA  </span></span>
+<span id="cb22-14"><a href="circular.html#cb22-14"></a><span class="co">##  9     9     1  1932  NA  </span></span>
+<span id="cb22-15"><a href="circular.html#cb22-15"></a><span class="co">## 10    10     1  1932  47  </span></span>
+<span id="cb22-16"><a href="circular.html#cb22-16"></a><span class="co">## # … with 30,306 more rows</span></span></code></pre></div>
+<p>Сформируем даты на основе первых трёх столбцов и проверим, все ли из них корректны. Если компоненты даты некорректны, то функция <code>yms()</code> вернет <code>NA</code>:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="circular.html#cb23-1"></a>tab =<span class="st"> </span>src <span class="op">%&gt;%</span></span>
+<span id="cb23-2"><a href="circular.html#cb23-2"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">Date =</span> <span class="kw">ymd</span>(<span class="kw">paste</span>(year, month, day)))</span>
+<span id="cb23-3"><a href="circular.html#cb23-3"></a></span>
+<span id="cb23-4"><a href="circular.html#cb23-4"></a>tab <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb23-5"><a href="circular.html#cb23-5"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">is.na</span>(Date))</span>
+<span id="cb23-6"><a href="circular.html#cb23-6"></a><span class="co">## # A tibble: 1 x 5</span></span>
+<span id="cb23-7"><a href="circular.html#cb23-7"></a><span class="co">##     day month  year level Date      </span></span>
+<span id="cb23-8"><a href="circular.html#cb23-8"></a><span class="co">##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;date&gt;    </span></span>
+<span id="cb23-9"><a href="circular.html#cb23-9"></a><span class="co">## 1    29     2  1941  27.4 NA</span></span></code></pre></div>
+<p>Проверка показала, что преобразование в дату оказалось невозможно только для одной строки. В этой строке оператором была введена несуществующая дата — 29 февраля 1941 года. Этот год не является високосным, а значит количество дней в феврале должно равняться 28. Единственный выход в данной ситуациии — отбраковать запись:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="circular.html#cb24-1"></a>tab =<span class="st"> </span>tab <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb24-2"><a href="circular.html#cb24-2"></a><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(Date))</span></code></pre></div>
+<p>После того как мы убедились, что в таблице присутствуют только корректные даты, можно проверять пропуски дат. Для этого упорядочим таблицу по возрастанию дат и используем функцию <code>lag()</code> из пакета <strong>dplyr</strong>, чтобы вычислить разницу между каждой датой и ее предшественницей. После этого отфильтруем строки, которым предшествует 1 или более пропущенных дней и сформируем отчетную таблицу, содержащую все найденные пропуски:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="circular.html#cb25-1"></a>tab <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb25-2"><a href="circular.html#cb25-2"></a><span class="st">  </span><span class="kw">arrange</span>(Date) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb25-3"><a href="circular.html#cb25-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Gap =</span> Date <span class="op">-</span><span class="st"> </span><span class="kw">lag</span>(Date, <span class="dv">1</span>) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb25-4"><a href="circular.html#cb25-4"></a><span class="st">  </span><span class="kw">filter</span>(Gap <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb25-5"><a href="circular.html#cb25-5"></a><span class="st">  </span><span class="kw">transmute</span>(<span class="dt">start_date =</span> Date <span class="op">-</span><span class="st"> </span>Gap,</span>
+<span id="cb25-6"><a href="circular.html#cb25-6"></a>            <span class="dt">end_date =</span> Date <span class="op">-</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb25-7"><a href="circular.html#cb25-7"></a>            <span class="dt">duration =</span> Gap)</span>
+<span id="cb25-8"><a href="circular.html#cb25-8"></a><span class="co">## # A tibble: 1 x 3</span></span>
+<span id="cb25-9"><a href="circular.html#cb25-9"></a><span class="co">##   start_date end_date   duration</span></span>
+<span id="cb25-10"><a href="circular.html#cb25-10"></a><span class="co">##   &lt;date&gt;     &lt;date&gt;     &lt;drtn&gt;  </span></span>
+<span id="cb25-11"><a href="circular.html#cb25-11"></a><span class="co">## 1 1941-12-31 1942-01-01 2 days</span></span></code></pre></div>
+<p>Данная таблица говорит нам о том, что имеется один пропуск из двух дат: 31 декабря 1941 года и 01 января 1942 года. Чтобы восстановить пропущенные сроки, воспользуемся функцией <code>complete()</code> из пакета <strong>tidyr</strong>, указав ей, что переменная <em>Date</em> должна содержать <em>все</em> даты с шагом в один день, начиная с самой ранней и заканчивая самой поздней:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="circular.html#cb26-1"></a>tab_compl =<span class="st"> </span>tab <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb26-2"><a href="circular.html#cb26-2"></a><span class="st">  </span><span class="kw">complete</span>(<span class="dt">Date =</span> <span class="kw">seq</span>(<span class="kw">min</span>(Date, <span class="dt">na.rm =</span> T), <span class="kw">max</span>(Date, <span class="dt">na.rm =</span> T), <span class="dt">by =</span> <span class="st">&#39;day&#39;</span>))</span></code></pre></div>
+<p>Итак, полная процедура проверки корректности и восстановления пропущенных дат в виде одного конвейера манипуляций будет выглядеть следующим образом:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="circular.html#cb27-1"></a>tab =<span class="st"> </span>src <span class="op">%&gt;%</span></span>
+<span id="cb27-2"><a href="circular.html#cb27-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Date =</span> <span class="kw">ymd</span>(<span class="kw">paste</span>(year, month, day))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb27-3"><a href="circular.html#cb27-3"></a><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(Date)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb27-4"><a href="circular.html#cb27-4"></a><span class="st">  </span><span class="kw">complete</span>(<span class="dt">Date =</span> <span class="kw">seq</span>(<span class="kw">min</span>(Date, <span class="dt">na.rm =</span> T), <span class="kw">max</span>(Date, <span class="dt">na.rm =</span> T), <span class="dt">by =</span> <span class="st">&#39;day&#39;</span>))</span></code></pre></div>
+</div>
+<div id="circular_time_interp" class="section level3">
+<h3><span class="header-section-number">8.3.3</span> Интерполяция по времени</h3>
+<p>Одна из распространенных задач при работе с временными данными — это интерполяция по времени. Во-первых, интерполяция может использоваться для заполнения пропусков данных. Во-вторых, необходимость в интерполяции возникает когда неравномерно распределенные по времени данные надо перенести на регулярные сроки (скажем, через час), чтобы обеспечить их сравнимость с другими рядами данных. Заметим, что и в том и в другом случае необходимо учитывать <em>автокорреляционные свойства</em> временного ряда и с осторожностью подходить к интерполяции на длительных промежутках времени, поскольку такая интерполяция может не иметь под собой физических оснований.</p>
+<p>Рассмотрим заполнение пропусков данных на примере загруженных в предыдущем параграфе данных по уровням воды на гидропосте Паялка. На первом этапе анализа пропусков данных целесообразно получить сводную таблицу, которая бы систематизировала все пропуски и непрерывные ряды данных. Для этого сначала выставим маркер <code>data/gap</code> (<em>данные/пропуск</em>) на против каждой строки в новом поле <em>type</em>, а затем пронумеруем все группы последовательно идущих друг за другом меток совпадающего типа. Для реализации последнего шага выполним следующее:</p>
+<ul>
+<li>сформируем группы непрерывно идущих следом друг за другом меток одного типа, используя функцию <code>rle</code> (<em>run-length encoding</em>); полученный объект содержит вектор <code>lengths</code>, количество элементов которого равняется количеству групп, а значение каждого элемента равно количеству объектов соответствующей по порядку группы;</li>
+<li>номер каждой группы (от 1 до количества групп) продублируем столько раз, сколько элементов содержится в каждой группе</li>
+</ul>
+<p>После этого сгруппируем данные по номеру группы и вычислим дату начала, дату конца, продолжительность и тип каждого периода. Полученная таблица наглядно демонстрирует разбиение временного ряда на периоды наличия и отсутствия данных:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="circular.html#cb28-1"></a>timerep =<span class="st"> </span>tab <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb28-2"><a href="circular.html#cb28-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">type =</span> <span class="kw">if_else</span>(<span class="kw">is.na</span>(level), <span class="st">&#39;gap&#39;</span>, <span class="st">&#39;data&#39;</span>),</span>
+<span id="cb28-3"><a href="circular.html#cb28-3"></a>         <span class="dt">num =</span> <span class="kw">with</span>(<span class="kw">rle</span>(type), <span class="kw">rep</span>(<span class="kw">seq_along</span>(lengths), lengths))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb28-4"><a href="circular.html#cb28-4"></a><span class="st">  </span><span class="kw">group_by</span>(num) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb28-5"><a href="circular.html#cb28-5"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">start_date =</span> <span class="kw">min</span>(Date),</span>
+<span id="cb28-6"><a href="circular.html#cb28-6"></a>            <span class="dt">end_date =</span> <span class="kw">max</span>(Date),</span>
+<span id="cb28-7"><a href="circular.html#cb28-7"></a>            <span class="dt">duration =</span> end_date <span class="op">-</span><span class="st"> </span>start_date <span class="op">+</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb28-8"><a href="circular.html#cb28-8"></a>            <span class="dt">type =</span> <span class="kw">first</span>(type))</span></code></pre></div>
+<div id="htmlwidget-663989b4ffbaeb43be40" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-663989b4ffbaeb43be40">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100","101"],[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101],["1932-01-01","1932-01-02","1932-01-10","1932-01-11","1932-01-20","1932-01-21","1932-01-26","1932-01-27","1932-01-31","1932-02-02","1932-02-10","1932-02-11","1932-02-20","1932-02-21","1932-02-29","1932-03-02","1932-03-10","1932-03-11","1932-03-20","1932-03-21","1932-03-31","1933-01-02","1933-01-05","1933-01-06","1933-01-10","1933-01-11","1933-01-15","1933-01-16","1933-01-20","1933-01-21","1933-01-25","1933-01-26","1933-01-29","1933-01-30","1933-01-31","1933-02-02","1933-02-06","1933-02-07","1933-02-08","1933-02-09","1933-02-10","1933-02-11","1933-02-20","1933-02-21","1933-02-28","1933-03-02","1933-03-10","1933-03-11","1933-03-20","1933-03-21","1933-03-31","1933-11-02","1933-11-10","1933-11-11","1933-11-15","1933-11-16","1933-11-20","1933-12-02","1933-12-10","1933-12-11","1933-12-20","1933-12-21","1933-12-23","1933-12-24","1933-12-31","1934-01-02","1934-01-10","1934-01-11","1934-01-19","1934-01-20","1934-01-31","1934-02-02","1934-02-03","1934-02-04","1934-02-10","1934-02-11","1934-02-19","1934-02-20","1934-02-24","1934-02-25","1934-02-28","1934-03-02","1934-03-10","1934-03-11","1934-03-19","1934-03-20","1934-03-24","1934-03-25","1934-03-31","1935-01-01","1935-05-20","1935-12-01","1941-01-01","1941-12-31","1942-01-02","1945-01-01","1946-01-01","1981-01-01","1987-01-01","1996-01-01","1997-01-01"],["1932-01-01","1932-01-09","1932-01-10","1932-01-19","1932-01-20","1932-01-25","1932-01-26","1932-01-30","1932-02-01","1932-02-09","1932-02-10","1932-02-19","1932-02-20","1932-02-28","1932-03-01","1932-03-09","1932-03-10","1932-03-19","1932-03-20","1932-03-30","1933-01-01","1933-01-04","1933-01-05","1933-01-09","1933-01-10","1933-01-14","1933-01-15","1933-01-19","1933-01-20","1933-01-24","1933-01-25","1933-01-28","1933-01-29","1933-01-30","1933-02-01","1933-02-05","1933-02-06","1933-02-07","1933-02-08","1933-02-09","1933-02-10","1933-02-19","1933-02-20","1933-02-27","1933-03-01","1933-03-09","1933-03-10","1933-03-19","1933-03-20","1933-03-30","1933-11-01","1933-11-09","1933-11-10","1933-11-14","1933-11-15","1933-11-19","1933-12-01","1933-12-09","1933-12-10","1933-12-19","1933-12-20","1933-12-22","1933-12-23","1933-12-30","1934-01-01","1934-01-09","1934-01-10","1934-01-18","1934-01-19","1934-01-30","1934-02-01","1934-02-02","1934-02-03","1934-02-09","1934-02-10","1934-02-18","1934-02-19","1934-02-23","1934-02-24","1934-02-27","1934-03-01","1934-03-09","1934-03-10","1934-03-18","1934-03-19","1934-03-23","1934-03-24","1934-03-30","1934-12-31","1935-05-19","1935-11-30","1940-12-31","1941-12-30","1942-01-01","1944-12-31","1945-12-31","1980-12-31","1986-12-31","1995-12-31","1996-12-31","2014-12-31"],[1,8,1,9,1,5,1,4,2,8,1,9,1,8,2,8,1,9,1,10,277,3,1,4,1,4,1,4,1,4,1,3,1,1,2,4,1,1,1,1,1,9,1,7,2,8,1,9,1,10,216,8,1,4,1,4,12,8,1,9,1,2,1,7,2,8,1,8,1,11,2,1,1,6,1,8,1,4,1,3,2,8,1,8,1,4,1,6,276,139,195,1858,364,2,1095,365,12784,2191,3287,366,6574],["data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data","gap","data"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>num<\/th>\n      <th>start_date<\/th>\n      <th>end_date<\/th>\n      <th>duration<\/th>\n      <th>type<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":1},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<p>Путём интерполяции можно заполнить все пропуски в данном ряду, однако достоверность (правдоподобие) интерполяции будет снижаться при увеличении длины пропуска. Критическую длину пропуска целесообразно связать с пороговым значением <strong>автокорреляции</strong> — коэффициента корреляции исходного ряда данных и его копии, полученной со сдвигом.</p>
+<p>Автокорреляцию как правило рассчитываеют не при фиксированном сдвиге, а для серии сдвигов. Полученная функция показывает зависимость автокорреляции от величины сдвига и носит название <strong>автокорреляционной функции</strong> (АКФ). Для процессов, плавно изменяющихся во времени при увеличении сдвига величина автокорреляции падает, а это означает, что установив минимально допустимое значение автокорреляции, можно выяснить соответствующий ему сдвиг по времени. Найденная величина и будет максимально допустимой при интерполяции длиной пропуска.</p>
+<p>Для вычисления автокорреляционной функции найдем сначала максимальный период непрерывных наблюдений:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="circular.html#cb29-1"></a>(<span class="dt">max_period =</span> <span class="kw">filter</span>(timerep, type <span class="op">==</span><span class="st"> &#39;data&#39;</span>, duration <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(duration)))</span>
+<span id="cb29-2"><a href="circular.html#cb29-2"></a><span class="co">## # A tibble: 1 x 5</span></span>
+<span id="cb29-3"><a href="circular.html#cb29-3"></a><span class="co">##     num start_date end_date   duration   type </span></span>
+<span id="cb29-4"><a href="circular.html#cb29-4"></a><span class="co">##   &lt;int&gt; &lt;date&gt;     &lt;date&gt;     &lt;drtn&gt;     &lt;chr&gt;</span></span>
+<span id="cb29-5"><a href="circular.html#cb29-5"></a><span class="co">## 1    97 1946-01-01 1980-12-31 12784 days data</span></span></code></pre></div>
+<p>После этого отфильтруем данные на найденный период и вычислим АКФ, используя встроенную в базовый <strong>R</strong>
+функцию <code>acf()</code>:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="circular.html#cb30-1"></a><span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">6</span>,<span class="dv">5</span>,<span class="dv">4</span>,<span class="dv">2</span>))</span>
+<span id="cb30-2"><a href="circular.html#cb30-2"></a>autocorr =<span class="st"> </span>tab <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb30-3"><a href="circular.html#cb30-3"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">between</span>(Date, max_period<span class="op">$</span>start_date, max_period<span class="op">$</span>end_date)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb30-4"><a href="circular.html#cb30-4"></a><span class="st">  </span><span class="kw">pull</span>(level) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb30-5"><a href="circular.html#cb30-5"></a><span class="st">  </span><span class="kw">acf</span>()</span></code></pre></div>
+<p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-34-1.png" width="768" /></p>
+<p>Результат соответствует нашим ожиданиям: автокорреляционная функция монотонно убывает при увеличении сдвига по времени. Осталось устновить пороговое значение автокорреляции и найти соответствующий ему сдвиг.</p>
+<p>В гидрологии за допустимую величину автокорреляции при восстановлении рядов данных принято брать значение, равное <span class="math inline">\(0.7\)</span>. Найдем индекс первого элемента менее данной величины, используя функцию <code>detect_index()</code> из пакета <strong>purrr</strong>:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="circular.html#cb31-1"></a>(<span class="dt">max_dur =</span> purrr<span class="op">::</span><span class="kw">detect_index</span>(autocorr<span class="op">$</span>acf, <span class="op">~</span><span class="st"> </span>.x <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.7</span>))</span>
+<span id="cb31-2"><a href="circular.html#cb31-2"></a><span class="co">## [1] 15</span></span></code></pre></div>
+<p>Полученное значение говорит нам о том, что при заданном допуске допустимо интерполировать значения в пропусках данных короче, чем 15 дней.</p>
+<p>Для выполнения интерполяции воспользуемся функцией <code>na.approx()</code> из пакета <strong>zoo</strong> и округлим полученные значения до одного знака после запятой (что соответствует точности исходных данных):</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="circular.html#cb32-1"></a>(<span class="dt">tab_interp =</span> tab <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb32-2"><a href="circular.html#cb32-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">level_interp =</span> zoo<span class="op">::</span><span class="kw">na.approx</span>(level, <span class="dt">maxgap =</span> max_dur) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">round</span>(<span class="dv">1</span>)))</span>
+<span id="cb32-3"><a href="circular.html#cb32-3"></a><span class="co">## # A tibble: 30,317 x 6</span></span>
+<span id="cb32-4"><a href="circular.html#cb32-4"></a><span class="co">##    Date         day month  year level level_interp</span></span>
+<span id="cb32-5"><a href="circular.html#cb32-5"></a><span class="co">##    &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;</span></span>
+<span id="cb32-6"><a href="circular.html#cb32-6"></a><span class="co">##  1 1932-01-01     1     1  1932  49.4         49.4</span></span>
+<span id="cb32-7"><a href="circular.html#cb32-7"></a><span class="co">##  2 1932-01-02     2     1  1932  NA           49.1</span></span>
+<span id="cb32-8"><a href="circular.html#cb32-8"></a><span class="co">##  3 1932-01-03     3     1  1932  NA           48.9</span></span>
+<span id="cb32-9"><a href="circular.html#cb32-9"></a><span class="co">##  4 1932-01-04     4     1  1932  NA           48.6</span></span>
+<span id="cb32-10"><a href="circular.html#cb32-10"></a><span class="co">##  5 1932-01-05     5     1  1932  NA           48.3</span></span>
+<span id="cb32-11"><a href="circular.html#cb32-11"></a><span class="co">##  6 1932-01-06     6     1  1932  NA           48.1</span></span>
+<span id="cb32-12"><a href="circular.html#cb32-12"></a><span class="co">##  7 1932-01-07     7     1  1932  NA           47.8</span></span>
+<span id="cb32-13"><a href="circular.html#cb32-13"></a><span class="co">##  8 1932-01-08     8     1  1932  NA           47.5</span></span>
+<span id="cb32-14"><a href="circular.html#cb32-14"></a><span class="co">##  9 1932-01-09     9     1  1932  NA           47.3</span></span>
+<span id="cb32-15"><a href="circular.html#cb32-15"></a><span class="co">## 10 1932-01-10    10     1  1932  47           47  </span></span>
+<span id="cb32-16"><a href="circular.html#cb32-16"></a><span class="co">## # … with 30,307 more rows</span></span></code></pre></div>
+<p>В заключение проведем заново оценку ситуации с пропусками в данных</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="circular.html#cb33-1"></a>timerep_interp =<span class="st"> </span>tab_interp <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb33-2"><a href="circular.html#cb33-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">type =</span> <span class="kw">if_else</span>(<span class="kw">is.na</span>(level_interp), <span class="st">&#39;gap&#39;</span>, <span class="st">&#39;data&#39;</span>),</span>
+<span id="cb33-3"><a href="circular.html#cb33-3"></a>         <span class="dt">num =</span> <span class="kw">with</span>(<span class="kw">rle</span>(type), <span class="kw">rep</span>(<span class="kw">seq_along</span>(lengths), lengths))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb33-4"><a href="circular.html#cb33-4"></a><span class="st">  </span><span class="kw">group_by</span>(num) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb33-5"><a href="circular.html#cb33-5"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">start_date =</span> <span class="kw">min</span>(Date),</span>
+<span id="cb33-6"><a href="circular.html#cb33-6"></a>            <span class="dt">end_date =</span> <span class="kw">max</span>(Date),</span>
+<span id="cb33-7"><a href="circular.html#cb33-7"></a>            <span class="dt">duration =</span> end_date <span class="op">-</span><span class="st"> </span>start_date <span class="op">+</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb33-8"><a href="circular.html#cb33-8"></a>            <span class="dt">type =</span> <span class="kw">first</span>(type))</span></code></pre></div>
+<div id="htmlwidget-516fef05b4dfe8f77541" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-516fef05b4dfe8f77541">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11"],[1,2,3,4,5,6,7,8,9,10,11],["1932-01-01","1935-01-01","1935-05-20","1935-12-01","1941-01-01","1945-01-01","1946-01-01","1981-01-01","1987-01-01","1996-01-01","1997-01-01"],["1934-12-31","1935-05-19","1935-11-30","1940-12-31","1944-12-31","1945-12-31","1980-12-31","1986-12-31","1995-12-31","1996-12-31","2014-12-31"],[1096,139,195,1858,1461,365,12784,2191,3287,366,6574],["data","gap","data","gap","data","gap","data","gap","data","gap","data"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>num<\/th>\n      <th>start_date<\/th>\n      <th>end_date<\/th>\n      <th>duration<\/th>\n      <th>type<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":1},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<p>По результатам автокореляционного анализа и интерполяции удалось заполнить значительное число пропусков в данных. Однако по прежнему остаются значительные по длине пропуски, которые уже требуют привлечения дополнительных источников информации для их заполнения.</p>
 </div>
 <div id="circular_time_tests" class="section level3">
-<h3><span class="header-section-number">8.3.2</span> Статистики</h3>
+<h3><span class="header-section-number">8.3.4</span> Статистики</h3>
 <p>Существует ряд статистик и статистических тестов, которые часто используются для временных данных. Среди них мы рассмотрим следующие:</p>
 <ul>
 <li>Тест Манна-Кендалла на значимость линейного тренда</li>
 <li>Тест Петтитт на точку перелома
 — Оценка тренда по методу Тейла-Сена</li>
 </ul>
-<p>Рассмотрим вычисление временных статистик на примере межгодичных и суточных данных по стоку реки Мезень на посту Малонисогорская<a href="package-troubles.html#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="circular.html#cb22-1"></a><span class="kw">library</span>(readr)</span>
-<span id="cb22-2"><a href="circular.html#cb22-2"></a></span>
-<span id="cb22-3"><a href="circular.html#cb22-3"></a>(<span class="dt">tab =</span> <span class="kw">read_csv</span>(<span class="st">&#39;data/Mezen.csv&#39;</span>))</span>
-<span id="cb22-4"><a href="circular.html#cb22-4"></a><span class="co">## # A tibble: 75 x 57</span></span>
-<span id="cb22-5"><a href="circular.html#cb22-5"></a><span class="co">##    year_number Year1 Year2 datestart  datepolend    Qy  Qmax datemax   </span></span>
-<span id="cb22-6"><a href="circular.html#cb22-6"></a><span class="co">##          &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;date&gt;     &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;date&gt;    </span></span>
-<span id="cb22-7"><a href="circular.html#cb22-7"></a><span class="co">##  1           1  1938  1939 2000-03-23 2000-06-08  98.1   747 2000-04-03</span></span>
-<span id="cb22-8"><a href="circular.html#cb22-8"></a><span class="co">##  2           2  1939  1940 2000-03-16 2000-07-11  66.9   487 2000-04-28</span></span>
-<span id="cb22-9"><a href="circular.html#cb22-9"></a><span class="co">##  3           3  1940  1941 2000-03-09 2000-07-12  97.4   995 2000-04-28</span></span>
-<span id="cb22-10"><a href="circular.html#cb22-10"></a><span class="co">##  4           4  1941  1942 2000-03-24 2000-07-21 214.   2030 2000-05-01</span></span>
-<span id="cb22-11"><a href="circular.html#cb22-11"></a><span class="co">##  5           5  1942  1943 2000-04-02 2000-07-31 242.   2790 2000-05-08</span></span>
-<span id="cb22-12"><a href="circular.html#cb22-12"></a><span class="co">##  6           6  1943  1944 2000-03-24 2000-06-15  71.3   451 2000-05-02</span></span>
-<span id="cb22-13"><a href="circular.html#cb22-13"></a><span class="co">##  7           7  1944  1945 2000-02-26 2000-06-30  89.0   530 2000-04-28</span></span>
-<span id="cb22-14"><a href="circular.html#cb22-14"></a><span class="co">##  8           8  1945  1946 2000-03-25 2000-07-13 128.   1220 2000-04-27</span></span>
-<span id="cb22-15"><a href="circular.html#cb22-15"></a><span class="co">##  9           9  1946  1947 2000-03-15 2000-06-30 179.   2150 2000-04-28</span></span>
-<span id="cb22-16"><a href="circular.html#cb22-16"></a><span class="co">## 10          10  1947  1948 2000-03-06 2000-07-15 153.   1720 2000-04-16</span></span>
-<span id="cb22-17"><a href="circular.html#cb22-17"></a><span class="co">## # … with 65 more rows, and 49 more variables: Qygr &lt;dbl&gt;, Qmmsummer &lt;dbl&gt;,</span></span>
-<span id="cb22-18"><a href="circular.html#cb22-18"></a><span class="co">## #   monmmsummer &lt;date&gt;, Qmmwin &lt;dbl&gt;, nommwin &lt;date&gt;, Q30s &lt;dbl&gt;,</span></span>
-<span id="cb22-19"><a href="circular.html#cb22-19"></a><span class="co">## #   date30s1 &lt;date&gt;, date30s2 &lt;date&gt;, Q30w &lt;dbl&gt;, date30w1 &lt;date&gt;,</span></span>
-<span id="cb22-20"><a href="circular.html#cb22-20"></a><span class="co">## #   date30w2 &lt;date&gt;, Q10s &lt;dbl&gt;, date10s1 &lt;date&gt;, date10s2 &lt;date&gt;,</span></span>
-<span id="cb22-21"><a href="circular.html#cb22-21"></a><span class="co">## #   Q10w &lt;dbl&gt;, date10w1 &lt;date&gt;, date10w2 &lt;date&gt;, Q5s &lt;dbl&gt;,</span></span>
-<span id="cb22-22"><a href="circular.html#cb22-22"></a><span class="co">## #   date5s1 &lt;date&gt;, date5s2 &lt;date&gt;, Q5w &lt;dbl&gt;, date5w1 &lt;date&gt;,</span></span>
-<span id="cb22-23"><a href="circular.html#cb22-23"></a><span class="co">## #   date5w2 &lt;date&gt;, Wy &lt;dbl&gt;, Wgr &lt;dbl&gt;, Wpol1 &lt;dbl&gt;, Wpol2 &lt;dbl&gt;,</span></span>
-<span id="cb22-24"><a href="circular.html#cb22-24"></a><span class="co">## #   Wpol3 &lt;dbl&gt;, Wpavs1 &lt;dbl&gt;, Wpavs2 &lt;dbl&gt;, Wpavthaw1 &lt;dbl&gt;,</span></span>
-<span id="cb22-25"><a href="circular.html#cb22-25"></a><span class="co">## #   Wpavthaw2 &lt;dbl&gt;, WgrS &lt;dbl&gt;, WS &lt;dbl&gt;, WgrW &lt;dbl&gt;, WW &lt;dbl&gt;,</span></span>
-<span id="cb22-26"><a href="circular.html#cb22-26"></a><span class="co">## #   Qmaxpavs &lt;dbl&gt;, datemaxpavs &lt;date&gt;, Qmaxpavthaw &lt;dbl&gt;,</span></span>
-<span id="cb22-27"><a href="circular.html#cb22-27"></a><span class="co">## #   datemaxpavthaw &lt;date&gt;, SumProd &lt;dbl&gt;, DaysPavsSum &lt;dbl&gt;,</span></span>
-<span id="cb22-28"><a href="circular.html#cb22-28"></a><span class="co">## #   WinProd &lt;dbl&gt;, DaysThawWin &lt;dbl&gt;, CvWin &lt;dbl&gt;, CvSum &lt;dbl&gt;,</span></span>
-<span id="cb22-29"><a href="circular.html#cb22-29"></a><span class="co">## #   CountPavs &lt;dbl&gt;, CountThaws &lt;dbl&gt;, PolProd &lt;dbl&gt;</span></span></code></pre></div>
+<p>В качестве примера возьмем данные межгодичных изменений характеристик стока реки Мезень на посту Малонисогорская<a href="package-troubles.html#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="circular.html#cb34-1"></a><span class="kw">library</span>(readr)</span>
+<span id="cb34-2"><a href="circular.html#cb34-2"></a></span>
+<span id="cb34-3"><a href="circular.html#cb34-3"></a>(<span class="dt">tab =</span> <span class="kw">read_csv</span>(<span class="st">&#39;data/Mezen.csv&#39;</span>))</span>
+<span id="cb34-4"><a href="circular.html#cb34-4"></a><span class="co">## # A tibble: 75 x 57</span></span>
+<span id="cb34-5"><a href="circular.html#cb34-5"></a><span class="co">##    year_number Year1 Year2 datestart  datepolend    Qy  Qmax datemax   </span></span>
+<span id="cb34-6"><a href="circular.html#cb34-6"></a><span class="co">##          &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;date&gt;     &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;date&gt;    </span></span>
+<span id="cb34-7"><a href="circular.html#cb34-7"></a><span class="co">##  1           1  1938  1939 2000-03-23 2000-06-08  98.1   747 2000-04-03</span></span>
+<span id="cb34-8"><a href="circular.html#cb34-8"></a><span class="co">##  2           2  1939  1940 2000-03-16 2000-07-11  66.9   487 2000-04-28</span></span>
+<span id="cb34-9"><a href="circular.html#cb34-9"></a><span class="co">##  3           3  1940  1941 2000-03-09 2000-07-12  97.4   995 2000-04-28</span></span>
+<span id="cb34-10"><a href="circular.html#cb34-10"></a><span class="co">##  4           4  1941  1942 2000-03-24 2000-07-21 214.   2030 2000-05-01</span></span>
+<span id="cb34-11"><a href="circular.html#cb34-11"></a><span class="co">##  5           5  1942  1943 2000-04-02 2000-07-31 242.   2790 2000-05-08</span></span>
+<span id="cb34-12"><a href="circular.html#cb34-12"></a><span class="co">##  6           6  1943  1944 2000-03-24 2000-06-15  71.3   451 2000-05-02</span></span>
+<span id="cb34-13"><a href="circular.html#cb34-13"></a><span class="co">##  7           7  1944  1945 2000-02-26 2000-06-30  89.0   530 2000-04-28</span></span>
+<span id="cb34-14"><a href="circular.html#cb34-14"></a><span class="co">##  8           8  1945  1946 2000-03-25 2000-07-13 128.   1220 2000-04-27</span></span>
+<span id="cb34-15"><a href="circular.html#cb34-15"></a><span class="co">##  9           9  1946  1947 2000-03-15 2000-06-30 179.   2150 2000-04-28</span></span>
+<span id="cb34-16"><a href="circular.html#cb34-16"></a><span class="co">## 10          10  1947  1948 2000-03-06 2000-07-15 153.   1720 2000-04-16</span></span>
+<span id="cb34-17"><a href="circular.html#cb34-17"></a><span class="co">## # … with 65 more rows, and 49 more variables: Qygr &lt;dbl&gt;, Qmmsummer &lt;dbl&gt;,</span></span>
+<span id="cb34-18"><a href="circular.html#cb34-18"></a><span class="co">## #   monmmsummer &lt;date&gt;, Qmmwin &lt;dbl&gt;, nommwin &lt;date&gt;, Q30s &lt;dbl&gt;,</span></span>
+<span id="cb34-19"><a href="circular.html#cb34-19"></a><span class="co">## #   date30s1 &lt;date&gt;, date30s2 &lt;date&gt;, Q30w &lt;dbl&gt;, date30w1 &lt;date&gt;,</span></span>
+<span id="cb34-20"><a href="circular.html#cb34-20"></a><span class="co">## #   date30w2 &lt;date&gt;, Q10s &lt;dbl&gt;, date10s1 &lt;date&gt;, date10s2 &lt;date&gt;,</span></span>
+<span id="cb34-21"><a href="circular.html#cb34-21"></a><span class="co">## #   Q10w &lt;dbl&gt;, date10w1 &lt;date&gt;, date10w2 &lt;date&gt;, Q5s &lt;dbl&gt;,</span></span>
+<span id="cb34-22"><a href="circular.html#cb34-22"></a><span class="co">## #   date5s1 &lt;date&gt;, date5s2 &lt;date&gt;, Q5w &lt;dbl&gt;, date5w1 &lt;date&gt;,</span></span>
+<span id="cb34-23"><a href="circular.html#cb34-23"></a><span class="co">## #   date5w2 &lt;date&gt;, Wy &lt;dbl&gt;, Wgr &lt;dbl&gt;, Wpol1 &lt;dbl&gt;, Wpol2 &lt;dbl&gt;,</span></span>
+<span id="cb34-24"><a href="circular.html#cb34-24"></a><span class="co">## #   Wpol3 &lt;dbl&gt;, Wpavs1 &lt;dbl&gt;, Wpavs2 &lt;dbl&gt;, Wpavthaw1 &lt;dbl&gt;,</span></span>
+<span id="cb34-25"><a href="circular.html#cb34-25"></a><span class="co">## #   Wpavthaw2 &lt;dbl&gt;, WgrS &lt;dbl&gt;, WS &lt;dbl&gt;, WgrW &lt;dbl&gt;, WW &lt;dbl&gt;,</span></span>
+<span id="cb34-26"><a href="circular.html#cb34-26"></a><span class="co">## #   Qmaxpavs &lt;dbl&gt;, datemaxpavs &lt;date&gt;, Qmaxpavthaw &lt;dbl&gt;,</span></span>
+<span id="cb34-27"><a href="circular.html#cb34-27"></a><span class="co">## #   datemaxpavthaw &lt;date&gt;, SumProd &lt;dbl&gt;, DaysPavsSum &lt;dbl&gt;,</span></span>
+<span id="cb34-28"><a href="circular.html#cb34-28"></a><span class="co">## #   WinProd &lt;dbl&gt;, DaysThawWin &lt;dbl&gt;, CvWin &lt;dbl&gt;, CvSum &lt;dbl&gt;,</span></span>
+<span id="cb34-29"><a href="circular.html#cb34-29"></a><span class="co">## #   CountPavs &lt;dbl&gt;, CountThaws &lt;dbl&gt;, PolProd &lt;dbl&gt;</span></span></code></pre></div>
 <p>Построим график межгодичной изменчивости объема грунтового стока (переменная <code>Wgr</code> в <span class="math inline">\(км^3\)</span>):</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="circular.html#cb23-1"></a><span class="kw">ggplot</span>(tab, <span class="dt">mapping =</span> <span class="kw">aes</span>(Year1, Wgr)) <span class="op">+</span></span>
-<span id="cb23-2"><a href="circular.html#cb23-2"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
-<span id="cb23-3"><a href="circular.html#cb23-3"></a><span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb23-4"><a href="circular.html#cb23-4"></a><span class="st">  </span><span class="kw">geom_smooth</span>() <span class="op">+</span></span>
-<span id="cb23-5"><a href="circular.html#cb23-5"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Объем грунтового стока на р. Мезень в д. Малонисогорская&#39;</span>,</span>
-<span id="cb23-6"><a href="circular.html#cb23-6"></a>       <span class="dt">x =</span> <span class="st">&#39;Год&#39;</span>,</span>
-<span id="cb23-7"><a href="circular.html#cb23-7"></a>       <span class="dt">y =</span> <span class="st">&#39;куб. км&#39;</span>)</span></code></pre></div>
-<p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="circular.html#cb35-1"></a><span class="kw">ggplot</span>(tab, <span class="dt">mapping =</span> <span class="kw">aes</span>(Year1, Wgr)) <span class="op">+</span></span>
+<span id="cb35-2"><a href="circular.html#cb35-2"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
+<span id="cb35-3"><a href="circular.html#cb35-3"></a><span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb35-4"><a href="circular.html#cb35-4"></a><span class="st">  </span><span class="kw">geom_smooth</span>() <span class="op">+</span></span>
+<span id="cb35-5"><a href="circular.html#cb35-5"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Объем грунтового стока на р. Мезень в д. Малонисогорская&#39;</span>,</span>
+<span id="cb35-6"><a href="circular.html#cb35-6"></a>       <span class="dt">x =</span> <span class="st">&#39;Год&#39;</span>,</span>
+<span id="cb35-7"><a href="circular.html#cb35-7"></a>       <span class="dt">y =</span> <span class="st">&#39;куб. км&#39;</span>)</span></code></pre></div>
+<p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
 <p>Для выполнения тестов Манна-Кендалла, Петтитт и оценки тренда по методу Тейла-Сена подключим пакет <strong>trend</strong>:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="circular.html#cb24-1"></a><span class="kw">library</span>(trend)</span>
-<span id="cb24-2"><a href="circular.html#cb24-2"></a>(<span class="dt">mk =</span> <span class="kw">mk.test</span>(tab<span class="op">$</span>Wgr))</span>
-<span id="cb24-3"><a href="circular.html#cb24-3"></a><span class="co">## </span></span>
-<span id="cb24-4"><a href="circular.html#cb24-4"></a><span class="co">##  Mann-Kendall trend test</span></span>
-<span id="cb24-5"><a href="circular.html#cb24-5"></a><span class="co">## </span></span>
-<span id="cb24-6"><a href="circular.html#cb24-6"></a><span class="co">## data:  tab$Wgr</span></span>
-<span id="cb24-7"><a href="circular.html#cb24-7"></a><span class="co">## z = 7.8129, n = 75, p-value = 5.589e-15</span></span>
-<span id="cb24-8"><a href="circular.html#cb24-8"></a><span class="co">## alternative hypothesis: true S is not equal to 0</span></span>
-<span id="cb24-9"><a href="circular.html#cb24-9"></a><span class="co">## sample estimates:</span></span>
-<span id="cb24-10"><a href="circular.html#cb24-10"></a><span class="co">##            S         varS          tau </span></span>
-<span id="cb24-11"><a href="circular.html#cb24-11"></a><span class="co">## 1.709000e+03 4.779167e+04 6.158559e-01</span></span>
-<span id="cb24-12"><a href="circular.html#cb24-12"></a>(<span class="dt">pt =</span> <span class="kw">pettitt.test</span>(tab<span class="op">$</span>Wgr))</span>
-<span id="cb24-13"><a href="circular.html#cb24-13"></a><span class="co">## </span></span>
-<span id="cb24-14"><a href="circular.html#cb24-14"></a><span class="co">##  Pettitt&#39;s test for single change-point detection</span></span>
-<span id="cb24-15"><a href="circular.html#cb24-15"></a><span class="co">## </span></span>
-<span id="cb24-16"><a href="circular.html#cb24-16"></a><span class="co">## data:  tab$Wgr</span></span>
-<span id="cb24-17"><a href="circular.html#cb24-17"></a><span class="co">## U* = 1324, p-value = 4.131e-11</span></span>
-<span id="cb24-18"><a href="circular.html#cb24-18"></a><span class="co">## alternative hypothesis: two.sided</span></span>
-<span id="cb24-19"><a href="circular.html#cb24-19"></a><span class="co">## sample estimates:</span></span>
-<span id="cb24-20"><a href="circular.html#cb24-20"></a><span class="co">## probable change point at time K </span></span>
-<span id="cb24-21"><a href="circular.html#cb24-21"></a><span class="co">##                              38</span></span>
-<span id="cb24-22"><a href="circular.html#cb24-22"></a>(<span class="dt">ts =</span> <span class="kw">sens.slope</span>(tab<span class="op">$</span>Wgr))</span>
-<span id="cb24-23"><a href="circular.html#cb24-23"></a><span class="co">## </span></span>
-<span id="cb24-24"><a href="circular.html#cb24-24"></a><span class="co">##  Sen&#39;s slope</span></span>
-<span id="cb24-25"><a href="circular.html#cb24-25"></a><span class="co">## </span></span>
-<span id="cb24-26"><a href="circular.html#cb24-26"></a><span class="co">## data:  tab$Wgr</span></span>
-<span id="cb24-27"><a href="circular.html#cb24-27"></a><span class="co">## z = 7.8129, n = 75, p-value = 5.589e-15</span></span>
-<span id="cb24-28"><a href="circular.html#cb24-28"></a><span class="co">## alternative hypothesis: true z is not equal to 0</span></span>
-<span id="cb24-29"><a href="circular.html#cb24-29"></a><span class="co">## 95 percent confidence interval:</span></span>
-<span id="cb24-30"><a href="circular.html#cb24-30"></a><span class="co">##  0.01378903 0.02202750</span></span>
-<span id="cb24-31"><a href="circular.html#cb24-31"></a><span class="co">## sample estimates:</span></span>
-<span id="cb24-32"><a href="circular.html#cb24-32"></a><span class="co">## Sen&#39;s slope </span></span>
-<span id="cb24-33"><a href="circular.html#cb24-33"></a><span class="co">##  0.01810404</span></span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="circular.html#cb36-1"></a><span class="kw">library</span>(trend)</span>
+<span id="cb36-2"><a href="circular.html#cb36-2"></a>(<span class="dt">mk =</span> <span class="kw">mk.test</span>(tab<span class="op">$</span>Wgr))</span>
+<span id="cb36-3"><a href="circular.html#cb36-3"></a><span class="co">## </span></span>
+<span id="cb36-4"><a href="circular.html#cb36-4"></a><span class="co">##  Mann-Kendall trend test</span></span>
+<span id="cb36-5"><a href="circular.html#cb36-5"></a><span class="co">## </span></span>
+<span id="cb36-6"><a href="circular.html#cb36-6"></a><span class="co">## data:  tab$Wgr</span></span>
+<span id="cb36-7"><a href="circular.html#cb36-7"></a><span class="co">## z = 7.8129, n = 75, p-value = 5.589e-15</span></span>
+<span id="cb36-8"><a href="circular.html#cb36-8"></a><span class="co">## alternative hypothesis: true S is not equal to 0</span></span>
+<span id="cb36-9"><a href="circular.html#cb36-9"></a><span class="co">## sample estimates:</span></span>
+<span id="cb36-10"><a href="circular.html#cb36-10"></a><span class="co">##            S         varS          tau </span></span>
+<span id="cb36-11"><a href="circular.html#cb36-11"></a><span class="co">## 1.709000e+03 4.779167e+04 6.158559e-01</span></span>
+<span id="cb36-12"><a href="circular.html#cb36-12"></a>(<span class="dt">pt =</span> <span class="kw">pettitt.test</span>(tab<span class="op">$</span>Wgr))</span>
+<span id="cb36-13"><a href="circular.html#cb36-13"></a><span class="co">## </span></span>
+<span id="cb36-14"><a href="circular.html#cb36-14"></a><span class="co">##  Pettitt&#39;s test for single change-point detection</span></span>
+<span id="cb36-15"><a href="circular.html#cb36-15"></a><span class="co">## </span></span>
+<span id="cb36-16"><a href="circular.html#cb36-16"></a><span class="co">## data:  tab$Wgr</span></span>
+<span id="cb36-17"><a href="circular.html#cb36-17"></a><span class="co">## U* = 1324, p-value = 4.131e-11</span></span>
+<span id="cb36-18"><a href="circular.html#cb36-18"></a><span class="co">## alternative hypothesis: two.sided</span></span>
+<span id="cb36-19"><a href="circular.html#cb36-19"></a><span class="co">## sample estimates:</span></span>
+<span id="cb36-20"><a href="circular.html#cb36-20"></a><span class="co">## probable change point at time K </span></span>
+<span id="cb36-21"><a href="circular.html#cb36-21"></a><span class="co">##                              38</span></span>
+<span id="cb36-22"><a href="circular.html#cb36-22"></a>(<span class="dt">ts =</span> <span class="kw">sens.slope</span>(tab<span class="op">$</span>Wgr))</span>
+<span id="cb36-23"><a href="circular.html#cb36-23"></a><span class="co">## </span></span>
+<span id="cb36-24"><a href="circular.html#cb36-24"></a><span class="co">##  Sen&#39;s slope</span></span>
+<span id="cb36-25"><a href="circular.html#cb36-25"></a><span class="co">## </span></span>
+<span id="cb36-26"><a href="circular.html#cb36-26"></a><span class="co">## data:  tab$Wgr</span></span>
+<span id="cb36-27"><a href="circular.html#cb36-27"></a><span class="co">## z = 7.8129, n = 75, p-value = 5.589e-15</span></span>
+<span id="cb36-28"><a href="circular.html#cb36-28"></a><span class="co">## alternative hypothesis: true z is not equal to 0</span></span>
+<span id="cb36-29"><a href="circular.html#cb36-29"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb36-30"><a href="circular.html#cb36-30"></a><span class="co">##  0.01378903 0.02202750</span></span>
+<span id="cb36-31"><a href="circular.html#cb36-31"></a><span class="co">## sample estimates:</span></span>
+<span id="cb36-32"><a href="circular.html#cb36-32"></a><span class="co">## Sen&#39;s slope </span></span>
+<span id="cb36-33"><a href="circular.html#cb36-33"></a><span class="co">##  0.01810404</span></span></code></pre></div>
 <p>Все три теста в данном случе дают высокую статистическую значимость временных изменений (p-значения), при этом тест Петтитт говорит, что точка перелома находится в 38-й позиции ряда. Если разделить исследуемый временной ряд на две выборки этой точкой, то они будут иметь статистически значимое отличие в характеристиках среднего значения показателя. Метод Тейла-Сена также говорит нам, что грунтовый сток увеличивается ежегодно примерно на <span class="math inline">\(1.8\%\)</span> (величина тренда равна <span class="math inline">\(0.0181\)</span>), что за период 70 лет даёт абсолютный прирост грунтового стока более чем в 2 раза.</p>
 <p>Для наглядности нанесем линию тренда и точку перелома на график:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="circular.html#cb25-1"></a><span class="kw">ggplot</span>(tab, <span class="dt">mapping =</span> <span class="kw">aes</span>(Year1, Wgr)) <span class="op">+</span></span>
-<span id="cb25-2"><a href="circular.html#cb25-2"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
-<span id="cb25-3"><a href="circular.html#cb25-3"></a><span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb25-4"><a href="circular.html#cb25-4"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&#39;lm&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;red&#39;</span>) <span class="op">+</span></span>
-<span id="cb25-5"><a href="circular.html#cb25-5"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> tab<span class="op">$</span>Year1[pt<span class="op">$</span>estimate], <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">size =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb25-6"><a href="circular.html#cb25-6"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">label =</span> tab<span class="op">$</span>Year1[pt<span class="op">$</span>estimate], </span>
-<span id="cb25-7"><a href="circular.html#cb25-7"></a>           <span class="dt">x =</span> tab<span class="op">$</span>Year1[pt<span class="op">$</span>estimate] <span class="op">+</span><span class="st"> </span><span class="dv">4</span>, <span class="dt">y =</span> <span class="kw">max</span>(tab<span class="op">$</span>Wgr), </span>
-<span id="cb25-8"><a href="circular.html#cb25-8"></a>           <span class="dt">size =</span> <span class="dv">4</span>, <span class="dt">colour =</span> <span class="st">&quot;red&quot;</span>) <span class="op">+</span></span>
-<span id="cb25-9"><a href="circular.html#cb25-9"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Объем грунтового стока на р. Мезень в д. Малонисогорская&#39;</span>,</span>
-<span id="cb25-10"><a href="circular.html#cb25-10"></a>     <span class="dt">x =</span> <span class="st">&#39;Год&#39;</span>,</span>
-<span id="cb25-11"><a href="circular.html#cb25-11"></a>     <span class="dt">y =</span> <span class="st">&#39;куб. км&#39;</span>)</span></code></pre></div>
-<p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
-</div>
-<div id="circular_time_complete" class="section level3">
-<h3><span class="header-section-number">8.3.3</span> Восстановление пропусков и проверка корректности дат</h3>
-<p>Данные во временных рядах часто соответствуют <em>равноотстоящим по времени</em> срезам (раз в несколько часов, раз в день, раз в три месяца и т.д.), что обусловлено регулярным характером сбора информации (наблюдения, предоставление отчетности и т.д.). Соответствующее предположение лежит и в основе многих функций временного анализа (таких как автокорреляционная функция). Если в данных отсутствуют некоторые временные срезы, это нарушает регулярность временного ряда, что может привести к его некорректной интерпретации. Необходимо восстановить пропущенные сроки, явным образом указав, что данных на эти сроки нет.</p>
-<p>Помимо этого, дата может быть записана в <em>некорректной</em> форме. Например, оператор ввода данных перепутал месяц и день 18 марта, что привело к созданию несуществующей даты 03.18 в одной из строк.</p>
-<p>Подобные несовершенства временных рядов важно выявить на самых ранних стадиях анализа данных. Рассмотрим, как эту задачу можно решить средствами R. В качестве источника данных будем использовать данные гидропоста на пороге Паялка (р. Умба, Мурманская область)<a href="package-troubles.html#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="circular.html#cb26-1"></a>(<span class="dt">src =</span> <span class="kw">read_delim</span>(<span class="st">&#39;data/in_Umba.txt&#39;</span>, <span class="dt">delim =</span> <span class="st">&#39; &#39;</span>, </span>
-<span id="cb26-2"><a href="circular.html#cb26-2"></a>                 <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&#39;day&#39;</span>, <span class="st">&#39;month&#39;</span>, <span class="st">&#39;year&#39;</span>, <span class="st">&#39;level&#39;</span>), <span class="dt">na =</span> <span class="st">&#39;9999&#39;</span>))</span>
-<span id="cb26-3"><a href="circular.html#cb26-3"></a><span class="co">## # A tibble: 30,316 x 4</span></span>
-<span id="cb26-4"><a href="circular.html#cb26-4"></a><span class="co">##      day month  year level</span></span>
-<span id="cb26-5"><a href="circular.html#cb26-5"></a><span class="co">##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span id="cb26-6"><a href="circular.html#cb26-6"></a><span class="co">##  1     1     1  1932  49.4</span></span>
-<span id="cb26-7"><a href="circular.html#cb26-7"></a><span class="co">##  2     2     1  1932  NA  </span></span>
-<span id="cb26-8"><a href="circular.html#cb26-8"></a><span class="co">##  3     3     1  1932  NA  </span></span>
-<span id="cb26-9"><a href="circular.html#cb26-9"></a><span class="co">##  4     4     1  1932  NA  </span></span>
-<span id="cb26-10"><a href="circular.html#cb26-10"></a><span class="co">##  5     5     1  1932  NA  </span></span>
-<span id="cb26-11"><a href="circular.html#cb26-11"></a><span class="co">##  6     6     1  1932  NA  </span></span>
-<span id="cb26-12"><a href="circular.html#cb26-12"></a><span class="co">##  7     7     1  1932  NA  </span></span>
-<span id="cb26-13"><a href="circular.html#cb26-13"></a><span class="co">##  8     8     1  1932  NA  </span></span>
-<span id="cb26-14"><a href="circular.html#cb26-14"></a><span class="co">##  9     9     1  1932  NA  </span></span>
-<span id="cb26-15"><a href="circular.html#cb26-15"></a><span class="co">## 10    10     1  1932  47  </span></span>
-<span id="cb26-16"><a href="circular.html#cb26-16"></a><span class="co">## # … with 30,306 more rows</span></span></code></pre></div>
-<p>Сформируем даты на основе первых трёх столбцов и проверим, все ли из них корректны. Если компоненты даты некорректны, то функция <code>yms()</code> вернет <code>NA</code>:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="circular.html#cb27-1"></a>tab =<span class="st"> </span>src <span class="op">%&gt;%</span></span>
-<span id="cb27-2"><a href="circular.html#cb27-2"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">Date =</span> <span class="kw">ymd</span>(<span class="kw">paste</span>(year, month, day)))</span>
-<span id="cb27-3"><a href="circular.html#cb27-3"></a></span>
-<span id="cb27-4"><a href="circular.html#cb27-4"></a>tab <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb27-5"><a href="circular.html#cb27-5"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">is.na</span>(Date))</span>
-<span id="cb27-6"><a href="circular.html#cb27-6"></a><span class="co">## # A tibble: 1 x 5</span></span>
-<span id="cb27-7"><a href="circular.html#cb27-7"></a><span class="co">##     day month  year level Date      </span></span>
-<span id="cb27-8"><a href="circular.html#cb27-8"></a><span class="co">##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;date&gt;    </span></span>
-<span id="cb27-9"><a href="circular.html#cb27-9"></a><span class="co">## 1    29     2  1941  27.4 NA</span></span></code></pre></div>
-<p>Проверка показала, что преобразование в дату оказалось невозможно только для одной строки. В этой строке оператором была введена несуществующая дата — 29 февраля 1941 года. Этот год не является високосным, а значит количество дней в феврале должно равняться 28. Единственный выход в данной ситуациии — отбраковать запись:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="circular.html#cb28-1"></a>tab =<span class="st"> </span>tab <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb28-2"><a href="circular.html#cb28-2"></a><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(Date))</span></code></pre></div>
-<p>После того как мы убедились, что в таблице присутствуют только корректные даты, можно проверять пропуски дат. Для этого упорядочим таблицу по возрастанию дат и используем функцию <code>lag()</code> из пакета <strong>dplyr</strong>, чтобы вычислить разницу между каждой датой и ее предшественницей. После этого отфильтруем строки, которым предшествует 1 или более пропущенных дней и сформируем отчетную таблицу, содержащую все найденные пропуски:</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="circular.html#cb29-1"></a>tab <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb29-2"><a href="circular.html#cb29-2"></a><span class="st">  </span><span class="kw">arrange</span>(Date) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb29-3"><a href="circular.html#cb29-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Gap =</span> Date <span class="op">-</span><span class="st"> </span><span class="kw">lag</span>(Date, <span class="dv">1</span>) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb29-4"><a href="circular.html#cb29-4"></a><span class="st">  </span><span class="kw">filter</span>(Gap <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb29-5"><a href="circular.html#cb29-5"></a><span class="st">  </span><span class="kw">transmute</span>(<span class="dt">start_date =</span> Date <span class="op">-</span><span class="st"> </span>Gap,</span>
-<span id="cb29-6"><a href="circular.html#cb29-6"></a>            <span class="dt">end_date =</span> Date <span class="op">-</span><span class="st"> </span><span class="dv">1</span>,</span>
-<span id="cb29-7"><a href="circular.html#cb29-7"></a>            <span class="dt">duration =</span> Gap)</span>
-<span id="cb29-8"><a href="circular.html#cb29-8"></a><span class="co">## # A tibble: 1 x 3</span></span>
-<span id="cb29-9"><a href="circular.html#cb29-9"></a><span class="co">##   start_date end_date   duration</span></span>
-<span id="cb29-10"><a href="circular.html#cb29-10"></a><span class="co">##   &lt;date&gt;     &lt;date&gt;     &lt;drtn&gt;  </span></span>
-<span id="cb29-11"><a href="circular.html#cb29-11"></a><span class="co">## 1 1941-12-31 1942-01-01 2 days</span></span></code></pre></div>
-<p>Данная таблица говорит нам о том, что имеется один пропуск из двух дат: 31 декабря 1941 года и 01 января 1942 года. Чтобы восстановить пропущенные сроки, воспользуемся функцией <code>complete()</code> из пакета <strong>tidyr</strong>, указав ей, что переменная <em>Date</em> должна содержать <em>все</em> даты с шагом в один день, начиная с самой ранней и заканчивая самой поздней:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="circular.html#cb30-1"></a>tab_compl =<span class="st"> </span>tab <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb30-2"><a href="circular.html#cb30-2"></a><span class="st">  </span><span class="kw">complete</span>(<span class="dt">Date =</span> <span class="kw">seq</span>(<span class="kw">min</span>(Date, <span class="dt">na.rm =</span> T), <span class="kw">max</span>(Date, <span class="dt">na.rm =</span> T), <span class="dt">by =</span> <span class="st">&#39;day&#39;</span>))</span></code></pre></div>
-<p>Итак, полная процедура проверки корректности и восстановления пропущенных дат в виде одного конвейера манипуляций будет выглядеть следующим образом:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="circular.html#cb31-1"></a>tab =<span class="st"> </span>src <span class="op">%&gt;%</span></span>
-<span id="cb31-2"><a href="circular.html#cb31-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Date =</span> <span class="kw">ymd</span>(<span class="kw">paste</span>(year, month, day))) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb31-3"><a href="circular.html#cb31-3"></a><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(Date)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb31-4"><a href="circular.html#cb31-4"></a><span class="st">  </span><span class="kw">complete</span>(<span class="dt">Date =</span> <span class="kw">seq</span>(<span class="kw">min</span>(Date, <span class="dt">na.rm =</span> T), <span class="kw">max</span>(Date, <span class="dt">na.rm =</span> T), <span class="dt">by =</span> <span class="st">&#39;day&#39;</span>))</span></code></pre></div>
-</div>
-<div id="circular_time_interp" class="section level3">
-<h3><span class="header-section-number">8.3.4</span> Интерполяция по времени</h3>
-<p>Одна из распространенных задач при работе с временными данными — это интерполяция по времени. Часто она возникает в ситуации, когда нерегулярно распределенные по времени данные надо интерполировать на регулярные сроки (скажем, через час), чтобы обеспечить их сравнимость с другими рядами данных. Также задача интерполяции может использоваться для заполнения пропусков в данных. И в том и в другом случае необходимо учитывать автокорреляционные свойства временного ряда и с осторожностью подходить к интерполяции на длительных промежутках времени, поскольку такая интерполяция может не иметь под собой физических оснований.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="circular.html#cb37-1"></a><span class="kw">ggplot</span>(tab, <span class="dt">mapping =</span> <span class="kw">aes</span>(Year1, Wgr)) <span class="op">+</span></span>
+<span id="cb37-2"><a href="circular.html#cb37-2"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
+<span id="cb37-3"><a href="circular.html#cb37-3"></a><span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb37-4"><a href="circular.html#cb37-4"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&#39;lm&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;red&#39;</span>) <span class="op">+</span></span>
+<span id="cb37-5"><a href="circular.html#cb37-5"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> tab<span class="op">$</span>Year1[pt<span class="op">$</span>estimate], <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">size =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb37-6"><a href="circular.html#cb37-6"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">label =</span> tab<span class="op">$</span>Year1[pt<span class="op">$</span>estimate], </span>
+<span id="cb37-7"><a href="circular.html#cb37-7"></a>           <span class="dt">x =</span> tab<span class="op">$</span>Year1[pt<span class="op">$</span>estimate] <span class="op">+</span><span class="st"> </span><span class="dv">4</span>, <span class="dt">y =</span> <span class="kw">max</span>(tab<span class="op">$</span>Wgr), </span>
+<span id="cb37-8"><a href="circular.html#cb37-8"></a>           <span class="dt">size =</span> <span class="dv">4</span>, <span class="dt">colour =</span> <span class="st">&quot;red&quot;</span>) <span class="op">+</span></span>
+<span id="cb37-9"><a href="circular.html#cb37-9"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Объем грунтового стока на р. Мезень в д. Малонисогорская&#39;</span>,</span>
+<span id="cb37-10"><a href="circular.html#cb37-10"></a>     <span class="dt">x =</span> <span class="st">&#39;Год&#39;</span>,</span>
+<span id="cb37-11"><a href="circular.html#cb37-11"></a>     <span class="dt">y =</span> <span class="st">&#39;куб. км&#39;</span>)</span></code></pre></div>
+<p><img src="08-StatisticsCircular_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
 </div>
 <div id="circular_time_animation" class="section level3">
 <h3><span class="header-section-number">8.3.5</span> Анимация</h3>
@@ -1354,97 +1425,97 @@ S = \frac{1}{n} \sum_{j=1}^{n} \sin \theta_j.\]</span></p>
 <li><code>ease_aes()</code> — порядок смягчения (интерполяции) графических переменных в моменты перехода.</li>
 </ul>
 <p>В качестве первого примера используем уже знакомые нам данные реанализа NASA POWER суточного осреднения, выгрузив информацию по точкам в трех городах (Мурманск, Москва, Краснодар) за 2018 год:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="circular.html#cb32-1"></a><span class="kw">library</span>(nasapower)</span>
-<span id="cb32-2"><a href="circular.html#cb32-2"></a><span class="kw">library</span>(ggplot2)</span>
-<span id="cb32-3"><a href="circular.html#cb32-3"></a></span>
-<span id="cb32-4"><a href="circular.html#cb32-4"></a>cities =<span class="st"> </span><span class="kw">list</span>(</span>
-<span id="cb32-5"><a href="circular.html#cb32-5"></a>  Мурманск =<span class="st"> </span><span class="kw">c</span>(<span class="dv">33</span>, <span class="dv">69</span>),</span>
-<span id="cb32-6"><a href="circular.html#cb32-6"></a>  Москва =<span class="st"> </span><span class="kw">c</span>(<span class="dv">38</span>, <span class="dv">56</span>),</span>
-<span id="cb32-7"><a href="circular.html#cb32-7"></a>  Краснодар =<span class="st"> </span><span class="kw">c</span>(<span class="dv">39</span>, <span class="dv">45</span>)</span>
-<span id="cb32-8"><a href="circular.html#cb32-8"></a>)</span>
-<span id="cb32-9"><a href="circular.html#cb32-9"></a></span>
-<span id="cb32-10"><a href="circular.html#cb32-10"></a>tab =<span class="st"> </span>purrr<span class="op">::</span><span class="kw">imap</span>(cities, <span class="cf">function</span>(coords, city){</span>
-<span id="cb32-11"><a href="circular.html#cb32-11"></a>  <span class="kw">get_power</span>(</span>
-<span id="cb32-12"><a href="circular.html#cb32-12"></a>    <span class="dt">community =</span> <span class="st">&quot;AG&quot;</span>,</span>
-<span id="cb32-13"><a href="circular.html#cb32-13"></a>    <span class="dt">lonlat =</span> coords,</span>
-<span id="cb32-14"><a href="circular.html#cb32-14"></a>    <span class="dt">pars =</span> <span class="kw">c</span>(<span class="st">&quot;RH2M&quot;</span>, <span class="st">&quot;T2M&quot;</span>, <span class="st">&quot;PRECTOT&quot;</span>),</span>
-<span id="cb32-15"><a href="circular.html#cb32-15"></a>    <span class="dt">dates =</span> <span class="kw">c</span>(<span class="st">&quot;2018-01-01&quot;</span>, <span class="st">&quot;2018-12-31&quot;</span>),</span>
-<span id="cb32-16"><a href="circular.html#cb32-16"></a>    <span class="dt">temporal_average =</span> <span class="st">&quot;DAILY&quot;</span></span>
-<span id="cb32-17"><a href="circular.html#cb32-17"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">CITY =</span> city,</span>
-<span id="cb32-18"><a href="circular.html#cb32-18"></a>               <span class="dt">MONTH =</span> <span class="kw">month</span>(YYYYMMDD))</span>
-<span id="cb32-19"><a href="circular.html#cb32-19"></a>}) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">bind_rows</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="circular.html#cb38-1"></a><span class="kw">library</span>(nasapower)</span>
+<span id="cb38-2"><a href="circular.html#cb38-2"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb38-3"><a href="circular.html#cb38-3"></a></span>
+<span id="cb38-4"><a href="circular.html#cb38-4"></a>cities =<span class="st"> </span><span class="kw">list</span>(</span>
+<span id="cb38-5"><a href="circular.html#cb38-5"></a>  Мурманск =<span class="st"> </span><span class="kw">c</span>(<span class="dv">33</span>, <span class="dv">69</span>),</span>
+<span id="cb38-6"><a href="circular.html#cb38-6"></a>  Москва =<span class="st"> </span><span class="kw">c</span>(<span class="dv">38</span>, <span class="dv">56</span>),</span>
+<span id="cb38-7"><a href="circular.html#cb38-7"></a>  Краснодар =<span class="st"> </span><span class="kw">c</span>(<span class="dv">39</span>, <span class="dv">45</span>)</span>
+<span id="cb38-8"><a href="circular.html#cb38-8"></a>)</span>
+<span id="cb38-9"><a href="circular.html#cb38-9"></a></span>
+<span id="cb38-10"><a href="circular.html#cb38-10"></a>tab =<span class="st"> </span>purrr<span class="op">::</span><span class="kw">imap</span>(cities, <span class="cf">function</span>(coords, city){</span>
+<span id="cb38-11"><a href="circular.html#cb38-11"></a>  <span class="kw">get_power</span>(</span>
+<span id="cb38-12"><a href="circular.html#cb38-12"></a>    <span class="dt">community =</span> <span class="st">&quot;AG&quot;</span>,</span>
+<span id="cb38-13"><a href="circular.html#cb38-13"></a>    <span class="dt">lonlat =</span> coords,</span>
+<span id="cb38-14"><a href="circular.html#cb38-14"></a>    <span class="dt">pars =</span> <span class="kw">c</span>(<span class="st">&quot;RH2M&quot;</span>, <span class="st">&quot;T2M&quot;</span>, <span class="st">&quot;PRECTOT&quot;</span>),</span>
+<span id="cb38-15"><a href="circular.html#cb38-15"></a>    <span class="dt">dates =</span> <span class="kw">c</span>(<span class="st">&quot;2018-01-01&quot;</span>, <span class="st">&quot;2018-12-31&quot;</span>),</span>
+<span id="cb38-16"><a href="circular.html#cb38-16"></a>    <span class="dt">temporal_average =</span> <span class="st">&quot;DAILY&quot;</span></span>
+<span id="cb38-17"><a href="circular.html#cb38-17"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">CITY =</span> city,</span>
+<span id="cb38-18"><a href="circular.html#cb38-18"></a>               <span class="dt">MONTH =</span> <span class="kw">month</span>(YYYYMMDD))</span>
+<span id="cb38-19"><a href="circular.html#cb38-19"></a>}) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">bind_rows</span>()</span></code></pre></div>
 <p>Рассмотрим колебания температуры по 12 месяцам посредством диаграммы размаха:</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="circular.html#cb33-1"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(CITY, T2M)) <span class="op">+</span></span>
-<span id="cb33-2"><a href="circular.html#cb33-2"></a><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span></span>
-<span id="cb33-3"><a href="circular.html#cb33-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Температура воздуха в 2018 году по данным NASA POWER&quot;</span>,</span>
-<span id="cb33-4"><a href="circular.html#cb33-4"></a>       <span class="dt">subtitle =</span> <span class="st">&#39;Месяц: {round(frame_time)}&#39;</span>) <span class="op">+</span></span>
-<span id="cb33-5"><a href="circular.html#cb33-5"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Город&#39;</span>) <span class="op">+</span></span>
-<span id="cb33-6"><a href="circular.html#cb33-6"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Т, °С&#39;</span>) <span class="op">+</span></span>
-<span id="cb33-7"><a href="circular.html#cb33-7"></a><span class="st">  </span><span class="kw">transition_time</span>(MONTH)</span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="circular.html#cb39-1"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(CITY, T2M)) <span class="op">+</span></span>
+<span id="cb39-2"><a href="circular.html#cb39-2"></a><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span></span>
+<span id="cb39-3"><a href="circular.html#cb39-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Температура воздуха в 2018 году по данным NASA POWER&quot;</span>,</span>
+<span id="cb39-4"><a href="circular.html#cb39-4"></a>       <span class="dt">subtitle =</span> <span class="st">&#39;Месяц: {round(frame_time)}&#39;</span>) <span class="op">+</span></span>
+<span id="cb39-5"><a href="circular.html#cb39-5"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Город&#39;</span>) <span class="op">+</span></span>
+<span id="cb39-6"><a href="circular.html#cb39-6"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Т, °С&#39;</span>) <span class="op">+</span></span>
+<span id="cb39-7"><a href="circular.html#cb39-7"></a><span class="st">  </span><span class="kw">transition_time</span>(MONTH)</span></code></pre></div>
 <p><img src="images/boxplot_anim.gif" /><!-- --></p>
 <p>Аналогичную анимацию можно провести и на примере функции плотности распределения:</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="circular.html#cb34-1"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(T2M, <span class="dt">fill =</span> CITY)) <span class="op">+</span></span>
-<span id="cb34-2"><a href="circular.html#cb34-2"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb34-3"><a href="circular.html#cb34-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Температура воздуха в 2018 году по данным NASA POWER&quot;</span>,</span>
-<span id="cb34-4"><a href="circular.html#cb34-4"></a>       <span class="dt">subtitle =</span> <span class="st">&#39;Месяц: {round(frame_time)}&#39;</span>,</span>
-<span id="cb34-5"><a href="circular.html#cb34-5"></a>       <span class="dt">fill =</span> <span class="st">&#39;Город&#39;</span>) <span class="op">+</span></span>
-<span id="cb34-6"><a href="circular.html#cb34-6"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Т, °С&#39;</span>) <span class="op">+</span></span>
-<span id="cb34-7"><a href="circular.html#cb34-7"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Плотность распределения&#39;</span>) <span class="op">+</span></span>
-<span id="cb34-8"><a href="circular.html#cb34-8"></a><span class="st">  </span><span class="kw">transition_time</span>(MONTH)</span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="circular.html#cb40-1"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(T2M, <span class="dt">fill =</span> CITY)) <span class="op">+</span></span>
+<span id="cb40-2"><a href="circular.html#cb40-2"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb40-3"><a href="circular.html#cb40-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Температура воздуха в 2018 году по данным NASA POWER&quot;</span>,</span>
+<span id="cb40-4"><a href="circular.html#cb40-4"></a>       <span class="dt">subtitle =</span> <span class="st">&#39;Месяц: {round(frame_time)}&#39;</span>,</span>
+<span id="cb40-5"><a href="circular.html#cb40-5"></a>       <span class="dt">fill =</span> <span class="st">&#39;Город&#39;</span>) <span class="op">+</span></span>
+<span id="cb40-6"><a href="circular.html#cb40-6"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Т, °С&#39;</span>) <span class="op">+</span></span>
+<span id="cb40-7"><a href="circular.html#cb40-7"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Плотность распределения&#39;</span>) <span class="op">+</span></span>
+<span id="cb40-8"><a href="circular.html#cb40-8"></a><span class="st">  </span><span class="kw">transition_time</span>(MONTH)</span></code></pre></div>
 <p><img src="images/density_anim.gif" /><!-- --></p>
 <p>Загрузим ранее использованные в Главе @ref(stat_analysis) данные Gapminder по соотношению продолжительности жизни и ВВП на душу населения, но на этот раз не будем фильтровать их по времени:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="circular.html#cb35-1"></a><span class="kw">library</span>(readxl)</span>
-<span id="cb35-2"><a href="circular.html#cb35-2"></a><span class="kw">library</span>(googledrive)</span>
-<span id="cb35-3"><a href="circular.html#cb35-3"></a><span class="kw">library</span>(googlesheets4)</span>
-<span id="cb35-4"><a href="circular.html#cb35-4"></a>countries =<span class="st"> </span><span class="kw">read_excel</span>(<span class="st">&#39;data/gapminder.xlsx&#39;</span>, <span class="dv">2</span>) <span class="op">%&gt;%</span></span>
-<span id="cb35-5"><a href="circular.html#cb35-5"></a><span class="st">  </span><span class="kw">select</span>(<span class="dt">Country =</span> name, <span class="dt">Region =</span> eight_regions) <span class="op">%&gt;%</span></span>
-<span id="cb35-6"><a href="circular.html#cb35-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Country =</span> <span class="kw">factor</span>(Country, <span class="dt">levels =</span> Country[<span class="kw">order</span>(.<span class="op">$</span>Region)]))</span>
-<span id="cb35-7"><a href="circular.html#cb35-7"></a></span>
-<span id="cb35-8"><a href="circular.html#cb35-8"></a>gdpdf_tidy =<span class="st"> &#39;1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co">### ВВП на душу населения</span></span>
-<span id="cb35-9"><a href="circular.html#cb35-9"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
-<span id="cb35-10"><a href="circular.html#cb35-10"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb35-11"><a href="circular.html#cb35-11"></a><span class="st">  </span><span class="kw">read_sheet</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb35-12"><a href="circular.html#cb35-12"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1764</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2018</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;gdp&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb35-13"><a href="circular.html#cb35-13"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
-<span id="cb35-14"><a href="circular.html#cb35-14"></a><span class="co">## Using an auto-discovered, cached token.</span></span>
-<span id="cb35-15"><a href="circular.html#cb35-15"></a><span class="co">## To suppress this message, modify your code or options to clearly consent to the use of a cached token.</span></span>
-<span id="cb35-16"><a href="circular.html#cb35-16"></a><span class="co">## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</span></span>
-<span id="cb35-17"><a href="circular.html#cb35-17"></a><span class="co">## https://gargle.r-lib.org/articles/non-interactive-auth.html</span></span>
-<span id="cb35-18"><a href="circular.html#cb35-18"></a><span class="co">## The googledrive package is using a cached token for iamste@yandex.ru.</span></span>
-<span id="cb35-19"><a href="circular.html#cb35-19"></a><span class="co">## Using an auto-discovered, cached token.</span></span>
-<span id="cb35-20"><a href="circular.html#cb35-20"></a><span class="co">## To suppress this message, modify your code or options to clearly consent to the use of a cached token.</span></span>
-<span id="cb35-21"><a href="circular.html#cb35-21"></a><span class="co">## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</span></span>
-<span id="cb35-22"><a href="circular.html#cb35-22"></a><span class="co">## https://gargle.r-lib.org/articles/non-interactive-auth.html</span></span>
-<span id="cb35-23"><a href="circular.html#cb35-23"></a><span class="co">## The googlesheets4 package is using a cached token for iamste@yandex.ru.</span></span>
-<span id="cb35-24"><a href="circular.html#cb35-24"></a></span>
-<span id="cb35-25"><a href="circular.html#cb35-25"></a>popdf_tidy =<span class="st"> &#39;1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># численность населения</span></span>
-<span id="cb35-26"><a href="circular.html#cb35-26"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
-<span id="cb35-27"><a href="circular.html#cb35-27"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb35-28"><a href="circular.html#cb35-28"></a><span class="st">  </span><span class="kw">read_sheet</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># первый лист</span></span>
-<span id="cb35-29"><a href="circular.html#cb35-29"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2015</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;pop&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb35-30"><a href="circular.html#cb35-30"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
-<span id="cb35-31"><a href="circular.html#cb35-31"></a></span>
-<span id="cb35-32"><a href="circular.html#cb35-32"></a>lifedf_tidy =<span class="st"> &#39;1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># продолжительность жизни</span></span>
-<span id="cb35-33"><a href="circular.html#cb35-33"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
-<span id="cb35-34"><a href="circular.html#cb35-34"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb35-35"><a href="circular.html#cb35-35"></a><span class="st">  </span><span class="kw">read_sheet</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb35-36"><a href="circular.html#cb35-36"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2016</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;lifexp&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb35-37"><a href="circular.html#cb35-37"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
-<span id="cb35-38"><a href="circular.html#cb35-38"></a></span>
-<span id="cb35-39"><a href="circular.html#cb35-39"></a>tab =<span class="st"> </span>gdpdf_tidy <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb35-40"><a href="circular.html#cb35-40"></a><span class="st">  </span><span class="kw">inner_join</span>(lifedf_tidy) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb35-41"><a href="circular.html#cb35-41"></a><span class="st">  </span><span class="kw">inner_join</span>(popdf_tidy) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb35-42"><a href="circular.html#cb35-42"></a><span class="st">  </span><span class="kw">inner_join</span>(countries) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb35-43"><a href="circular.html#cb35-43"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">year =</span> <span class="kw">as.integer</span>(year)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb35-44"><a href="circular.html#cb35-44"></a><span class="st">  </span><span class="kw">drop_na</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="circular.html#cb41-1"></a><span class="kw">library</span>(readxl)</span>
+<span id="cb41-2"><a href="circular.html#cb41-2"></a><span class="kw">library</span>(googledrive)</span>
+<span id="cb41-3"><a href="circular.html#cb41-3"></a><span class="kw">library</span>(googlesheets4)</span>
+<span id="cb41-4"><a href="circular.html#cb41-4"></a>countries =<span class="st"> </span><span class="kw">read_excel</span>(<span class="st">&#39;data/gapminder.xlsx&#39;</span>, <span class="dv">2</span>) <span class="op">%&gt;%</span></span>
+<span id="cb41-5"><a href="circular.html#cb41-5"></a><span class="st">  </span><span class="kw">select</span>(<span class="dt">Country =</span> name, <span class="dt">Region =</span> eight_regions) <span class="op">%&gt;%</span></span>
+<span id="cb41-6"><a href="circular.html#cb41-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Country =</span> <span class="kw">factor</span>(Country, <span class="dt">levels =</span> Country[<span class="kw">order</span>(.<span class="op">$</span>Region)]))</span>
+<span id="cb41-7"><a href="circular.html#cb41-7"></a></span>
+<span id="cb41-8"><a href="circular.html#cb41-8"></a>gdpdf_tidy =<span class="st"> &#39;1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co">### ВВП на душу населения</span></span>
+<span id="cb41-9"><a href="circular.html#cb41-9"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
+<span id="cb41-10"><a href="circular.html#cb41-10"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb41-11"><a href="circular.html#cb41-11"></a><span class="st">  </span><span class="kw">read_sheet</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb41-12"><a href="circular.html#cb41-12"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1764</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2018</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;gdp&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb41-13"><a href="circular.html#cb41-13"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
+<span id="cb41-14"><a href="circular.html#cb41-14"></a><span class="co">## Using an auto-discovered, cached token.</span></span>
+<span id="cb41-15"><a href="circular.html#cb41-15"></a><span class="co">## To suppress this message, modify your code or options to clearly consent to the use of a cached token.</span></span>
+<span id="cb41-16"><a href="circular.html#cb41-16"></a><span class="co">## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</span></span>
+<span id="cb41-17"><a href="circular.html#cb41-17"></a><span class="co">## https://gargle.r-lib.org/articles/non-interactive-auth.html</span></span>
+<span id="cb41-18"><a href="circular.html#cb41-18"></a><span class="co">## The googledrive package is using a cached token for iamste@yandex.ru.</span></span>
+<span id="cb41-19"><a href="circular.html#cb41-19"></a><span class="co">## Using an auto-discovered, cached token.</span></span>
+<span id="cb41-20"><a href="circular.html#cb41-20"></a><span class="co">## To suppress this message, modify your code or options to clearly consent to the use of a cached token.</span></span>
+<span id="cb41-21"><a href="circular.html#cb41-21"></a><span class="co">## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</span></span>
+<span id="cb41-22"><a href="circular.html#cb41-22"></a><span class="co">## https://gargle.r-lib.org/articles/non-interactive-auth.html</span></span>
+<span id="cb41-23"><a href="circular.html#cb41-23"></a><span class="co">## The googlesheets4 package is using a cached token for iamste@yandex.ru.</span></span>
+<span id="cb41-24"><a href="circular.html#cb41-24"></a></span>
+<span id="cb41-25"><a href="circular.html#cb41-25"></a>popdf_tidy =<span class="st"> &#39;1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># численность населения</span></span>
+<span id="cb41-26"><a href="circular.html#cb41-26"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
+<span id="cb41-27"><a href="circular.html#cb41-27"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb41-28"><a href="circular.html#cb41-28"></a><span class="st">  </span><span class="kw">read_sheet</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># первый лист</span></span>
+<span id="cb41-29"><a href="circular.html#cb41-29"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2015</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;pop&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb41-30"><a href="circular.html#cb41-30"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
+<span id="cb41-31"><a href="circular.html#cb41-31"></a></span>
+<span id="cb41-32"><a href="circular.html#cb41-32"></a>lifedf_tidy =<span class="st"> &#39;1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># продолжительность жизни</span></span>
+<span id="cb41-33"><a href="circular.html#cb41-33"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
+<span id="cb41-34"><a href="circular.html#cb41-34"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb41-35"><a href="circular.html#cb41-35"></a><span class="st">  </span><span class="kw">read_sheet</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb41-36"><a href="circular.html#cb41-36"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2016</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;lifexp&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb41-37"><a href="circular.html#cb41-37"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
+<span id="cb41-38"><a href="circular.html#cb41-38"></a></span>
+<span id="cb41-39"><a href="circular.html#cb41-39"></a>tab =<span class="st"> </span>gdpdf_tidy <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb41-40"><a href="circular.html#cb41-40"></a><span class="st">  </span><span class="kw">inner_join</span>(lifedf_tidy) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb41-41"><a href="circular.html#cb41-41"></a><span class="st">  </span><span class="kw">inner_join</span>(popdf_tidy) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb41-42"><a href="circular.html#cb41-42"></a><span class="st">  </span><span class="kw">inner_join</span>(countries) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb41-43"><a href="circular.html#cb41-43"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">year =</span> <span class="kw">as.integer</span>(year)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb41-44"><a href="circular.html#cb41-44"></a><span class="st">  </span><span class="kw">drop_na</span>()</span></code></pre></div>
 <p>Теперь чтобы отобразить это соотношение в виде анимации, достаточно добавить новый переход посредством функции <code>transition_time()</code>:</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="circular.html#cb36-1"></a><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>) <span class="co"># убираем экспоненциальную форму записи числа</span></span>
-<span id="cb36-2"><a href="circular.html#cb36-2"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(gdp, lifexp, <span class="dt">size =</span> pop, <span class="dt">color =</span> Region)) <span class="op">+</span></span>
-<span id="cb36-3"><a href="circular.html#cb36-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb36-4"><a href="circular.html#cb36-4"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
-<span id="cb36-5"><a href="circular.html#cb36-5"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Year: {round(frame_time)}&#39;</span>) <span class="op">+</span></span>
-<span id="cb36-6"><a href="circular.html#cb36-6"></a><span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span></span>
-<span id="cb36-7"><a href="circular.html#cb36-7"></a><span class="st">  </span><span class="kw">transition_time</span>(year)</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="circular.html#cb42-1"></a><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>) <span class="co"># убираем экспоненциальную форму записи числа</span></span>
+<span id="cb42-2"><a href="circular.html#cb42-2"></a><span class="kw">ggplot</span>(tab, <span class="kw">aes</span>(gdp, lifexp, <span class="dt">size =</span> pop, <span class="dt">color =</span> Region)) <span class="op">+</span></span>
+<span id="cb42-3"><a href="circular.html#cb42-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb42-4"><a href="circular.html#cb42-4"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb42-5"><a href="circular.html#cb42-5"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Year: {round(frame_time)}&#39;</span>) <span class="op">+</span></span>
+<span id="cb42-6"><a href="circular.html#cb42-6"></a><span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span></span>
+<span id="cb42-7"><a href="circular.html#cb42-7"></a><span class="st">  </span><span class="kw">transition_time</span>(year)</span></code></pre></div>
 <p><img src="images/scatter_anim.gif" /><!-- --></p>
 </div>
 </div>
