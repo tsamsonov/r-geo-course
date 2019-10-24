@@ -674,15 +674,15 @@ ggplot(tab, aes(CITY, T2M)) +
 ```
 
 ```{r, echo = FALSE, dpi=300}
-anim = ggplot(tab, aes(CITY, T2M)) +
-  geom_boxplot() +
-  labs(title = "Температура воздуха в 2018 году по данным NASA POWER",
-       subtitle = 'Месяц: {round(frame_time)}') +
-  xlab('Город') +
-  ylab('Т, °С') +
-  transition_time(MONTH)
-anim_save('images/boxplot_anim.gif',
-          animation = animate(anim))
+# anim = ggplot(tab, aes(CITY, T2M)) +
+#   geom_boxplot() +
+#   labs(title = "Температура воздуха в 2018 году по данным NASA POWER",
+#        subtitle = 'Месяц: {round(frame_time)}') +
+#   xlab('Город') +
+#   ylab('Т, °С') +
+#   transition_time(MONTH)
+# anim_save('images/boxplot_anim.gif',
+#           animation = animate(anim))
 knitr::include_graphics('images/boxplot_anim.gif')
 ```
 
@@ -699,21 +699,21 @@ ggplot(tab, aes(T2M, fill = CITY)) +
 ```
 
 ```{r, echo = FALSE, dpi=300}
-anim = ggplot(tab, aes(T2M, fill = CITY)) +
-  geom_density(alpha = 0.5) +
-  labs(title = "Температура воздуха в 2018 году по данным NASA POWER",
-       subtitle = 'Месяц: {round(frame_time)}',
-       fill = 'Город') +
-  xlab('Т, °С') +
-  ylab('Плотность распределения') +
-  transition_time(MONTH)
-anim_save('images/density_anim.gif',
-          animation = animate(anim))
+# anim = ggplot(tab, aes(T2M, fill = CITY)) +
+#   geom_density(alpha = 0.5) +
+#   labs(title = "Температура воздуха в 2018 году по данным NASA POWER",
+#        subtitle = 'Месяц: {round(frame_time)}',
+#        fill = 'Город') +
+#   xlab('Т, °С') +
+#   ylab('Плотность распределения') +
+#   transition_time(MONTH)
+# anim_save('images/density_anim.gif',
+#           animation = animate(anim))
 knitr::include_graphics('images/density_anim.gif')
 ```
 
 Загрузим ранее использованные в Главе \@ref(stat_analysis) данные Gapminder по соотношению продолжительности жизни и ВВП на душу населения, но на этот раз не будем фильтровать их по времени:
-```{r}
+```{r, eval=FALSE}
 library(readxl)
 library(googledrive)
 library(googlesheets4)
@@ -762,16 +762,47 @@ ggplot(tab, aes(gdp, lifexp, size = pop, color = Region)) +
 ```
 ```{r, echo=FALSE}
 options(scipen = 999)
-anim = ggplot(tab, aes(gdp, lifexp, size = pop, color = Region)) +
-  geom_point(alpha = 0.5) +
-  scale_x_log10() +
-  labs(title = 'Year: {round(frame_time)}') +
-  theme_bw() +
-  transition_time(year)
-anim_save('images/scatter_anim.gif',
-          animation = animate(anim))
+# anim = ggplot(tab, aes(gdp, lifexp, size = pop, color = Region)) +
+#   geom_point(alpha = 0.5) +
+#   scale_x_log10() +
+#   labs(title = 'Year: {round(frame_time)}') +
+#   theme_bw() +
+#   transition_time(year)
+# anim_save('images/scatter_anim.gif',
+#           animation = animate(anim))
 knitr::include_graphics('images/scatter_anim.gif')
 ```
+
+```{r}
+flt_tab = tab_interp %>% 
+  filter(!is.na(year)) %>% 
+  group_by(year) %>%
+  filter(!all(is.na(level_interp))) %>% 
+  ungroup() %>% 
+  mutate(yDate = Date)
+
+year(flt_tab$yDate) <- 2000
+```
+
+```{r, eval=FALSE}
+anim = ggplot(flt_tab, mapping = aes(x = yDate, y = level_interp)) +
+    geom_ribbon(aes(ymin = 0, ymax = level_interp), alpha = 0.5) +
+    geom_line() +
+    scale_x_date(date_breaks = "1 month", date_labels = "%b") +
+    labs(title = "Расход воды на гидропосту Паялка (р. Умба, Мурманская обл.)",
+         subtitle = 'Год: {closest_state}') +
+    xlab('Дата') +
+    ylab('куб.м/с') +
+    theme(text = element_text(size = 18, family = 'Open Sans')) +
+    transition_states(year, state_length = 0) +
+    view_follow(fixed_y = TRUE)
+
+animate(anim, fps = 20, nframes = 10 * length(unique(flt_tab$year)), width = 800, height = 600)
+```
+```{r, echo=FALSE}
+knitr::include_graphics('images/hydrograph_anim.gif')
+```
+
 
 ## Контрольные вопросы и упражнения {#questions_tasks_circular}
 
