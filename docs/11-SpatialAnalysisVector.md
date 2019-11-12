@@ -371,7 +371,7 @@ legendChoro(breaks = intervals$brks,
             col = choro.pal(5),
             pos = "topleft",
             frame = FALSE, 
-            title.txt = "Заведений на 1 кв.км")
+            title.txt = "Заведений\nна 1 кв.км")
 ```
 
 <img src="11-SpatialAnalysisVector_files/figure-html/unnamed-chunk-19-1.png" width="672" />
@@ -399,9 +399,9 @@ legendChoro(breaks = intervals$brks,
 ## АНАЛИЗ АБСОЛЮТНЫХ ЗОН ОКРУЖЕНИЯ -------------------------------------
 
 # Функция отвечает за рисование базовой карты
-plotBasemap = function(){
+plotBasemap = function(add = FALSE){
   
-  plot(frame)
+  plot(frame, add = add)
 
   plot(water %>% st_geometry(), 
        col = "lightskyblue1",
@@ -536,7 +536,9 @@ View(selected.poi)
 zones = stations %>% 
   as('Spatial') %>% 
   dismo::voronoi() %>% 
-  st_as_sf()
+  st_as_sf() %>% 
+  st_crop(frame)
+  
 
 plot(zones %>% st_geometry())
 plot(stations, add = TRUE, pch = 19, col = 'black')
@@ -552,6 +554,7 @@ plot(stations, add = TRUE, pch = 19, col = 'black')
 zones.poi = aggregate(poi.food['count'], zones, sum)
 
 # Визуализируем результат
+
 plotBasemap()
 
 plot(zones %>% st_geometry(),
@@ -559,11 +562,11 @@ plot(zones %>% st_geometry(),
      add = TRUE)
 
 propSymbolsLayer(zones.poi, 
-           var = "count", 
-           symbols = "circle",
-           col = adjustcolor("turquoise3", alpha.f = 0.5),
-           border = F,
-           legend.title.txt = "Заведений питания")
+                 var = "count", 
+                 symbols = "circle",
+                 col = adjustcolor("turquoise3", alpha.f = 0.5),
+                 border = F,
+                 legend.title.txt = "Заведений\nпитания")
 
 text(zones %>% st_centroid() %>% st_coordinates(), 
      labels = zones.poi$count,
@@ -714,5 +717,5 @@ text(destination %>% st_coordinates(),
 ### Упражнения {#tasks_vector_analysis}
 
 ----
-_Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, `lubridate::year(Sys.Date())`. DOI: [10.5281/zenodo.901911](https://doi.org/10.5281/zenodo.901911)
+_Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, 2019. DOI: [10.5281/zenodo.901911](https://doi.org/10.5281/zenodo.901911)
 ----
