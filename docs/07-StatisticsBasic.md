@@ -1,4 +1,4 @@
-# Основы статистики в R {#stat_analysis}
+# Основы статистики {#stat_analysis}
 
 
 
@@ -325,9 +325,14 @@ ggplot(tab85, aes(x = lifexp, fill = year, weight = pop/sum(pop))) +
 
 ```r
 library(readxl)
-countries = read_excel('gapminder.xlsx', 2) %>% 
-  select(Country = name, Region = eight_regions) %>% 
+countries = read_excel('gapminder.xlsx', 2) %>%
+  select(Country = name, Region = eight_regions) %>%
   mutate(Country = factor(Country, levels = Country[order(.$Region)]))
+
+# '1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8' %>% # численность населения
+#   as_id() %>% # преобразуем идентификатор в класс drive_id чтобы отличать его от пути
+#   drive_get() %>% 
+#   read_sheet(sheet = 2) -> countries
 
 ggplot(countries, aes(x = Country, y = 1, fill = Region)) +
   geom_col() +
