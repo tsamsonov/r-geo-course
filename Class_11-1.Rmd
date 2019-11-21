@@ -1,0 +1,34 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(osmdata)
+library(rnaturalearth)
+library(tidyverse)
+library(sf)
+
+getwd()
+roads = st_read("data/roads.gpkg") # Дороги
+rayons = st_read("data/boundary_polygon.gpkg") # Границы районов
+water = st_read("data/water_polygon.gpkg") # Водные объекты
+
+# Прочитаем текущие параметры компоновки
+def = par(no.readonly = TRUE)
+
+# Уберем поля, чтобы карта занимала весь экран
+par(mar = c(0,0,0,0))
+
+# Получим ограничивающий прямоугольник слоя дорог в качестве общего охвата карты
+frame = roads %>% st_bbox() %>% st_as_sfc() %>% st_geometry()
+```
+
+```{r}
+pharmacies = opq(bbox = st_bbox(roads), timeout = 100) %>% # Chiswick Eyot in London, U.K.
+    add_osm_feature(key = 'amenity', value = "pharmacy") %>%
+    osmdata_sf()
+```
+
+
+
