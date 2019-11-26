@@ -61,7 +61,12 @@ dem = raster("gtopo.tif")
 
 # Читаем данные об осадках
 pts = read_table2("Rainfall.dat") %>% 
-  st_as_sf(coords = c('x', 'y'), crs = st_crs(cities))
+  st_as_sf(coords = c('x', 'y'), 
+           crs = st_crs(cities),
+           remove = FALSE)
+
+# Координаты пригодятся нам в дальнейшем
+coords = st_coordinates(pts)
 
 mapview(pts, zcol = 'rain_24')
 ```
@@ -142,42 +147,29 @@ text(st_coordinates(cities)[,1],
 
 Любопытным свойством пакетов __R__, отвечающих за интерполяцию данных, является их индифферентность относительно того, в каких точках эта интерполяция будет производиться. Это может быть как регулярная растровая сетка, так и множество точек в совершенно произвольных конфигурациях. Подобная гибкость делает процесс интерполяции данных чуть более сложным, чем в ГИС-пакетах, однако способствует полному и глубокому пониманию происходящего. Вы своими руками задаете пункты, в которых следует интерполировать значения.
 
-Мы воспользуемся замечательной функцией `spsample()` из пакета `sp`, чтобы создать регулярную сетку для интерполяции данных. В целях наглядности для начала сделаем сетку с шагом $10$ км. Первый аргумент `spsample()` задает географический охват (экстент), в пределах которого необходимо произвести размещение точек, параметр `type =` отвечает за тип семплирования (_spatial sampling_):
+Для построения сетки воспользуемся функцией `st_as_stars()` из пакета __stars__, передав ей ограничивающий прямоугольник исходного множества точек и разрешение сетки:
 
 ```{r}
 # ПОСТРОЕНИЕ СЕТКИ ДЛЯ ИНТЕРПОЛЯЦИИ
+# получим ограничивающий прямоугольник вокруг точек:
+box = st_bbox(pts)
+envelope = box[c(1,3,2,4)]
 
-# Создаем точечные объекты по координатам на основе таблицы
-coords = st_coordinates(pts)
-
-pts_grid = st_make_grid(pts, cellsize = 10000, what = 'centers')
+px_grid = st_as_stars(box, dx = 10000, dy = 10000)
 
 ggplot() + 
   geom_sf(data = pts, color = 'red') +
-  geom_sf(data = pts_grid, size = 0.5)
+  geom_sf(data = st_as_sf(px_grid), size = 0.5, fill = NA)
 ```
 
-Получившееся представление можно уже назвать сеточной моделью. Каждая точка является узлом сетки, и в ней можно произвести интерполяцию показателя. Если мы хотим использовать результат как поверхность, необходимо сеточную модель превратить в растровую (пиксельную). Тогда каждый узел сетки станет центром соответствующей ячейки растра (пиксела), и вся интерполируемая площадь будет покрыта пикселами без пустых мест. В пределах каждого пиксела величина будет считаться постоянной. Ее значение будет интерполировано в центре пиксела.
-
-Создадим и визуализируем сетку пикселов:
-```{r}
-pixels_grid = st_as_stars(pts_grid)
-ggplot() +
-  geom_stars(data = pixels_grid)
-```
-
-Можно видеть, что и сетка узлов, и сетка пикселов не выровнены идеально относительно охвата исходных данных. Часть точек не попадает в пределы построенной сетки. Это связано с тем, что размеры прямоугольника, ограничивающего множество точек, не кратны выбранному разрешению растра ($10 000$ м). При этом размещать точки "с запасом", т.е. за пределами ограничивающего прямоугольника, смысла нет, так как далеко не все методы интерполяции позволяют восстанавливать данные за пределами области данных. Проблема, однако, не столько критична, если вы выбираете достаточно подробное (малое) разрешение растра, что мы и сделаем. Зададим его равным $1 000$ м.
+Получившееся представление можно назвать сеточной моделью. В пределах каждой ячейки величина будет считаться постоянной. Ее значение будет интерполировано в центре пиксела. Можно видеть, что интерполяционная сетка слегка выходит за пределы исходного охвата множества точек. Это связано с тем, что размеры прямоугольника, ограничивающего множество точек, не кратны выбранному разрешению растра ($10 000$ м). Проблема, однако, не столько критична, если вы выбираете достаточно подробное (малое) разрешение растра, что мы и сделаем. Зададим его равным $1 000$ м:
 
 ```{r, message = FALSE, results = "hide", collapse=TRUE}
-pts_grid = st_make_grid(pts, cellsize = 1000, what = 'centers')
-pixels_grid = st_as_stars(pts_grid)
+# создадим детальную растровую сетку
+px_grid = st_as_stars(box, dx = 1000, dy = 1000)
 
 # извлечем координаты точек в соответствующие столбцы, они нам пригодятся:
-coords_grid = st_coordinates(pts_grid)
-
-# получим также ограничивающий прямоугольник вокруг точек:
-box = st_bbox(pts)
-envelope = box[c(1,3,2,4)]
+coords_grid = st_coordinates(px_grid)
 ```
 
 ## Интерполяционные методы {#interpolation_methods}
@@ -203,7 +195,8 @@ edges = pts %>%
 
 rain_legend = scale_fill_manual(name = 'мм',
                                 values = rain_colors(rain_ncolors),
-                                labels = paste(rain_levels[-rain_ncolors-1], '-', rain_levels[-1]))
+                                labels = paste(rain_levels[-rain_ncolors-1], '-', rain_levels[-1]),
+                                drop = FALSE)
 rain_mapping = aes(fill = cut(rain_24, breaks = rain_levels))
 
 ggplot() +
@@ -218,7 +211,7 @@ ggplot() +
 Если есть задача конвертировать это в растр, то надо сформировать новый растр и "перенести" на него информацию с полигонов:
 ```{r, message = FALSE, results = "hide", collapse=TRUE}
 # Создаем растр
-rnn = st_rasterize(voronoi_sf["rain_24"], pixels_grid)
+rnn = st_rasterize(voronoi_sf["rain_24"], px_grid)
 
 # Визуализируем:
 ggplot() +
@@ -238,13 +231,12 @@ ggplot() +
 ```{r, message = FALSE, collapse=TRUE}
 rain_colors3d = colorRamp(c("white", "dodgerblue", "dodgerblue4"))
 
-x = coords_grid[,'X'] %>% unique() # Получим координаты столбцов
-y = coords_grid[,'Y'] %>% unique() # Получим координаты строк
-z = rnn$rain_24 # Получим высоты в виде матрицы
+x = coords_grid[,'x'] %>% unique() # Получим координаты столбцов
+y = coords_grid[,'y'] %>% unique() # Получим координаты строк
 
 p = plot_ly(x = x, 
             y = y, 
-            z = z, 
+            z = rnn$rain_24, 
             type = "surface",
             colors = rain_colors3d)
 layout(p, scene = list(aspectratio = list(x = 1, y = 1, z = 0.3)
@@ -273,41 +265,38 @@ $$
 
 # ИНТЕРПОЛЯЦИЯ НА ОСНОВЕ ТРИАНГУЛЯЦИИ (TRIANGULATION)
 
-# Интерполятор на основе триангуляции требует, чтобы результирующие точки имели тип SpatialPointsDataFrame:
-pts_grid.df = SpatialPointsDataFrame(pts_grid, data = coords_grid)
-
 # Интерполируем. Параметр linear говорит о том, что показатель будет меняться вдоль ребер триангуляции линейно:
-z.linear = interpp(x = pts,
-                    z = "rain_24", 
-                    xo = pts_grid.df,
-                    linear = TRUE)
+px_grid = px_grid %>% 
+  mutate(z_linear = interpp(x = coords[,1],
+                            y = coords[,2],
+                            z = pts$rain_24, 
+                            xo = coords_grid[,1],
+                            yo = coords_grid[,2],
+                            linear = TRUE)$z)
 
-# Переносим результат на сетку пикселей:
-px.linear = SpatialPixelsDataFrame(pts_grid.df, data = as.data.frame(z.linear$z))
-
-# Создаем объект типа raster, который можно визуализировать в привычном виде:
-
-r.linear = raster(px.linear)
-
+cont_linear = st_contour(px_grid['z_linear'], breaks = rain_levels, contour_lines = TRUE)
 # Смотрим как выглядит результат
-plot(r.linear, breaks = rain_levels, col=rain_colors(rain_ncolors))
-contour(r.linear, levels = rain_levels, add = TRUE)
-plot(edges, pch = 19, lwd = 0.5, lty = 3, cex = 0.5, add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
+
+ggplot() +
+  geom_stars(data = cut(px_grid['z_linear'], breaks = rain_levels)) +
+  rain_legend +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_linear, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5) +
+  geom_sf(data = edges, color = 'red', size = 0.1, fill = NA)
+
 ```
 
 Обратите внимание, что все изломы (повороты) изолиний происходят на ребрах триангуляции, а внутри треугольников изолинии проходят параллельно друг другу. Каждый треугольник представляет собой фрагмент наклонной плоскости. Такой метод интерполяции, по сути, является самым простым и "честным" подходом, который близок к тому как горизонтали интерполируются вручную.
 
 Рассмотрим поверхность в 3D:
 ```{r, message = FALSE, collapse=TRUE}
-z = as.matrix(r.linear)
 p = plot_ly(x = x, 
-             y = y, 
-             z = z, 
-             type = "surface",
-             colors = rain_colors3d)
-layout(p, scene = list(aspectratio = 
-                         list(x = 1, y = 1, z = 0.3)
+            y = y, 
+            z = px_grid$z_linear, 
+            type = "surface",
+            colors = rain_colors3d)
+layout(p, scene = list(aspectratio = list(x = 1, y = 1, z = 0.3)
 ))
 ```
 
@@ -316,38 +305,40 @@ layout(p, scene = list(aspectratio =
 Более гладкий результат можно получить, используя не линейный, а бикубический метод интерполяции на треугольниках. Для этого следует указать параметр `linear = FALSE`. Помимо этого, параметр `extrap = TRUE` говорит о том, что можно производить экстраполяцию за пределами выпуклой оболочки точек (такая возможность недоступна в линейном случае)
 
 ```{r, message = FALSE, results = "hide", collapse=TRUE}
-# Интерполируем
-z.spline = interpp(x = pts, 
-                    z = "rain_24", 
-                    xo = pts_grid.df,
-                    linear = FALSE,
-                    extrap = TRUE)
 
-# Переносим результат на сетку пикселей:
-px.spline = SpatialPixelsDataFrame(pts_grid.df, data = as.data.frame(z.spline$rain_24))
+px_grid = px_grid %>% 
+  mutate(z_spline = interpp(x = coords[,1],
+                            y = coords[,2],
+                            z = pts$rain_24, 
+                            xo = coords_grid[,1],
+                            yo = coords_grid[,2],
+                            linear = FALSE,
+                            extrap = TRUE)$z)
 
-# Создаем объект типа raster:
-r.spline = raster(px.spline)
+cont_spline = st_contour(px_grid['z_spline'], 
+                         breaks = rain_levels, 
+                         contour_lines = TRUE)
 
-# Визуализируем результат:
-plot(r.spline, breaks = rain_levels, col=rain_colors(rain_ncolors))
-contour(r.spline, levels = rain_levels, add = TRUE)
-plot(edges, pch = 19, lwd = 0.5, lty = 3, cex = 0.5, add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
+# Смотрим как выглядит результат
+ggplot() +
+  geom_stars(data = cut(px_grid['z_spline'], breaks = rain_levels)) +
+  rain_legend +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_spline, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5) +
+  geom_sf(data = edges, color = 'red', size = 0.1, fill = NA)
 ```
 
 Полученные изолинии отличаются более плавным и естественным рисунком. Тем не менее, использование триангуляции все еще заметно по фестончатым изгибам изолиний на ребрах.
 
 Смотрим наглядное представление поверхности в 3D:
 ```{r, message = FALSE, collapse=TRUE}
-z = as.matrix(r.spline)
 p = plot_ly(x = x, 
-             y = y, 
-             z = z, 
-             type = "surface",
-             colors = rain_colors3d)
-layout(p, scene = list(aspectratio = 
-                         list(x = 1, y = 1, z = 0.3)
+            y = y, 
+            z = px_grid$z_spline, 
+            type = "surface",
+            colors = rain_colors3d)
+layout(p, scene = list(aspectratio = list(x = 1, y = 1, z = 0.3)
 ))
 ```
 
@@ -387,58 +378,65 @@ $$
 # МЕТОД ОБРАТНО ВЗЕШЕННЫХ РАССТОЯНИЙ (IDW --- INVERSE DISTANCE WEIGHTED)
 
 # Интерполируем количество осадков:
-z1 = idw(rain_24 ~ 1, locations = pts, newdata = pts_grid, idp = 2.0)
-z2 = idw(rain_24 ~ 1, locations = pts, newdata = pts_grid, idp = 3.0)
-z3 = idw(rain_24 ~ 1, locations = pts, newdata = pts_grid, idp = 4.0)
-z4 = idw(rain_24 ~ 1, locations = pts, newdata = pts_grid, idp = 5.0)
+px_grid = px_grid %>% 
+  mutate(z_idw2 = idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 2.0)$var1.pred,
+         z_idw3 = idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 3.0)$var1.pred,
+         z_idw4 = idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 4.0)$var1.pred,
+         z_idw5 = idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 5.0)$var1.pred)
 
-# Переносим результат на сетку пикселей.
-px1 = SpatialPixelsDataFrame(z1, data = z1@data)
-px2 = SpatialPixelsDataFrame(z2, data = z2@data)
-px3 = SpatialPixelsDataFrame(z3, data = z3@data)
-px4 = SpatialPixelsDataFrame(z4, data = z4@data)
+cont_idw2 = st_contour(px_grid['z_idw2'], 
+                       breaks = rain_levels, 
+                       contour_lines = TRUE)
 
-# Создаем объект типа raster для визуализации
-r1 = raster(px1, values = px1$var1.pred)
-r2 = raster(px2, values = px2$var1.pred)
-r3 = raster(px3, values = px3$var1.pred)
-r4 = raster(px4, values = px4$var1.pred)
+cont_idw3 = st_contour(px_grid['z_idw3'], 
+                       breaks = rain_levels, 
+                       contour_lines = TRUE)
 
-# Смотрим как выглядит результат
-plot(r1, breaks = rain_levels, col=rain_colors(rain_ncolors))
-contour(r1, levels = rain_levels, add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
+cont_idw4 = st_contour(px_grid['z_idw4'], 
+                       breaks = rain_levels, 
+                       contour_lines = TRUE)
 
-plot(r2, breaks = rain_levels, col=rain_colors(rain_ncolors))
-contour(r2, levels = rain_levels, add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
+cont_idw5 = st_contour(px_grid['z_idw5'], 
+                       breaks = rain_levels, 
+                       contour_lines = TRUE)
 
-plot(r3, breaks = rain_levels, col=rain_colors(rain_ncolors))
-contour(r3, levels = rain_levels, add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
+ggplot() +
+  geom_stars(data = cut(px_grid['z_idw2'], breaks = rain_levels)) +
+  rain_legend +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_idw2, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5)
 
-plot(r4, breaks = rain_levels, col=rain_colors(rain_ncolors))
-contour(r4, levels = rain_levels, add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
+ggplot() +
+  geom_stars(data = cut(px_grid['z_idw3'], breaks = rain_levels)) +
+  rain_legend +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_idw3, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5)
 
-# Удобно также набор растровых данных визуализировать средствами lattice, превратив их в растровый стек:
-r = stack(r1, r2, r3, r4)
+ggplot() +
+  geom_stars(data = cut(px_grid['z_idw4'], breaks = rain_levels)) +
+  rain_legend +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_idw4, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5)
 
-spplot(r, 
-       at = rain_levels, 
-       col.regions = rain_colors(rain_ncolors),
-       sp.layout = list("sp.points", pts, pch=20, cex=0.5, col='black')
-)
+ggplot() +
+  geom_stars(data = cut(px_grid['z_idw5'], breaks = rain_levels)) +
+  rain_legend +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_idw5, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5)
+
 ```
 
 Видно, что метод __ОВР__ формирует вокруг каждой исходной точки замкнутые изолинии, оконтуривающие вершины и впадины на поверхности. Этот эффект является основным недостатком метода и носит название эффекта "бычьих глаз". Он вызван тем, что производная функции __ОВР__ в каждой точке равняется нулю. При увеличении степени весовой функции происходит расширение зоны влияния каждой точки, поверхности вершин и впадин приобретают платообразный характер.
 
 Наглядное представление о характере поверхности, получаемой методом __ОВР__, дает трехмерная визуализация:
 ```{r, message = FALSE, collapse=TRUE}
-z = as.matrix(r3)
 p = plot_ly(x = x, 
              y = y, 
-             z = z, 
+             z = px_grid$z_idw3, 
              type = "surface",
              colors = rain_colors3d)
 layout(p, scene = list(aspectratio = 
@@ -450,26 +448,30 @@ layout(p, scene = list(aspectratio =
 
 Это легко проверить на практике, задав достаточно большой параметр `idp`, например $30$:
 ```{r, message = FALSE, collapse=TRUE}
-z30 = idw(rain_24 ~ 1, locations = pts, newdata = pts_grid, idp = 30.0)
-px30 = SpatialPixelsDataFrame(z30, data = z30@data)
-r30 = raster(px30, values = px30$var1.pred)
+px_grid = px_grid %>% 
+  mutate(z_idw30 = idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 30.0)$var1.pred)
 
-plot(r30, breaks = rain_levels, col=rain_colors(rain_ncolors))
-contour(r30, levels = rain_levels, add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
+cont_idw30 = st_contour(px_grid['z_idw30'], 
+                       breaks = rain_levels, 
+                       contour_lines = TRUE)
 
-# Добавим границы ячеек диаграммы Вороного:
-plot(voronoi_sp, border = "red", add = TRUE)
+ggplot() +
+  geom_stars(data = cut(px_grid['z_idw30'], breaks = rain_levels)) +
+  rain_legend +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_idw30, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5) +
+  geom_sf(data = voronoi_sf, color = 'violet', fill = NA, size = 0.2)
+```
 
-# Рассмотрим поверхность в 3D:
-z = as.matrix(r30)
+Рассмотрим полученную поверхность в 3D:
+```{r}
 p = plot_ly(x = x, 
              y = y, 
-             z = z, 
+             z = px_grid$z_idw30, 
              type = "surface",
              colors = rain_colors3d)
-layout(p, scene = list(aspectratio = 
-                         list(x = 1, y = 1, z = 0.3)
+layout(p, scene = list(aspectratio = list(x = 1, y = 1, z = 0.3)
 ))
 ```
 
@@ -485,38 +487,40 @@ layout(p, scene = list(aspectratio =
 ```{r, message = FALSE, results = "hide", collapse=TRUE}
 
 # РАДИАЛЬНЫЕ БАЗИСНЫЕ ФУНКЦИИ (RADIAL BASIS FUNCTIONS)
-
 pred = Tps(coords, pts$rain_24, scale.type = 'unscaled')
+
 # После этого можно интерполировать значения с помощью функции predict():
-z.tps = predict(pred, coords_grid)
-
-# Результирующий объект является вектором, поэтому его нужно привести к типу data.frame перед перенесением на сетку пикселей:
-px.tps = SpatialPixelsDataFrame(pts_grid, data = data.frame(z.tps))
-
-# Также добавим название показателя
-names(px.tps) = c("rain_24")
-
-# Преобразуем в растр
-r.tps = raster(px.tps, values = px.tps$rain_24)
+px_grid = px_grid %>% 
+  mutate(z_tps = predict(pred, coords_grid))
 
 # Придется расширить шкалу, так как сплайновая поверхность выходит за пределы исходных значений:
-tps.breaks = seq(-10,90,by=10)
-tps.ncolors = length(tps.breaks) - 1
+tps_breaks = seq(-10,90,by=10)
+tps_ncolors = length(tps_breaks) - 1
+
+cont_tps = st_contour(px_grid['z_tps'], 
+                       breaks = tps_breaks, 
+                       contour_lines = TRUE)
 
 # Виузализируем результат:
-plot(r.tps, breaks = tps.breaks, col=rain_colors(tps.ncolors))
-contour(r.tps, levels = seq(-10,90,by=10), add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
+
+ggplot() +
+  geom_stars(data = cut(px_grid['z_tps'], breaks = tps_breaks)) +
+  scale_fill_manual(name = 'мм',
+                    values = rain_colors(tps_ncolors),
+                    labels = paste(tps_breaks[-tps_ncolors-1], '-', tps_breaks[-1])) +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_tps, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5)
+
 ```
 
 Можно видеть, что по плавному характеру изолиний и отсутствию артефактов в виде "бычьих глаз" интерполяция методом __РБФ__ существенно ближе к ожидаемому распределению показателя, а также удачно сглаживает неравномерность распределения исходных данных.
 
 Смотрим, как выглядит поверхность в 3D:
 ```{r, message = FALSE, collapse=TRUE}
-z = as.matrix(r.spline)
 p = plot_ly(x = x, 
              y = y, 
-             z = z, 
+             z = px_grid$z_tps, 
              type = "surface",
              colors = rain_colors3d)
 layout(p, scene = list(aspectratio = 
@@ -532,10 +536,8 @@ layout(p, scene = list(aspectratio =
 
 Метод иерархических базисных сплайнов доступен в пакете `MBA`. Чтобы использовать его, сначала необходимо подготовить исходные данные. Они должны представлять из себя матрицу из трех столбцов: `X`, `Y`, `Показатель`:
 ```{r, message = FALSE, results = "hide", collapse=TRUE}
-
 # ИЕРАРХИЧЕСКИЕ БАЗИСНЫЕ СПЛАЙНЫ (HIERARCHICAL BASIS SPLINES)
-
-mba.data = cbind(pts$x, pts$y, pts$rain_24)
+mba_data = cbind(coords, pts$rain_24)
 ```
 
 Метод __ИБС__, так же как и __РБФ__, предполагает по умолчанию, что область определения должна быть квадратной. Если разброс координат по осям `X` и `Y` не одинаков, поверхность будет искусственно растянута или сжата. Чтобы этого не произошло, необходимо сначала рассчитать пропорции ЦМР. Ранее мы уже создали объект `envelope`, который хранит крайние координаты по `X` и `Y`:
@@ -543,36 +545,35 @@ mba.data = cbind(pts$x, pts$y, pts$rain_24)
 ratio = (envelope[2] - envelope[1])/(envelope[4] - envelope[3])
 
 # После этих приготовлений можно осуществить интерполяцию
-pred = mba.points(mba.data, coords_grid, n = 1, m = ratio)
+px_grid = px_grid %>% 
+  mutate(z_bspline = mba.points(mba_data, coords_grid, n = 1, m = ratio)$xyz.est[, 'z'])
 
-# Далее извлечем полученные значения
-pred.z = data.frame(pred$xyz.est[,"z"])
+# Строим горизонтали
+cont_bspline = st_contour(px_grid['z_bspline'], 
+                       breaks = tps_breaks, 
+                       contour_lines = TRUE)
 
-# Перенесем результат на сетку пикселей:
-px.bspline = SpatialPixelsDataFrame(pts_grid, data = pred.z)
+# Виузализируем результат:
 
-# Вернем исходное название показателю:
-names(px.bspline) = c("rain_24")
-
-# Построим растр для визуализации результатов
-r.bspline = raster(px.bspline, values = px.bspline$rain_24)
-
-# Смотрим, что получилось:
-plot(r.bspline, breaks = seq(-10,90,by=10), col=rain_colors(10))
-contour(r.bspline, levels = seq(-10,90,by=10), add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
+ggplot() +
+  geom_stars(data = cut(px_grid['z_bspline'], breaks = tps_breaks)) +
+  scale_fill_manual(name = 'мм',
+                    values = rain_colors(tps_ncolors),
+                    labels = paste(tps_breaks[-tps_ncolors-1], '-', tps_breaks[-1])) +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_bspline, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5)
 ```
 
 Можно видеть, что метод иерархических базисных сплайнов обеспечивает некий оптимум представления поверхности. С одной стороны, он, как и метод __РБФ__, дает гладкую и достаточно генерализованную поверхность. С другой стороны, на участках с плотным размещением исходных данных метод __ИБС__ раскрывает локальные нюансы поверхности, чего лишен метод __РБФ__, и что более типично для метода __ОВР__. 
 
 Наконец, рассмотрим результат в трехмерном виде:
 ```{r, message = FALSE, collapse=TRUE}
-z = as.matrix(r.bspline)
 p = plot_ly(x = x, 
-             y = y, 
-             z = z, 
-             type = "surface",
-             colors = rain_colors3d)
+            y = y, 
+            z = px_grid$z_bspline, 
+            type = "surface",
+            colors = rain_colors3d)
 layout(p, scene = list(aspectratio = 
                          list(x = 1, y = 1, z = 0.3)
 ))
@@ -591,82 +592,72 @@ layout(p, scene = list(aspectratio =
 
 # ГЛОБАЛЬНАЯ АППРОКСИМАЦИЯ (GLOBAL APPROXIMATION)
 
-# 1-я степень -------------------------------------------------------------
-
-# Создаем объект gstat. Столбец, указываемый в параметре formula, должен содержаться
+# Создаем объект gstat и интерполируем на его основе. Столбец, указываемый в параметре formula, должен содержаться
 # в наборе данных, который передается в параметр data:
-trend = gstat(formula = rain_24 ~ 1, data = pts, degree = 1)
+px_grid = px_grid %>% 
+  mutate(z_trend1 = predict(gstat(formula = rain_24 ~ 1, data = pts, degree = 1), 
+                            newdata = px_grid)$var1.pred,
+         z_trend2 = predict(gstat(formula = rain_24 ~ 1, data = pts, degree = 2), 
+                            newdata = px_grid)$var1.pred,
+         z_trend3 = predict(gstat(formula = rain_24 ~ 1, data = pts, degree = 3), 
+                            newdata = px_grid)$var1.pred)
+# Строим горизонтали
+cont_trend1 = st_contour(px_grid['z_trend1'], 
+                       breaks = rain_levels, 
+                       contour_lines = TRUE)
 
-# Осуществляем аппроксимацию на заданную сетку точек:
-z = predict(trend, newdata = pts_grid)
+cont_trend2 = st_contour(px_grid['z_trend2'], 
+                       breaks = rain_levels, 
+                       contour_lines = TRUE)
 
-# Переносим результат на сетку пикселей:
-px = SpatialPixelsDataFrame(z, data = z@data)
+cont_trend3 = st_contour(px_grid['z_trend3'], 
+                       breaks = rain_levels, 
+                       contour_lines = TRUE)
 
-# Преобразуем в растр:
-r.trend1 = raster(px, values = px$var1.pred)
+ggplot() +
+  geom_stars(data = cut(px_grid['z_trend1'], breaks = rain_levels)) +
+  rain_legend +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_trend1, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5)
 
-# Визуализируем результат:
-plot(r.trend1, breaks = tps.breaks, col=rain_colors(tps.ncolors))
-contour(r.trend1, levels = tps.breaks, add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
 
-# Теперь повторим все то же самое для степеней 2 и 3:
+ggplot() +
+  geom_stars(data = cut(px_grid['z_trend2'], breaks = rain_levels)) +
+  rain_legend +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_trend2, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5)
 
-# 2-я степень -------------------------------------------------------------
-trend = gstat(formula = rain_24 ~ 1, data = pts, degree = 2)
-z = predict(trend, newdata = pts_grid)
-px = SpatialPixelsDataFrame(z, data = z@data)
-r.trend2 = raster(px, values = px$var1.pred)
 
-# Визуализируем:
-plot(r.trend2, breaks = tps.breaks, col=rain_colors(tps.ncolors))
-contour(r.trend2, levels = tps.breaks, add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
+ggplot() +
+  geom_stars(data = cut(px_grid['z_trend3'], breaks = rain_levels)) +
+  rain_legend +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_trend3, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5)
 
-# 3-я степень -------------------------------------------------------------
-trend = gstat(formula = rain_24 ~ 1, data = pts, degree = 3)
-z = predict(trend, newdata = pts_grid)
-px = SpatialPixelsDataFrame(z, data = z@data)
-r.trend3 = raster(px, values = px$var1.pred)
-
-# Визуализируем:
-plot(r.trend3, breaks = tps.breaks, col=rain_colors(tps.ncolors))
-contour(r.trend3, levels = tps.breaks, add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
 ```
 
 Наконец, рассмотрим полученные поверхности в трехмерном виде:
 ```{r, message = FALSE, collapse=TRUE}
-z = as.matrix(r.trend1)
-p = plot_ly(x = x, 
-             y = y, 
-             z = z, 
-             type = "surface",
-             colors = rain_colors3d)
-layout(p, scene = list(aspectratio = 
-                         list(x = 1, y = 1, z = 0.3)
-))
+p = plot_ly(x = x, y = y, 
+            z = px_grid$z_trend1, 
+            type = "surface", 
+            colors = rain_colors3d)
+layout(p, scene = list(aspectratio = list(x = 1, y = 1, z = 0.3)))
 
-z = as.matrix(r.trend2)
-p = plot_ly(x = x, 
-             y = y, 
-             z = z, 
-             type = "surface",
-             colors = rain_colors3d)
-layout(p, scene = list(aspectratio = 
-                         list(x = 1, y = 1, z = 0.3)
-))
+p = plot_ly(x = x, y = y, 
+            z = px_grid$z_trend2, 
+            type = "surface",
+            colors = rain_colors3d)
+layout(p, scene = list(aspectratio = list(x = 1, y = 1, z = 0.3)))
 
-z = as.matrix(r.trend3)
-p = plot_ly(x = x, 
-             y = y, 
-             z = z, 
-             type = "surface",
-             colors = rain_colors3d)
-layout(p, scene = list(aspectratio = 
-                         list(x = 1, y = 1, z = 0.3)
-))
+p = plot_ly(x = x, y = y, 
+            z = px_grid$z_trend3, 
+            type = "surface",
+            colors = rain_colors3d)
+layout(p, scene = list(aspectratio = list(x = 1, y = 1, z = 0.3)))
 ```
 
 ### Локальный тренд {#approximation_local}
@@ -692,155 +683,141 @@ layout(p, scene = list(aspectratio =
 # ЛОКАЛЬНАЯ АППРОКСИМАЦИЯ (LOWESS)
 
 # 0-я степень -------------------------------------------------------------
-local.trend = loess(rain_24 ~ x + y, pts, degree = 0, span = 0.07, normalize = FALSE)
+px_grid = px_grid %>% 
+  mutate(z_local0 = predict(loess(rain_24 ~ x + y, pts, degree = 0, 
+                                  span = 0.07, normalize = FALSE), coords_grid),
+         z_local1 = predict(loess(rain_24 ~ x + y, pts, degree = 1, 
+                                  span = 0.07, normalize = FALSE), coords_grid),
+         z_local2 = predict(loess(rain_24 ~ x + y, pts, degree = 2, 
+                                  span = 0.07, normalize = FALSE), coords_grid))
 
-# Производим оценку в заданных точках
-z.local.trend = predict(local.trend, coords_grid)
-
-# Переводим результат на сетку пикселей
-px.local.trend  = SpatialPixelsDataFrame(pts_grid, data = data.frame(z.local.trend))
-
-# Задаем название показателя
-names(px.spline) = c("rain_24")
-
-# Преобразуем в растр для визуализации
-r.local.trend0 = raster(px.local.trend, values = px.spline$rain_24)
 
 # Визуализируем
-plot(r.local.trend0, breaks = rain_levels, col=rain_colors(rain_ncolors))
-contour(r.local.trend0, levels = rain_levels, add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
+cont_local0 = st_contour(px_grid['z_local0'], 
+                         breaks = rain_levels, 
+                         contour_lines = TRUE)
 
-# Повторим аналогичные действия для степеней 1 и 2
+cont_local1 = st_contour(px_grid['z_local1'], 
+                         breaks = rain_levels, 
+                         contour_lines = TRUE)
 
-# 1-я степень -------------------------------------------------------------
-local.trend = loess(rain_24 ~ x + y, pts, degree = 1, span = 0.07, normalize = FALSE)
-z.local.trend = predict(local.trend, coords_grid)
-px.local.trend  = SpatialPixelsDataFrame(pts_grid, data = data.frame(z.local.trend))
-names(px.spline) = c("rain_24")
-r.local.trend1 = raster(px.local.trend, values = px.spline$rain_24)
+cont_local2 = st_contour(px_grid['z_local2'], 
+                         breaks = rain_levels, 
+                         contour_lines = TRUE)
 
-plot(r.local.trend1, breaks = rain_levels, col=rain_colors(rain_ncolors))
-contour(r.local.trend1, levels = rain_levels, add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
+ggplot() +
+  geom_stars(data = cut(px_grid['z_local0'], breaks = rain_levels)) +
+  rain_legend +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_local0, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5)
 
-# 2-я степень -------------------------------------------------------------
-local.trend = loess(rain_24 ~ x + y, pts, degree = 2, span = 0.07, normalize = FALSE)
-z.local.trend = predict(local.trend, coords_grid)
-px.local.trend  = SpatialPixelsDataFrame(pts_grid, data = data.frame(z.local.trend))
-names(px.spline) = c("rain_24")
-r.local.trend2 = raster(px.local.trend, values = px.spline$rain_24)
 
-plot(r.local.trend2, breaks = rain_levels, col=rain_colors(rain_ncolors))
-contour(r.local.trend2, levels = rain_levels, add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
+ggplot() +
+  geom_stars(data = cut(px_grid['z_local1'], breaks = rain_levels)) +
+  rain_legend +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_local1, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5)
+
+
+ggplot() +
+  geom_stars(data = cut(px_grid['z_local2'], breaks = rain_levels)) +
+  rain_legend +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_local2, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5)
 ```
 
 Рассмотрим результаты в 3D:
 ```{r, message = FALSE, collapse=TRUE}
-z = as.matrix(r.local.trend0)
-p = plot_ly(x = x, 
-             y = y, 
-             z = z, 
-             type = "surface",
-             colors = rain_colors3d)
-layout(p, scene = list(aspectratio = 
-                         list(x = 1, y = 1, z = 0.3)
-))
+p = plot_ly(x = x, y = y, 
+            z = px_grid$z_local0, 
+            type = "surface", 
+            colors = rain_colors3d)
+layout(p, scene = list(aspectratio = list(x = 1, y = 1, z = 0.3)))
 
-z = as.matrix(r.local.trend1)
-p = plot_ly(x = x, 
-             y = y, 
-             z = z, 
-             type = "surface",
-             colors = rain_colors3d)
-layout(p, scene = list(aspectratio = 
-                         list(x = 1, y = 1, z = 0.3)
-))
+p = plot_ly(x = x, y = y, 
+            z = px_grid$z_local1, 
+            type = "surface",
+            colors = rain_colors3d)
+layout(p, scene = list(aspectratio = list(x = 1, y = 1, z = 0.3)))
 
-z = as.matrix(r.local.trend2)
-p = plot_ly(x = x, 
-             y = y, 
-             z = z, 
-             type = "surface",
-             colors = rain_colors3d)
-layout(p, scene = list(aspectratio = 
-                         list(x = 1, y = 1, z = 0.3)
-))
+p = plot_ly(x = x, y = y, 
+            z = px_grid$z_local2, 
+            type = "surface",
+            colors = rain_colors3d)
+layout(p, scene = list(aspectratio = list(x = 1, y = 1, z = 0.3)))
 ```
 
 Можно заметить, что с увеличением степени полинома поверхность все более точно аппроксимирует исходные данные — там, где достаточно большое количество исходных точек. В то же время, появляются нежелательные экстраполяции в приграничных областях, слабо обеспеченных измерениями, что можно наблюдать на последнем рисунке (степень = 2) в северо-западной части. Поэтому нельзя однозначно сказать, что более высокая степень обеспечивает лучшие результаты аппроксимации. Точность аппроксимации правильно регулировать не степенью полинома, а увеличением и уменьшением сглаживающего параметра альфа.
 
 Рассмотрим это на примере линейной аппроксимации при $\alpha = 0.05, 0.1, 0.2$:
 ```{r, message = FALSE, results = "hide", collapse=TRUE}
-# degree = 1, span = 0.05 -------------------------------------------------
+px_grid = px_grid %>% 
+  mutate(z_local1_005 = predict(loess(rain_24 ~ x + y, pts, degree = 1, 
+                                  span = 0.05, normalize = FALSE), coords_grid),
+         z_local1_01 = predict(loess(rain_24 ~ x + y, pts, degree = 1, 
+                                  span = 0.1, normalize = FALSE), coords_grid),
+         z_local1_02 = predict(loess(rain_24 ~ x + y, pts, degree = 1, 
+                                  span = 0.2, normalize = FALSE), coords_grid))
 
-local.trend = loess(rain_24 ~ x + y, pts, degree = 1, span = 0.05, normalize = FALSE)
-z.local.trend = predict(local.trend, coords_grid)
-px.local.trend  = SpatialPixelsDataFrame(pts_grid, data = data.frame(z.local.trend))
-names(px.spline) = c("rain_24")
-r.local.trend.a05 = raster(px.local.trend, values = px.spline$rain_24)
+# Визуализируем
+cont_local1_005 = st_contour(px_grid['z_local1_005'], 
+                         breaks = rain_levels, 
+                         contour_lines = TRUE)
 
-plot(r.local.trend.a05, breaks = rain_levels, col=rain_colors(rain_ncolors))
-contour(r.local.trend.a05, levels = rain_levels, add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
+cont_local1_01 = st_contour(px_grid['z_local1_01'], 
+                         breaks = rain_levels, 
+                         contour_lines = TRUE)
 
-# degree = 1, span = 0.1 -------------------------------------------------
+cont_local1_02 = st_contour(px_grid['z_local1_02'], 
+                         breaks = rain_levels, 
+                         contour_lines = TRUE)
 
-local.trend = loess(rain_24 ~ x + y, pts, degree = 1, span = 0.1, normalize = FALSE)
-z.local.trend = predict(local.trend, coords_grid)
-px.local.trend  = SpatialPixelsDataFrame(pts_grid, data = data.frame(z.local.trend))
-names(px.spline) = c("rain_24")
-r.local.trend.a10 = raster(px.local.trend, values = px.spline$rain_24)
+ggplot() +
+  geom_stars(data = cut(px_grid['z_local1_005'], breaks = rain_levels)) +
+  rain_legend +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_local1_005, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5)
 
-plot(r.local.trend.a10, breaks = rain_levels, col=rain_colors(rain_ncolors))
-contour(r.local.trend.a10, levels = rain_levels, add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
 
-# degree = 1, span = 0.2 -------------------------------------------------
+ggplot() +
+  geom_stars(data = cut(px_grid['z_local1_01'], breaks = rain_levels)) +
+  rain_legend +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_local1_01, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5)
 
-local.trend = loess(rain_24 ~ x + y, pts, degree = 1, span = 0.2, normalize = FALSE)
-z.local.trend = predict(local.trend, coords_grid)
-px.local.trend  = SpatialPixelsDataFrame(pts_grid, data = data.frame(z.local.trend))
-names(px.spline) = c("rain_24")
-r.local.trend.a20 = raster(px.local.trend, values = px.spline$rain_24)
 
-plot(r.local.trend.a20, breaks = rain_levels, col=rain_colors(rain_ncolors))
-contour(r.local.trend.a20, levels = rain_levels, add = TRUE)
-plot(pts, pch = 20, cex = 0.5, add = TRUE)
+ggplot() +
+  geom_stars(data = cut(px_grid['z_local1_02'], breaks = rain_levels)) +
+  rain_legend +
+  coord_sf(crs = st_crs(pts)) +
+  geom_sf(data = cont_local1_02, color = 'black', size = 0.2) +
+  geom_sf(data = pts, color = 'red', size = 0.5)
 ```
 
 Сравниваем результаты в трехмерном виде:
 ```{r, message = FALSE, collapse=TRUE}
-z = as.matrix(r.local.trend.a05)
-p = plot_ly(x = x, 
-             y = y, 
-             z = z, 
-             type = "surface",
-             colors = rain_colors3d)
-layout(p, scene = list(aspectratio = 
-                         list(x = 1, y = 1, z = 0.3)
-))
+p = plot_ly(x = x, y = y, 
+            z = px_grid$z_local1_005, 
+            type = "surface", 
+            colors = rain_colors3d)
+layout(p, scene = list(aspectratio = list(x = 1, y = 1, z = 0.3)))
 
-z = as.matrix(r.local.trend.a10)
-p = plot_ly(x = x, 
-             y = y, 
-             z = z, 
-             type = "surface",
-             colors = rain_colors3d)
-layout(p, scene = list(aspectratio = 
-                         list(x = 1, y = 1, z = 0.3)
-))
+p = plot_ly(x = x, y = y, 
+            z = px_grid$z_local1_01, 
+            type = "surface",
+            colors = rain_colors3d)
+layout(p, scene = list(aspectratio = list(x = 1, y = 1, z = 0.3)))
 
-z = as.matrix(r.local.trend.a20)
-p = plot_ly(x = x, 
-             y = y, 
-             z = z, 
-             type = "surface",
-             colors = rain_colors3d)
-layout(p, scene = list(aspectratio = 
-                         list(x = 1, y = 1, z = 0.3)
-                       ))
+p = plot_ly(x = x, y = y, 
+            z = px_grid$z_local1_02, 
+            type = "surface",
+            colors = rain_colors3d)
+layout(p, scene = list(aspectratio = list(x = 1, y = 1, z = 0.3)))
 ```
 
 ## Интерполяция по ареалам {#areal_interpolation}
@@ -860,8 +837,7 @@ layout(p, scene = list(aspectratio =
 # Данные по Северной Каролине
 nc = st_read(system.file("shape/nc.shp", package="sf"))
 
-cells = st_make_grid(nc, 
-                 cellsize = 0.25)
+cells = st_make_grid(nc, cellsize = 0.25)
 
 birth = st_interpolate_aw(nc["BIR74"], 
                        cells, 
