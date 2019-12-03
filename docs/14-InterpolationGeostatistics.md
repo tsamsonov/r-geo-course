@@ -309,6 +309,7 @@ E\big[Z(x+h)-Z(x)\big]^2 = 2\gamma(h)
 Для того чтобы функция могла считаться ковариацией, необходимо, чтобы дисперсия, вычисленная на ее основе, была положительной:
 
 $$Var \Bigg[\sum_{i=1}^N \lambda_i Z(x_i)\Bigg] = \sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j cov\big[Z(x_i), Z(x_j)\big] \\= \sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j C(x_j - x_i)$$
+
 > Функция $C(h)$, для которой при любых значениях $N$, $x_i$ и $\lambda_i$ выражение $\sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j C(x_j - x_i)$ принимает неотрицательные значения, называется __положительно определенной__.
 
 ### Допустимые линейные комбинации
@@ -577,10 +578,27 @@ $$\gamma(h) = \begin{cases}
 
 $$\gamma(a) = Var[Z(p)] = c_0 + c$$
 
+
+```r
+n = 60
+a = 40
+h = 0:n
+
+tab = tibble::tibble(
+  h = 0:60,
+  gamma = c(3 * (0:(a-1)) / (2 * a) - 0.5 * (0:(a-1) / a)^3, rep(1, n-a+1))
+)
+
+ggplot() +
+  geom_line(tab, mapping = aes(h, gamma), size = 1, color = 'steelblue') +
+  geom_vline(xintercept = a, color = 'orangered') +
+  annotate("text", x = a + 3, y = 0.5625, label = paste("a =", a), color = 'orangered') + 
+  theme_bw()
+```
+
 <img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-2-1.png" width="2100" style="display: block; margin: auto;" />
 
-<!-- - Данная модель достигает плато в точке $h = a$. -->
-
+Данная модель достигает плато в точке $h = a$.
 
 
 ### Экспоненциальная модель
@@ -591,16 +609,46 @@ $$\gamma(h) = \begin{cases}
 \end{cases}$$
 
 $$\gamma(a) = Var[Z(p)] = c_0 + c$$
+
+```r
+tab = tibble::tibble(
+  h = h,
+  gamma = 1 - exp(-3*h/a)
+)
+
+pl = ggplot() +
+  geom_line(tab, mapping = aes(h, gamma), size = 1, color = 'steelblue') +
+  geom_vline(xintercept = a, color = 'orangered') +
+  annotate("text", x = a + 3, y = 0.5625, label = paste("a =", a), color = 'orangered') + 
+  theme_bw()
+
+(pl)
+```
+
 <img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-3-1.png" width="2100" style="display: block; margin: auto;" />
 
 - Данная модель достигает плато асимптотически.
 - В точке $h = a$ достигается $95\%$ уровня плато.
 
-
-
 ### Гауссова модель
 
 $$\gamma(h) = c_0 + c\Bigg[1 - \exp\bigg(\frac{-3h^2}{a^2}\bigg)\Bigg]$$
+
+
+```r
+tab = tibble::tibble(
+  h = h,
+  gamma = 1 - exp(-3*h^2/a^2)
+)
+
+pl = ggplot() +
+  geom_line(tab, mapping = aes(h, gamma), size = 1, color = 'steelblue') +
+  geom_vline(xintercept = a, color = 'orangered') +
+  annotate("text", x = a + 3, y = 0.5625, label = paste("a =", a), color = 'orangered') + 
+  theme_bw()
+
+(pl)
+```
 
 <img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-4-1.png" width="2100" style="display: block; margin: auto;" />
 
@@ -615,6 +663,20 @@ $$\gamma(h) = \begin{cases}
   c h^\alpha, & h \neq 0.
 \end{cases}$$
 
+
+```r
+tab = tibble::tibble(
+  h = h,
+  gamma = h^1.5
+)
+
+pl = ggplot() +
+  geom_line(tab, mapping = aes(h, gamma), size = 1, color = 'steelblue') +
+  theme_bw()
+
+(pl)
+```
+
 <img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-5-1.png" width="2100" style="display: block; margin: auto;" />
 
 - Автокорреляция присутствует на всех расстояниях: $a \rightarrow \infty$
@@ -627,6 +689,21 @@ $$\gamma(h) = \begin{cases}
   0, & h = 0; \\
   c_0, & h \neq 0.
 \end{cases}, ~ c_0 = C(0)$$
+
+
+```r
+tab = tibble::tibble(
+  gamma = rep(1, n+1),
+  h = h
+)
+
+ggplot() +
+  geom_line(tab, mapping = aes(h, gamma), size = 1, color = 'steelblue') +
+  geom_point(data = data.frame(x = 0, y = 1), mapping = aes(x, y), shape=21,
+             colour = 'steelblue', fill = 'white', size = 3, stroke = 1.5) +
+  annotate('point', x = 0, y = 0, color = 'steelblue', size = 4) +
+  theme_bw()
+```
 
 <img src="14-InterpolationGeostatistics_files/figure-html/sam-1.png" width="2100" style="display: block; margin: auto;" />
 
@@ -641,35 +718,123 @@ $$\gamma(h) = \begin{cases}
 
 __Lagged scatterplot__ — вариант диаграммы рассеяния, на котором показываются значения в точках, расстояние между которыми попадает в заданный интервал 
 
+
+```r
+options(scipen = 999)
+
+cities = st_read("../data/Italy_Cities.gpkg")
+```
+
+```
+## Reading layer `Italy_Cities' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/Italy_Cities.gpkg' using driver `GPKG'
+## Simple feature collection with 8 features and 37 fields
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: 368910.4 ymin: 4930119 xmax: 686026 ymax: 5115936
+## epsg (SRID):    32632
+## proj4string:    +proj=utm +zone=32 +datum=WGS84 +units=m +no_defs
+```
+
+```r
+rainfall = read_table2("../data/Rainfall.dat") %>% 
+  st_as_sf(coords = c('x', 'y'), 
+           crs = st_crs(cities),
+           remove = FALSE)
+```
+
+```
+## Parsed with column specification:
+## cols(
+##   PK_Station = col_double(),
+##   name_stat = col_character(),
+##   location = col_character(),
+##   region = col_character(),
+##   x = col_double(),
+##   y = col_double(),
+##   PK_Sensor = col_double(),
+##   descra = col_double(),
+##   date = col_character(),
+##   rain_24 = col_double()
+## )
+```
+
+```r
+hscat(rain_24~1, data = rainfall, 1000 * c(0, 10, 20, 50, 100), pch = 19)
+```
+
 <img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-6-1.png" width="2100" style="display: block; margin: auto;" />
 
 ### Вариограммное облако
 
 Квадрат разности значений как функция от расстояния между точками
+
+```r
+varcl = variogram(rain_24~1, data=rainfall, cutoff = 150000, cloud=TRUE)
+
+ggplot(varcl) +
+  geom_point(aes(dist, gamma), alpha = 0.5, size = 2, color = 'steelblue') +
+  ylab('semivariance') +
+  theme_bw()
+```
+
 <img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-7-1.png" width="2100" />
   
 
 ### Эмпирическая вариограмма
 
-Эмпирическая вариограмма рассчитывается путем разбения вариограммного облака на интервалы расстояний — __лаги__ — и подсчета среднего значения $\gamma$ в каждом лаге:
-  
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-8-1.png" width="2100" />
+Эмпирическая вариограмма рассчитывается путем разбения вариограммного облака на интервалы расстояний — __лаги__ — и подсчета среднего значения $\gamma$ в каждом лаге по следующей формуле:
 
 $$\hat{\gamma} = \frac{1}{2N_h} \sum_{x_i - x_j \approx h} \big[z(x_i) - z(x_j)\big]^2$$
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-9-1.png" width="2100" />
+
+```r
+width = 10000
+intervals = width * 0:15
+
+vargr = variogram(rain_24~1, data=rainfall, cutoff = 150000, width = width)
+```
+
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+
+Оставив только вариограмму, получим:
+
+```r
+ggplot() +
+  geom_line(vargr, mapping = aes(dist, gamma)) +
+  geom_point(vargr, mapping = aes(dist, gamma, size = np)) +
+  scale_size(range = c(1, 5)) +
+  theme_bw()
+```
+
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-10-1.png" width="2100" />
 Размер точки означает количество пар значений, которые попали в каждый лаг.
 
 Поскольку вариограмма есть _дисперсия разности значений_, ее рост при увеличении расстояния можно оценить также по увеличению размера «ящика» на диаграмме размаха $\sqrt\gamma$:
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-10-1.png" width="2100" />
+
+```r
+varcl = varcl %>% 
+  mutate(sqgamma = sqrt(gamma),
+         lag = cut(dist, breaks = intervals, labels = 0.001 * (intervals[-1] - 0.5*width)))
+
+ggplot(varcl) +
+  geom_boxplot(aes(lag, sqrt(gamma)), outlier.alpha = 0.1)
+```
+
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-11-1.png" width="2100" />
 
 ### Вариокарта
 
 __Вариокарта__ (_variogram map, variomap_) представляет вариограмму как функцию приращений координат:
 $$\hat{\gamma} (\Delta x, \Delta y) = \frac{1}{2N_{\substack{\Delta x\\ \Delta y}}} \sum_{\substack{\Delta x_{ij} \approx \Delta x\\ \Delta y_{ij} \approx \Delta y}} \big[z(p_i) - z(p_j)\big]^2$$
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-11-1.png" width="2100" />
+
+```r
+varmp = variogram(rain_24~1, data=rainfall, cutoff = 150000, width = width, map = TRUE)[['map']]
+```
+
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+
 
 Вариокарта используется для выявления _пространственной анизотропии_. Профиль по линии из центра к краю вариокарты даст эмпирическую вариограмму
 
@@ -680,7 +845,7 @@ __Приближение__ (_fitting_) модели вариограммы пр�
 1. Выбор теоретической модели
 2. Подбор параметров модели: эффект самородка (nugget), радиус корреляции и плато.
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-12-1.png" width="2100" />
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-14-1.png" width="2100" />
 
 Дана вариограмма семейства $\gamma (h; \mathbf{b})$, где $\mathbf{b} = (b_1, ..., b_k)$ — вектор из $k$ параметров модели. Параметры $\mathbf{b}$ подбираются таким образом, чтобы минимизировать следующий функционал:
 
@@ -700,47 +865,144 @@ $$Q(\mathbf{b}) = \sum_{l=1}^{L} w_l \big[\hat{\gamma}(h_l) - \gamma (h; \mathbf
 
 Сравним результат ручного и автоматического приближения вариограммы:
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-13-1.png" width="2100" />
+
+```r
+varmd = fit.variogram(vargr, model = vgm(psill = 215, model = 'Sph', range = 120000, nugget = 15))
+
+h0 = lag * 0:(varmd[2, 'range']/lag)
+h1 = lag * (varmd[2, 'range']/lag + 1):(cutoff/lag) 
+
+tab2 = tibble::tibble(
+  h = c(h0, h1),
+  gamma = c(varmd[1, 'psill'] + (varmd[2, 'psill'] * (3 * h0 / (2 * varmd[2, 'range']) - 0.5 * (h0 / varmd[2, 'range'])^3)), rep(varmd[1, 'psill'] + varmd[2, 'psill'], length(h1))),
+  fit = 'automatic'
+)
+
+tab = bind_rows(tab1, tab2)
+
+ggplot() +
+  geom_line(vargr, mapping = aes(dist, gamma)) +
+  geom_point(vargr, mapping = aes(dist, gamma), size = 2) +
+  scale_size(range = c(1, 5)) +
+  geom_line(tab, mapping = aes(h, gamma, color = fit), size = 1) +
+  xlab('lag') + ylab('gamma') +
+  ggtitle('Сферическая модель') +
+  theme_bw()
+```
+
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-15-1.png" width="2100" />
 
 ### Обычный кригинг
 
 Рассмотрим данные по температуре:
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-14-1.png" width="2100" />
+
+```r
+box = st_bbox(rainfall)
+envelope = box[c(1,3,2,4)]
+
+px_grid = st_as_stars(box, dx = 2000, dy = 2000)
+
+ggplot() + 
+  geom_sf(data = rainfall, color = 'red') +
+  geom_sf(data = st_as_sf(px_grid), size = 0.5, fill = NA)
+```
+
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-16-1.png" width="2100" />
 
 ### Обычный кригинг
+
+Визуализируем найденную вариограмму и вариокарту:
+
+```r
+plot(vargr, model = varmd)
+```
+
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-17-1.png" width="672" />
+
+```r
+plot(varmp)
+```
+
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-17-2.png" width="672" />
+
 
 Проинтерполируем, используя приближенную модель вариограммы:
 
 ```r
-tempkriged = krige(rain_24~1, rainfall, pts.grid, model = varmd)
+(px_grid = krige(rain_24~1, rainfall, px_grid, model = varmd))
 ```
 
 ```
 ## [using ordinary kriging]
 ```
 
-```r
-head(tempkriged@data)
 ```
-
-```
-##   var1.pred var1.var
-## 1  18.19850 95.09082
-## 2  18.40829 82.89752
-## 3  18.68959 71.50449
-## 4  19.31360 62.00620
-## 5  20.96005 55.52258
-## 6  23.32818 50.02155
-```
-
-```r
-temps = SpatialPixelsDataFrame(tempkriged, data = tempkriged@data['var1.pred']) %>% raster()
-vars = SpatialPixelsDataFrame(tempkriged, data = tempkriged@data['var1.var']) %>% raster()
+## stars object with 2 dimensions and 2 attributes
+## attribute(s):
+##    var1.pred         var1.var      
+##  Min.   :-0.4092   Min.   : 30.99  
+##  1st Qu.: 7.7076   1st Qu.: 45.44  
+##  Median :18.8332   Median : 52.72  
+##  Mean   :21.5098   Mean   : 58.67  
+##  3rd Qu.:32.0739   3rd Qu.: 65.48  
+##  Max.   :67.2664   Max.   :186.22  
+## dimension(s):
+##   from  to  offset delta                       refsys point values    
+## x    1 213  332239  2000 +proj=utm +zone=32 +datum...    NA   NULL [x]
+## y    1  99 5121556 -2000 +proj=utm +zone=32 +datum...    NA   NULL [y]
 ```
 
 ### Оценка и дисперсия кригинга
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-16-1.png" width="2100" /><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-16-2.png" width="2100" />
+
+```r
+rain_colors = colorRampPalette(c("white", "dodgerblue", "dodgerblue4"))
+rain_levels = seq(0,80,by=10)
+rain_ncolors = length(rain_levels)-1
+
+err_colors = colorRampPalette(c("white", "coral", "violetred"))
+err_levels = seq(0, 180, by = 20)
+err_ncolors = length(err_levels) - 1
+
+cont = st_contour(px_grid['var1.pred'], breaks = rain_levels, contour_lines = TRUE)
+conterr = st_contour(px_grid['var1.var'], breaks = err_levels, contour_lines = TRUE)
+
+ggplot() +
+  geom_stars(data = cut(px_grid['var1.pred'], breaks = rain_levels)) +
+  scale_fill_manual(name = 'мм',
+                    values = rain_colors(rain_ncolors),
+                    labels = paste(rain_levels[-rain_ncolors-1], '-', rain_levels[-1]),
+                    drop = FALSE) +
+  coord_sf(crs = st_crs(rainfall)) +
+  geom_sf(data = cont, color = 'black', size = 0.2) +
+  geom_sf(data = rainfall, color = 'black', size = 0.3) +
+  theme_bw()
+```
+
+```
+## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
+```
+
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-19-1.png" width="2100" />
+
+```r
+ggplot() +
+  geom_stars(data = cut(px_grid['var1.var'], breaks = err_levels)) +
+  scale_fill_manual(name = 'мм',
+                    values = err_colors(err_ncolors),
+                    labels = paste(err_levels[-err_ncolors-1], '-', err_levels[-1]),
+                    drop = FALSE) +
+  coord_sf(crs = st_crs(rainfall)) +
+  geom_sf(data = conterr, color = 'black', size = 0.2) +
+  geom_sf(data = rainfall, color = 'black', size = 0.3) +
+  theme_bw()
+```
+
+```
+## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
+```
+
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-19-2.png" width="2100" />
 
 Дисперсия кригинга высока там, где мало данных.
 
@@ -770,29 +1032,126 @@ head(cvl %>% st_set_geometry(NULL), 10)
 ## 10  3.489972 62.96551      0.2  -3.28997242 -0.41461106   10 -0.41461106
 ```
 
-### Кросс-валидация
-
 Cтандартизированные ошибки в стационарном случае должны быть распределены нормально:
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-18-1.png" width="2100" />
 
+```r
+ggplot(cvl, aes(x = sterr)) +
+  geom_histogram(aes(y = stat(density)), fill = 'grey', color = 'black', size = 0.1) +
+  geom_density(fill = 'olivedrab', alpha = 0.5) +
+  theme_bw()
+```
 
-### Кросс-валидация
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-21-1.png" width="2100" />
 
 Ошибки должны быть независимы от значений:
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-19-1.png" width="2100" />
 
-### Кросс-валидация
+```r
+ggplot(cvl, aes(x = var1.pred, sterr)) +
+  geom_point(alpha = 0.8) +
+  geom_smooth(method = 'lm') +
+  theme_bw()
+```
+
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-22-1.png" width="2100" />
+
+```r
+cor.test(~ sterr + var1.pred, data = cvl)
+```
+
+```
+## 
+## 	Pearson's product-moment correlation
+## 
+## data:  sterr and var1.pred
+## t = -0.084465, df = 253, p-value = 0.9328
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.1280692  0.1176091
+## sample estimates:
+##          cor 
+## -0.005310204
+```
 
 Облако рассеяния оценки относительно истинных значений должно быть компактным:
 
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-20-1.png" width="2100" />
 
-### Кросс-валидация
+```r
+ggplot(cvl, aes(x = var1.pred, observed)) +
+  geom_point(alpha = 0.8) +
+  geom_smooth(method = 'lm') +
+  theme_bw()
+```
+
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-23-1.png" width="2100" />
+
+```r
+# Диагностика модели линейной регрессии
+summary(lm(observed ~ var1.pred, cvl))
+```
+
+```
+## 
+## Call:
+## lm(formula = observed ~ var1.pred, data = cvl)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -47.812  -3.914  -0.505   3.227  32.685 
+## 
+## Coefficients:
+##             Estimate Std. Error t value            Pr(>|t|)    
+## (Intercept) -0.03375    0.93884  -0.036               0.971    
+## var1.pred    1.00020    0.03919  25.519 <0.0000000000000002 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 8.405 on 253 degrees of freedom
+## Multiple R-squared:  0.7202,	Adjusted R-squared:  0.7191 
+## F-statistic: 651.2 on 1 and 253 DF,  p-value: < 0.00000000000000022
+```
 
 Пространственная картина стандартизированных ошибок должна быть гомогенной:
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-21-1.png" width="2100" />
+
+```r
+library(akima)
+
+coords = st_coordinates(rainfall)
+coords_grid = st_coordinates(px_grid)
+
+px_grid = px_grid %>% 
+  mutate(sterr = interpp(x = coords[,1],
+                         y = coords[,2],
+                         z = cvl$sterr, 
+                         xo = coords_grid[,1],
+                         yo = coords_grid[,2],
+                         linear = FALSE,
+                         extrap = TRUE)$z)
+
+sterr_levels = seq(-8,8,2)
+sterr_ncolors = length(sterr_levels)-1
+sterr_colors = colorRampPalette(c('blue', 'white', 'red'))
+
+sterrcont = st_contour(px_grid['sterr'], breaks = sterr_levels, contour_lines = TRUE)
+
+ggplot() +
+  geom_stars(data = cut(px_grid['sterr'], breaks = sterr_levels)) +
+  scale_fill_manual(name = 'мм',
+                    values = sterr_colors(sterr_ncolors),
+                    labels = paste(sterr_levels[-sterr_ncolors-1], '-', sterr_levels[-1]),
+                    drop = FALSE) +
+  coord_sf(crs = st_crs(rainfall)) +
+  geom_sf(data = sterrcont, color = 'black', size = 0.2) +
+  geom_sf(data = rainfall, color = 'black', size = 0.3) +
+  theme_bw()
+```
+
+```
+## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
+```
+
+<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-24-1.png" width="2100" />
 
 ## Краткий обзор {#geostat_review}
 

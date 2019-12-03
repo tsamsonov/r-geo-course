@@ -499,10 +499,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="14.4.25" data-path="kriging.html"><a href="kriging.html#обычный-кригинг-2"><i class="fa fa-check"></i><b>14.4.25</b> Обычный кригинг</a></li>
 <li class="chapter" data-level="14.4.26" data-path="kriging.html"><a href="kriging.html#оценка-и-дисперсия-кригинга"><i class="fa fa-check"></i><b>14.4.26</b> Оценка и дисперсия кригинга</a></li>
 <li class="chapter" data-level="14.4.27" data-path="kriging.html"><a href="kriging.html#кросс-валидация-1"><i class="fa fa-check"></i><b>14.4.27</b> Кросс-валидация</a></li>
-<li class="chapter" data-level="14.4.28" data-path="kriging.html"><a href="kriging.html#кросс-валидация-2"><i class="fa fa-check"></i><b>14.4.28</b> Кросс-валидация</a></li>
-<li class="chapter" data-level="14.4.29" data-path="kriging.html"><a href="kriging.html#кросс-валидация-3"><i class="fa fa-check"></i><b>14.4.29</b> Кросс-валидация</a></li>
-<li class="chapter" data-level="14.4.30" data-path="kriging.html"><a href="kriging.html#кросс-валидация-4"><i class="fa fa-check"></i><b>14.4.30</b> Кросс-валидация</a></li>
-<li class="chapter" data-level="14.4.31" data-path="kriging.html"><a href="kriging.html#кросс-валидация-5"><i class="fa fa-check"></i><b>14.4.31</b> Кросс-валидация</a></li>
 </ul></li>
 <li class="chapter" data-level="14.5" data-path="kriging.html"><a href="kriging.html#geostat_review"><i class="fa fa-check"></i><b>14.5</b> Краткий обзор</a></li>
 <li class="chapter" data-level="14.6" data-path="kriging.html"><a href="kriging.html#geostat_qt"><i class="fa fa-check"></i><b>14.6</b> Контрольные вопросы и упражнения</a><ul>
@@ -794,8 +790,10 @@ E\big[Z(x+h)-Z(x)\big]^2 = 2\gamma(h)
 <div id="положительная-определенность" class="section level3">
 <h3><span class="header-section-number">14.4.4</span> Положительная определенность</h3>
 <p>Для того чтобы функция могла считаться ковариацией, необходимо, чтобы дисперсия, вычисленная на ее основе, была положительной:</p>
-<p><span class="math display">\[Var \Bigg[\sum_{i=1}^N \lambda_i Z(x_i)\Bigg] = \sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j cov\big[Z(x_i), Z(x_j)\big] \\= \sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j C(x_j - x_i)\]</span>
-&gt; Функция <span class="math inline">\(C(h)\)</span>, для которой при любых значениях <span class="math inline">\(N\)</span>, <span class="math inline">\(x_i\)</span> и <span class="math inline">\(\lambda_i\)</span> выражение <span class="math inline">\(\sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j C(x_j - x_i)\)</span> принимает неотрицательные значения, называется <strong>положительно определенной</strong>.</p>
+<p><span class="math display">\[Var \Bigg[\sum_{i=1}^N \lambda_i Z(x_i)\Bigg] = \sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j cov\big[Z(x_i), Z(x_j)\big] \\= \sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j C(x_j - x_i)\]</span></p>
+<blockquote>
+<p>Функция <span class="math inline">\(C(h)\)</span>, для которой при любых значениях <span class="math inline">\(N\)</span>, <span class="math inline">\(x_i\)</span> и <span class="math inline">\(\lambda_i\)</span> выражение <span class="math inline">\(\sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j C(x_j - x_i)\)</span> принимает неотрицательные значения, называется <strong>положительно определенной</strong>.</p>
+</blockquote>
 </div>
 <div id="допустимые-линейные-комбинации" class="section level3">
 <h3><span class="header-section-number">14.4.5</span> Допустимые линейные комбинации</h3>
@@ -991,8 +989,22 @@ E\big[Z(x+h)-Z(x)\big]^2 = 2\gamma(h)
   c_0 + c, &amp; h &gt; a.
 \end{cases}\]</span></p>
 <p><span class="math display">\[\gamma(a) = Var[Z(p)] = c_0 + c\]</span></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="kriging.html#cb1-1"></a>n =<span class="st"> </span><span class="dv">60</span></span>
+<span id="cb1-2"><a href="kriging.html#cb1-2"></a>a =<span class="st"> </span><span class="dv">40</span></span>
+<span id="cb1-3"><a href="kriging.html#cb1-3"></a>h =<span class="st"> </span><span class="dv">0</span><span class="op">:</span>n</span>
+<span id="cb1-4"><a href="kriging.html#cb1-4"></a></span>
+<span id="cb1-5"><a href="kriging.html#cb1-5"></a>tab =<span class="st"> </span>tibble<span class="op">::</span><span class="kw">tibble</span>(</span>
+<span id="cb1-6"><a href="kriging.html#cb1-6"></a>  <span class="dt">h =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">60</span>,</span>
+<span id="cb1-7"><a href="kriging.html#cb1-7"></a>  <span class="dt">gamma =</span> <span class="kw">c</span>(<span class="dv">3</span> <span class="op">*</span><span class="st"> </span>(<span class="dv">0</span><span class="op">:</span>(a<span class="dv">-1</span>)) <span class="op">/</span><span class="st"> </span>(<span class="dv">2</span> <span class="op">*</span><span class="st"> </span>a) <span class="op">-</span><span class="st"> </span><span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span>(<span class="dv">0</span><span class="op">:</span>(a<span class="dv">-1</span>) <span class="op">/</span><span class="st"> </span>a)<span class="op">^</span><span class="dv">3</span>, <span class="kw">rep</span>(<span class="dv">1</span>, n<span class="op">-</span>a<span class="op">+</span><span class="dv">1</span>))</span>
+<span id="cb1-8"><a href="kriging.html#cb1-8"></a>)</span>
+<span id="cb1-9"><a href="kriging.html#cb1-9"></a></span>
+<span id="cb1-10"><a href="kriging.html#cb1-10"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb1-11"><a href="kriging.html#cb1-11"></a><span class="st">  </span><span class="kw">geom_line</span>(tab, <span class="dt">mapping =</span> <span class="kw">aes</span>(h, gamma), <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">color =</span> <span class="st">&#39;steelblue&#39;</span>) <span class="op">+</span></span>
+<span id="cb1-12"><a href="kriging.html#cb1-12"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> a, <span class="dt">color =</span> <span class="st">&#39;orangered&#39;</span>) <span class="op">+</span></span>
+<span id="cb1-13"><a href="kriging.html#cb1-13"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> a <span class="op">+</span><span class="st"> </span><span class="dv">3</span>, <span class="dt">y =</span> <span class="fl">0.5625</span>, <span class="dt">label =</span> <span class="kw">paste</span>(<span class="st">&quot;a =&quot;</span>, a), <span class="dt">color =</span> <span class="st">&#39;orangered&#39;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb1-14"><a href="kriging.html#cb1-14"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
 <p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-2-1.png" width="2100" style="display: block; margin: auto;" /></p>
-<!-- - Данная модель достигает плато в точке $h = a$. -->
+<p>Данная модель достигает плато в точке <span class="math inline">\(h = a\)</span>.</p>
 </div>
 <div id="экспоненциальная-модель" class="section level3">
 <h3><span class="header-section-number">14.4.15</span> Экспоненциальная модель</h3>
@@ -1000,8 +1012,20 @@ E\big[Z(x+h)-Z(x)\big]^2 = 2\gamma(h)
   0, &amp; h = 0; \\
   c_0 + (c-c_0)\Big[1 - \exp\big(\frac{-3h}{a}\big)\Big], &amp; h \neq 0.
 \end{cases}\]</span></p>
-<p><span class="math display">\[\gamma(a) = Var[Z(p)] = c_0 + c\]</span>
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-3-1.png" width="2100" style="display: block; margin: auto;" /></p>
+<p><span class="math display">\[\gamma(a) = Var[Z(p)] = c_0 + c\]</span></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="kriging.html#cb2-1"></a>tab =<span class="st"> </span>tibble<span class="op">::</span><span class="kw">tibble</span>(</span>
+<span id="cb2-2"><a href="kriging.html#cb2-2"></a>  <span class="dt">h =</span> h,</span>
+<span id="cb2-3"><a href="kriging.html#cb2-3"></a>  <span class="dt">gamma =</span> <span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">exp</span>(<span class="op">-</span><span class="dv">3</span><span class="op">*</span>h<span class="op">/</span>a)</span>
+<span id="cb2-4"><a href="kriging.html#cb2-4"></a>)</span>
+<span id="cb2-5"><a href="kriging.html#cb2-5"></a></span>
+<span id="cb2-6"><a href="kriging.html#cb2-6"></a>pl =<span class="st"> </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb2-7"><a href="kriging.html#cb2-7"></a><span class="st">  </span><span class="kw">geom_line</span>(tab, <span class="dt">mapping =</span> <span class="kw">aes</span>(h, gamma), <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">color =</span> <span class="st">&#39;steelblue&#39;</span>) <span class="op">+</span></span>
+<span id="cb2-8"><a href="kriging.html#cb2-8"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> a, <span class="dt">color =</span> <span class="st">&#39;orangered&#39;</span>) <span class="op">+</span></span>
+<span id="cb2-9"><a href="kriging.html#cb2-9"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> a <span class="op">+</span><span class="st"> </span><span class="dv">3</span>, <span class="dt">y =</span> <span class="fl">0.5625</span>, <span class="dt">label =</span> <span class="kw">paste</span>(<span class="st">&quot;a =&quot;</span>, a), <span class="dt">color =</span> <span class="st">&#39;orangered&#39;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb2-10"><a href="kriging.html#cb2-10"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span>
+<span id="cb2-11"><a href="kriging.html#cb2-11"></a></span>
+<span id="cb2-12"><a href="kriging.html#cb2-12"></a>(pl)</span></code></pre></div>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-3-1.png" width="2100" style="display: block; margin: auto;" /></p>
 <ul>
 <li>Данная модель достигает плато асимптотически.</li>
 <li>В точке <span class="math inline">\(h = a\)</span> достигается <span class="math inline">\(95\%\)</span> уровня плато.</li>
@@ -1010,6 +1034,18 @@ E\big[Z(x+h)-Z(x)\big]^2 = 2\gamma(h)
 <div id="гауссова-модель" class="section level3">
 <h3><span class="header-section-number">14.4.16</span> Гауссова модель</h3>
 <p><span class="math display">\[\gamma(h) = c_0 + c\Bigg[1 - \exp\bigg(\frac{-3h^2}{a^2}\bigg)\Bigg]\]</span></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="kriging.html#cb3-1"></a>tab =<span class="st"> </span>tibble<span class="op">::</span><span class="kw">tibble</span>(</span>
+<span id="cb3-2"><a href="kriging.html#cb3-2"></a>  <span class="dt">h =</span> h,</span>
+<span id="cb3-3"><a href="kriging.html#cb3-3"></a>  <span class="dt">gamma =</span> <span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">exp</span>(<span class="op">-</span><span class="dv">3</span><span class="op">*</span>h<span class="op">^</span><span class="dv">2</span><span class="op">/</span>a<span class="op">^</span><span class="dv">2</span>)</span>
+<span id="cb3-4"><a href="kriging.html#cb3-4"></a>)</span>
+<span id="cb3-5"><a href="kriging.html#cb3-5"></a></span>
+<span id="cb3-6"><a href="kriging.html#cb3-6"></a>pl =<span class="st"> </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb3-7"><a href="kriging.html#cb3-7"></a><span class="st">  </span><span class="kw">geom_line</span>(tab, <span class="dt">mapping =</span> <span class="kw">aes</span>(h, gamma), <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">color =</span> <span class="st">&#39;steelblue&#39;</span>) <span class="op">+</span></span>
+<span id="cb3-8"><a href="kriging.html#cb3-8"></a><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> a, <span class="dt">color =</span> <span class="st">&#39;orangered&#39;</span>) <span class="op">+</span></span>
+<span id="cb3-9"><a href="kriging.html#cb3-9"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> a <span class="op">+</span><span class="st"> </span><span class="dv">3</span>, <span class="dt">y =</span> <span class="fl">0.5625</span>, <span class="dt">label =</span> <span class="kw">paste</span>(<span class="st">&quot;a =&quot;</span>, a), <span class="dt">color =</span> <span class="st">&#39;orangered&#39;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb3-10"><a href="kriging.html#cb3-10"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span>
+<span id="cb3-11"><a href="kriging.html#cb3-11"></a></span>
+<span id="cb3-12"><a href="kriging.html#cb3-12"></a>(pl)</span></code></pre></div>
 <p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-4-1.png" width="2100" style="display: block; margin: auto;" /></p>
 <ul>
 <li>Данная модель достигает плато асимптотически.</li>
@@ -1023,6 +1059,16 @@ E\big[Z(x+h)-Z(x)\big]^2 = 2\gamma(h)
   0, &amp; h = 0; \\
   c h^\alpha, &amp; h \neq 0.
 \end{cases}\]</span></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="kriging.html#cb4-1"></a>tab =<span class="st"> </span>tibble<span class="op">::</span><span class="kw">tibble</span>(</span>
+<span id="cb4-2"><a href="kriging.html#cb4-2"></a>  <span class="dt">h =</span> h,</span>
+<span id="cb4-3"><a href="kriging.html#cb4-3"></a>  <span class="dt">gamma =</span> h<span class="op">^</span><span class="fl">1.5</span></span>
+<span id="cb4-4"><a href="kriging.html#cb4-4"></a>)</span>
+<span id="cb4-5"><a href="kriging.html#cb4-5"></a></span>
+<span id="cb4-6"><a href="kriging.html#cb4-6"></a>pl =<span class="st"> </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb4-7"><a href="kriging.html#cb4-7"></a><span class="st">  </span><span class="kw">geom_line</span>(tab, <span class="dt">mapping =</span> <span class="kw">aes</span>(h, gamma), <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">color =</span> <span class="st">&#39;steelblue&#39;</span>) <span class="op">+</span></span>
+<span id="cb4-8"><a href="kriging.html#cb4-8"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span>
+<span id="cb4-9"><a href="kriging.html#cb4-9"></a></span>
+<span id="cb4-10"><a href="kriging.html#cb4-10"></a>(pl)</span></code></pre></div>
 <p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-5-1.png" width="2100" style="display: block; margin: auto;" /></p>
 <ul>
 <li>Автокорреляция присутствует на всех расстояниях: <span class="math inline">\(a \rightarrow \infty\)</span></li>
@@ -1036,6 +1082,17 @@ E\big[Z(x+h)-Z(x)\big]^2 = 2\gamma(h)
   0, &amp; h = 0; \\
   c_0, &amp; h \neq 0.
 \end{cases}, ~ c_0 = C(0)\]</span></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="kriging.html#cb5-1"></a>tab =<span class="st"> </span>tibble<span class="op">::</span><span class="kw">tibble</span>(</span>
+<span id="cb5-2"><a href="kriging.html#cb5-2"></a>  <span class="dt">gamma =</span> <span class="kw">rep</span>(<span class="dv">1</span>, n<span class="op">+</span><span class="dv">1</span>),</span>
+<span id="cb5-3"><a href="kriging.html#cb5-3"></a>  <span class="dt">h =</span> h</span>
+<span id="cb5-4"><a href="kriging.html#cb5-4"></a>)</span>
+<span id="cb5-5"><a href="kriging.html#cb5-5"></a></span>
+<span id="cb5-6"><a href="kriging.html#cb5-6"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb5-7"><a href="kriging.html#cb5-7"></a><span class="st">  </span><span class="kw">geom_line</span>(tab, <span class="dt">mapping =</span> <span class="kw">aes</span>(h, gamma), <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">color =</span> <span class="st">&#39;steelblue&#39;</span>) <span class="op">+</span></span>
+<span id="cb5-8"><a href="kriging.html#cb5-8"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> <span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">0</span>, <span class="dt">y =</span> <span class="dv">1</span>), <span class="dt">mapping =</span> <span class="kw">aes</span>(x, y), <span class="dt">shape=</span><span class="dv">21</span>,</span>
+<span id="cb5-9"><a href="kriging.html#cb5-9"></a>             <span class="dt">colour =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;white&#39;</span>, <span class="dt">size =</span> <span class="dv">3</span>, <span class="dt">stroke =</span> <span class="fl">1.5</span>) <span class="op">+</span></span>
+<span id="cb5-10"><a href="kriging.html#cb5-10"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&#39;point&#39;</span>, <span class="dt">x =</span> <span class="dv">0</span>, <span class="dt">y =</span> <span class="dv">0</span>, <span class="dt">color =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">size =</span> <span class="dv">4</span>) <span class="op">+</span></span>
+<span id="cb5-11"><a href="kriging.html#cb5-11"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
 <p><img src="14-InterpolationGeostatistics_files/figure-html/sam-1.png" width="2100" style="display: block; margin: auto;" /></p>
 <ul>
 <li>Наличие у данных вариограммы типа наггет означает отсутствие пространственной корреляции.</li>
@@ -1051,28 +1108,79 @@ E\big[Z(x+h)-Z(x)\big]^2 = 2\gamma(h)
 <div id="диаграмма-рассеяния-с-лагом" class="section level3">
 <h3><span class="header-section-number">14.4.19</span> Диаграмма рассеяния с лагом</h3>
 <p><strong>Lagged scatterplot</strong> — вариант диаграммы рассеяния, на котором показываются значения в точках, расстояние между которыми попадает в заданный интервал</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="kriging.html#cb6-1"></a><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>)</span>
+<span id="cb6-2"><a href="kriging.html#cb6-2"></a></span>
+<span id="cb6-3"><a href="kriging.html#cb6-3"></a>cities =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;../data/Italy_Cities.gpkg&quot;</span>)</span></code></pre></div>
+<pre><code>## Reading layer `Italy_Cities&#39; from data source `/Users/tsamsonov/GitHub/r-geo-course/data/Italy_Cities.gpkg&#39; using driver `GPKG&#39;
+## Simple feature collection with 8 features and 37 fields
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: 368910.4 ymin: 4930119 xmax: 686026 ymax: 5115936
+## epsg (SRID):    32632
+## proj4string:    +proj=utm +zone=32 +datum=WGS84 +units=m +no_defs</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="kriging.html#cb8-1"></a>rainfall =<span class="st"> </span><span class="kw">read_table2</span>(<span class="st">&quot;../data/Rainfall.dat&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-2"><a href="kriging.html#cb8-2"></a><span class="st">  </span><span class="kw">st_as_sf</span>(<span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&#39;x&#39;</span>, <span class="st">&#39;y&#39;</span>), </span>
+<span id="cb8-3"><a href="kriging.html#cb8-3"></a>           <span class="dt">crs =</span> <span class="kw">st_crs</span>(cities),</span>
+<span id="cb8-4"><a href="kriging.html#cb8-4"></a>           <span class="dt">remove =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   PK_Station = col_double(),
+##   name_stat = col_character(),
+##   location = col_character(),
+##   region = col_character(),
+##   x = col_double(),
+##   y = col_double(),
+##   PK_Sensor = col_double(),
+##   descra = col_double(),
+##   date = col_character(),
+##   rain_24 = col_double()
+## )</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="kriging.html#cb10-1"></a><span class="kw">hscat</span>(rain_<span class="dv">24</span><span class="op">~</span><span class="dv">1</span>, <span class="dt">data =</span> rainfall, <span class="dv">1000</span> <span class="op">*</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">50</span>, <span class="dv">100</span>), <span class="dt">pch =</span> <span class="dv">19</span>)</span></code></pre></div>
 <p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-6-1.png" width="2100" style="display: block; margin: auto;" /></p>
 </div>
 <div id="вариограммное-облако" class="section level3">
 <h3><span class="header-section-number">14.4.20</span> Вариограммное облако</h3>
-<p>Квадрат разности значений как функция от расстояния между точками
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-7-1.png" width="2100" /></p>
+<p>Квадрат разности значений как функция от расстояния между точками</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="kriging.html#cb11-1"></a>varcl =<span class="st"> </span><span class="kw">variogram</span>(rain_<span class="dv">24</span><span class="op">~</span><span class="dv">1</span>, <span class="dt">data=</span>rainfall, <span class="dt">cutoff =</span> <span class="dv">150000</span>, <span class="dt">cloud=</span><span class="ot">TRUE</span>)</span>
+<span id="cb11-2"><a href="kriging.html#cb11-2"></a></span>
+<span id="cb11-3"><a href="kriging.html#cb11-3"></a><span class="kw">ggplot</span>(varcl) <span class="op">+</span></span>
+<span id="cb11-4"><a href="kriging.html#cb11-4"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(dist, gamma), <span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">color =</span> <span class="st">&#39;steelblue&#39;</span>) <span class="op">+</span></span>
+<span id="cb11-5"><a href="kriging.html#cb11-5"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;semivariance&#39;</span>) <span class="op">+</span></span>
+<span id="cb11-6"><a href="kriging.html#cb11-6"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-7-1.png" width="2100" /></p>
 </div>
 <div id="эмпирическая-вариограмма" class="section level3">
 <h3><span class="header-section-number">14.4.21</span> Эмпирическая вариограмма</h3>
-<p>Эмпирическая вариограмма рассчитывается путем разбения вариограммного облака на интервалы расстояний — <strong>лаги</strong> — и подсчета среднего значения <span class="math inline">\(\gamma\)</span> в каждом лаге:</p>
-<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-8-1.png" width="2100" /></p>
+<p>Эмпирическая вариограмма рассчитывается путем разбения вариограммного облака на интервалы расстояний — <strong>лаги</strong> — и подсчета среднего значения <span class="math inline">\(\gamma\)</span> в каждом лаге по следующей формуле:</p>
 <p><span class="math display">\[\hat{\gamma} = \frac{1}{2N_h} \sum_{x_i - x_j \approx h} \big[z(x_i) - z(x_j)\big]^2\]</span></p>
-<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-9-1.png" width="2100" />
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="kriging.html#cb12-1"></a>width =<span class="st"> </span><span class="dv">10000</span></span>
+<span id="cb12-2"><a href="kriging.html#cb12-2"></a>intervals =<span class="st"> </span>width <span class="op">*</span><span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">15</span></span>
+<span id="cb12-3"><a href="kriging.html#cb12-3"></a></span>
+<span id="cb12-4"><a href="kriging.html#cb12-4"></a>vargr =<span class="st"> </span><span class="kw">variogram</span>(rain_<span class="dv">24</span><span class="op">~</span><span class="dv">1</span>, <span class="dt">data=</span>rainfall, <span class="dt">cutoff =</span> <span class="dv">150000</span>, <span class="dt">width =</span> width)</span></code></pre></div>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Оставив только вариограмму, получим:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="kriging.html#cb13-1"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb13-2"><a href="kriging.html#cb13-2"></a><span class="st">  </span><span class="kw">geom_line</span>(vargr, <span class="dt">mapping =</span> <span class="kw">aes</span>(dist, gamma)) <span class="op">+</span></span>
+<span id="cb13-3"><a href="kriging.html#cb13-3"></a><span class="st">  </span><span class="kw">geom_point</span>(vargr, <span class="dt">mapping =</span> <span class="kw">aes</span>(dist, gamma, <span class="dt">size =</span> np)) <span class="op">+</span></span>
+<span id="cb13-4"><a href="kriging.html#cb13-4"></a><span class="st">  </span><span class="kw">scale_size</span>(<span class="dt">range =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">5</span>)) <span class="op">+</span></span>
+<span id="cb13-5"><a href="kriging.html#cb13-5"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-10-1.png" width="2100" />
 Размер точки означает количество пар значений, которые попали в каждый лаг.</p>
 <p>Поскольку вариограмма есть <em>дисперсия разности значений</em>, ее рост при увеличении расстояния можно оценить также по увеличению размера «ящика» на диаграмме размаха <span class="math inline">\(\sqrt\gamma\)</span>:</p>
-<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-10-1.png" width="2100" /></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="kriging.html#cb14-1"></a>varcl =<span class="st"> </span>varcl <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-2"><a href="kriging.html#cb14-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sqgamma =</span> <span class="kw">sqrt</span>(gamma),</span>
+<span id="cb14-3"><a href="kriging.html#cb14-3"></a>         <span class="dt">lag =</span> <span class="kw">cut</span>(dist, <span class="dt">breaks =</span> intervals, <span class="dt">labels =</span> <span class="fl">0.001</span> <span class="op">*</span><span class="st"> </span>(intervals[<span class="op">-</span><span class="dv">1</span>] <span class="op">-</span><span class="st"> </span><span class="fl">0.5</span><span class="op">*</span>width)))</span>
+<span id="cb14-4"><a href="kriging.html#cb14-4"></a></span>
+<span id="cb14-5"><a href="kriging.html#cb14-5"></a><span class="kw">ggplot</span>(varcl) <span class="op">+</span></span>
+<span id="cb14-6"><a href="kriging.html#cb14-6"></a><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="kw">aes</span>(lag, <span class="kw">sqrt</span>(gamma)), <span class="dt">outlier.alpha =</span> <span class="fl">0.1</span>)</span></code></pre></div>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-11-1.png" width="2100" /></p>
 </div>
 <div id="вариокарта" class="section level3">
 <h3><span class="header-section-number">14.4.22</span> Вариокарта</h3>
 <p><strong>Вариокарта</strong> (<em>variogram map, variomap</em>) представляет вариограмму как функцию приращений координат:
 <span class="math display">\[\hat{\gamma} (\Delta x, \Delta y) = \frac{1}{2N_{\substack{\Delta x\\ \Delta y}}} \sum_{\substack{\Delta x_{ij} \approx \Delta x\\ \Delta y_{ij} \approx \Delta y}} \big[z(p_i) - z(p_j)\big]^2\]</span></p>
-<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-11-1.png" width="2100" /></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="kriging.html#cb15-1"></a>varmp =<span class="st"> </span><span class="kw">variogram</span>(rain_<span class="dv">24</span><span class="op">~</span><span class="dv">1</span>, <span class="dt">data=</span>rainfall, <span class="dt">cutoff =</span> <span class="dv">150000</span>, <span class="dt">width =</span> width, <span class="dt">map =</span> <span class="ot">TRUE</span>)[[<span class="st">&#39;map&#39;</span>]]</span></code></pre></div>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>Вариокарта используется для выявления <em>пространственной анизотропии</em>. Профиль по линии из центра к краю вариокарты даст эмпирическую вариограмму</p>
 </div>
 <div id="приближение-теоретической-модели" class="section level3">
@@ -1082,7 +1190,7 @@ E\big[Z(x+h)-Z(x)\big]^2 = 2\gamma(h)
 <li>Выбор теоретической модели</li>
 <li>Подбор параметров модели: эффект самородка (nugget), радиус корреляции и плато.</li>
 </ol>
-<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-12-1.png" width="2100" /></p>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-14-1.png" width="2100" /></p>
 <p>Дана вариограмма семейства <span class="math inline">\(\gamma (h; \mathbf{b})\)</span>, где <span class="math inline">\(\mathbf{b} = (b_1, ..., b_k)\)</span> — вектор из <span class="math inline">\(k\)</span> параметров модели. Параметры <span class="math inline">\(\mathbf{b}\)</span> подбираются таким образом, чтобы минимизировать следующий функционал:</p>
 <p><span class="math display">\[Q(\mathbf{b}) = \sum_{l=1}^{L} w_l \big[\hat{\gamma}(h_l) - \gamma (h; \mathbf{b})\big]^2,\]</span></p>
 <p>где <span class="math inline">\(\big\{\hat{\gamma} (h_l): l = 1,...,L\big\}\)</span> — значения эмпирической вариограммы для <span class="math inline">\(L\)</span> лагов, вычисленные по <span class="math inline">\(N(h_l)\)</span> векторам.</p>
@@ -1095,42 +1203,113 @@ E\big[Z(x+h)-Z(x)\big]^2 = 2\gamma(h)
 </ol>
 <p>Шаги 2-3 повторяются до тех пор, пока значение <span class="math inline">\(Q\)</span> не станет меньше заданного порога.</p>
 <p>Сравним результат ручного и автоматического приближения вариограммы:</p>
-<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-13-1.png" width="2100" /></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="kriging.html#cb16-1"></a>varmd =<span class="st"> </span><span class="kw">fit.variogram</span>(vargr, <span class="dt">model =</span> <span class="kw">vgm</span>(<span class="dt">psill =</span> <span class="dv">215</span>, <span class="dt">model =</span> <span class="st">&#39;Sph&#39;</span>, <span class="dt">range =</span> <span class="dv">120000</span>, <span class="dt">nugget =</span> <span class="dv">15</span>))</span>
+<span id="cb16-2"><a href="kriging.html#cb16-2"></a></span>
+<span id="cb16-3"><a href="kriging.html#cb16-3"></a>h0 =<span class="st"> </span>lag <span class="op">*</span><span class="st"> </span><span class="dv">0</span><span class="op">:</span>(varmd[<span class="dv">2</span>, <span class="st">&#39;range&#39;</span>]<span class="op">/</span>lag)</span>
+<span id="cb16-4"><a href="kriging.html#cb16-4"></a>h1 =<span class="st"> </span>lag <span class="op">*</span><span class="st"> </span>(varmd[<span class="dv">2</span>, <span class="st">&#39;range&#39;</span>]<span class="op">/</span>lag <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)<span class="op">:</span>(cutoff<span class="op">/</span>lag) </span>
+<span id="cb16-5"><a href="kriging.html#cb16-5"></a></span>
+<span id="cb16-6"><a href="kriging.html#cb16-6"></a>tab2 =<span class="st"> </span>tibble<span class="op">::</span><span class="kw">tibble</span>(</span>
+<span id="cb16-7"><a href="kriging.html#cb16-7"></a>  <span class="dt">h =</span> <span class="kw">c</span>(h0, h1),</span>
+<span id="cb16-8"><a href="kriging.html#cb16-8"></a>  <span class="dt">gamma =</span> <span class="kw">c</span>(varmd[<span class="dv">1</span>, <span class="st">&#39;psill&#39;</span>] <span class="op">+</span><span class="st"> </span>(varmd[<span class="dv">2</span>, <span class="st">&#39;psill&#39;</span>] <span class="op">*</span><span class="st"> </span>(<span class="dv">3</span> <span class="op">*</span><span class="st"> </span>h0 <span class="op">/</span><span class="st"> </span>(<span class="dv">2</span> <span class="op">*</span><span class="st"> </span>varmd[<span class="dv">2</span>, <span class="st">&#39;range&#39;</span>]) <span class="op">-</span><span class="st"> </span><span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span>(h0 <span class="op">/</span><span class="st"> </span>varmd[<span class="dv">2</span>, <span class="st">&#39;range&#39;</span>])<span class="op">^</span><span class="dv">3</span>)), <span class="kw">rep</span>(varmd[<span class="dv">1</span>, <span class="st">&#39;psill&#39;</span>] <span class="op">+</span><span class="st"> </span>varmd[<span class="dv">2</span>, <span class="st">&#39;psill&#39;</span>], <span class="kw">length</span>(h1))),</span>
+<span id="cb16-9"><a href="kriging.html#cb16-9"></a>  <span class="dt">fit =</span> <span class="st">&#39;automatic&#39;</span></span>
+<span id="cb16-10"><a href="kriging.html#cb16-10"></a>)</span>
+<span id="cb16-11"><a href="kriging.html#cb16-11"></a></span>
+<span id="cb16-12"><a href="kriging.html#cb16-12"></a>tab =<span class="st"> </span><span class="kw">bind_rows</span>(tab1, tab2)</span>
+<span id="cb16-13"><a href="kriging.html#cb16-13"></a></span>
+<span id="cb16-14"><a href="kriging.html#cb16-14"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb16-15"><a href="kriging.html#cb16-15"></a><span class="st">  </span><span class="kw">geom_line</span>(vargr, <span class="dt">mapping =</span> <span class="kw">aes</span>(dist, gamma)) <span class="op">+</span></span>
+<span id="cb16-16"><a href="kriging.html#cb16-16"></a><span class="st">  </span><span class="kw">geom_point</span>(vargr, <span class="dt">mapping =</span> <span class="kw">aes</span>(dist, gamma), <span class="dt">size =</span> <span class="dv">2</span>) <span class="op">+</span></span>
+<span id="cb16-17"><a href="kriging.html#cb16-17"></a><span class="st">  </span><span class="kw">scale_size</span>(<span class="dt">range =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">5</span>)) <span class="op">+</span></span>
+<span id="cb16-18"><a href="kriging.html#cb16-18"></a><span class="st">  </span><span class="kw">geom_line</span>(tab, <span class="dt">mapping =</span> <span class="kw">aes</span>(h, gamma, <span class="dt">color =</span> fit), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb16-19"><a href="kriging.html#cb16-19"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;lag&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&#39;gamma&#39;</span>) <span class="op">+</span></span>
+<span id="cb16-20"><a href="kriging.html#cb16-20"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Сферическая модель&#39;</span>) <span class="op">+</span></span>
+<span id="cb16-21"><a href="kriging.html#cb16-21"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-15-1.png" width="2100" /></p>
 </div>
 <div id="обычный-кригинг-1" class="section level3">
 <h3><span class="header-section-number">14.4.24</span> Обычный кригинг</h3>
-<p>Рассмотрим данные по температуре:
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-14-1.png" width="2100" /></p>
+<p>Рассмотрим данные по температуре:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="kriging.html#cb17-1"></a>box =<span class="st"> </span><span class="kw">st_bbox</span>(rainfall)</span>
+<span id="cb17-2"><a href="kriging.html#cb17-2"></a>envelope =<span class="st"> </span>box[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">4</span>)]</span>
+<span id="cb17-3"><a href="kriging.html#cb17-3"></a></span>
+<span id="cb17-4"><a href="kriging.html#cb17-4"></a>px_grid =<span class="st"> </span><span class="kw">st_as_stars</span>(box, <span class="dt">dx =</span> <span class="dv">2000</span>, <span class="dt">dy =</span> <span class="dv">2000</span>)</span>
+<span id="cb17-5"><a href="kriging.html#cb17-5"></a></span>
+<span id="cb17-6"><a href="kriging.html#cb17-6"></a><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb17-7"><a href="kriging.html#cb17-7"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> rainfall, <span class="dt">color =</span> <span class="st">&#39;red&#39;</span>) <span class="op">+</span></span>
+<span id="cb17-8"><a href="kriging.html#cb17-8"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> <span class="kw">st_as_sf</span>(px_grid), <span class="dt">size =</span> <span class="fl">0.5</span>, <span class="dt">fill =</span> <span class="ot">NA</span>)</span></code></pre></div>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-16-1.png" width="2100" /></p>
 </div>
 <div id="обычный-кригинг-2" class="section level3">
 <h3><span class="header-section-number">14.4.25</span> Обычный кригинг</h3>
+<p>Визуализируем найденную вариограмму и вариокарту:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="kriging.html#cb18-1"></a><span class="kw">plot</span>(vargr, <span class="dt">model =</span> varmd)</span></code></pre></div>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="kriging.html#cb19-1"></a><span class="kw">plot</span>(varmp)</span></code></pre></div>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
 <p>Проинтерполируем, используя приближенную модель вариограммы:</p>
-<div class="sourceCode" id="cb637"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb637-1"><a href="kriging.html#cb637-1"></a>tempkriged =<span class="st"> </span><span class="kw">krige</span>(rain_<span class="dv">24</span><span class="op">~</span><span class="dv">1</span>, rainfall, pts.grid, <span class="dt">model =</span> varmd)</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="kriging.html#cb20-1"></a>(<span class="dt">px_grid =</span> <span class="kw">krige</span>(rain_<span class="dv">24</span><span class="op">~</span><span class="dv">1</span>, rainfall, px_grid, <span class="dt">model =</span> varmd))</span></code></pre></div>
 <pre><code>## [using ordinary kriging]</code></pre>
-<div class="sourceCode" id="cb639"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb639-1"><a href="kriging.html#cb639-1"></a><span class="kw">head</span>(tempkriged<span class="op">@</span>data)</span></code></pre></div>
-<pre><code>##   var1.pred var1.var
-## 1  18.19850 95.09082
-## 2  18.40829 82.89752
-## 3  18.68959 71.50449
-## 4  19.31360 62.00620
-## 5  20.96005 55.52258
-## 6  23.32818 50.02155</code></pre>
-<div class="sourceCode" id="cb641"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb641-1"><a href="kriging.html#cb641-1"></a>temps =<span class="st"> </span><span class="kw">SpatialPixelsDataFrame</span>(tempkriged, <span class="dt">data =</span> tempkriged<span class="op">@</span>data[<span class="st">&#39;var1.pred&#39;</span>]) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">raster</span>()</span>
-<span id="cb641-2"><a href="kriging.html#cb641-2"></a>vars =<span class="st"> </span><span class="kw">SpatialPixelsDataFrame</span>(tempkriged, <span class="dt">data =</span> tempkriged<span class="op">@</span>data[<span class="st">&#39;var1.var&#39;</span>]) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">raster</span>()</span></code></pre></div>
+<pre><code>## stars object with 2 dimensions and 2 attributes
+## attribute(s):
+##    var1.pred         var1.var      
+##  Min.   :-0.4092   Min.   : 30.99  
+##  1st Qu.: 7.7076   1st Qu.: 45.44  
+##  Median :18.8332   Median : 52.72  
+##  Mean   :21.5098   Mean   : 58.67  
+##  3rd Qu.:32.0739   3rd Qu.: 65.48  
+##  Max.   :67.2664   Max.   :186.22  
+## dimension(s):
+##   from  to  offset delta                       refsys point values    
+## x    1 213  332239  2000 +proj=utm +zone=32 +datum...    NA   NULL [x]
+## y    1  99 5121556 -2000 +proj=utm +zone=32 +datum...    NA   NULL [y]</code></pre>
 </div>
 <div id="оценка-и-дисперсия-кригинга" class="section level3">
 <h3><span class="header-section-number">14.4.26</span> Оценка и дисперсия кригинга</h3>
-<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-16-1.png" width="2100" /><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-16-2.png" width="2100" /></p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="kriging.html#cb23-1"></a>rain_colors =<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;dodgerblue&quot;</span>, <span class="st">&quot;dodgerblue4&quot;</span>))</span>
+<span id="cb23-2"><a href="kriging.html#cb23-2"></a>rain_levels =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">80</span>,<span class="dt">by=</span><span class="dv">10</span>)</span>
+<span id="cb23-3"><a href="kriging.html#cb23-3"></a>rain_ncolors =<span class="st"> </span><span class="kw">length</span>(rain_levels)<span class="op">-</span><span class="dv">1</span></span>
+<span id="cb23-4"><a href="kriging.html#cb23-4"></a></span>
+<span id="cb23-5"><a href="kriging.html#cb23-5"></a>err_colors =<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;coral&quot;</span>, <span class="st">&quot;violetred&quot;</span>))</span>
+<span id="cb23-6"><a href="kriging.html#cb23-6"></a>err_levels =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">180</span>, <span class="dt">by =</span> <span class="dv">20</span>)</span>
+<span id="cb23-7"><a href="kriging.html#cb23-7"></a>err_ncolors =<span class="st"> </span><span class="kw">length</span>(err_levels) <span class="op">-</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb23-8"><a href="kriging.html#cb23-8"></a></span>
+<span id="cb23-9"><a href="kriging.html#cb23-9"></a>cont =<span class="st"> </span><span class="kw">st_contour</span>(px_grid[<span class="st">&#39;var1.pred&#39;</span>], <span class="dt">breaks =</span> rain_levels, <span class="dt">contour_lines =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb23-10"><a href="kriging.html#cb23-10"></a>conterr =<span class="st"> </span><span class="kw">st_contour</span>(px_grid[<span class="st">&#39;var1.var&#39;</span>], <span class="dt">breaks =</span> err_levels, <span class="dt">contour_lines =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb23-11"><a href="kriging.html#cb23-11"></a></span>
+<span id="cb23-12"><a href="kriging.html#cb23-12"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb23-13"><a href="kriging.html#cb23-13"></a><span class="st">  </span><span class="kw">geom_stars</span>(<span class="dt">data =</span> <span class="kw">cut</span>(px_grid[<span class="st">&#39;var1.pred&#39;</span>], <span class="dt">breaks =</span> rain_levels)) <span class="op">+</span></span>
+<span id="cb23-14"><a href="kriging.html#cb23-14"></a><span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">name =</span> <span class="st">&#39;мм&#39;</span>,</span>
+<span id="cb23-15"><a href="kriging.html#cb23-15"></a>                    <span class="dt">values =</span> <span class="kw">rain_colors</span>(rain_ncolors),</span>
+<span id="cb23-16"><a href="kriging.html#cb23-16"></a>                    <span class="dt">labels =</span> <span class="kw">paste</span>(rain_levels[<span class="op">-</span>rain_ncolors<span class="dv">-1</span>], <span class="st">&#39;-&#39;</span>, rain_levels[<span class="op">-</span><span class="dv">1</span>]),</span>
+<span id="cb23-17"><a href="kriging.html#cb23-17"></a>                    <span class="dt">drop =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb23-18"><a href="kriging.html#cb23-18"></a><span class="st">  </span><span class="kw">coord_sf</span>(<span class="dt">crs =</span> <span class="kw">st_crs</span>(rainfall)) <span class="op">+</span></span>
+<span id="cb23-19"><a href="kriging.html#cb23-19"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> cont, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span></span>
+<span id="cb23-20"><a href="kriging.html#cb23-20"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> rainfall, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.3</span>) <span class="op">+</span></span>
+<span id="cb23-21"><a href="kriging.html#cb23-21"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-19-1.png" width="2100" /></p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="kriging.html#cb25-1"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb25-2"><a href="kriging.html#cb25-2"></a><span class="st">  </span><span class="kw">geom_stars</span>(<span class="dt">data =</span> <span class="kw">cut</span>(px_grid[<span class="st">&#39;var1.var&#39;</span>], <span class="dt">breaks =</span> err_levels)) <span class="op">+</span></span>
+<span id="cb25-3"><a href="kriging.html#cb25-3"></a><span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">name =</span> <span class="st">&#39;мм&#39;</span>,</span>
+<span id="cb25-4"><a href="kriging.html#cb25-4"></a>                    <span class="dt">values =</span> <span class="kw">err_colors</span>(err_ncolors),</span>
+<span id="cb25-5"><a href="kriging.html#cb25-5"></a>                    <span class="dt">labels =</span> <span class="kw">paste</span>(err_levels[<span class="op">-</span>err_ncolors<span class="dv">-1</span>], <span class="st">&#39;-&#39;</span>, err_levels[<span class="op">-</span><span class="dv">1</span>]),</span>
+<span id="cb25-6"><a href="kriging.html#cb25-6"></a>                    <span class="dt">drop =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb25-7"><a href="kriging.html#cb25-7"></a><span class="st">  </span><span class="kw">coord_sf</span>(<span class="dt">crs =</span> <span class="kw">st_crs</span>(rainfall)) <span class="op">+</span></span>
+<span id="cb25-8"><a href="kriging.html#cb25-8"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> conterr, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span></span>
+<span id="cb25-9"><a href="kriging.html#cb25-9"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> rainfall, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.3</span>) <span class="op">+</span></span>
+<span id="cb25-10"><a href="kriging.html#cb25-10"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-19-2.png" width="2100" /></p>
 <p>Дисперсия кригинга высока там, где мало данных.</p>
 </div>
 <div id="кросс-валидация-1" class="section level3">
 <h3><span class="header-section-number">14.4.27</span> Кросс-валидация</h3>
 <p>Для выполнения кросс-валидации воспользуемся функцией <code>krige.cv</code>:</p>
-<div class="sourceCode" id="cb642"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb642-1"><a href="kriging.html#cb642-1"></a>cvl =<span class="st"> </span><span class="kw">krige.cv</span>(rain_<span class="dv">24</span><span class="op">~</span><span class="dv">1</span>, rainfall, varmd) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb642-2"><a href="kriging.html#cb642-2"></a><span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb642-3"><a href="kriging.html#cb642-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sterr =</span> residual <span class="op">/</span><span class="st"> </span><span class="kw">sqrt</span>(var1.var))</span>
-<span id="cb642-4"><a href="kriging.html#cb642-4"></a></span>
-<span id="cb642-5"><a href="kriging.html#cb642-5"></a><span class="kw">head</span>(cvl <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_set_geometry</span>(<span class="ot">NULL</span>), <span class="dv">10</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="kriging.html#cb27-1"></a>cvl =<span class="st"> </span><span class="kw">krige.cv</span>(rain_<span class="dv">24</span><span class="op">~</span><span class="dv">1</span>, rainfall, varmd) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb27-2"><a href="kriging.html#cb27-2"></a><span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb27-3"><a href="kriging.html#cb27-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sterr =</span> residual <span class="op">/</span><span class="st"> </span><span class="kw">sqrt</span>(var1.var))</span>
+<span id="cb27-4"><a href="kriging.html#cb27-4"></a></span>
+<span id="cb27-5"><a href="kriging.html#cb27-5"></a><span class="kw">head</span>(cvl <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_set_geometry</span>(<span class="ot">NULL</span>), <span class="dv">10</span>)</span></code></pre></div>
 <pre><code>##    var1.pred var1.var observed     residual      zscore fold       sterr
 ## 1   5.743730 34.84033      6.0   0.25627005  0.04341669    1  0.04341669
 ## 2  11.137129 60.24070     10.0  -1.13712865 -0.14650910    2 -0.14650910
@@ -1142,26 +1321,89 @@ E\big[Z(x+h)-Z(x)\big]^2 = 2\gamma(h)
 ## 8  28.421330 75.24988      0.2 -28.22133030 -3.25330355    8 -3.25330355
 ## 9   2.340115 58.30350      1.0  -1.34011550 -0.17550719    9 -0.17550719
 ## 10  3.489972 62.96551      0.2  -3.28997242 -0.41461106   10 -0.41461106</code></pre>
-</div>
-<div id="кросс-валидация-2" class="section level3">
-<h3><span class="header-section-number">14.4.28</span> Кросс-валидация</h3>
 <p>Cтандартизированные ошибки в стационарном случае должны быть распределены нормально:</p>
-<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-18-1.png" width="2100" /></p>
-</div>
-<div id="кросс-валидация-3" class="section level3">
-<h3><span class="header-section-number">14.4.29</span> Кросс-валидация</h3>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="kriging.html#cb29-1"></a><span class="kw">ggplot</span>(cvl, <span class="kw">aes</span>(<span class="dt">x =</span> sterr)) <span class="op">+</span></span>
+<span id="cb29-2"><a href="kriging.html#cb29-2"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y =</span> <span class="kw">stat</span>(density)), <span class="dt">fill =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb29-3"><a href="kriging.html#cb29-3"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb29-4"><a href="kriging.html#cb29-4"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-21-1.png" width="2100" /></p>
 <p>Ошибки должны быть независимы от значений:</p>
-<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-19-1.png" width="2100" /></p>
-</div>
-<div id="кросс-валидация-4" class="section level3">
-<h3><span class="header-section-number">14.4.30</span> Кросс-валидация</h3>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="kriging.html#cb30-1"></a><span class="kw">ggplot</span>(cvl, <span class="kw">aes</span>(<span class="dt">x =</span> var1.pred, sterr)) <span class="op">+</span></span>
+<span id="cb30-2"><a href="kriging.html#cb30-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.8</span>) <span class="op">+</span></span>
+<span id="cb30-3"><a href="kriging.html#cb30-3"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&#39;lm&#39;</span>) <span class="op">+</span></span>
+<span id="cb30-4"><a href="kriging.html#cb30-4"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-22-1.png" width="2100" /></p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="kriging.html#cb31-1"></a><span class="kw">cor.test</span>(<span class="op">~</span><span class="st"> </span>sterr <span class="op">+</span><span class="st"> </span>var1.pred, <span class="dt">data =</span> cvl)</span></code></pre></div>
+<pre><code>## 
+##  Pearson&#39;s product-moment correlation
+## 
+## data:  sterr and var1.pred
+## t = -0.084465, df = 253, p-value = 0.9328
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.1280692  0.1176091
+## sample estimates:
+##          cor 
+## -0.005310204</code></pre>
 <p>Облако рассеяния оценки относительно истинных значений должно быть компактным:</p>
-<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-20-1.png" width="2100" /></p>
-</div>
-<div id="кросс-валидация-5" class="section level3">
-<h3><span class="header-section-number">14.4.31</span> Кросс-валидация</h3>
-<p>Пространственная картина стандартизированных ошибок должна быть гомогенной:
-<img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-21-1.png" width="2100" /></p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="kriging.html#cb33-1"></a><span class="kw">ggplot</span>(cvl, <span class="kw">aes</span>(<span class="dt">x =</span> var1.pred, observed)) <span class="op">+</span></span>
+<span id="cb33-2"><a href="kriging.html#cb33-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.8</span>) <span class="op">+</span></span>
+<span id="cb33-3"><a href="kriging.html#cb33-3"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&#39;lm&#39;</span>) <span class="op">+</span></span>
+<span id="cb33-4"><a href="kriging.html#cb33-4"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-23-1.png" width="2100" /></p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="kriging.html#cb34-1"></a><span class="co"># Диагностика модели линейной регрессии</span></span>
+<span id="cb34-2"><a href="kriging.html#cb34-2"></a><span class="kw">summary</span>(<span class="kw">lm</span>(observed <span class="op">~</span><span class="st"> </span>var1.pred, cvl))</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = observed ~ var1.pred, data = cvl)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -47.812  -3.914  -0.505   3.227  32.685 
+## 
+## Coefficients:
+##             Estimate Std. Error t value            Pr(&gt;|t|)    
+## (Intercept) -0.03375    0.93884  -0.036               0.971    
+## var1.pred    1.00020    0.03919  25.519 &lt;0.0000000000000002 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 8.405 on 253 degrees of freedom
+## Multiple R-squared:  0.7202, Adjusted R-squared:  0.7191 
+## F-statistic: 651.2 on 1 and 253 DF,  p-value: &lt; 0.00000000000000022</code></pre>
+<p>Пространственная картина стандартизированных ошибок должна быть гомогенной:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="kriging.html#cb36-1"></a><span class="kw">library</span>(akima)</span>
+<span id="cb36-2"><a href="kriging.html#cb36-2"></a></span>
+<span id="cb36-3"><a href="kriging.html#cb36-3"></a>coords =<span class="st"> </span><span class="kw">st_coordinates</span>(rainfall)</span>
+<span id="cb36-4"><a href="kriging.html#cb36-4"></a>coords_grid =<span class="st"> </span><span class="kw">st_coordinates</span>(px_grid)</span>
+<span id="cb36-5"><a href="kriging.html#cb36-5"></a></span>
+<span id="cb36-6"><a href="kriging.html#cb36-6"></a>px_grid =<span class="st"> </span>px_grid <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb36-7"><a href="kriging.html#cb36-7"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sterr =</span> <span class="kw">interpp</span>(<span class="dt">x =</span> coords[,<span class="dv">1</span>],</span>
+<span id="cb36-8"><a href="kriging.html#cb36-8"></a>                         <span class="dt">y =</span> coords[,<span class="dv">2</span>],</span>
+<span id="cb36-9"><a href="kriging.html#cb36-9"></a>                         <span class="dt">z =</span> cvl<span class="op">$</span>sterr, </span>
+<span id="cb36-10"><a href="kriging.html#cb36-10"></a>                         <span class="dt">xo =</span> coords_grid[,<span class="dv">1</span>],</span>
+<span id="cb36-11"><a href="kriging.html#cb36-11"></a>                         <span class="dt">yo =</span> coords_grid[,<span class="dv">2</span>],</span>
+<span id="cb36-12"><a href="kriging.html#cb36-12"></a>                         <span class="dt">linear =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb36-13"><a href="kriging.html#cb36-13"></a>                         <span class="dt">extrap =</span> <span class="ot">TRUE</span>)<span class="op">$</span>z)</span>
+<span id="cb36-14"><a href="kriging.html#cb36-14"></a></span>
+<span id="cb36-15"><a href="kriging.html#cb36-15"></a>sterr_levels =<span class="st"> </span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">8</span>,<span class="dv">8</span>,<span class="dv">2</span>)</span>
+<span id="cb36-16"><a href="kriging.html#cb36-16"></a>sterr_ncolors =<span class="st"> </span><span class="kw">length</span>(sterr_levels)<span class="op">-</span><span class="dv">1</span></span>
+<span id="cb36-17"><a href="kriging.html#cb36-17"></a>sterr_colors =<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&#39;blue&#39;</span>, <span class="st">&#39;white&#39;</span>, <span class="st">&#39;red&#39;</span>))</span>
+<span id="cb36-18"><a href="kriging.html#cb36-18"></a></span>
+<span id="cb36-19"><a href="kriging.html#cb36-19"></a>sterrcont =<span class="st"> </span><span class="kw">st_contour</span>(px_grid[<span class="st">&#39;sterr&#39;</span>], <span class="dt">breaks =</span> sterr_levels, <span class="dt">contour_lines =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb36-20"><a href="kriging.html#cb36-20"></a></span>
+<span id="cb36-21"><a href="kriging.html#cb36-21"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb36-22"><a href="kriging.html#cb36-22"></a><span class="st">  </span><span class="kw">geom_stars</span>(<span class="dt">data =</span> <span class="kw">cut</span>(px_grid[<span class="st">&#39;sterr&#39;</span>], <span class="dt">breaks =</span> sterr_levels)) <span class="op">+</span></span>
+<span id="cb36-23"><a href="kriging.html#cb36-23"></a><span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">name =</span> <span class="st">&#39;мм&#39;</span>,</span>
+<span id="cb36-24"><a href="kriging.html#cb36-24"></a>                    <span class="dt">values =</span> <span class="kw">sterr_colors</span>(sterr_ncolors),</span>
+<span id="cb36-25"><a href="kriging.html#cb36-25"></a>                    <span class="dt">labels =</span> <span class="kw">paste</span>(sterr_levels[<span class="op">-</span>sterr_ncolors<span class="dv">-1</span>], <span class="st">&#39;-&#39;</span>, sterr_levels[<span class="op">-</span><span class="dv">1</span>]),</span>
+<span id="cb36-26"><a href="kriging.html#cb36-26"></a>                    <span class="dt">drop =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb36-27"><a href="kriging.html#cb36-27"></a><span class="st">  </span><span class="kw">coord_sf</span>(<span class="dt">crs =</span> <span class="kw">st_crs</span>(rainfall)) <span class="op">+</span></span>
+<span id="cb36-28"><a href="kriging.html#cb36-28"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> sterrcont, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span></span>
+<span id="cb36-29"><a href="kriging.html#cb36-29"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> rainfall, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.3</span>) <span class="op">+</span></span>
+<span id="cb36-30"><a href="kriging.html#cb36-30"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
+<p><img src="14-InterpolationGeostatistics_files/figure-html/unnamed-chunk-24-1.png" width="2100" /></p>
 </div>
 </div>
 <div id="geostat_review" class="section level2">

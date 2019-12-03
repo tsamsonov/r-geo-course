@@ -322,6 +322,7 @@ E\big[Z(x+h)-Z(x)\big]^2 = 2\gamma(h)
 Для того чтобы функция могла считаться ковариацией, необходимо, чтобы дисперсия, вычисленная на ее основе, была положительной:
 
 $$Var \Bigg[\sum_{i=1}^N \lambda_i Z(x_i)\Bigg] = \sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j cov\big[Z(x_i), Z(x_j)\big] \\= \sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j C(x_j - x_i)$$
+
 > Функция $C(h)$, для которой при любых значениях $N$, $x_i$ и $\lambda_i$ выражение $\sum_{i=1}^N \sum_{j=1}^N \lambda_i \lambda_j C(x_j - x_i)$ принимает неотрицательные значения, называется __положительно определенной__.
 
 ### Допустимые линейные комбинации
@@ -590,7 +591,7 @@ $$\gamma(h) = \begin{cases}
 
 $$\gamma(a) = Var[Z(p)] = c_0 + c$$
 
-```{r, echo=FALSE, fig.height=3, dpi=300, fig.align='center'}
+```{r, fig.height=3, dpi=300, fig.align='center'}
 n = 60
 a = 40
 h = 0:n
@@ -607,8 +608,7 @@ ggplot() +
   theme_bw()
 ```
 
-<!-- - Данная модель достигает плато в точке $h = a$. -->
-
+Данная модель достигает плато в точке $h = a$.
 
 
 ### Экспоненциальная модель
@@ -619,7 +619,7 @@ $$\gamma(h) = \begin{cases}
 \end{cases}$$
 
 $$\gamma(a) = Var[Z(p)] = c_0 + c$$
-```{r, echo=FALSE, fig.height=3, dpi=300, fig.align='center'}
+```{r, fig.height=3, dpi=300, fig.align='center'}
 tab = tibble::tibble(
   h = h,
   gamma = 1 - exp(-3*h/a)
@@ -637,13 +637,11 @@ pl = ggplot() +
 - Данная модель достигает плато асимптотически.
 - В точке $h = a$ достигается $95\%$ уровня плато.
 
-
-
 ### Гауссова модель
 
 $$\gamma(h) = c_0 + c\Bigg[1 - \exp\bigg(\frac{-3h^2}{a^2}\bigg)\Bigg]$$
 
-```{r, echo=FALSE, fig.height=3, dpi=300, fig.align='center'}
+```{r, fig.height=3, dpi=300, fig.align='center'}
 tab = tibble::tibble(
   h = h,
   gamma = 1 - exp(-3*h^2/a^2)
@@ -669,7 +667,7 @@ $$\gamma(h) = \begin{cases}
   c h^\alpha, & h \neq 0.
 \end{cases}$$
 
-```{r, echo=FALSE, fig.height=3, dpi=300, fig.align='center'}
+```{r, fig.height=3, dpi=300, fig.align='center'}
 tab = tibble::tibble(
   h = h,
   gamma = h^1.5
@@ -693,7 +691,7 @@ $$\gamma(h) = \begin{cases}
   c_0, & h \neq 0.
 \end{cases}, ~ c_0 = C(0)$$
 
-```{r sam, echo=FALSE, fig.height=3, fig.align='center', dpi=300}
+```{r sam, fig.height=3, fig.align='center', dpi=300}
 tab = tibble::tibble(
   gamma = rep(1, n+1),
   h = h
@@ -718,11 +716,15 @@ ggplot() +
 
 __Lagged scatterplot__ — вариант диаграммы рассеяния, на котором показываются значения в точках, расстояние между которыми попадает в заданный интервал 
 
-```{r, echo=FALSE, fig.height=3.5, dpi=300, fig.align='center'}
+```{r, fig.height=3.5, dpi=300, fig.align='center'}
 options(scipen = 999)
 
-rainfall = read.table("../data/Rainfall.dat", header = TRUE)
-sp::coordinates(rainfall) = ~x+y
+cities = st_read("../data/Italy_Cities.gpkg")
+
+rainfall = read_table2("../data/Rainfall.dat") %>% 
+  st_as_sf(coords = c('x', 'y'), 
+           crs = st_crs(cities),
+           remove = FALSE)
 
 hscat(rain_24~1, data = rainfall, 1000 * c(0, 10, 20, 50, 100), pch = 19)
 ```
@@ -730,7 +732,7 @@ hscat(rain_24~1, data = rainfall, 1000 * c(0, 10, 20, 50, 100), pch = 19)
 ### Вариограммное облако
 
 Квадрат разности значений как функция от расстояния между точками
-```{r, echo=FALSE, fig.height=4, dpi=300}
+```{r, fig.height=4, dpi=300}
 varcl = variogram(rain_24~1, data=rainfall, cutoff = 150000, cloud=TRUE)
 
 ggplot(varcl) +
@@ -742,14 +744,18 @@ ggplot(varcl) +
 
 ### Эмпирическая вариограмма
 
-Эмпирическая вариограмма рассчитывается путем разбения вариограммного облака на интервалы расстояний — __лаги__ — и подсчета среднего значения $\gamma$ в каждом лаге:
-  
-```{r, echo=FALSE, fig.height=3.5, dpi=300}
+Эмпирическая вариограмма рассчитывается путем разбения вариограммного облака на интервалы расстояний — __лаги__ — и подсчета среднего значения $\gamma$ в каждом лаге по следующей формуле:
+
+$$\hat{\gamma} = \frac{1}{2N_h} \sum_{x_i - x_j \approx h} \big[z(x_i) - z(x_j)\big]^2$$
+
+```{r, fig.height=3.5, dpi=300}
 width = 10000
 intervals = width * 0:15
 
 vargr = variogram(rain_24~1, data=rainfall, cutoff = 150000, width = width)
+```
 
+```{r, echo = FALSE}
 ggplot() +
   geom_bin2d(varcl, mapping = aes(dist, gamma), binwidth = c(width, 3000)) +
   geom_point(varcl, mapping = aes(dist, gamma), alpha = 0.5, size = 2, color = 'steelblue') +
@@ -767,9 +773,8 @@ ggplot() +
   theme_bw()
 ```
 
-$$\hat{\gamma} = \frac{1}{2N_h} \sum_{x_i - x_j \approx h} \big[z(x_i) - z(x_j)\big]^2$$
-
-```{r, echo=FALSE, fig.height=3, dpi=300}
+Оставив только вариограмму, получим:
+```{r, fig.height=3, dpi=300}
 ggplot() +
   geom_line(vargr, mapping = aes(dist, gamma)) +
   geom_point(vargr, mapping = aes(dist, gamma, size = np)) +
@@ -780,7 +785,7 @@ ggplot() +
 
 Поскольку вариограмма есть _дисперсия разности значений_, ее рост при увеличении расстояния можно оценить также по увеличению размера «ящика» на диаграмме размаха $\sqrt\gamma$:
 
-```{r, echo=FALSE, fig.height=3.5, dpi=300}
+```{r, fig.height=3.5, dpi=300}
 varcl = varcl %>% 
   mutate(sqgamma = sqrt(gamma),
          lag = cut(dist, breaks = intervals, labels = 0.001 * (intervals[-1] - 0.5*width)))
@@ -794,11 +799,11 @@ ggplot(varcl) +
 __Вариокарта__ (_variogram map, variomap_) представляет вариограмму как функцию приращений координат:
 $$\hat{\gamma} (\Delta x, \Delta y) = \frac{1}{2N_{\substack{\Delta x\\ \Delta y}}} \sum_{\substack{\Delta x_{ij} \approx \Delta x\\ \Delta y_{ij} \approx \Delta y}} \big[z(p_i) - z(p_j)\big]^2$$
 
-```{r, echo=FALSE, fig.height=5, dpi=300}
+```{r, fig.height=5, dpi=300}
 varmp = variogram(rain_24~1, data=rainfall, cutoff = 150000, width = width, map = TRUE)[['map']]
+```
 
-# plot(varmp)
-
+```{r, echo = FALSE}
 dims = unname(varmp@grid@cells.dim)
 offs = varmp@grid@cellcentre.offset
 
@@ -824,6 +829,7 @@ ggplot() +
         axis.title = element_text(size=18,face="bold"))
 ```
 
+
 Вариокарта используется для выявления _пространственной анизотропии_. Профиль по линии из центра к краю вариокарты даст эмпирическую вариограмму
 
 ### Приближение теоретической модели
@@ -833,7 +839,7 @@ __Приближение__ (_fitting_) модели вариограммы пр�
 1. Выбор теоретической модели
 2. Подбор параметров модели: эффект самородка (nugget), радиус корреляции и плато.
 
-```{r, echo=FALSE, fig.height=3, dpi=300}
+```{r, echo = FALSE, fig.height=3, dpi=300}
 nugget = 15
 sill = 215
 lag = 1000
@@ -885,7 +891,7 @@ $$Q(\mathbf{b}) = \sum_{l=1}^{L} w_l \big[\hat{\gamma}(h_l) - \gamma (h; \mathbf
 
 Сравним результат ручного и автоматического приближения вариограммы:
 
-```{r, echo=FALSE, fig.height=4, dpi=300}
+```{r, fig.height=4, dpi=300}
 varmd = fit.variogram(vargr, model = vgm(psill = 215, model = 'Sph', range = 120000, nugget = 15))
 
 h0 = lag * 0:(varmd[2, 'range']/lag)
@@ -912,59 +918,66 @@ ggplot() +
 ### Обычный кригинг
 
 Рассмотрим данные по температуре:
-```{r, echo=FALSE, warning=FALSE, dpi = 300, fig.height = 4}
-pts.grid = spsample(rainfall, type = 'regular', cellsize = 5000)
+```{r, warning=FALSE, dpi = 300, fig.height = 4}
+box = st_bbox(rainfall)
+envelope = box[c(1,3,2,4)]
 
-tm_shape(rainfall) +
-  tm_dots(col = 'orangered', size = 0.25, shape = 21) +
-tm_shape(pts.grid) +
-  tm_dots(size = 0.05, shape = 20)
+px_grid = st_as_stars(box, dx = 2000, dy = 2000)
+
+ggplot() + 
+  geom_sf(data = rainfall, color = 'red') +
+  geom_sf(data = st_as_sf(px_grid), size = 0.5, fill = NA)
 ```
 
 ### Обычный кригинг
 
+Визуализируем найденную вариограмму и вариокарту:
+```{r}
+plot(vargr, model = varmd)
+plot(varmp)
+```
+
+
 Проинтерполируем, используя приближенную модель вариограммы:
 ```{r}
-tempkriged = krige(rain_24~1, rainfall, pts.grid, model = varmd)
-head(tempkriged@data)
-
-temps = SpatialPixelsDataFrame(tempkriged, data = tempkriged@data['var1.pred']) %>% raster()
-vars = SpatialPixelsDataFrame(tempkriged, data = tempkriged@data['var1.var']) %>% raster()
+(px_grid = krige(rain_24~1, rainfall, px_grid, model = varmd))
 ```
 
 ### Оценка и дисперсия кригинга
 
-```{r, echo=FALSE, warning=FALSE, dpi = 300, fig.height=2}
-rain.colors = colorRampPalette(c("white", "dodgerblue", "dodgerblue4"))
-rain.levels = seq(0,80,by=10)
-rain.ncolors = length(rain.levels)-1
-cont = raster::rasterToContour(temps, levels = rain.levels) %>% 
-  st_as_sf() %>% 
-  st_cast('LINESTRING')
+```{r, warning=FALSE, dpi = 300, fig.height=4}
+rain_colors = colorRampPalette(c("white", "dodgerblue", "dodgerblue4"))
+rain_levels = seq(0,80,by=10)
+rain_ncolors = length(rain_levels)-1
 
-tm_shape(temps) +
-  tm_raster(breaks = rain.levels, palette = rain.colors(rain.ncolors)) +
-tm_shape(rainfall) +
-  tm_dots(size = 0.05) +
-tm_shape(cont) +
-  tm_iso() +
-tm_layout(legend.outside = TRUE)
+err_colors = colorRampPalette(c("white", "coral", "violetred"))
+err_levels = seq(0, 180, by = 20)
+err_ncolors = length(err_levels) - 1
 
-err.colors = colorRampPalette(c("white", "coral", "violetred"))
-err.levels = seq(0,180,by=20)
-err.ncolors = length(err.levels)-1
+cont = st_contour(px_grid['var1.pred'], breaks = rain_levels, contour_lines = TRUE)
+conterr = st_contour(px_grid['var1.var'], breaks = err_levels, contour_lines = TRUE)
 
-conterr = raster::rasterToContour(vars, levels = err.levels) %>% 
-  st_as_sf() %>% 
-  st_cast('LINESTRING')
+ggplot() +
+  geom_stars(data = cut(px_grid['var1.pred'], breaks = rain_levels)) +
+  scale_fill_manual(name = 'мм',
+                    values = rain_colors(rain_ncolors),
+                    labels = paste(rain_levels[-rain_ncolors-1], '-', rain_levels[-1]),
+                    drop = FALSE) +
+  coord_sf(crs = st_crs(rainfall)) +
+  geom_sf(data = cont, color = 'black', size = 0.2) +
+  geom_sf(data = rainfall, color = 'black', size = 0.3) +
+  theme_bw()
 
-tm_shape(vars) +
-  tm_raster(breaks = err.levels, palette = err.colors(err.ncolors)) +
-tm_shape(rainfall) +
-  tm_dots(size = 0.05) +
-tm_shape(conterr) +
-  tm_lines() +
-tm_layout(legend.outside = TRUE)
+ggplot() +
+  geom_stars(data = cut(px_grid['var1.var'], breaks = err_levels)) +
+  scale_fill_manual(name = 'мм',
+                    values = err_colors(err_ncolors),
+                    labels = paste(err_levels[-err_ncolors-1], '-', err_levels[-1]),
+                    drop = FALSE) +
+  coord_sf(crs = st_crs(rainfall)) +
+  geom_sf(data = conterr, color = 'black', size = 0.2) +
+  geom_sf(data = rainfall, color = 'black', size = 0.3) +
+  theme_bw()
 ```
 
 Дисперсия кригинга высока там, где мало данных.
@@ -972,7 +985,7 @@ tm_layout(legend.outside = TRUE)
 ### Кросс-валидация
 
 Для выполнения кросс-валидации воспользуемся функцией `krige.cv`:
-```{r, warning=FALSE, dpi = 300, fig.height=2}
+```{r, warning=FALSE, dpi = 300, fig.height=4}
 cvl = krige.cv(rain_24~1, rainfall, varmd) %>% 
   st_as_sf() %>% 
   mutate(sterr = residual / sqrt(var1.var))
@@ -980,68 +993,70 @@ cvl = krige.cv(rain_24~1, rainfall, varmd) %>%
 head(cvl %>% st_set_geometry(NULL), 10)
 ```
 
-### Кросс-валидация
-
 Cтандартизированные ошибки в стационарном случае должны быть распределены нормально:
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE, dpi = 300, fig.height=4}
+```{r, message=FALSE, warning=FALSE, dpi = 300, fig.height=4}
 ggplot(cvl, aes(x = sterr)) +
   geom_histogram(aes(y = stat(density)), fill = 'grey', color = 'black', size = 0.1) +
   geom_density(fill = 'olivedrab', alpha = 0.5) +
   theme_bw()
 ```
 
-
-### Кросс-валидация
-
 Ошибки должны быть независимы от значений:
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE, dpi = 300, fig.height=4}
+```{r, message=FALSE, warning=FALSE, dpi = 300, fig.height=4}
 ggplot(cvl, aes(x = var1.pred, sterr)) +
   geom_point(alpha = 0.8) +
   geom_smooth(method = 'lm') +
   theme_bw()
-```
 
-### Кросс-валидация
+cor.test(~ sterr + var1.pred, data = cvl)
+```
 
 Облако рассеяния оценки относительно истинных значений должно быть компактным:
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE, dpi = 300, fig.height=4}
+```{r, message=FALSE, warning=FALSE, dpi = 300, fig.height=4}
 ggplot(cvl, aes(x = var1.pred, observed)) +
   geom_point(alpha = 0.8) +
   geom_smooth(method = 'lm') +
   theme_bw()
+
+# Диагностика модели линейной регрессии
+summary(lm(observed ~ var1.pred, cvl))
 ```
 
-### Кросс-валидация
-
 Пространственная картина стандартизированных ошибок должна быть гомогенной:
-```{r, echo=FALSE, warning=FALSE, dpi = 300, fig.height=3, fig.width=7}
+```{r, warning=FALSE, dpi = 300, fig.height=3, fig.width=7}
 library(akima)
 
-pts.grid.df = SpatialPointsDataFrame(pts.grid, data = data.frame(coordinates(pts.grid)))
-sterrpx = interpp(x = as(cvl, 'Spatial'),
-                  z = "sterr", 
-                  xo = pts.grid.df,
-                  linear = FALSE,
-                  extrap = TRUE)
-rsterr = SpatialPixelsDataFrame(pts.grid.df, data = as.data.frame(sterrpx$sterr)) %>% raster()
+coords = st_coordinates(rainfall)
+coords_grid = st_coordinates(px_grid)
 
-sterr.levels = seq(-6,4,2)
-sterr.ncolors = length(rain.levels)-1
-sterrcont = raster::rasterToContour(rsterr, levels = sterr.levels) %>% 
-  st_as_sf() %>% 
-  st_cast('LINESTRING')
+px_grid = px_grid %>% 
+  mutate(sterr = interpp(x = coords[,1],
+                         y = coords[,2],
+                         z = cvl$sterr, 
+                         xo = coords_grid[,1],
+                         yo = coords_grid[,2],
+                         linear = FALSE,
+                         extrap = TRUE)$z)
 
-tm_shape(rsterr) +
-  tm_raster(midpoint = 0, palette = '-RdYlBu', 
-            legend.reverse = TRUE) +
-tm_shape(rainfall) +
-  tm_dots(size = 0.05) +
-tm_shape(sterrcont) +
-  tm_iso() +
-tm_layout(legend.outside = TRUE)
+sterr_levels = seq(-8,8,2)
+sterr_ncolors = length(sterr_levels)-1
+sterr_colors = colorRampPalette(c('blue', 'white', 'red'))
+
+sterrcont = st_contour(px_grid['sterr'], breaks = sterr_levels, contour_lines = TRUE)
+
+ggplot() +
+  geom_stars(data = cut(px_grid['sterr'], breaks = sterr_levels)) +
+  scale_fill_manual(name = 'мм',
+                    values = sterr_colors(sterr_ncolors),
+                    labels = paste(sterr_levels[-sterr_ncolors-1], '-', sterr_levels[-1]),
+                    drop = FALSE) +
+  coord_sf(crs = st_crs(rainfall)) +
+  geom_sf(data = sterrcont, color = 'black', size = 0.2) +
+  geom_sf(data = rainfall, color = 'black', size = 0.3) +
+  theme_bw()
 ```
 
 ## Краткий обзор {#geostat_review}
