@@ -1,12 +1,9 @@
 # Растровый анализ {#raster_analysis}
 
-```{r setup, echo = FALSE, purl = FALSE, include=FALSE}
+```{r setup-raster, echo = FALSE, purl = FALSE, include=FALSE}
 library(datasets)
 knitr::opts_knit$set(global.par = TRUE)
-knitr::opts_knit$set(root.dir = "data/")
 knitr::opts_chunk$set(warning=FALSE, message = FALSE,
-                      # cache = FALSE, 
-                      # cache.lazy = FALSE,
                       collapse=TRUE)
 ```
 
@@ -51,9 +48,9 @@ library(tidyverse)
 # Вычисление толщины покровного оледенения
 
 # Чтение данных
-bed = raster('etopo1_bed.tif')
-ice = raster('etopo1_ice.tif')
-countries = st_read('countries.gpkg')
+bed = raster('data/etopo1_bed.tif')
+ice = raster('data/etopo1_ice.tif')
+countries = st_read('data/countries.gpkg')
 borders = countries %>% st_geometry()
 
 # отображение данных
@@ -173,7 +170,7 @@ plot(faults,
 
 ```{r}
 # Морфометрия рельефа — фиксированное соседство
-dem = raster('dem_fergana.tif')
+dem = raster('data/dem_fergana.tif')
 spplot(dem)
 
 # углы наклона
@@ -213,11 +210,11 @@ plot(hill,
 # Определение Евклидовых расстояний — расширенное соседство
 
 # Чтение данных
-roads = st_read("roads.gpkg") # Дороги
-poi = st_read("poi_point.gpkg") # Точки интереса
-rayons = st_read("boundary_polygon.gpkg") # Границы районов
-stations = st_read("metro_stations.gpkg") # Станции метро
-water = st_read("water_polygon.gpkg") # Водные объекты
+roads = st_read("data/roads.gpkg") # Дороги
+poi = st_read("data/poi_point.gpkg") # Точки интереса
+rayons = st_read("data/boundary_polygon.gpkg") # Границы районов
+stations = st_read("data/metro_stations.gpkg") # Станции метро
+water = st_read("data/water_polygon.gpkg") # Водные объекты
 
 # Создаем пустой растр с охватом, равным охвату станции
 r =  raster(extent(stations), nrows = 200, ncols = 200)
@@ -303,7 +300,7 @@ head(mtemp)
   gather(month, tmean, tmean1:tmean12) %>% 
   separate(month, c('dummy', 'month'), sep = 5) %>% 
   mutate(month = as.integer(month)) %>% 
-  select(-COUNT, -dummy))
+  dplyr::select(-COUNT, -dummy))
 
 ggplot(mtemp_tidy) +
   geom_line(aes(x = month, y = tmean, color = cover), size = 1) +
@@ -326,7 +323,7 @@ mtemp_north_tidy = zonal(temp_north, cover_north, 'mean') %>%
   separate(month, c('dummy', 'month'), sep = 5) %>% 
   mutate(month = as.integer(month),
          hemisphere = 'north') %>% 
-  select(-COUNT, -dummy)
+  dplyr::select(-COUNT, -dummy)
 
 mtemp_south_tidy = zonal(temp_south, cover_south, 'mean') %>% 
   as_tibble() %>% 
@@ -335,7 +332,7 @@ mtemp_south_tidy = zonal(temp_south, cover_south, 'mean') %>%
   separate(month, c('dummy', 'month'), sep = 5) %>% 
   mutate(month = as.integer(month),
          hemisphere = 'south') %>% 
-  select(-COUNT, -dummy)
+  dplyr::select(-COUNT, -dummy)
 
 mtemp_tidy2 = bind_rows(mtemp_north_tidy, mtemp_south_tidy)
 
@@ -383,7 +380,7 @@ profile = mapedit::drawFeatures(mp)
 
 ![](images/mapedit_profile.png)
 ```{r, echo=FALSE}
-profile = st_read('profile.gpkg', quiet = TRUE)
+profile = st_read('data/profile.gpkg', quiet = TRUE)
 ```
 
 ```{r}
@@ -397,7 +394,7 @@ head(temprof[[1]])
 tempdf = temprof[[1]] %>% 
   as_tibble() %>% 
   bind_cols(xyFromCell(temp, .$cell) %>% as_tibble()) %>% 
-  mutate(dist = 0.001 * c(0, select(., x, y) %>% 
+  mutate(dist = 0.001 * c(0, dplyr::select(., x, y) %>% 
                              geosphere::distGeo() %>% 
                              cumsum() %>% 
                              head(-1)))

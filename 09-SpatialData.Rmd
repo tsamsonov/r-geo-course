@@ -2,10 +2,9 @@
 
 # Пространственные данные {#spatial_data}
 
-```{r setup, echo = FALSE, purl = FALSE, include=FALSE}
+```{r setup-spatial, echo = FALSE, purl = FALSE, include=FALSE}
 library(datasets)
 knitr::opts_knit$set(global.par = TRUE)
-knitr::opts_knit$set(root.dir = "data/")
 knitr::opts_chunk$set(warning=FALSE, message = FALSE, 
                       cache = TRUE,
                       cache.lazy = FALSE,
@@ -297,7 +296,7 @@ methods(class = "sf") # Посмотрим, какие методы доступ
 
 Для чтения данных средствами sf необходимо использовать функцию `st_read()`:
 ```{r, collapse = TRUE}
-countries = st_read('ne/countries.gpkg')
+countries = st_read('data/ne/countries.gpkg')
 ```
 
 Лог функции сообщил нам следующую информацию:
@@ -387,9 +386,9 @@ plot(countries['gdp_md_est'], graticule = TRUE, axes = TRUE)
 
 Для совмещения нескольких слоев на одной карте необходимо при втором и последующих вызовах функции `plot()` указать параметр `add = TRUE`:
 ```{r}
-oceans = st_read('ne/oceans.gpkg')
-rivers = st_read('ne/rivers.gpkg')
-lakes = st_read('ne/lakes.gpkg')
+oceans = st_read('data/ne/oceans.gpkg')
+rivers = st_read('data/ne/rivers.gpkg')
+lakes = st_read('data/ne/lakes.gpkg')
 
 plot(countries %>% st_geometry, lwd = 0.5, border = 'gray')
 plot(oceans %>% st_geometry, col = 'steelblue1', border = 'steelblue', add = TRUE)
@@ -487,7 +486,7 @@ plot(st_geometry(italy))
 
 Следующий пример иллюстрирует как выбрать страны с населением более 100 млн человек:
 ```{r, collapse = TRUE, message=FALSE, warning=FALSE}
-largest = countries %>% select(pop_est) %>% filter(pop_est > 100000000)
+largest = countries %>% dplyr::select(pop_est) %>% filter(pop_est > 100000000)
 plot(outlines, col = 'lightgrey')
 plot(largest, col = 'red', add = TRUE)
 ```
@@ -600,7 +599,7 @@ par(def)
 Проверка топологических отношений используется для выполнения выборки объектов по местоположению — _пространственной выборки_. Наиболее простой способ выбрать объекты по пространственному местоположению --- это использовать один слой в качестве фильтра для другого слоя. В этом случае будет по умолчанию использовано отношение `st_intersects()` (пересекает). Никаких отличий от работы с обычными таблицами нет. Например, вот так можно выбрать точки, находящиеся внутри ранее отобранных стран с максимальным ВВП:
 
 ```{r}
-cities = st_read('ne/cities.gpkg')
+cities = st_read('data/ne/cities.gpkg')
 city.pts = st_geometry(cities)
 
 # Наносим исходную конфигурацию
@@ -854,7 +853,7 @@ print(cites.sf)
 
 Достаточно распространенной является следующая задача: имеются координаты точек в табличной форме, необходимо создать на их основе набор пространственных объектов. Для решения этой задачи можно воспользоваться функцией `st_as_sf()`. Рассмотрим задачу на примере файла координат станций из базы метеорологических данных [__ВНИИГМИ-МЦД__](http://meteo.ru/):
 ```{r}
-(stations = read_fwf('vniigmi/stations.txt', 
+(stations = read_fwf('data/vniigmi/stations.txt', 
                     col_positions = fwf_widths(diff(c(1, 7, 42, 47, 53, 59, 67, 71)), 
                                                col_names = c('id', 'name', 'lat', 't1', 'lon', 't2', 'z')),
                     locale = locale(encoding = 'CP1251')))
@@ -999,7 +998,7 @@ plot(st_point_on_surface(indonesia),
 
 Для экспорта векторных пространственных данных можно воспользоваться функцией `st_write()`, которая определит формат выходного файла по указанному вами расширению:
 ```{r, eval = FALSE}
-st_write(cites.sf, 'mycities.shp') # Шейп-файл
+st_write(cites.sf, 'data/mycities.shp') # Шейп-файл
 ```
 
 ## Растровые данные {#raster_data_r}
@@ -1015,19 +1014,19 @@ st_write(cites.sf, 'mycities.shp') # Шейп-файл
 ```{r}
 library(raster)
 
-dem = raster('world/gebco.tif') # Цифровая модель рельефа
+dem = raster('data/world/gebco.tif') # Цифровая модель рельефа
 class(dem)
 
-img = stack('world/BlueMarbleJuly.tif') # Цветной космический снимок (RGB)
+img = stack('data/world/BlueMarbleJuly.tif') # Цветной космический снимок (RGB)
 class(img)
 class(img[[1]])
 ```
 
 Вы также можете прочитать каналы многоканального растра по отдельности. Для этого необходимо использовать функцию `raster()`, указав ей в качестве второго параметра номер канала, который вы хотите прочитать. Если потом потребуется собрать поканальные растры в один стек, для этого можно снова использовать функцию `stack()`:
 ```{r}
-ch1 = raster('world/BlueMarbleJuly.tif', 1)
-ch2 = raster('world/BlueMarbleJuly.tif', 2)
-ch3 = raster('world/BlueMarbleJuly.tif', 3)
+ch1 = raster('data/world/BlueMarbleJuly.tif', 1)
+ch2 = raster('data/world/BlueMarbleJuly.tif', 2)
+ch3 = raster('data/world/BlueMarbleJuly.tif', 3)
 
 img = stack(ch1, ch2, ch3)
 ```
@@ -1145,8 +1144,8 @@ plot(mountains)
 
 Покажем возможности растровой алгебры на примере определения толщины покровного оледенения. Глобальная цифровая модель рельефа [ETOPO1](https://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.ngdc.mgg.dem:316) поставляется в двух вариантах: Ice Surface (поверхность с учетом покровного оледенения) и Bedrock (подстилающая поверхность). Если вычесть из первой вторую, можно узнать толщину льда в Гренландии и на Антарктиде:
 ```{r}
-bed = raster('world/etopo1_bed.tif')
-ice = raster('world/etopo1_ice.tif')
+bed = raster('data/world/etopo1_bed.tif')
+ice = raster('data/world/etopo1_ice.tif')
 
 ice.depth = ice - bed
 
@@ -1166,7 +1165,7 @@ plot(outlines, border = 'black', lwd = 0.5, add = TRUE)
 
 Чтобы экспортировать (сохранить в файл) любой растр, можно воспользоваться функцией `writeRaster()`, указав имя выходного файла:
 ```{r, eval = FALSE}
-writeRaster(ice.depth, 'world/ice_depth.tif')
+writeRaster(ice.depth, 'data/world/ice_depth.tif')
 ```
 
 ## Визуализация средствами ggplot2 {#spatial_ggplot2}

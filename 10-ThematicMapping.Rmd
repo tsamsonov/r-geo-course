@@ -1,12 +1,9 @@
 # Тематические карты {#thematic_mapping_new}
 
-```{r setup, echo = FALSE, purl = FALSE, include=FALSE}
+```{r setup-thematic, echo = FALSE, purl = FALSE, include=FALSE}
 library(datasets)
 knitr::opts_knit$set(global.par = TRUE)
-knitr::opts_knit$set(root.dir = "data/")
 knitr::opts_chunk$set(warning=FALSE, message = FALSE, 
-                      # cache = FALSE, 
-                      # cache.lazy = FALSE,
                       collapse=TRUE)
 ```
 
@@ -155,7 +152,7 @@ __Количественный фон__ или __картограммы__ пол
   rename(name = 1) %>% 
   gather(year, lifexp, -name) %>% 
   filter(year == 2016) %>% 
-  left_join(read_excel('gapminder.xlsx', 2)) %>% 
+  left_join(read_excel('data/gapminder.xlsx', 2)) %>% 
   mutate(geo = stringr::str_to_upper(geo)) -> lifedf) # выгружаем данные по продолжительности и сохраняем в переменную lifedf
 
 coun = lyrp$countries %>% left_join(lifedf, by = c('adm0_a3' = 'geo'))
@@ -628,7 +625,7 @@ tm_grid(x = seq(-180, 180, by = 60),
   rename(name = 1) %>% 
   gather(year, lifexp, -name) %>% 
   filter(year %in% c(1960, 1970, 1980, 1990, 2000, 2010)) %>% 
-  left_join(read_excel('gapminder.xlsx', 2)) %>% 
+  left_join(read_excel('data/gapminder.xlsx', 2)) %>% 
   mutate(geo = stringr::str_to_upper(geo)) -> lifedf2) # выгружаем данные по ВВП на душу населения и сохраняем в переменную lifedf
 
 coun2 = lyrp$countries %>% left_join(lifedf2, by = c('adm0_a3' = 'geo'))

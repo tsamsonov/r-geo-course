@@ -1,9 +1,8 @@
 # Табличные данные {#tables}
 
-```{r setup, echo = FALSE, purl = FALSE, cache = FALSE, include=FALSE}
+```{r setup-tables, echo = FALSE, purl = FALSE, cache = FALSE, include=FALSE}
 library(datasets)
 knitr::opts_knit$set(global.par = TRUE)
-knitr::opts_knit$set(root.dir = "data/")
 knitr::opts_chunk$set(warning=FALSE, collapse=TRUE)
 ```
 
@@ -153,7 +152,7 @@ N,Region,Year05,Year10,Year11,Year12,Year13
 
 ```{r}
 library(readr)
-(okruga = read_csv('okruga.csv'))
+(okruga = read_csv('data/okruga.csv'))
 ```
 
 Как видно, функции пакета `readr` выдают диагностическую информацию о том, к какому типу были приведены столбцы таблицы при чтении. Помимо этого, первая строка была использована в качестве заголовочной.
@@ -181,7 +180,7 @@ library(readr)
 
 Прочитаем вышеприведенный файл с данными о ветровой энергии:
 ```{r}
-(wenergy = read_table('wind_energy.txt', col_names = c('id', 'lat', 'lon', 'energy50', 'energy110')))
+(wenergy = read_table('data/wind_energy.txt', col_names = c('id', 'lat', 'lon', 'energy50', 'energy110')))
 ```
 
 ### Таблицы Microsoft Excel {#tables_reading_excel}
@@ -191,7 +190,7 @@ library(readr)
 D настоящем курсе мы будем пользоваться пакетом __readxl__, поскольку он не имеет внешних зависимостей, а его функции концептуально идентичны функциям пакета __readr__. Прочтем данные о лесовосстановлении (в тысяч га), полученные из регионального ежегодника Росстата за 2017 год. Эта таблица содержит колонку с названием субъекта и еще 8 колонок с данными по годам. Поскольку в таблице есть пропущенные значения, необходимо определить типы столбцов (в противном случае они могут быть определены как текстовые):
 ```{r}
 library(readxl)
-(reforest = read_excel('reforest.xlsx', 
+(reforest = read_excel('data/reforest.xlsx', 
                        col_types = c('text', rep('numeric', 8))))
 ```
 
@@ -598,7 +597,7 @@ _Фильтрующее соединение:_
 
 Подгрузим таблицу по лесозаготовкам:
 ```{r}
-(timber = read_excel('timber.xlsx', 
+(timber = read_excel('data/timber.xlsx', 
                     col_types = c('text', rep('numeric', 8))) %>% 
   filter(!stringr::str_detect(Регион, 'Федерация|федеральный округ')))
 ```
@@ -632,13 +631,13 @@ _Фильтрующее соединение:_
 
 Запись файлов _в текстовом формате_ можно осуществить посредством функций из пакета __readr__, таких как `write_delim()`, `write_csv()` и `write_tsv()`. Базовый синтаксис их предельно прост:
 ```{r}
-write_csv(compare, "output/timber_compare.csv")
+write_csv(compare, "data/output/timber_compare.csv")
 ```
 
 Для записи таблиц _Microsoft Excel_ можно использовать возможности пакета [__writexl__](https://cran.r-project.org/web/packages/writexl/index.html):
 ```{r}
 library(writexl)
-write_xlsx(compare, "output/timber_compare.xlsx")
+write_xlsx(compare, "data/output/timber_compare.xlsx")
 ```
 
 Каждая из этих функций содержит ряд дополнительных параметров, позволяющих управлять внешним видом выгружаемых таблиц. Более подробно с ними вы можете ознакомиться, вызвав справку для соответствующей функции.

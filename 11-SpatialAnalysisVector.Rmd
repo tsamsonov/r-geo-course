@@ -1,13 +1,9 @@
 # Векторный и сетевой анализ {#vector_analysis}
 
-```{r setup, echo = FALSE, purl = FALSE, cache = FALSE, include=FALSE}
+```{r setup-vector, echo = FALSE, purl = FALSE, cache = FALSE, include=FALSE}
 library(datasets)
-# library(DT)
 knitr::opts_knit$set(global.par = TRUE)
-knitr::opts_knit$set(root.dir = "data/")
 knitr::opts_chunk$set(warning=FALSE, message = FALSE,
-                      # cache = FALSE, 
-                      # cache.lazy = FALSE,
                       collapse=TRUE)
 ```
 
@@ -71,17 +67,17 @@ __Пространственные запросы__ связаны с поиск
 Начнем наше исследование с визуального анализа исходных данных
 ```{r, message = FALSE, results = "hide", collapse=TRUE}
 library(sf)
-library(dplyr)
+library(tidyverse)
 library(classInt)
 library(osrm) # Использование онлайн-сервиса маршрутизации OSRM
 library(cartography) # Удобное построение тематических карт средствами plot()
 
 # Чтение данных
-roads = st_read("roads.gpkg") # Дороги
-poi = st_read("poi_point.gpkg") # Точки интереса
-rayons = st_read("boundary_polygon.gpkg") # Границы районов
-stations = st_read("metro_stations.gpkg") # Станции метро
-water = st_read("water_polygon.gpkg") # Водные объекты
+roads = st_read("data/roads.gpkg") # Дороги
+poi = st_read("data/poi_point.gpkg") # Точки интереса
+rayons = st_read("data/boundary_polygon.gpkg") # Границы районов
+stations = st_read("data/metro_stations.gpkg") # Станции метро
+water = st_read("data/water_polygon.gpkg") # Водные объекты
 
 # Прочитаем текущие параметры компоновки
 def = par(no.readonly = TRUE)
@@ -141,7 +137,7 @@ datatable(stats, options = list(pageLength = 10, scrollX = TRUE))
 
 ```{r, collapse=TRUE}
 poi.food = poi %>% 
-            select(NAME, AMENITY) %>% 
+            dplyr::select(NAME, AMENITY) %>% 
             filter(AMENITY %in% c("restaurant", "bar", "cafe", "pub", "fast_food"))
 head(poi.food)
 ```
@@ -190,7 +186,7 @@ roads.poi = merge(roads,
 ```{r, collapse=TRUE}
 # Статистика по улицам в табличном представлении (первые 10)
 roads.poi %>% 
-  select(NAME, Freq) %>% 
+  dplyr::select(NAME, Freq) %>% 
   arrange(desc(Freq)) %>% 
   head(10)
 ```
