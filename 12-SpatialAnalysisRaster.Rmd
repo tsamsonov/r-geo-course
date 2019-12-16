@@ -243,9 +243,9 @@ __Зональные операции__ связаны с агрегирован
 
 В качестве примера рассмотрим вычисление среднеклиматических параметров _WorldClim_ в пределах различных типов земельного покрова (Land Cover), которые доступны в пакете __tmap__:
 ```{r, fig.width=4, fig.height=4}
-temp = getData("worldclim", var = "tmean", res = 10) %>% 
+temp_stars = getData("worldclim", var = "tmean", res = 10) %>% 
   st_as_stars() / 10
-plot(temp)
+plot(temp_stars)
 
 
 data(land, package = 'tmap')
@@ -279,34 +279,38 @@ ggplot() +
 
 Предварительно необходимо убедиться, что оба растра имеют совпадающий охват (экстент) и пространственное разрешение. Обратите внимание на то, что, поскольку растр земельного покрова категориальный, для его передискретизации необходимо использовать метод ближайшего соседа (_Nearest Neighbor_), который для каждого пиксела нового растра берет значение в ближайшем к нему пикселе исходного растра:
 ```{r}
-temp
-land$cover
+temp_stars
+land_stars
 
-cover = crop(land$cover, temp) %>% 
-  resample(temp, method = 'ngb') # используем 'ngb', поскольку растр категориальный
-
-cover
+(cover_stars = st_warp(land_stars['cover'], temp_stars %>% slice(band, 1), method = 'near'))
+# используем 'near', поскольку растр категориальный
 ```
 
-Для вычисления средней температуры января в пределах каждой зоны земельного покрова воспользуемся функцией `zonal()` из пакета `raster`. Полученный объект является матрицей:
+Для вычисления средней температуры за каждый месяц в пределах каждой зоны земельного покрова выполним следующую последовательность действий:
 ```{r}
-mtemp = zonal(temp, cover, 'mean')
-head(mtemp)
+months = 1:12
+cover_types = levels(cover_stars$cover)
+zonal_stats = lapply(cover_types, function(X) {
+  sapply(months, function(Y) {
+    temp_month = temp_stars %>% slice(band, Y) %>% pull(1)
+    cover_stars %>% 
+      transmute(masked = ifelse(cover == X, temp_month, NA)) %>% 
+      pull(masked) %>% 
+      mean(na.rm = TRUE)
+  })
+}) %>% 
+  bind_cols() %>% 
+  set_names(cover_types) %>% 
+  mutate(month = months) %>% 
+  pivot_longer(-month, names_to = 'cover', values_to = 'tmean')
 ```
 
-Чтобы далее работать с полученными значениями, целесообразно присоединить описания зон и превратить полученную матрицу в аккуратный фрейм данных:
+Визуализируем полученные результаты:
 ```{r}
-(mtemp_tidy = as_tibble(mtemp) %>% 
-  left_join(tbl[[1]], by = c('zone' = 'ID')) %>% 
-  gather(month, tmean, tmean1:tmean12) %>% 
-  separate(month, c('dummy', 'month'), sep = 5) %>% 
-  mutate(month = as.integer(month)) %>% 
-  dplyr::select(-COUNT, -dummy))
-
-ggplot(mtemp_tidy) +
+ggplot(zonal_stats) +
   geom_line(aes(x = month, y = tmean, color = cover), size = 1) +
   scale_color_manual(values = pal) +
-  scale_x_continuous(breaks = 1:12)
+  scale_x_continuous(breaks = months)
 ```
 
 Перед вычислением целесообразно разделить растр землепользования на северное и южное полушарие (т.к. ход температур в них противоположный):
