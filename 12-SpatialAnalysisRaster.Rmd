@@ -14,6 +14,7 @@ knitr::opts_chunk$set(warning=FALSE, message = FALSE,
 library(sf)
 library(sp)
 library(tmap)
+library(stars)
 library(raster)
 library(mapview)
 library(mapedit)
@@ -217,37 +218,23 @@ stations = st_read("data/metro_stations.gpkg") # Станции метро
 water = st_read("data/water_polygon.gpkg") # Водные объекты
 
 # Создаем пустой растр с охватом, равным охвату станции
-r =  raster(extent(stations), nrows = 200, ncols = 200)
-
-# Конвертируем ячейки в точки
-cells = r %>% as("SpatialPoints") %>% st_as_sf() %>% st_set_crs(st_crs(stations))
-
-# Вычисляем расстояния
-d = st_distance(stations, cells)
-
-# Находим минимальное расстояние для каждой точки и заполняем 
-# полученными значениями текущее содержимое растра
-r[] = apply(d, 2, min)
+dist_grid = stations %>% 
+  st_bbox() %>% 
+  st_as_stars(dx = 25, dy = 25) %>% 
+  transmute(dist = st_as_sf(., as_points = TRUE, merge = FALSE) %>% 
+           st_distance(stations, .) %>% 
+           apply(2, min))
 
 # Визуализируем результат
-plot(r, 
-     col = rev(heat.colors(100)),
-      main = 'Расстояние до ближайшей станции метро')
-contour(r, 
-        lwd = 0.5, 
-        add= TRUE)
-plot(water, 
-     col = 'blue', 
-     border = 'darkblue', 
-     add = TRUE)
-plot(roads, 
-     lwd = 0.2, 
-     col = 'black', 
-     add = TRUE)
-plot(stations, 
-     pch = 20, 
-     col = 'black', 
-     add = TRUE)
+ggplot() +
+  geom_stars(data = dist_grid) +
+  scale_fill_gradientn(colours = c('white', 'red', 'black')) +
+  coord_sf(crs = st_crs(stations)) +
+  geom_sf(data = water, size = 0.1) +
+  geom_sf(data = roads, size = 0.1) +
+  geom_sf(data = stations) +
+  ggtitle('Расстояние до ближайшей станции метро') +
+  theme_bw()
 ```
 
 ### Зональные операции {#raster_zonal}
@@ -255,23 +242,37 @@ plot(stations,
 __Зональные операции__ связаны с агрегированием растровых данных по площадным зонам. В пределах каждой зоны вычисляется одна или несколько характеристик значений анализируемого растра: среднее, максимум и т.д. Как правило, зоны задаются в виде вспомогательного растрового или векторного набора данных. В случае растра каждая ячейка должна содержать идентификатор (номер) зоны, к которой она относится. Совокупность ячеек, имеющих одинаковый идентификатор, определяет территорию, которую покрывает зона с этим идентификатором. Если зоны представлены векторным набором пространственных объектов, то каждый объект (полигон) также должен иметь собственный идентификатор. Теоретически в одном наборе данных может быть несколько пространственно не связанных объектов, относящихся к одной зоне (например, зона экваториального климата состоит из трех ареалов). В этом случае агрегирование данных будет произведено сразу по трем полигонам. Таким образом, количество получаемых в результате зональной статистики значений определяется количеством зон, но может не совпадать с общим количеством полигонов, которыми эти зоны представлены.
 
 В качестве примера рассмотрим вычисление среднеклиматических параметров _WorldClim_ в пределах различных типов земельного покрова (Land Cover), которые доступны в пакете __tmap__:
-```{r}
-temp = getData("worldclim", var = "tmean", res = 10) / 10
-spplot(temp)
+```{r, fig.width=4, fig.height=4}
+temp = getData("worldclim", var = "tmean", res = 10) %>% 
+  st_as_stars() / 10
+plot(temp)
 
 
 data(land, package = 'tmap')
+types = land@data@attributes
+
+land_stars = land %>% 
+  st_as_stars() %>% 
+  split('band') %>% 
+  mutate(cover = factor(cover, 
+                        levels = types[[1]]$ID, 
+                        labels = types[[1]]$cover),
+         cover_cls = factor(cover,
+                        levels = types[[2]]$ID, 
+                        labels = types[[2]]$cover))
 
 # таблица типов земельного покрова и их идентификаторов в растре
-(tbl = land@data@attributes)
 
 pal = c("#003200", "#3C9600", "#006E00", "#556E19", "#00C800", "#8CBE8C",
 		   "#467864", "#B4E664", "#9BC832", "#EBFF64", "#F06432", "#9132E6",
 		   "#E664E6", "#9B82E6", "#B4FEF0", "#646464", "#C8C8C8", "#FF0000",
 		   "#FFFFFF", "#5ADCDC")
 
-tm_shape(land) +
-  tm_raster('cover', palette = pal)
+ggplot() +
+  geom_stars(data = land_stars['cover']) +
+  scale_fill_manual(values = pal, guide = guide_legend(ncol = 3), name = NULL) + 
+  coord_sf(crs = st_crs(land_stars)) +
+  theme(legend.position = 'bottom')
 ```
 
 > Оператор `@` означает обращение к _слоту_ объекта. Слоты представляют собой объекты, являющиеся внутри других объектов, являющихся экземплярами классов S4. 
