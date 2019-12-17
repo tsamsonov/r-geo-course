@@ -314,7 +314,7 @@ ggplot(zonal_stats) +
 ```
 
 Перед вычислением целесообразно разделить растр землепользования на северное и южное полушарие (т.к. ход температур в них противоположный):
-```{r, fig.height=10}
+```{r, eval = FALSE, fig.height=10}
 cover_north = crop(cover, extent(-180, 180, 0, 90))
 cover_south = crop(cover, extent(-180, 180, -60, 0))
 
@@ -351,7 +351,7 @@ ggplot(mtemp_tidy2) +
 ### Глобальные операции {#raster_global}
 
 Глобальные операции охватывают все ячейки растра. По сути, можно говорить, что это частный случай зональной операции, когда зона одна и покрывает растр целиком. В пакете raster для расчета глобальных статистик можно использовать функцию `cellStats()`, передав ей название растра и агрегирующей функции:
-```{r}
+```{r, eval = FALSE,}
 cellStats(temp_north, max) 
 cellStats(temp_south, min) 
 ```
@@ -388,14 +388,14 @@ profile = mapedit::drawFeatures(mp)
 profile = st_read('data/profile.gpkg', quiet = TRUE)
 ```
 
-```{r}
+```{r, eval = FALSE}
 temprof = raster::extract(temp$tmean6, as(profile, 'Spatial'), 
                           along = TRUE, cellnumbers = TRUE)
 head(temprof[[1]])
 ```
 
 Для построения линии профиля далее нам необходимо преобразовать идентификаторы ячеек растра в расстояние от начала профиля:
-```{r}
+```{r, eval = FALSE}
 tempdf = temprof[[1]] %>% 
   as_tibble() %>% 
   bind_cols(xyFromCell(temp, .$cell) %>% as_tibble()) %>% 
