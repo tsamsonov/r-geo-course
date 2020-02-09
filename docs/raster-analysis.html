@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Глава 12 Растровый анализ | Визуализация и анализ географических данных на языке R</title>
+  <meta name="description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Глава 12 Растровый анализ | Визуализация и анализ географических данных на языке R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  <meta name="github-repo" content="tsamsonov/r-geo-course" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Глава 12 Растровый анализ | Визуализация и анализ географических данных на языке R" />
+  
+  <meta name="twitter:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  
+
+<meta name="author" content="Тимофей Самсонов" />
+
+
+<meta name="date" content="2020-02-10" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="vector-analysis.html"/>
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.11/datatables.js"></script>
+<link href="libs/dt-core-1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.19/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.19/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Визуализация и анализ географических данных на языке R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Введение</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#программное-обеспечение"><i class="fa fa-check"></i>Программное обеспечение</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#установка-и-подключение-пакетов"><i class="fa fa-check"></i>Установка и подключение пакетов</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#выполнение-программного-кода"><i class="fa fa-check"></i>Выполнение программного кода</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#установка-рабочей-директории"><i class="fa fa-check"></i>Установка рабочей директории</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#диагностические-функции"><i class="fa fa-check"></i>Диагностические функции</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#получение-справки"><i class="fa fa-check"></i>Получение справки</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#комментарии"><i class="fa fa-check"></i>Комментарии</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#стандарт-оформления-кода-на-r"><i class="fa fa-check"></i>Стандарт оформления кода на R</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#зарезервированные-слова"><i class="fa fa-check"></i>Зарезервированные слова</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#названия-переменных"><i class="fa fa-check"></i>Названия переменных</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#названия-специальных-символов"><i class="fa fa-check"></i>Названия специальных символов</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#ссылка-на-пособие"><i class="fa fa-check"></i>Ссылка на пособие</a></li>
+</ul></li>
+<li class="part"><span><b>I Основы языка R</b></span></li>
+<li class="chapter" data-level="1" data-path="data-types.html"><a href="data-types.html"><i class="fa fa-check"></i><b>1</b> Типы данных, условия, ввод и вывод</a><ul>
+<li class="chapter" data-level="1.1" data-path="data-types.html"><a href="data-types.html#data_types"><i class="fa fa-check"></i><b>1.1</b> Типы данных</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="data-types.html"><a href="data-types.html#numbers"><i class="fa fa-check"></i><b>1.1.1</b> Числа</a></li>
+<li class="chapter" data-level="1.1.2" data-path="data-types.html"><a href="data-types.html#strings"><i class="fa fa-check"></i><b>1.1.2</b> Строки</a></li>
+<li class="chapter" data-level="1.1.3" data-path="data-types.html"><a href="data-types.html#dates"><i class="fa fa-check"></i><b>1.1.3</b> Даты</a></li>
+<li class="chapter" data-level="1.1.4" data-path="data-types.html"><a href="data-types.html#booleans"><i class="fa fa-check"></i><b>1.1.4</b> Логические</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="data-types.html"><a href="data-types.html#manipulations"><i class="fa fa-check"></i><b>1.2</b> Манипуляции с типами</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="data-types.html"><a href="data-types.html#determine_data_type"><i class="fa fa-check"></i><b>1.2.1</b> Определение типа данных</a></li>
+<li class="chapter" data-level="1.2.2" data-path="data-types.html"><a href="data-types.html#conversion"><i class="fa fa-check"></i><b>1.2.2</b> Преобразование типов данных</a></li>
+<li class="chapter" data-level="1.2.3" data-path="data-types.html"><a href="data-types.html#check_types"><i class="fa fa-check"></i><b>1.2.3</b> Проверка типов данных и пустых значений</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="data-types.html"><a href="data-types.html#read_write_console"><i class="fa fa-check"></i><b>1.3</b> Ввод и вывод данных в консоли</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="data-types.html"><a href="data-types.html#read_console"><i class="fa fa-check"></i><b>1.3.1</b> Ввод данных</a></li>
+<li class="chapter" data-level="1.3.2" data-path="data-types.html"><a href="data-types.html#write_console"><i class="fa fa-check"></i><b>1.3.2</b> Вывод данных</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="data-types.html"><a href="data-types.html#ifelse"><i class="fa fa-check"></i><b>1.4</b> Условный оператор</a></li>
+<li class="chapter" data-level="1.5" data-path="data-types.html"><a href="data-types.html#switch"><i class="fa fa-check"></i><b>1.5</b> Оператор переключения</a></li>
+<li class="chapter" data-level="1.6" data-path="data-types.html"><a href="data-types.html#stop"><i class="fa fa-check"></i><b>1.6</b> Прерывание программы</a></li>
+<li class="chapter" data-level="1.7" data-path="data-types.html"><a href="data-types.html#basics-detail"><i class="fa fa-check"></i><b>1.7</b> Технические детали</a></li>
+<li class="chapter" data-level="1.8" data-path="data-types.html"><a href="data-types.html#review"><i class="fa fa-check"></i><b>1.8</b> Краткий обзор</a></li>
+<li class="chapter" data-level="1.9" data-path="data-types.html"><a href="data-types.html#questions_tasks_basics"><i class="fa fa-check"></i><b>1.9</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="1.9.1" data-path="data-types.html"><a href="data-types.html#questions_basics"><i class="fa fa-check"></i><b>1.9.1</b> Вопросы</a></li>
+<li class="chapter" data-level="1.9.2" data-path="data-types.html"><a href="data-types.html#tasks_basic"><i class="fa fa-check"></i><b>1.9.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-structures.html"><a href="data-structures.html"><i class="fa fa-check"></i><b>2</b> Структуры данных и циклы</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-structures.html"><a href="data-structures.html#data_structures_homo"><i class="fa fa-check"></i><b>2.1</b> Однородные структуры данных</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="data-structures.html"><a href="data-structures.html#vectors"><i class="fa fa-check"></i><b>2.1.1</b> Векторы</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-structures.html"><a href="data-structures.html#matrices"><i class="fa fa-check"></i><b>2.1.2</b> Матрицы</a></li>
+<li class="chapter" data-level="2.1.3" data-path="data-structures.html"><a href="data-structures.html#arrays"><i class="fa fa-check"></i><b>2.1.3</b> Массивы</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-structures.html"><a href="data-structures.html#heterogeneous"><i class="fa fa-check"></i><b>2.2</b> Разнородные структуры данных</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="data-structures.html"><a href="data-structures.html#data_frames"><i class="fa fa-check"></i><b>2.2.1</b> Фреймы данных</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-structures.html"><a href="data-structures.html#lists"><i class="fa fa-check"></i><b>2.2.2</b> Списки</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="data-structures.html"><a href="data-structures.html#factors"><i class="fa fa-check"></i><b>2.3</b> Факторы</a></li>
+<li class="chapter" data-level="2.4" data-path="data-structures.html"><a href="data-structures.html#vector_desc"><i class="fa fa-check"></i><b>2.4</b> Описание структуры данных</a></li>
+<li class="chapter" data-level="2.5" data-path="data-structures.html"><a href="data-structures.html#cycles"><i class="fa fa-check"></i><b>2.5</b> Циклы</a></li>
+<li class="chapter" data-level="2.6" data-path="data-structures.html"><a href="data-structures.html#structures-detail"><i class="fa fa-check"></i><b>2.6</b> Технические детали</a></li>
+<li class="chapter" data-level="2.7" data-path="data-structures.html"><a href="data-structures.html#review_structures"><i class="fa fa-check"></i><b>2.7</b> Краткий обзор</a></li>
+<li class="chapter" data-level="2.8" data-path="data-structures.html"><a href="data-structures.html#questions_tasks_vectors"><i class="fa fa-check"></i><b>2.8</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="2.8.1" data-path="data-structures.html"><a href="data-structures.html#questions_vectors"><i class="fa fa-check"></i><b>2.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="2.8.2" data-path="data-structures.html"><a href="data-structures.html#tasks_vectors"><i class="fa fa-check"></i><b>2.8.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="tables.html"><a href="tables.html"><i class="fa fa-check"></i><b>3</b> Табличные данные</a><ul>
+<li class="chapter" data-level="3.1" data-path="tables.html"><a href="tables.html#tables_prerequisites"><i class="fa fa-check"></i><b>3.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="3.2" data-path="tables.html"><a href="tables.html#tables_datastructures"><i class="fa fa-check"></i><b>3.2</b> Структуры данных</a></li>
+<li class="chapter" data-level="3.3" data-path="tables.html"><a href="tables.html#tables_reading"><i class="fa fa-check"></i><b>3.3</b> Чтение</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="tables.html"><a href="tables.html#tables_reading_inner"><i class="fa fa-check"></i><b>3.3.1</b> Встроенные данные</a></li>
+<li class="chapter" data-level="3.3.2" data-path="tables.html"><a href="tables.html#tables_reading_text"><i class="fa fa-check"></i><b>3.3.2</b> Текстовые таблицы</a></li>
+<li class="chapter" data-level="3.3.3" data-path="tables.html"><a href="tables.html#tables_reading_excel"><i class="fa fa-check"></i><b>3.3.3</b> Таблицы Microsoft Excel</a></li>
+<li class="chapter" data-level="3.3.4" data-path="tables.html"><a href="tables.html#tables_reading_params"><i class="fa fa-check"></i><b>3.3.4</b> Параметры</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="tables.html"><a href="tables.html#tables_view"><i class="fa fa-check"></i><b>3.4</b> Просмотр</a></li>
+<li class="chapter" data-level="3.5" data-path="tables.html"><a href="tables.html#tables_elements"><i class="fa fa-check"></i><b>3.5</b> Столбцы, строки и ячейки</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="tables.html"><a href="tables.html#tables_elements_names"><i class="fa fa-check"></i><b>3.5.1</b> Названия</a></li>
+<li class="chapter" data-level="3.5.2" data-path="tables.html"><a href="tables.html#tables_elements_columns"><i class="fa fa-check"></i><b>3.5.2</b> Обращение к столбцам</a></li>
+<li class="chapter" data-level="3.5.3" data-path="tables.html"><a href="tables.html#tables_elements_rows"><i class="fa fa-check"></i><b>3.5.3</b> Обращение к строкам</a></li>
+<li class="chapter" data-level="3.5.4" data-path="tables.html"><a href="tables.html#tables_elements_cells"><i class="fa fa-check"></i><b>3.5.4</b> Обращение к ячейкам</a></li>
+</ul></li>
+<li class="chapter" data-level="3.6" data-path="tables.html"><a href="tables.html#tables_manipuilations"><i class="fa fa-check"></i><b>3.6</b> Преобразования</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="tables.html"><a href="tables.html#tables_manipiulations_grammar"><i class="fa fa-check"></i><b>3.6.1</b> Грамматика манипуляций</a></li>
+<li class="chapter" data-level="3.6.2" data-path="tables.html"><a href="tables.html#tables_manipiulations_pipeline"><i class="fa fa-check"></i><b>3.6.2</b> Конвейер манипуляций</a></li>
+<li class="chapter" data-level="3.6.3" data-path="tables.html"><a href="tables.html#tables_tidy"><i class="fa fa-check"></i><b>3.6.3</b> Преобразование структуры</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="tables.html"><a href="tables.html#tables_join"><i class="fa fa-check"></i><b>3.7</b> Соединение</a></li>
+<li class="chapter" data-level="3.8" data-path="tables.html"><a href="tables.html#tables_write"><i class="fa fa-check"></i><b>3.8</b> Запись</a></li>
+<li class="chapter" data-level="3.9" data-path="tables.html"><a href="tables.html#tables_rules"><i class="fa fa-check"></i><b>3.9</b> Рекомендации по подготовке таблиц для чтения в R</a></li>
+<li class="chapter" data-level="3.10" data-path="tables.html"><a href="tables.html#tables_review"><i class="fa fa-check"></i><b>3.10</b> Краткий обзор</a></li>
+<li class="chapter" data-level="3.11" data-path="tables.html"><a href="tables.html#tables_questions"><i class="fa fa-check"></i><b>3.11</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="3.11.1" data-path="tables.html"><a href="tables.html#tables_questions_questions"><i class="fa fa-check"></i><b>3.11.1</b> Вопросы</a></li>
+<li class="chapter" data-level="3.11.2" data-path="tables.html"><a href="tables.html#tables_questions_tasks"><i class="fa fa-check"></i><b>3.11.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="tech.html"><a href="tech.html"><i class="fa fa-check"></i><b>4</b> Техники программирования</a><ul>
+<li class="chapter" data-level="4.1" data-path="tech.html"><a href="tech.html#tech-fun"><i class="fa fa-check"></i><b>4.1</b> Функциональное программирование</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="tech.html"><a href="tech.html#tech-fun-functions"><i class="fa fa-check"></i><b>4.1.1</b> Функции</a></li>
+<li class="chapter" data-level="4.1.2" data-path="tech.html"><a href="tech.html#tech-fun-functionals"><i class="fa fa-check"></i><b>4.1.2</b> Функционалы</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="tech.html"><a href="tech.html#tech-meta"><i class="fa fa-check"></i><b>4.2</b> Метапрограммирование</a></li>
+<li class="chapter" data-level="4.3" data-path="tech.html"><a href="tech.html#tech_review"><i class="fa fa-check"></i><b>4.3</b> Краткий обзор</a></li>
+<li class="chapter" data-level="4.4" data-path="tech.html"><a href="tech.html#tech_questions"><i class="fa fa-check"></i><b>4.4</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="tech.html"><a href="tech.html#tech_questions_questions"><i class="fa fa-check"></i><b>4.4.1</b> Вопросы</a></li>
+<li class="chapter" data-level="4.4.2" data-path="tech.html"><a href="tech.html#tech_questions_tasks"><i class="fa fa-check"></i><b>4.4.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>II Графика и статистика</b></span></li>
+<li class="chapter" data-level="5" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>5</b> Базовая графика</a><ul>
+<li class="chapter" data-level="5.1" data-path="graphics.html"><a href="graphics.html#yfxcharts"><i class="fa fa-check"></i><b>5.1</b> Стандартные графики</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="graphics.html"><a href="graphics.html#scatterplots"><i class="fa fa-check"></i><b>5.1.1</b> Диаграммы рассеяния</a></li>
+<li class="chapter" data-level="5.1.2" data-path="graphics.html"><a href="graphics.html#linear_graphs"><i class="fa fa-check"></i><b>5.1.2</b> Линейные графики</a></li>
+<li class="chapter" data-level="5.1.3" data-path="graphics.html"><a href="graphics.html#graph_combining"><i class="fa fa-check"></i><b>5.1.3</b> Совмещение графиков</a></li>
+<li class="chapter" data-level="5.1.4" data-path="graphics.html"><a href="graphics.html#func_parameters"><i class="fa fa-check"></i><b>5.1.4</b> Функциональные параметры</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="graphics.html"><a href="graphics.html#histograms"><i class="fa fa-check"></i><b>5.2</b> Гистограммы</a></li>
+<li class="chapter" data-level="5.3" data-path="graphics.html"><a href="graphics.html#barplots"><i class="fa fa-check"></i><b>5.3</b> Столбчатые графики</a></li>
+<li class="chapter" data-level="5.4" data-path="graphics.html"><a href="graphics.html#piecharts"><i class="fa fa-check"></i><b>5.4</b> Круговые (секторные) диаграммы</a></li>
+<li class="chapter" data-level="5.5" data-path="graphics.html"><a href="graphics.html#colors"><i class="fa fa-check"></i><b>5.5</b> Цвет и прозрачность</a></li>
+<li class="chapter" data-level="5.6" data-path="graphics.html"><a href="graphics.html#disp_settings"><i class="fa fa-check"></i><b>5.6</b> Настройки отображения</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="graphics.html"><a href="graphics.html#graph_params"><i class="fa fa-check"></i><b>5.6.1</b> Графические параметры</a></li>
+<li class="chapter" data-level="5.6.2" data-path="graphics.html"><a href="graphics.html#axes"><i class="fa fa-check"></i><b>5.6.2</b> Разметка осей, рамка, сетка координат и произвольные линии</a></li>
+<li class="chapter" data-level="5.6.3" data-path="graphics.html"><a href="graphics.html#annotations"><i class="fa fa-check"></i><b>5.6.3</b> Аннотации данных (текст на графике)</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="graphics.html"><a href="graphics.html#legend"><i class="fa fa-check"></i><b>5.7</b> Легенда</a></li>
+<li class="chapter" data-level="5.8" data-path="graphics.html"><a href="graphics.html#questions_tasks_graphics"><i class="fa fa-check"></i><b>5.8</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="5.8.1" data-path="graphics.html"><a href="graphics.html#questions_graphics"><i class="fa fa-check"></i><b>5.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="5.8.2" data-path="graphics.html"><a href="graphics.html#tasks_graphics"><i class="fa fa-check"></i><b>5.8.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="advgraphics.html"><a href="advgraphics.html"><i class="fa fa-check"></i><b>6</b> Продвинутая графика</a><ul>
+<li class="chapter" data-level="6.1" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_prerequisites"><i class="fa fa-check"></i><b>6.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="6.2" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_eurostat"><i class="fa fa-check"></i><b>6.2</b> Загрузка данных Евростата</a></li>
+<li class="chapter" data-level="6.3" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_nasapower"><i class="fa fa-check"></i><b>6.3</b> Загрузка данных NASA POWER</a></li>
+<li class="chapter" data-level="6.4" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_template"><i class="fa fa-check"></i><b>6.4</b> Базовый шаблон ggplot</a></li>
+<li class="chapter" data-level="6.5" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_geoms"><i class="fa fa-check"></i><b>6.5</b> Геометрические типы и преобразования</a></li>
+<li class="chapter" data-level="6.6" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_aes"><i class="fa fa-check"></i><b>6.6</b> Графические переменные и группировки</a></li>
+<li class="chapter" data-level="6.7" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_coords"><i class="fa fa-check"></i><b>6.7</b> Системы координат</a></li>
+<li class="chapter" data-level="6.8" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_titles"><i class="fa fa-check"></i><b>6.8</b> Названия осей и легенды</a></li>
+<li class="chapter" data-level="6.9" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_axes"><i class="fa fa-check"></i><b>6.9</b> Разметка осей</a></li>
+<li class="chapter" data-level="6.10" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_labels"><i class="fa fa-check"></i><b>6.10</b> Подписи и аннотации</a></li>
+<li class="chapter" data-level="6.11" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_facets"><i class="fa fa-check"></i><b>6.11</b> Фасеты</a></li>
+<li class="chapter" data-level="6.12" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_themes"><i class="fa fa-check"></i><b>6.12</b> Темы</a></li>
+<li class="chapter" data-level="6.13" data-path="advgraphics.html"><a href="advgraphics.html#questions_tasks_advgraphics"><i class="fa fa-check"></i><b>6.13</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="6.13.1" data-path="advgraphics.html"><a href="advgraphics.html#questions_advgraphics"><i class="fa fa-check"></i><b>6.13.1</b> Вопросы</a></li>
+<li class="chapter" data-level="6.13.2" data-path="advgraphics.html"><a href="advgraphics.html#tasks_advgraphics"><i class="fa fa-check"></i><b>6.13.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="stat-analysis.html"><a href="stat-analysis.html"><i class="fa fa-check"></i><b>7</b> Основы статистики</a><ul>
+<li class="chapter" data-level="7.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_prerequisites"><i class="fa fa-check"></i><b>7.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="7.2" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_intro"><i class="fa fa-check"></i><b>7.2</b> Введение</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_intro_sources"><i class="fa fa-check"></i><b>7.2.1</b> Источники данных</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one"><i class="fa fa-check"></i><b>7.3</b> Одна переменная</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one_distr"><i class="fa fa-check"></i><b>7.3.1</b> Оценка распределения</a></li>
+<li class="chapter" data-level="7.3.2" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one_summary"><i class="fa fa-check"></i><b>7.3.2</b> Описательные статистики</a></li>
+<li class="chapter" data-level="7.3.3" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one_tests"><i class="fa fa-check"></i><b>7.3.3</b> Статистические тесты</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_two"><i class="fa fa-check"></i><b>7.4</b> Две переменных</a><ul>
+<li class="chapter" data-level="7.4.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_two_distr"><i class="fa fa-check"></i><b>7.4.1</b> Оценка распределения</a></li>
+<li class="chapter" data-level="7.4.2" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_two_distr_correg"><i class="fa fa-check"></i><b>7.4.2</b> Корреляция и регрессия</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="stat-analysis.html"><a href="stat-analysis.html#questions_tasks_stat_analysis"><i class="fa fa-check"></i><b>7.5</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="7.5.1" data-path="stat-analysis.html"><a href="stat-analysis.html#questions_stat_analysis"><i class="fa fa-check"></i><b>7.5.1</b> Вопросы</a></li>
+<li class="chapter" data-level="7.5.2" data-path="stat-analysis.html"><a href="stat-analysis.html#tasks_stat_analysis"><i class="fa fa-check"></i><b>7.5.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="circular.html"><a href="circular.html"><i class="fa fa-check"></i><b>8</b> Дирекционные и временные данные</a><ul>
+<li class="chapter" data-level="8.1" data-path="circular.html"><a href="circular.html#circular_prerequisites"><i class="fa fa-check"></i><b>8.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="8.2" data-path="circular.html"><a href="circular.html#circular_circ"><i class="fa fa-check"></i><b>8.2</b> Статистика направлений</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="circular.html"><a href="circular.html#circular_circ_theory"><i class="fa fa-check"></i><b>8.2.1</b> Теория</a></li>
+<li class="chapter" data-level="8.2.2" data-path="circular.html"><a href="circular.html#circular_circ_vis"><i class="fa fa-check"></i><b>8.2.2</b> Практика</a></li>
+<li class="chapter" data-level="8.2.3" data-path="circular.html"><a href="circular.html#circular_tests"><i class="fa fa-check"></i><b>8.2.3</b> Статистические тесты</a></li>
+<li class="chapter" data-level="8.2.4" data-path="circular.html"><a href="circular.html#circular_correlation"><i class="fa fa-check"></i><b>8.2.4</b> Корреляция и регрессия</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="circular.html"><a href="circular.html#circular_time"><i class="fa fa-check"></i><b>8.3</b> Временные ряды</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="circular.html"><a href="circular.html#circular_time_lubridate"><i class="fa fa-check"></i><b>8.3.1</b> Создание и преобразование дат и времени</a></li>
+<li class="chapter" data-level="8.3.2" data-path="circular.html"><a href="circular.html#circular_time_complete"><i class="fa fa-check"></i><b>8.3.2</b> Восстановление пропусков и проверка корректности дат</a></li>
+<li class="chapter" data-level="8.3.3" data-path="circular.html"><a href="circular.html#circular_time_interp"><i class="fa fa-check"></i><b>8.3.3</b> Интерполяция по времени</a></li>
+<li class="chapter" data-level="8.3.4" data-path="circular.html"><a href="circular.html#circular_time_tests"><i class="fa fa-check"></i><b>8.3.4</b> Статистики</a></li>
+<li class="chapter" data-level="8.3.5" data-path="circular.html"><a href="circular.html#circular_time_animation"><i class="fa fa-check"></i><b>8.3.5</b> Анимация</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="circular.html"><a href="circular.html#questions_tasks_circular"><i class="fa fa-check"></i><b>8.4</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="8.4.1" data-path="circular.html"><a href="circular.html#questions_circular"><i class="fa fa-check"></i><b>8.4.1</b> Вопросы</a></li>
+<li class="chapter" data-level="8.4.2" data-path="circular.html"><a href="circular.html#tasks_circular"><i class="fa fa-check"></i><b>8.4.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>III Пространственные данные</b></span></li>
+<li class="chapter" data-level="9" data-path="spatial-data.html"><a href="spatial-data.html"><i class="fa fa-check"></i><b>9</b> Пространственные данные</a><ul>
+<li class="chapter" data-level="9.1" data-path="circular.html"><a href="circular.html#circular_prerequisites"><i class="fa fa-check"></i><b>9.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="9.2" data-path="spatial-data.html"><a href="spatial-data.html#spatial_models"><i class="fa fa-check"></i><b>9.2</b> Модели пространственных данных</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="spatial-data.html"><a href="spatial-data.html#simple_features"><i class="fa fa-check"></i><b>9.2.1</b> Векторные данные</a></li>
+<li class="chapter" data-level="9.2.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_data"><i class="fa fa-check"></i><b>9.2.2</b> Растровые данные</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="spatial-data.html"><a href="spatial-data.html#spatref"><i class="fa fa-check"></i><b>9.3</b> Пространственная привязка</a><ul>
+<li class="chapter" data-level="9.3.1" data-path="spatial-data.html"><a href="spatial-data.html#spatref_components"><i class="fa fa-check"></i><b>9.3.1</b> Компоненты пространственной привязки</a></li>
+<li class="chapter" data-level="9.3.2" data-path="spatial-data.html"><a href="spatial-data.html#spatref_formats"><i class="fa fa-check"></i><b>9.3.2</b> Форматы описания пространственной привязки</a></li>
+<li class="chapter" data-level="9.3.3" data-path="spatial-data.html"><a href="spatial-data.html#spatref_transform"><i class="fa fa-check"></i><b>9.3.3</b> Преобразование координат</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_r"><i class="fa fa-check"></i><b>9.4</b> Векторные данные</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_packages"><i class="fa fa-check"></i><b>9.4.1</b> Базовые библиотеки</a></li>
+<li class="chapter" data-level="9.4.2" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_reading"><i class="fa fa-check"></i><b>9.4.2</b> Чтение</a></li>
+<li class="chapter" data-level="9.4.3" data-path="spatial-data.html"><a href="spatial-data.html#sf_structure"><i class="fa fa-check"></i><b>9.4.3</b> Внутренняя структура</a></li>
+<li class="chapter" data-level="9.4.4" data-path="spatial-data.html"><a href="spatial-data.html#sf_plotting"><i class="fa fa-check"></i><b>9.4.4</b> Визуализация</a></li>
+<li class="chapter" data-level="9.4.5" data-path="spatial-data.html"><a href="spatial-data.html#sf_crs"><i class="fa fa-check"></i><b>9.4.5</b> Системы координат и проекции</a></li>
+<li class="chapter" data-level="9.4.6" data-path="spatial-data.html"><a href="spatial-data.html#sf_attrs"><i class="fa fa-check"></i><b>9.4.6</b> Атрибутивные операции</a></li>
+<li class="chapter" data-level="9.4.7" data-path="spatial-data.html"><a href="spatial-data.html#sf_spat_selection"><i class="fa fa-check"></i><b>9.4.7</b> Пространственные операции</a></li>
+<li class="chapter" data-level="9.4.8" data-path="spatial-data.html"><a href="spatial-data.html#sf_creation"><i class="fa fa-check"></i><b>9.4.8</b> Создание пространственных объектов</a></li>
+<li class="chapter" data-level="9.4.9" data-path="spatial-data.html"><a href="spatial-data.html#sf_geom_attrs"><i class="fa fa-check"></i><b>9.4.9</b> Геометрические атрибуты</a></li>
+<li class="chapter" data-level="9.4.10" data-path="spatial-data.html"><a href="spatial-data.html#sf_export"><i class="fa fa-check"></i><b>9.4.10</b> Экспорт</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5" data-path="spatial-data.html"><a href="spatial-data.html#raster_data_r"><i class="fa fa-check"></i><b>9.5</b> Растровые данные</a><ul>
+<li class="chapter" data-level="9.5.1" data-path="spatial-data.html"><a href="spatial-data.html#raster_read"><i class="fa fa-check"></i><b>9.5.1</b> Чтение</a></li>
+<li class="chapter" data-level="9.5.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_viz"><i class="fa fa-check"></i><b>9.5.2</b> Визуализация</a></li>
+<li class="chapter" data-level="9.5.3" data-path="spatial-data.html"><a href="spatial-data.html#raster_proj"><i class="fa fa-check"></i><b>9.5.3</b> Системы координат и проекции</a></li>
+<li class="chapter" data-level="9.5.4" data-path="spatial-data.html"><a href="spatial-data.html#raster_values"><i class="fa fa-check"></i><b>9.5.4</b> Операции со значениями</a></li>
+<li class="chapter" data-level="9.5.5" data-path="spatial-data.html"><a href="spatial-data.html#raster_export"><i class="fa fa-check"></i><b>9.5.5</b> Экспорт</a></li>
+</ul></li>
+<li class="chapter" data-level="9.6" data-path="spatial-data.html"><a href="spatial-data.html#spatial_ggplot2"><i class="fa fa-check"></i><b>9.6</b> Визуализация средствами ggplot2</a></li>
+<li class="chapter" data-level="9.7" data-path="spatial-data.html"><a href="spatial-data.html#spatial_interactive"><i class="fa fa-check"></i><b>9.7</b> Интерактивные карты</a></li>
+<li class="chapter" data-level="9.8" data-path="spatial-data.html"><a href="spatial-data.html#questions_tasks_spatial"><i class="fa fa-check"></i><b>9.8</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="9.8.1" data-path="spatial-data.html"><a href="spatial-data.html#questions_spatial"><i class="fa fa-check"></i><b>9.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="9.8.2" data-path="spatial-data.html"><a href="spatial-data.html#tasks_spatial"><i class="fa fa-check"></i><b>9.8.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html"><i class="fa fa-check"></i><b>10</b> Тематические карты</a><ul>
+<li class="chapter" data-level="" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#предварительные-условия"><i class="fa fa-check"></i>Предварительные условия</a></li>
+<li class="chapter" data-level="10.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro"><i class="fa fa-check"></i><b>10.1</b> Введение</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro_ne"><i class="fa fa-check"></i><b>10.1.1</b> Данные Natural Earth</a></li>
+<li class="chapter" data-level="10.1.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro_wc"><i class="fa fa-check"></i><b>10.1.2</b> Данные WorldClim</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_tmap"><i class="fa fa-check"></i><b>10.2</b> Способы изображения</a><ul>
+<li class="chapter" data-level="10.2.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_vectors"><i class="fa fa-check"></i><b>10.2.1</b> Векторные данные</a></li>
+<li class="chapter" data-level="10.2.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_rasters"><i class="fa fa-check"></i><b>10.2.2</b> Растровые данные</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_color_scales"><i class="fa fa-check"></i><b>10.3</b> Цветовые шкалы</a></li>
+<li class="chapter" data-level="10.4" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class"><i class="fa fa-check"></i><b>10.4</b> Классификация</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class_methods"><i class="fa fa-check"></i><b>10.4.1</b> Методы классификации</a></li>
+<li class="chapter" data-level="10.4.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class_application"><i class="fa fa-check"></i><b>10.4.2</b> Применение на картах</a></li>
+<li class="chapter" data-level="10.4.3" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class_application"><i class="fa fa-check"></i><b>10.4.3</b> Классификация при отображении</a></li>
+<li class="chapter" data-level="10.4.4" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_na"><i class="fa fa-check"></i><b>10.4.4</b> Пропущенные данные</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_layouts"><i class="fa fa-check"></i><b>10.5</b> Компоновка</a></li>
+<li class="chapter" data-level="10.6" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_facets"><i class="fa fa-check"></i><b>10.6</b> Фасеты и серии карт</a></li>
+<li class="chapter" data-level="10.7" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_animations"><i class="fa fa-check"></i><b>10.7</b> Картографические анимации</a></li>
+<li class="chapter" data-level="10.8" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_interactive"><i class="fa fa-check"></i><b>10.8</b> Интерактивные карты</a></li>
+<li class="chapter" data-level="10.9" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#questions_tasks_tmap"><i class="fa fa-check"></i><b>10.9</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="10.9.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#questions_tmap"><i class="fa fa-check"></i><b>10.9.1</b> Вопросы</a></li>
+<li class="chapter" data-level="10.9.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#tasks_tmap"><i class="fa fa-check"></i><b>10.9.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="vector-analysis.html"><a href="vector-analysis.html"><i class="fa fa-check"></i><b>11</b> Векторный и сетевой анализ</a><ul>
+<li class="chapter" data-level="11.1" data-path="vector-analysis.html"><a href="vector-analysis.html#spatial_queries"><i class="fa fa-check"></i><b>11.1</b> Пространственные запросы</a><ul>
+<li class="chapter" data-level="11.1.1" data-path="vector-analysis.html"><a href="vector-analysis.html#context_objects"><i class="fa fa-check"></i><b>11.1.1</b> Контекстные и целевые объекты</a></li>
+<li class="chapter" data-level="11.1.2" data-path="vector-analysis.html"><a href="vector-analysis.html#zones"><i class="fa fa-check"></i><b>11.1.2</b> Зоны окружения объектов</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="vector-analysis.html"><a href="vector-analysis.html#use_case"><i class="fa fa-check"></i><b>11.2</b> Постановка задач и изучение данных</a></li>
+<li class="chapter" data-level="11.3" data-path="vector-analysis.html"><a href="vector-analysis.html#distance_analysis"><i class="fa fa-check"></i><b>11.3</b> Анализ расстояний</a></li>
+<li class="chapter" data-level="11.4" data-path="vector-analysis.html"><a href="vector-analysis.html#topology_analysis"><i class="fa fa-check"></i><b>11.4</b> Анализ взаимного положения (топологический)</a></li>
+<li class="chapter" data-level="11.5" data-path="vector-analysis.html"><a href="vector-analysis.html#absolute_zones"><i class="fa fa-check"></i><b>11.5</b> Анализ абсолютных зон окружения</a></li>
+<li class="chapter" data-level="11.6" data-path="vector-analysis.html"><a href="vector-analysis.html#conc_zones"><i class="fa fa-check"></i><b>11.6</b> Анализ конкурентных зон окружения</a></li>
+<li class="chapter" data-level="11.7" data-path="vector-analysis.html"><a href="vector-analysis.html#transport_zones"><i class="fa fa-check"></i><b>11.7</b> Анализ зон транспортной доступности</a></li>
+<li class="chapter" data-level="11.8" data-path="vector-analysis.html"><a href="vector-analysis.html#routes"><i class="fa fa-check"></i><b>11.8</b> Построение маршрутов и матриц времени движения</a></li>
+<li class="chapter" data-level="11.9" data-path="vector-analysis.html"><a href="vector-analysis.html#qtasks_vector_analysis"><i class="fa fa-check"></i><b>11.9</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="11.9.1" data-path="vector-analysis.html"><a href="vector-analysis.html#questions_vector_analysis"><i class="fa fa-check"></i><b>11.9.1</b> Вопросы</a></li>
+<li class="chapter" data-level="11.9.2" data-path="vector-analysis.html"><a href="vector-analysis.html#tasks_vector_analysis"><i class="fa fa-check"></i><b>11.9.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="raster-analysis.html"><a href="raster-analysis.html"><i class="fa fa-check"></i><b>12</b> Растровый анализ</a><ul>
+<li class="chapter" data-level="" data-path="raster-analysis.html"><a href="raster-analysis.html#предварительные-условия-1"><i class="fa fa-check"></i>Предварительные условия</a></li>
+<li class="chapter" data-level="12.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_intro"><i class="fa fa-check"></i><b>12.1</b> Введение</a></li>
+<li class="chapter" data-level="12.2" data-path="raster-analysis.html"><a href="raster-analysis.html#растровая-алгебра"><i class="fa fa-check"></i><b>12.2</b> Растровая алгебра</a><ul>
+<li class="chapter" data-level="12.2.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_local"><i class="fa fa-check"></i><b>12.2.1</b> Локальные операции</a></li>
+<li class="chapter" data-level="12.2.2" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal"><i class="fa fa-check"></i><b>12.2.2</b> Фокальные операции</a></li>
+<li class="chapter" data-level="12.2.3" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_zonal"><i class="fa fa-check"></i><b>12.2.3</b> Зональные операции</a></li>
+<li class="chapter" data-level="12.2.4" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_global"><i class="fa fa-check"></i><b>12.2.4</b> Глобальные операции</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_extract"><i class="fa fa-check"></i><b>12.3</b> Извлечение данных</a></li>
+<li class="chapter" data-level="12.4" data-path="raster-analysis.html"><a href="raster-analysis.html#questions_tasks_raster"><i class="fa fa-check"></i><b>12.4</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="12.4.1" data-path="raster-analysis.html"><a href="raster-analysis.html#questions_raster"><i class="fa fa-check"></i><b>12.4.1</b> Вопросы</a></li>
+<li class="chapter" data-level="12.4.2" data-path="raster-analysis.html"><a href="raster-analysis.html#tasks_raster"><i class="fa fa-check"></i><b>12.4.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://istina.msu.ru/profile/tsamsonov/" target="blank">Тимофей Самсонов</a></li>
+<li><a href="https://doi.org/10.5281/zenodo.901911"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.901911.svg" title="DOI"></a><li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Визуализация и анализ географических данных на языке R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="raster_analysis" class="section level1">
+<h1><span class="header-section-number">Глава 12</span> Растровый анализ</h1>
+<div id="предварительные-условия-1" class="section level2 unnumbered">
+<h2>Предварительные условия</h2>
+<p>Для выполнения кода данной лекции вам понадобятся следующие пакеты:</p>
+<div class="sourceCode" id="cb564"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb564-1"><a href="raster-analysis.html#cb564-1"></a><span class="kw">library</span>(sf)</span>
+<span id="cb564-2"><a href="raster-analysis.html#cb564-2"></a><span class="kw">library</span>(sp)</span>
+<span id="cb564-3"><a href="raster-analysis.html#cb564-3"></a><span class="kw">library</span>(tmap)</span>
+<span id="cb564-4"><a href="raster-analysis.html#cb564-4"></a><span class="kw">library</span>(stars)</span>
+<span id="cb564-5"><a href="raster-analysis.html#cb564-5"></a><span class="kw">library</span>(raster)</span>
+<span id="cb564-6"><a href="raster-analysis.html#cb564-6"></a><span class="kw">library</span>(mapview)</span>
+<span id="cb564-7"><a href="raster-analysis.html#cb564-7"></a><span class="kw">library</span>(mapedit)</span>
+<span id="cb564-8"><a href="raster-analysis.html#cb564-8"></a><span class="kw">library</span>(lattice)</span>
+<span id="cb564-9"><a href="raster-analysis.html#cb564-9"></a><span class="kw">library</span>(classInt)</span>
+<span id="cb564-10"><a href="raster-analysis.html#cb564-10"></a><span class="kw">library</span>(geosphere)</span>
+<span id="cb564-11"><a href="raster-analysis.html#cb564-11"></a><span class="kw">library</span>(tidyverse)</span></code></pre></div>
+</div>
+<div id="raster_intro" class="section level2">
+<h2><span class="header-section-number">12.1</span> Введение</h2>
+<p>Растровая модель данных представляет собой мощный инструмент абстракции пространственных распределений и выполнения пространственного анализа. На первый взгляд, растр обладает целым рядом ограничений по сравнению с векторной моделью: не позволяет оперировать отдельными объектами, их границами и так далее. Растровые карты и снимки мы часто оцифровываем, выделяя объекты, чтобы на основе них можно было что-то посчитать. Самые первые ГИС были исключительно растровыми, что сейчас воспринимается как архаизм.</p>
+<p>Однако за ширмой ограниченности растровой модели кроются огромные аналитические возможности. Растровая модель обладает внутренней топологией: ее ячейки соприкасаются друг с другом, что позволяет моделировать непрерывные в пространстве и динамические явления (при которых происходит перемещение вещества, энергии или информации в пространстве). Поскольку ячейки растра имеют одинаковый размер, к ним можно применять однотипные операции, которые будут давать предсказуемый результат вне зависимости от конкретной локации в пределах растра. Это также позволяет сделать обработку растра очень быстро.</p>
+</div>
+<div id="растровая-алгебра" class="section level2">
+<h2><span class="header-section-number">12.2</span> Растровая алгебра</h2>
+<p>Существует классификация операций растрового анализа, введенная американским профессором Даной Томлином, которая объединяет их под общим названием “алгебра карт” или “растровая алгебра” <span class="citation">(Tomlin <a href="#ref-Tomlin2012" role="doc-biblioref">2012</a>)</span>. Предполагая, что обработке подвергается <em>каждая</em> ячейка растра, данная классификация разделяет все операции по охвату относительно текущей ячейки</p>
+<ol style="list-style-type: decimal">
+<li><em>Локальные</em> — анализируется одна ячейка растра или совпадающие в пространстве ячейки нескольких растров</li>
+<li><em>Фокальные</em> — анализируются все ячейки в окрестности. Окрестность может быть как фиксированной, так и расширенной (expanded), когда ее размер управляется внешними факторами, например множеством объектов, до которых требуется вычислить расстояние. Информация по соседним ячейкам может быть как из исходного растра, так и из внешнего. Фокальные методы алгебры карт также называются <em>методами анализа соседства</em>.</li>
+<li><em>Зональные</em> — анализируются все ячейки в пределах зон, определяемых извне (например, вторым растровым слоем).</li>
+<li><em>Глобальные</em> — анализируются все ячейки растра.</li>
+</ol>
+<div id="raster_local" class="section level3">
+<h3><span class="header-section-number">12.2.1</span> Локальные операции</h3>
+<p>Локальные операции связаны с алгебраическими преобразованиями значений в ячейках. Например, цифровую модель высот в футах можно перевести в цифровую модель высот в метрах. Для этого нужно значение в каждой ячейке умножить на <span class="math inline">\(0.3048\)</span>. В локальных операциях могут участвовать несколько растров. Например, если у нас есть растровые поверхности плотности населения за разные года, мы можем вычесть одну поверхность из другой, чтобы получить поверхность изменений плотности, выяснить где она увеличилась, уменьшилась или осталось прежней. К локальным операциям относится также оверлей растров, при котором получается взвешенная сумма значений по нескольким растрам. И в том и в другом случае анализируются ячейки с нескольких растров, которые совпадают в пространстве.</p>
+<p>В качестве примера определим мощность покровного оледенения в Антарктике и Гренландии, путем вычитание двух моделей <a href="https://www.ngdc.noaa.gov/mgg/global/">ETOPO1</a>, одна из которых показывает рельеф коренных пород (bedrock), а вторая — видимый рельеф поверхности (ice surface):</p>
+<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="raster-analysis.html#cb565-1"></a><span class="co"># ЛОКАЛЬНЫЕ ОПЕРАЦИИ</span></span>
+<span id="cb565-2"><a href="raster-analysis.html#cb565-2"></a><span class="co"># Вычисление толщины покровного оледенения</span></span>
+<span id="cb565-3"><a href="raster-analysis.html#cb565-3"></a></span>
+<span id="cb565-4"><a href="raster-analysis.html#cb565-4"></a><span class="co"># Чтение данных</span></span>
+<span id="cb565-5"><a href="raster-analysis.html#cb565-5"></a>bed =<span class="st"> </span><span class="kw">raster</span>(<span class="st">&#39;data/etopo1_bed.tif&#39;</span>)</span>
+<span id="cb565-6"><a href="raster-analysis.html#cb565-6"></a>ice =<span class="st"> </span><span class="kw">raster</span>(<span class="st">&#39;data/etopo1_ice.tif&#39;</span>)</span>
+<span id="cb565-7"><a href="raster-analysis.html#cb565-7"></a>countries =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&#39;data/countries.gpkg&#39;</span>)</span>
+<span id="cb565-8"><a href="raster-analysis.html#cb565-8"></a><span class="co">## Reading layer `admin_0_map_units&#39; from data source `/Users/tsamsonov/GitHub/r-geo-course/data/countries.gpkg&#39; using driver `GPKG&#39;</span></span>
+<span id="cb565-9"><a href="raster-analysis.html#cb565-9"></a><span class="co">## Simple feature collection with 183 features and 72 fields</span></span>
+<span id="cb565-10"><a href="raster-analysis.html#cb565-10"></a><span class="co">## geometry type:  MULTIPOLYGON</span></span>
+<span id="cb565-11"><a href="raster-analysis.html#cb565-11"></a><span class="co">## dimension:      XY</span></span>
+<span id="cb565-12"><a href="raster-analysis.html#cb565-12"></a><span class="co">## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513</span></span>
+<span id="cb565-13"><a href="raster-analysis.html#cb565-13"></a><span class="co">## epsg (SRID):    4326</span></span>
+<span id="cb565-14"><a href="raster-analysis.html#cb565-14"></a><span class="co">## proj4string:    +proj=longlat +datum=WGS84 +no_defs</span></span>
+<span id="cb565-15"><a href="raster-analysis.html#cb565-15"></a>borders =<span class="st"> </span>countries <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>()</span>
+<span id="cb565-16"><a href="raster-analysis.html#cb565-16"></a></span>
+<span id="cb565-17"><a href="raster-analysis.html#cb565-17"></a><span class="co"># отображение данных</span></span>
+<span id="cb565-18"><a href="raster-analysis.html#cb565-18"></a>classes =<span class="st"> </span><span class="kw">classIntervals</span>(<span class="kw">values</span>(bed), <span class="dv">20</span>)</span>
+<span id="cb565-19"><a href="raster-analysis.html#cb565-19"></a>brks =<span class="st"> </span>classes<span class="op">$</span>brks</span>
+<span id="cb565-20"><a href="raster-analysis.html#cb565-20"></a>nclass =<span class="st"> </span><span class="kw">length</span>(brks) <span class="op">-</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb565-21"><a href="raster-analysis.html#cb565-21"></a></span>
+<span id="cb565-22"><a href="raster-analysis.html#cb565-22"></a><span class="kw">plot</span>(bed, </span>
+<span id="cb565-23"><a href="raster-analysis.html#cb565-23"></a>     <span class="dt">breaks =</span> brks, </span>
+<span id="cb565-24"><a href="raster-analysis.html#cb565-24"></a>     <span class="dt">col =</span> <span class="kw">gray.colors</span>(nclass),</span>
+<span id="cb565-25"><a href="raster-analysis.html#cb565-25"></a>     <span class="dt">main =</span> <span class="st">&#39;ETOPO Bedrock&#39;</span>,</span>
+<span id="cb565-26"><a href="raster-analysis.html#cb565-26"></a>     <span class="dt">legend =</span> F)</span>
+<span id="cb565-27"><a href="raster-analysis.html#cb565-27"></a><span class="kw">plot</span>(ice, </span>
+<span id="cb565-28"><a href="raster-analysis.html#cb565-28"></a>     <span class="dt">breaks =</span> brks, </span>
+<span id="cb565-29"><a href="raster-analysis.html#cb565-29"></a>     <span class="dt">col =</span> <span class="kw">gray.colors</span>(nclass),</span>
+<span id="cb565-30"><a href="raster-analysis.html#cb565-30"></a>     <span class="dt">main =</span> <span class="st">&#39;ETOPO Ice surface&#39;</span>,</span>
+<span id="cb565-31"><a href="raster-analysis.html#cb565-31"></a>     <span class="dt">legend =</span> F)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-538-1.png" width="672" /></p>
+<div class="sourceCode" id="cb566"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb566-1"><a href="raster-analysis.html#cb566-1"></a></span>
+<span id="cb566-2"><a href="raster-analysis.html#cb566-2"></a><span class="co"># вычисление разности</span></span>
+<span id="cb566-3"><a href="raster-analysis.html#cb566-3"></a>ice.depth =<span class="st"> </span>ice <span class="op">-</span><span class="st"> </span>bed</span>
+<span id="cb566-4"><a href="raster-analysis.html#cb566-4"></a><span class="kw">plot</span>(ice.depth, </span>
+<span id="cb566-5"><a href="raster-analysis.html#cb566-5"></a>     <span class="dt">col =</span> <span class="kw">cm.colors</span>(<span class="dv">255</span>),</span>
+<span id="cb566-6"><a href="raster-analysis.html#cb566-6"></a>     <span class="dt">main =</span> <span class="st">&#39;Мощность покровного оледенения&#39;</span>)</span>
+<span id="cb566-7"><a href="raster-analysis.html#cb566-7"></a><span class="kw">plot</span>(borders, </span>
+<span id="cb566-8"><a href="raster-analysis.html#cb566-8"></a>     <span class="dt">border =</span> <span class="st">&#39;black&#39;</span>, </span>
+<span id="cb566-9"><a href="raster-analysis.html#cb566-9"></a>     <span class="dt">lwd =</span> <span class="fl">0.5</span>, </span>
+<span id="cb566-10"><a href="raster-analysis.html#cb566-10"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb566-11"><a href="raster-analysis.html#cb566-11"></a></span>
+<span id="cb566-12"><a href="raster-analysis.html#cb566-12"></a><span class="co"># сделаем пустыми все ячейки, в которых толщина льда равна нулю</span></span>
+<span id="cb566-13"><a href="raster-analysis.html#cb566-13"></a>ice.depth[ice.depth <span class="op">==</span><span class="st"> </span><span class="dv">0</span>] =<span class="st"> </span><span class="ot">NA</span></span>
+<span id="cb566-14"><a href="raster-analysis.html#cb566-14"></a></span>
+<span id="cb566-15"><a href="raster-analysis.html#cb566-15"></a><span class="kw">plot</span>(ice.depth, </span>
+<span id="cb566-16"><a href="raster-analysis.html#cb566-16"></a>     <span class="dt">col =</span> <span class="kw">cm.colors</span>(<span class="dv">255</span>), </span>
+<span id="cb566-17"><a href="raster-analysis.html#cb566-17"></a>     <span class="dt">main =</span> <span class="st">&#39;Мощность покровного оледенения&#39;</span>)</span>
+<span id="cb566-18"><a href="raster-analysis.html#cb566-18"></a><span class="kw">plot</span>(borders, </span>
+<span id="cb566-19"><a href="raster-analysis.html#cb566-19"></a>     <span class="dt">border =</span> <span class="st">&#39;black&#39;</span>, </span>
+<span id="cb566-20"><a href="raster-analysis.html#cb566-20"></a>     <span class="dt">lwd =</span> <span class="fl">0.5</span>, </span>
+<span id="cb566-21"><a href="raster-analysis.html#cb566-21"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-538-2.png" width="672" /></p>
+</div>
+<div id="raster_focal" class="section level3">
+<h3><span class="header-section-number">12.2.2</span> Фокальные операции</h3>
+<p>В фокальных операциях участвует не только сама ячейка или совпадающие с ней ячейки других растров, но также ячейки, находящиеся в некоторой окрестности (опять же, в одном или нескольких растрах одновременно). Данный вид анализа подразделяется на две категории: фокальный анализ с фиксированной окрестностью и с расширенной окрестностью.</p>
+<div id="raster_focal_fixed" class="section level4">
+<h4><span class="header-section-number">12.2.2.1</span> Фиксированная окрестность</h4>
+<p>В общем случае фиксированная окрестность может иметь различную форму, однако наиболее часто используется квадратная окрестность размером <span class="math inline">\(3\times3\)</span>:</p>
+<div class="figure">
+<img src="images/raster_neighborhoods.png" alt="" />
+<p class="caption">Виды растровых окрестностей. Темной точкой выделена анализируемая ячейка</p>
+</div>
+<p>Фокальные операции с фиксированной окрестностью — привычное дело в обработке изображений. Они работают по принципу “плавающего окна”. Выбранная окрестность (квадратная, круглая и т.д.) представляется в виде матрицы коэффициентов — так называемого ядра свёртки (convolution kernel). Далее эта матрица перемещается, позиционируясь последовательно над каждой ячейкой растра, и значение в этой ячейке заменяется на взвешенную сумму значений ячеек в окрестности, умноженных на соответствующие коэффициенты ядра свертки. Например, если ядро состоит из единиц, то будет посчитана обычная сумма.</p>
+<p>С помощью фокального анализа можно выполнить сглаживание изображения, которое убирает из него мелкие детали (высокочастотные составляющие яркостного сигнала). В качестве такого изображения может быть цифровая модель рельефа или космический снимок. Чтобы выполнить сглаживание, коэффициенты должны быть такими, чтобы получаемая взвешенная сумма осредняла значения в соседних ячейках. Самый простой вариант — это рассчитать среднее арифметическое. В этом случае коэффициенты ядра свертки будут равны <span class="math inline">\(1/k\)</span>, где <span class="math inline">\(k\)</span> — количество ячеек в окрестности. Для матрицы <span class="math inline">\(3\times3\)</span> они будут равны, соответственно <span class="math inline">\(1/9\)</span>:</p>
+<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb567-1"><a href="raster-analysis.html#cb567-1"></a><span class="co"># ФОКАЛЬНЫЕ ОПЕРАЦИИ</span></span>
+<span id="cb567-2"><a href="raster-analysis.html#cb567-2"></a></span>
+<span id="cb567-3"><a href="raster-analysis.html#cb567-3"></a><span class="co"># Вырежем кусок из ЦМР</span></span>
+<span id="cb567-4"><a href="raster-analysis.html#cb567-4"></a>dem =<span class="st"> </span><span class="kw">crop</span>(ice, <span class="kw">extent</span>(<span class="op">-</span><span class="dv">120</span>, <span class="dv">-75</span>, <span class="dv">10</span>, <span class="dv">40</span>))</span>
+<span id="cb567-5"><a href="raster-analysis.html#cb567-5"></a><span class="kw">spplot</span>(dem)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-539-1.png" width="672" /></p>
+<div class="sourceCode" id="cb568"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb568-1"><a href="raster-analysis.html#cb568-1"></a></span>
+<span id="cb568-2"><a href="raster-analysis.html#cb568-2"></a><span class="co"># Среднее</span></span>
+<span id="cb568-3"><a href="raster-analysis.html#cb568-3"></a>wgt =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>,</span>
+<span id="cb568-4"><a href="raster-analysis.html#cb568-4"></a>                <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>,</span>
+<span id="cb568-5"><a href="raster-analysis.html#cb568-5"></a>                <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="op">/</span><span class="st"> </span><span class="dv">9</span>, </span>
+<span id="cb568-6"><a href="raster-analysis.html#cb568-6"></a>              <span class="dt">nrow =</span> <span class="dv">3</span>)</span>
+<span id="cb568-7"><a href="raster-analysis.html#cb568-7"></a><span class="co"># на самом деле проще написать так:</span></span>
+<span id="cb568-8"><a href="raster-analysis.html#cb568-8"></a><span class="co"># wgt = matrix(1/9, 3, 3), но полная форма записана для наглядности</span></span>
+<span id="cb568-9"><a href="raster-analysis.html#cb568-9"></a></span>
+<span id="cb568-10"><a href="raster-analysis.html#cb568-10"></a><span class="co"># выполним обработку ЦМР с помощью фокального фильтра</span></span>
+<span id="cb568-11"><a href="raster-analysis.html#cb568-11"></a>filtered =<span class="st"> </span><span class="kw">focal</span>(dem, <span class="dt">w =</span> wgt)</span>
+<span id="cb568-12"><a href="raster-analysis.html#cb568-12"></a><span class="kw">spplot</span>(<span class="kw">stack</span>(dem, filtered),</span>
+<span id="cb568-13"><a href="raster-analysis.html#cb568-13"></a>       <span class="dt">names.attr=</span><span class="kw">c</span>(<span class="st">&#39;Исходный рельеф&#39;</span>, <span class="st">&#39;Сглаживание средним&#39;</span>))</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-539-2.png" width="672" /></p>
+<p>Более мягким эффектом сглаживания, который к тому же не нарушает дифференцируемость поверхности, является гауссово сглаживание. Коэффициенты в матрице Гаусса убывают от центральной ячейки к краям матрицы по закону Гаусса-Лапласа, что позволяет придать центральной ячейке более высокий вес по сравнению с ячейками, располагающимися на краю анализируемой окрестности:</p>
+<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="raster-analysis.html#cb569-1"></a><span class="co"># Гауссово (параметр 0.5 - это стандартное отклонение в единицах измерения растра)</span></span>
+<span id="cb569-2"><a href="raster-analysis.html#cb569-2"></a>wgt =<span class="st"> </span><span class="kw">focalWeight</span>(dem, <span class="fl">0.5</span>, <span class="st">&quot;Gauss&quot;</span>)</span>
+<span id="cb569-3"><a href="raster-analysis.html#cb569-3"></a>filtered =<span class="st"> </span><span class="kw">focal</span>(dem, wgt)</span>
+<span id="cb569-4"><a href="raster-analysis.html#cb569-4"></a><span class="kw">spplot</span>(<span class="kw">stack</span>(dem, filtered),</span>
+<span id="cb569-5"><a href="raster-analysis.html#cb569-5"></a>       <span class="dt">names.attr=</span><span class="kw">c</span>(<span class="st">&#39;Исходный рельеф&#39;</span>, <span class="st">&#39;Гауссово сглаживание&#39;</span>))</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-540-1.png" width="672" /></p>
+<p>Еще одна интересная область применения фильтрации — это обнаружение границ (change detection). Границы на изображении возникают в тех местах, где его яркость резко меняет свое значение (в одном или нескольких каналах). Например, на фотографии контур лица может быть распознан по перепаду яркости между его изображением и фоном (если он имеет существенно отличный цвет). Поскольку перепад яркости соответствует экстремальным значениям производной поверхности (отрицательным или положительным), его также можно определить путем фокального анализа, а затем отсечь ячейки растра, в которых значение этой производной по модулю превышает заданный порог (то есть, имеет необходимый контраст).</p>
+<p>Рассмотрим, как можно выделить уступы континентального склона океана путем применения фильтра Собеля для выделения границ:</p>
+<div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb570-1"><a href="raster-analysis.html#cb570-1"></a><span class="co"># Матрица Собеля:</span></span>
+<span id="cb570-2"><a href="raster-analysis.html#cb570-2"></a>wgt =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>,</span>
+<span id="cb570-3"><a href="raster-analysis.html#cb570-3"></a>                <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>,</span>
+<span id="cb570-4"><a href="raster-analysis.html#cb570-4"></a>               <span class="dv">-1</span>,<span class="op">-</span><span class="dv">2</span>,<span class="op">-</span><span class="dv">1</span>) <span class="op">/</span><span class="st"> </span><span class="dv">4</span>, </span>
+<span id="cb570-5"><a href="raster-analysis.html#cb570-5"></a>              <span class="dt">nrow=</span><span class="dv">3</span>)</span>
+<span id="cb570-6"><a href="raster-analysis.html#cb570-6"></a>filtered =<span class="st"> </span><span class="kw">focal</span>(dem, wgt)</span>
+<span id="cb570-7"><a href="raster-analysis.html#cb570-7"></a></span>
+<span id="cb570-8"><a href="raster-analysis.html#cb570-8"></a><span class="co"># Это поверхность производных:</span></span>
+<span id="cb570-9"><a href="raster-analysis.html#cb570-9"></a><span class="kw">plot</span>(filtered,</span>
+<span id="cb570-10"><a href="raster-analysis.html#cb570-10"></a>     <span class="dt">col =</span> <span class="kw">gray.colors</span>(<span class="dv">128</span>),</span>
+<span id="cb570-11"><a href="raster-analysis.html#cb570-11"></a>     <span class="dt">main =</span> <span class="st">&#39;Производная поверхности&#39;</span>)</span>
+<span id="cb570-12"><a href="raster-analysis.html#cb570-12"></a></span>
+<span id="cb570-13"><a href="raster-analysis.html#cb570-13"></a><span class="co"># Отберем все ячейки, обладающие высокими значениями производных</span></span>
+<span id="cb570-14"><a href="raster-analysis.html#cb570-14"></a>faults =<span class="st"> </span>(filtered <span class="op">&lt;</span><span class="st"> </span><span class="dv">-1500</span>) <span class="op">|</span><span class="st"> </span>(filtered <span class="op">&gt;</span><span class="st"> </span><span class="dv">1500</span>)</span>
+<span id="cb570-15"><a href="raster-analysis.html#cb570-15"></a>faults[faults <span class="op">==</span><span class="st"> </span><span class="dv">0</span>] =<span class="st"> </span><span class="ot">NA</span></span>
+<span id="cb570-16"><a href="raster-analysis.html#cb570-16"></a></span>
+<span id="cb570-17"><a href="raster-analysis.html#cb570-17"></a><span class="co"># Визуализируем результат</span></span>
+<span id="cb570-18"><a href="raster-analysis.html#cb570-18"></a><span class="kw">plot</span>(dem, </span>
+<span id="cb570-19"><a href="raster-analysis.html#cb570-19"></a>     <span class="dt">col =</span> <span class="kw">rev</span>(<span class="kw">rainbow</span>(<span class="dv">20</span>)),</span>
+<span id="cb570-20"><a href="raster-analysis.html#cb570-20"></a>     <span class="dt">main =</span> <span class="st">&#39;Уступы континентального склона&#39;</span>,</span>
+<span id="cb570-21"><a href="raster-analysis.html#cb570-21"></a>     <span class="dt">legend =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb570-22"><a href="raster-analysis.html#cb570-22"></a><span class="kw">plot</span>(faults,</span>
+<span id="cb570-23"><a href="raster-analysis.html#cb570-23"></a>     <span class="dt">col =</span> <span class="st">&#39;black&#39;</span>,</span>
+<span id="cb570-24"><a href="raster-analysis.html#cb570-24"></a>     <span class="dt">legend =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb570-25"><a href="raster-analysis.html#cb570-25"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-541-1.png" width="672" /></p>
+<p>Еще один распространенный случай использования фокальных операций — это морфометрический анализ поверхностей. Квадратная окрестность <span class="math inline">\(3\times3\)</span> вокруг каждой ячейки формирует локальную поверхность, производные которой дают представление об уклоне, экспозиции и прочих морфометрических параметрах. Их можно вычислить с помощью функции <code>terrain()</code> из пакета <code>raster</code>:</p>
+<div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb571-1"><a href="raster-analysis.html#cb571-1"></a><span class="co"># Морфометрия рельефа — фиксированное соседство</span></span>
+<span id="cb571-2"><a href="raster-analysis.html#cb571-2"></a>dem =<span class="st"> </span><span class="kw">raster</span>(<span class="st">&#39;data/dem_fergana.tif&#39;</span>)</span>
+<span id="cb571-3"><a href="raster-analysis.html#cb571-3"></a><span class="kw">spplot</span>(dem)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-542-1.png" width="672" /></p>
+<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb572-1"><a href="raster-analysis.html#cb572-1"></a></span>
+<span id="cb572-2"><a href="raster-analysis.html#cb572-2"></a><span class="co"># углы наклона</span></span>
+<span id="cb572-3"><a href="raster-analysis.html#cb572-3"></a>slope =<span class="st"> </span><span class="kw">terrain</span>(dem, <span class="dt">opt =</span> <span class="st">&#39;slope&#39;</span>, <span class="dt">unit =</span> <span class="st">&#39;degrees&#39;</span>)</span>
+<span id="cb572-4"><a href="raster-analysis.html#cb572-4"></a><span class="kw">spplot</span>(slope, </span>
+<span id="cb572-5"><a href="raster-analysis.html#cb572-5"></a>       <span class="dt">col.regions =</span> <span class="kw">heat.colors</span>(<span class="dv">20</span>),</span>
+<span id="cb572-6"><a href="raster-analysis.html#cb572-6"></a>       <span class="dt">names.attr=</span><span class="kw">c</span>(<span class="st">&#39;Углы наклона&#39;</span>))</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-542-2.png" width="672" /></p>
+<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb573-1"><a href="raster-analysis.html#cb573-1"></a></span>
+<span id="cb573-2"><a href="raster-analysis.html#cb573-2"></a><span class="co"># экспозиция</span></span>
+<span id="cb573-3"><a href="raster-analysis.html#cb573-3"></a>aspect =<span class="st"> </span><span class="kw">terrain</span>(dem, <span class="dt">opt =</span> <span class="st">&#39;aspect&#39;</span>, <span class="dt">unit =</span> <span class="st">&#39;degrees&#39;</span>)</span>
+<span id="cb573-4"><a href="raster-analysis.html#cb573-4"></a><span class="kw">spplot</span>(aspect, </span>
+<span id="cb573-5"><a href="raster-analysis.html#cb573-5"></a>       <span class="dt">col.regions =</span> <span class="kw">rainbow</span>(<span class="dv">20</span>),</span>
+<span id="cb573-6"><a href="raster-analysis.html#cb573-6"></a>       <span class="dt">names.attr=</span><span class="kw">c</span>(<span class="st">&#39;Экспозиции склона&#39;</span>))</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-542-3.png" width="672" /></p>
+<p>Вычисление производных поверхности позволяет не только исследовать рельеф, но также строить его изображения. Например, хорошо знакомую всем по картам аналитическую отмывку рельефа (<em>hillshade</em>). Яркость поверхности в этом способе изображения зависит от угла между направлением на источник освещения (откуда светит Солнце) и нормалью к поверхности. Нормаль можно вычислить как напрямую через производные поверхности, так и восстановить на основе значений угла наклона и экспозиции в точке, что и используется в пакете <strong>raster</strong>. Обратите внимание на то, что для того чтобы повысить наглядность (контрастность) изображения, мы умножаем высоты рельефа на 20. Это стандартная практика для мелкомасштабных карт:</p>
+<div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb574-1"><a href="raster-analysis.html#cb574-1"></a><span class="co"># отмывка</span></span>
+<span id="cb574-2"><a href="raster-analysis.html#cb574-2"></a>slope2 =<span class="st"> </span><span class="kw">terrain</span>(dem <span class="op">*</span><span class="st"> </span><span class="dv">20</span>, <span class="dt">opt =</span> <span class="st">&#39;slope&#39;</span>)</span>
+<span id="cb574-3"><a href="raster-analysis.html#cb574-3"></a>aspect2 =<span class="st"> </span><span class="kw">terrain</span>(dem <span class="op">*</span><span class="st"> </span><span class="dv">20</span>, <span class="dt">opt =</span> <span class="st">&#39;aspect&#39;</span>)</span>
+<span id="cb574-4"><a href="raster-analysis.html#cb574-4"></a>                 </span>
+<span id="cb574-5"><a href="raster-analysis.html#cb574-5"></a><span class="co"># параметры angle и direction функции hillShade определяют азимут и высоту источника освещения:</span></span>
+<span id="cb574-6"><a href="raster-analysis.html#cb574-6"></a>hill =<span class="st"> </span><span class="kw">hillShade</span>(slope2, aspect2, <span class="dt">angle =</span> <span class="dv">45</span>, <span class="dt">direction =</span> <span class="dv">315</span>)</span>
+<span id="cb574-7"><a href="raster-analysis.html#cb574-7"></a><span class="kw">plot</span>(hill, </span>
+<span id="cb574-8"><a href="raster-analysis.html#cb574-8"></a>     <span class="dt">col =</span> <span class="kw">gray.colors</span>(<span class="dv">128</span>),</span>
+<span id="cb574-9"><a href="raster-analysis.html#cb574-9"></a>     <span class="dt">main =</span> <span class="st">&#39;Отмывка рельефа&#39;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-543-1.png" width="672" /></p>
+</div>
+<div id="raster_focal_extended" class="section level4">
+<h4><span class="header-section-number">12.2.2.2</span> Расширенная окрестность</h4>
+<p>Расширенность окрестности означает, что она определяется не фиксированным шаблоном, а условием, которое должно выполниться для того, чтобы анализ в ячейке считался выполненным. Типичный пример анализа на основе расширенной окрестности — это операции, основанные на вычислении расстояний на растровой матрице, такие как аллокация, определение кратчайшего пути на поверхности сопротивления, и собственно, само вычисление расстояние.</p>
+<p>В мелкомасштабных тематических атласах часто можно встретить карты доступности той или иной географической локации, которые в форме изолиний показывают время движения до ближайшего населенного пункта. Эти изолинии можно построить по растровой поверхности, в каждой ячейке которой зафиксировано расстояние до ближайшего населенного пункта.</p>
+<p>Рассмотрим построение аналогичной поверхности на примере доступности станций метро (по расстоянию). Для этого нам понадобится представить растр в виде матрицы точек, рассчитать для этих точек расстояния до ближайших станций метро и присвоить эти значения выходному растру:</p>
+<div class="sourceCode" id="cb575"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb575-1"><a href="raster-analysis.html#cb575-1"></a><span class="co"># Определение Евклидовых расстояний — расширенное соседство</span></span>
+<span id="cb575-2"><a href="raster-analysis.html#cb575-2"></a></span>
+<span id="cb575-3"><a href="raster-analysis.html#cb575-3"></a><span class="co"># Чтение данных</span></span>
+<span id="cb575-4"><a href="raster-analysis.html#cb575-4"></a>roads =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/roads.gpkg&quot;</span>) <span class="co"># Дороги</span></span>
+<span id="cb575-5"><a href="raster-analysis.html#cb575-5"></a><span class="co">## Reading layer `roads&#39; from data source `/Users/tsamsonov/GitHub/r-geo-course/data/roads.gpkg&#39; using driver `GPKG&#39;</span></span>
+<span id="cb575-6"><a href="raster-analysis.html#cb575-6"></a><span class="co">## Simple feature collection with 2213 features and 12 fields</span></span>
+<span id="cb575-7"><a href="raster-analysis.html#cb575-7"></a><span class="co">## geometry type:  MULTILINESTRING</span></span>
+<span id="cb575-8"><a href="raster-analysis.html#cb575-8"></a><span class="co">## dimension:      XY</span></span>
+<span id="cb575-9"><a href="raster-analysis.html#cb575-9"></a><span class="co">## bbox:           xmin: 410946.9 ymin: 6176676 xmax: 415890.8 ymax: 6181910</span></span>
+<span id="cb575-10"><a href="raster-analysis.html#cb575-10"></a><span class="co">## epsg (SRID):    32637</span></span>
+<span id="cb575-11"><a href="raster-analysis.html#cb575-11"></a><span class="co">## proj4string:    +proj=utm +zone=37 +datum=WGS84 +units=m +no_defs</span></span>
+<span id="cb575-12"><a href="raster-analysis.html#cb575-12"></a>poi =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/poi_point.gpkg&quot;</span>) <span class="co"># Точки интереса</span></span>
+<span id="cb575-13"><a href="raster-analysis.html#cb575-13"></a><span class="co">## Reading layer `poi_point&#39; from data source `/Users/tsamsonov/GitHub/r-geo-course/data/poi_point.gpkg&#39; using driver `GPKG&#39;</span></span>
+<span id="cb575-14"><a href="raster-analysis.html#cb575-14"></a><span class="co">## Simple feature collection with 6623 features and 9 fields</span></span>
+<span id="cb575-15"><a href="raster-analysis.html#cb575-15"></a><span class="co">## geometry type:  POINT</span></span>
+<span id="cb575-16"><a href="raster-analysis.html#cb575-16"></a><span class="co">## dimension:      XY</span></span>
+<span id="cb575-17"><a href="raster-analysis.html#cb575-17"></a><span class="co">## bbox:           xmin: 410947.3 ymin: 6176678 xmax: 415889.9 ymax: 6181909</span></span>
+<span id="cb575-18"><a href="raster-analysis.html#cb575-18"></a><span class="co">## epsg (SRID):    32637</span></span>
+<span id="cb575-19"><a href="raster-analysis.html#cb575-19"></a><span class="co">## proj4string:    +proj=utm +zone=37 +datum=WGS84 +units=m +no_defs</span></span>
+<span id="cb575-20"><a href="raster-analysis.html#cb575-20"></a>rayons =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/boundary_polygon.gpkg&quot;</span>) <span class="co"># Границы районов</span></span>
+<span id="cb575-21"><a href="raster-analysis.html#cb575-21"></a><span class="co">## Reading layer `boundary_polygon&#39; from data source `/Users/tsamsonov/GitHub/r-geo-course/data/boundary_polygon.gpkg&#39; using driver `GPKG&#39;</span></span>
+<span id="cb575-22"><a href="raster-analysis.html#cb575-22"></a><span class="co">## Simple feature collection with 11 features and 5 fields</span></span>
+<span id="cb575-23"><a href="raster-analysis.html#cb575-23"></a><span class="co">## geometry type:  MULTIPOLYGON</span></span>
+<span id="cb575-24"><a href="raster-analysis.html#cb575-24"></a><span class="co">## dimension:      XY</span></span>
+<span id="cb575-25"><a href="raster-analysis.html#cb575-25"></a><span class="co">## bbox:           xmin: 410946.9 ymin: 6176676 xmax: 415890.8 ymax: 6181910</span></span>
+<span id="cb575-26"><a href="raster-analysis.html#cb575-26"></a><span class="co">## epsg (SRID):    32637</span></span>
+<span id="cb575-27"><a href="raster-analysis.html#cb575-27"></a><span class="co">## proj4string:    +proj=utm +zone=37 +datum=WGS84 +units=m +no_defs</span></span>
+<span id="cb575-28"><a href="raster-analysis.html#cb575-28"></a>stations =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/metro_stations.gpkg&quot;</span>) <span class="co"># Станции метро</span></span>
+<span id="cb575-29"><a href="raster-analysis.html#cb575-29"></a><span class="co">## Reading layer `metro_stations&#39; from data source `/Users/tsamsonov/GitHub/r-geo-course/data/metro_stations.gpkg&#39; using driver `GPKG&#39;</span></span>
+<span id="cb575-30"><a href="raster-analysis.html#cb575-30"></a><span class="co">## Simple feature collection with 45 features and 3 fields</span></span>
+<span id="cb575-31"><a href="raster-analysis.html#cb575-31"></a><span class="co">## geometry type:  POINT</span></span>
+<span id="cb575-32"><a href="raster-analysis.html#cb575-32"></a><span class="co">## dimension:      XY</span></span>
+<span id="cb575-33"><a href="raster-analysis.html#cb575-33"></a><span class="co">## bbox:           xmin: 411007.5 ymin: 6176747 xmax: 415852.2 ymax: 6181892</span></span>
+<span id="cb575-34"><a href="raster-analysis.html#cb575-34"></a><span class="co">## epsg (SRID):    32637</span></span>
+<span id="cb575-35"><a href="raster-analysis.html#cb575-35"></a><span class="co">## proj4string:    +proj=utm +zone=37 +datum=WGS84 +units=m +no_defs</span></span>
+<span id="cb575-36"><a href="raster-analysis.html#cb575-36"></a>water =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/water_polygon.gpkg&quot;</span>) <span class="co"># Водные объекты</span></span>
+<span id="cb575-37"><a href="raster-analysis.html#cb575-37"></a><span class="co">## Reading layer `water_polygon&#39; from data source `/Users/tsamsonov/GitHub/r-geo-course/data/water_polygon.gpkg&#39; using driver `GPKG&#39;</span></span>
+<span id="cb575-38"><a href="raster-analysis.html#cb575-38"></a><span class="co">## Simple feature collection with 8 features and 7 fields</span></span>
+<span id="cb575-39"><a href="raster-analysis.html#cb575-39"></a><span class="co">## geometry type:  POLYGON</span></span>
+<span id="cb575-40"><a href="raster-analysis.html#cb575-40"></a><span class="co">## dimension:      XY</span></span>
+<span id="cb575-41"><a href="raster-analysis.html#cb575-41"></a><span class="co">## bbox:           xmin: 411595.6 ymin: 6176676 xmax: 415890.8 ymax: 6180765</span></span>
+<span id="cb575-42"><a href="raster-analysis.html#cb575-42"></a><span class="co">## epsg (SRID):    32637</span></span>
+<span id="cb575-43"><a href="raster-analysis.html#cb575-43"></a><span class="co">## proj4string:    +proj=utm +zone=37 +datum=WGS84 +units=m +no_defs</span></span>
+<span id="cb575-44"><a href="raster-analysis.html#cb575-44"></a></span>
+<span id="cb575-45"><a href="raster-analysis.html#cb575-45"></a><span class="co"># Создаем пустой растр с охватом, равным охвату станции</span></span>
+<span id="cb575-46"><a href="raster-analysis.html#cb575-46"></a>dist_grid =<span class="st"> </span>stations <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb575-47"><a href="raster-analysis.html#cb575-47"></a><span class="st">  </span><span class="kw">st_bbox</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb575-48"><a href="raster-analysis.html#cb575-48"></a><span class="st">  </span><span class="kw">st_as_stars</span>(<span class="dt">dx =</span> <span class="dv">25</span>, <span class="dt">dy =</span> <span class="dv">25</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb575-49"><a href="raster-analysis.html#cb575-49"></a><span class="st">  </span><span class="kw">transmute</span>(<span class="dt">dist =</span> <span class="kw">st_as_sf</span>(., <span class="dt">as_points =</span> <span class="ot">TRUE</span>, <span class="dt">merge =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb575-50"><a href="raster-analysis.html#cb575-50"></a><span class="st">           </span><span class="kw">st_distance</span>(stations, .) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb575-51"><a href="raster-analysis.html#cb575-51"></a><span class="st">           </span><span class="kw">apply</span>(<span class="dv">2</span>, min))</span>
+<span id="cb575-52"><a href="raster-analysis.html#cb575-52"></a></span>
+<span id="cb575-53"><a href="raster-analysis.html#cb575-53"></a><span class="co"># Визуализируем результат</span></span>
+<span id="cb575-54"><a href="raster-analysis.html#cb575-54"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb575-55"><a href="raster-analysis.html#cb575-55"></a><span class="st">  </span><span class="kw">geom_stars</span>(<span class="dt">data =</span> dist_grid) <span class="op">+</span></span>
+<span id="cb575-56"><a href="raster-analysis.html#cb575-56"></a><span class="st">  </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colours =</span> <span class="kw">c</span>(<span class="st">&#39;white&#39;</span>, <span class="st">&#39;red&#39;</span>, <span class="st">&#39;black&#39;</span>)) <span class="op">+</span></span>
+<span id="cb575-57"><a href="raster-analysis.html#cb575-57"></a><span class="st">  </span><span class="kw">coord_sf</span>(<span class="dt">crs =</span> <span class="kw">st_crs</span>(stations)) <span class="op">+</span></span>
+<span id="cb575-58"><a href="raster-analysis.html#cb575-58"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> water, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb575-59"><a href="raster-analysis.html#cb575-59"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> roads, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb575-60"><a href="raster-analysis.html#cb575-60"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> stations) <span class="op">+</span></span>
+<span id="cb575-61"><a href="raster-analysis.html#cb575-61"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Расстояние до ближайшей станции метро&#39;</span>) <span class="op">+</span></span>
+<span id="cb575-62"><a href="raster-analysis.html#cb575-62"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-544-1.png" width="672" /></p>
+</div>
+</div>
+<div id="raster_zonal" class="section level3">
+<h3><span class="header-section-number">12.2.3</span> Зональные операции</h3>
+<p><strong>Зональные операции</strong> связаны с агрегированием растровых данных по площадным зонам. В пределах каждой зоны вычисляется одна или несколько характеристик значений анализируемого растра: среднее, максимум и т.д. Как правило, зоны задаются в виде вспомогательного растрового или векторного набора данных. В случае растра каждая ячейка должна содержать идентификатор (номер) зоны, к которой она относится. Совокупность ячеек, имеющих одинаковый идентификатор, определяет территорию, которую покрывает зона с этим идентификатором. Если зоны представлены векторным набором пространственных объектов, то каждый объект (полигон) также должен иметь собственный идентификатор. Теоретически в одном наборе данных может быть несколько пространственно не связанных объектов, относящихся к одной зоне (например, зона экваториального климата состоит из трех ареалов). В этом случае агрегирование данных будет произведено сразу по трем полигонам. Таким образом, количество получаемых в результате зональной статистики значений определяется количеством зон, но может не совпадать с общим количеством полигонов, которыми эти зоны представлены.</p>
+<p>В качестве примера рассмотрим вычисление среднеклиматических параметров <em>WorldClim</em> в пределах различных типов земельного покрова (Land Cover), которые доступны в пакете <strong>tmap</strong>:</p>
+<div class="sourceCode" id="cb576"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb576-1"><a href="raster-analysis.html#cb576-1"></a>temp_stars =<span class="st"> </span>raster<span class="op">::</span><span class="kw">getData</span>(<span class="st">&quot;worldclim&quot;</span>, <span class="dt">var =</span> <span class="st">&quot;tmean&quot;</span>, <span class="dt">res =</span> <span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb576-2"><a href="raster-analysis.html#cb576-2"></a><span class="st">  </span><span class="kw">st_as_stars</span>() <span class="op">/</span><span class="st"> </span><span class="dv">10</span></span>
+<span id="cb576-3"><a href="raster-analysis.html#cb576-3"></a><span class="kw">plot</span>(temp_stars)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-545-1.png" width="384" /></p>
+<div class="sourceCode" id="cb577"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb577-1"><a href="raster-analysis.html#cb577-1"></a></span>
+<span id="cb577-2"><a href="raster-analysis.html#cb577-2"></a></span>
+<span id="cb577-3"><a href="raster-analysis.html#cb577-3"></a><span class="kw">data</span>(land, <span class="dt">package =</span> <span class="st">&#39;tmap&#39;</span>)</span>
+<span id="cb577-4"><a href="raster-analysis.html#cb577-4"></a>types =<span class="st"> </span>land<span class="op">@</span>data<span class="op">@</span>attributes</span>
+<span id="cb577-5"><a href="raster-analysis.html#cb577-5"></a></span>
+<span id="cb577-6"><a href="raster-analysis.html#cb577-6"></a>land_stars =<span class="st"> </span>land <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb577-7"><a href="raster-analysis.html#cb577-7"></a><span class="st">  </span><span class="kw">st_as_stars</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb577-8"><a href="raster-analysis.html#cb577-8"></a><span class="st">  </span><span class="kw">split</span>(<span class="st">&#39;band&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb577-9"><a href="raster-analysis.html#cb577-9"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cover =</span> <span class="kw">factor</span>(cover, </span>
+<span id="cb577-10"><a href="raster-analysis.html#cb577-10"></a>                        <span class="dt">levels =</span> types[[<span class="dv">1</span>]]<span class="op">$</span>ID, </span>
+<span id="cb577-11"><a href="raster-analysis.html#cb577-11"></a>                        <span class="dt">labels =</span> types[[<span class="dv">1</span>]]<span class="op">$</span>cover),</span>
+<span id="cb577-12"><a href="raster-analysis.html#cb577-12"></a>         <span class="dt">cover_cls =</span> <span class="kw">factor</span>(cover,</span>
+<span id="cb577-13"><a href="raster-analysis.html#cb577-13"></a>                        <span class="dt">levels =</span> types[[<span class="dv">2</span>]]<span class="op">$</span>ID, </span>
+<span id="cb577-14"><a href="raster-analysis.html#cb577-14"></a>                        <span class="dt">labels =</span> types[[<span class="dv">2</span>]]<span class="op">$</span>cover))</span>
+<span id="cb577-15"><a href="raster-analysis.html#cb577-15"></a></span>
+<span id="cb577-16"><a href="raster-analysis.html#cb577-16"></a><span class="co"># таблица типов земельного покрова и их идентификаторов в растре</span></span>
+<span id="cb577-17"><a href="raster-analysis.html#cb577-17"></a></span>
+<span id="cb577-18"><a href="raster-analysis.html#cb577-18"></a>pal =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;#003200&quot;</span>, <span class="st">&quot;#3C9600&quot;</span>, <span class="st">&quot;#006E00&quot;</span>, <span class="st">&quot;#556E19&quot;</span>, <span class="st">&quot;#00C800&quot;</span>, <span class="st">&quot;#8CBE8C&quot;</span>,</span>
+<span id="cb577-19"><a href="raster-analysis.html#cb577-19"></a>           <span class="st">&quot;#467864&quot;</span>, <span class="st">&quot;#B4E664&quot;</span>, <span class="st">&quot;#9BC832&quot;</span>, <span class="st">&quot;#EBFF64&quot;</span>, <span class="st">&quot;#F06432&quot;</span>, <span class="st">&quot;#9132E6&quot;</span>,</span>
+<span id="cb577-20"><a href="raster-analysis.html#cb577-20"></a>           <span class="st">&quot;#E664E6&quot;</span>, <span class="st">&quot;#9B82E6&quot;</span>, <span class="st">&quot;#B4FEF0&quot;</span>, <span class="st">&quot;#646464&quot;</span>, <span class="st">&quot;#C8C8C8&quot;</span>, <span class="st">&quot;#FF0000&quot;</span>,</span>
+<span id="cb577-21"><a href="raster-analysis.html#cb577-21"></a>           <span class="st">&quot;#FFFFFF&quot;</span>, <span class="st">&quot;#5ADCDC&quot;</span>)</span>
+<span id="cb577-22"><a href="raster-analysis.html#cb577-22"></a></span>
+<span id="cb577-23"><a href="raster-analysis.html#cb577-23"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb577-24"><a href="raster-analysis.html#cb577-24"></a><span class="st">  </span><span class="kw">geom_stars</span>(<span class="dt">data =</span> land_stars[<span class="st">&#39;cover&#39;</span>]) <span class="op">+</span></span>
+<span id="cb577-25"><a href="raster-analysis.html#cb577-25"></a><span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> pal, <span class="dt">guide =</span> <span class="kw">guide_legend</span>(<span class="dt">ncol =</span> <span class="dv">3</span>), <span class="dt">name =</span> <span class="ot">NULL</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb577-26"><a href="raster-analysis.html#cb577-26"></a><span class="st">  </span><span class="kw">coord_sf</span>(<span class="dt">crs =</span> <span class="kw">st_crs</span>(land_stars)) <span class="op">+</span></span>
+<span id="cb577-27"><a href="raster-analysis.html#cb577-27"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&#39;bottom&#39;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-545-2.png" width="384" /></p>
+<blockquote>
+<p>Оператор <code>@</code> означает обращение к <em>слоту</em> объекта. Слоты представляют собой объекты, являющиеся внутри других объектов, являющихся экземплярами классов S4.</p>
+</blockquote>
+<p>Предварительно необходимо убедиться, что оба растра имеют совпадающий охват (экстент) и пространственное разрешение. Обратите внимание на то, что, поскольку растр земельного покрова категориальный, для его передискретизации необходимо использовать метод ближайшего соседа (<em>Nearest Neighbor</em>), который для каждого пиксела нового растра берет значение в ближайшем к нему пикселе исходного растра:</p>
+<div class="sourceCode" id="cb578"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb578-1"><a href="raster-analysis.html#cb578-1"></a>temp_stars</span>
+<span id="cb578-2"><a href="raster-analysis.html#cb578-2"></a><span class="co">## stars object with 3 dimensions and 1 attribute</span></span>
+<span id="cb578-3"><a href="raster-analysis.html#cb578-3"></a><span class="co">## attribute(s), summary of first 100000 cells:</span></span>
+<span id="cb578-4"><a href="raster-analysis.html#cb578-4"></a><span class="co">##     tmean1       </span></span>
+<span id="cb578-5"><a href="raster-analysis.html#cb578-5"></a><span class="co">##  Min.   :-42.10  </span></span>
+<span id="cb578-6"><a href="raster-analysis.html#cb578-6"></a><span class="co">##  1st Qu.:-34.08  </span></span>
+<span id="cb578-7"><a href="raster-analysis.html#cb578-7"></a><span class="co">##  Median :-30.85  </span></span>
+<span id="cb578-8"><a href="raster-analysis.html#cb578-8"></a><span class="co">##  Mean   :-31.99  </span></span>
+<span id="cb578-9"><a href="raster-analysis.html#cb578-9"></a><span class="co">##  3rd Qu.:-29.50  </span></span>
+<span id="cb578-10"><a href="raster-analysis.html#cb578-10"></a><span class="co">##  Max.   :-27.80  </span></span>
+<span id="cb578-11"><a href="raster-analysis.html#cb578-11"></a><span class="co">##  NA&#39;s   :98298   </span></span>
+<span id="cb578-12"><a href="raster-analysis.html#cb578-12"></a><span class="co">## dimension(s):</span></span>
+<span id="cb578-13"><a href="raster-analysis.html#cb578-13"></a><span class="co">##      from   to offset     delta                       refsys point</span></span>
+<span id="cb578-14"><a href="raster-analysis.html#cb578-14"></a><span class="co">## x       1 2160   -180  0.166667 +proj=longlat +datum=WGS8...    NA</span></span>
+<span id="cb578-15"><a href="raster-analysis.html#cb578-15"></a><span class="co">## y       1  900     90 -0.166667 +proj=longlat +datum=WGS8...    NA</span></span>
+<span id="cb578-16"><a href="raster-analysis.html#cb578-16"></a><span class="co">## band    1   12     NA        NA                           NA    NA</span></span>
+<span id="cb578-17"><a href="raster-analysis.html#cb578-17"></a><span class="co">##                  values    </span></span>
+<span id="cb578-18"><a href="raster-analysis.html#cb578-18"></a><span class="co">## x                  NULL [x]</span></span>
+<span id="cb578-19"><a href="raster-analysis.html#cb578-19"></a><span class="co">## y                  NULL [y]</span></span>
+<span id="cb578-20"><a href="raster-analysis.html#cb578-20"></a><span class="co">## band tmean1,...,tmean12</span></span>
+<span id="cb578-21"><a href="raster-analysis.html#cb578-21"></a>land_stars</span>
+<span id="cb578-22"><a href="raster-analysis.html#cb578-22"></a><span class="co">## stars object with 2 dimensions and 4 attributes</span></span>
+<span id="cb578-23"><a href="raster-analysis.html#cb578-23"></a><span class="co">## attribute(s):</span></span>
+<span id="cb578-24"><a href="raster-analysis.html#cb578-24"></a><span class="co">##                cover                              cover_cls     </span></span>
+<span id="cb578-25"><a href="raster-analysis.html#cb578-25"></a><span class="co">##  Water bodies     :393060   Forest                     :     0  </span></span>
+<span id="cb578-26"><a href="raster-analysis.html#cb578-26"></a><span class="co">##  Snow / Ice       : 61986   Other natural vegetation   :     0  </span></span>
+<span id="cb578-27"><a href="raster-analysis.html#cb578-27"></a><span class="co">##  Herbaceous       : 21377   Cropland                   :     0  </span></span>
+<span id="cb578-28"><a href="raster-analysis.html#cb578-28"></a><span class="co">##  Tree Open        : 16171   Wetland                    :     0  </span></span>
+<span id="cb578-29"><a href="raster-analysis.html#cb578-29"></a><span class="co">##  Sparse vegetation: 12247   Bare area/Sparse vegetation:     0  </span></span>
+<span id="cb578-30"><a href="raster-analysis.html#cb578-30"></a><span class="co">##  Cropland         : 11658   (Other)                    :     0  </span></span>
+<span id="cb578-31"><a href="raster-analysis.html#cb578-31"></a><span class="co">##  (Other)          : 66701   NA&#39;s                       :583200  </span></span>
+<span id="cb578-32"><a href="raster-analysis.html#cb578-32"></a><span class="co">##      trees          elevation     </span></span>
+<span id="cb578-33"><a href="raster-analysis.html#cb578-33"></a><span class="co">##  Min.   :  0.0    Min.   :-412    </span></span>
+<span id="cb578-34"><a href="raster-analysis.html#cb578-34"></a><span class="co">##  1st Qu.:  0.0    1st Qu.: 218    </span></span>
+<span id="cb578-35"><a href="raster-analysis.html#cb578-35"></a><span class="co">##  Median :  0.0    Median : 608    </span></span>
+<span id="cb578-36"><a href="raster-analysis.html#cb578-36"></a><span class="co">##  Mean   : 15.6    Mean   :1140    </span></span>
+<span id="cb578-37"><a href="raster-analysis.html#cb578-37"></a><span class="co">##  3rd Qu.: 19.0    3rd Qu.:1941    </span></span>
+<span id="cb578-38"><a href="raster-analysis.html#cb578-38"></a><span class="co">##  Max.   :100.0    Max.   :6410    </span></span>
+<span id="cb578-39"><a href="raster-analysis.html#cb578-39"></a><span class="co">##  NA&#39;s   :393060   NA&#39;s   :389580  </span></span>
+<span id="cb578-40"><a href="raster-analysis.html#cb578-40"></a><span class="co">## dimension(s):</span></span>
+<span id="cb578-41"><a href="raster-analysis.html#cb578-41"></a><span class="co">##   from   to offset     delta                       refsys point values    </span></span>
+<span id="cb578-42"><a href="raster-analysis.html#cb578-42"></a><span class="co">## x    1 1080   -180  0.333333 +proj=longlat +datum=WGS8...    NA   NULL [x]</span></span>
+<span id="cb578-43"><a href="raster-analysis.html#cb578-43"></a><span class="co">## y    1  540     90 -0.333333 +proj=longlat +datum=WGS8...    NA   NULL [y]</span></span>
+<span id="cb578-44"><a href="raster-analysis.html#cb578-44"></a></span>
+<span id="cb578-45"><a href="raster-analysis.html#cb578-45"></a>(<span class="dt">cover_stars =</span> <span class="kw">st_warp</span>(land_stars[<span class="st">&#39;cover&#39;</span>], temp_stars <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(band, <span class="dv">1</span>), <span class="dt">method =</span> <span class="st">&#39;near&#39;</span>))</span>
+<span id="cb578-46"><a href="raster-analysis.html#cb578-46"></a><span class="co">## stars object with 2 dimensions and 1 attribute</span></span>
+<span id="cb578-47"><a href="raster-analysis.html#cb578-47"></a><span class="co">## attribute(s), summary of first 100000 cells:</span></span>
+<span id="cb578-48"><a href="raster-analysis.html#cb578-48"></a><span class="co">##                                   cover      </span></span>
+<span id="cb578-49"><a href="raster-analysis.html#cb578-49"></a><span class="co">##  Water bodies                        :98596  </span></span>
+<span id="cb578-50"><a href="raster-analysis.html#cb578-50"></a><span class="co">##  Snow / Ice                          :  996  </span></span>
+<span id="cb578-51"><a href="raster-analysis.html#cb578-51"></a><span class="co">##  Sparse vegetation                   :  400  </span></span>
+<span id="cb578-52"><a href="raster-analysis.html#cb578-52"></a><span class="co">##  Bare area,consolidated (gravel,rock):    8  </span></span>
+<span id="cb578-53"><a href="raster-analysis.html#cb578-53"></a><span class="co">##  Broadleaf Evergreen Forest          :    0  </span></span>
+<span id="cb578-54"><a href="raster-analysis.html#cb578-54"></a><span class="co">##  Broadleaf Deciduous Forest          :    0  </span></span>
+<span id="cb578-55"><a href="raster-analysis.html#cb578-55"></a><span class="co">##  (Other)                             :    0  </span></span>
+<span id="cb578-56"><a href="raster-analysis.html#cb578-56"></a><span class="co">## dimension(s):</span></span>
+<span id="cb578-57"><a href="raster-analysis.html#cb578-57"></a><span class="co">##   from   to offset     delta                       refsys point values    </span></span>
+<span id="cb578-58"><a href="raster-analysis.html#cb578-58"></a><span class="co">## x    1 2160   -180  0.166667 +proj=longlat +datum=WGS8...    NA   NULL [x]</span></span>
+<span id="cb578-59"><a href="raster-analysis.html#cb578-59"></a><span class="co">## y    1  900     90 -0.166667 +proj=longlat +datum=WGS8...    NA   NULL [y]</span></span>
+<span id="cb578-60"><a href="raster-analysis.html#cb578-60"></a><span class="co"># используем &#39;near&#39;, поскольку растр категориальный</span></span></code></pre></div>
+<p>Для вычисления средней температуры за каждый месяц в пределах каждой зоны земельного покрова выполним следующую последовательность действий:</p>
+<div class="sourceCode" id="cb579"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb579-1"><a href="raster-analysis.html#cb579-1"></a>months =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">12</span></span>
+<span id="cb579-2"><a href="raster-analysis.html#cb579-2"></a>cover_types =<span class="st"> </span><span class="kw">levels</span>(cover_stars<span class="op">$</span>cover)</span>
+<span id="cb579-3"><a href="raster-analysis.html#cb579-3"></a>zonal_stats =<span class="st"> </span><span class="kw">lapply</span>(cover_types, <span class="cf">function</span>(X) {</span>
+<span id="cb579-4"><a href="raster-analysis.html#cb579-4"></a>  <span class="kw">sapply</span>(months, <span class="cf">function</span>(Y) {</span>
+<span id="cb579-5"><a href="raster-analysis.html#cb579-5"></a>    temp_month =<span class="st"> </span>temp_stars <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(band, Y) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(<span class="dv">1</span>)</span>
+<span id="cb579-6"><a href="raster-analysis.html#cb579-6"></a>    cover_stars <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb579-7"><a href="raster-analysis.html#cb579-7"></a><span class="st">      </span><span class="kw">transmute</span>(<span class="dt">masked =</span> <span class="kw">ifelse</span>(cover <span class="op">==</span><span class="st"> </span>X, temp_month, <span class="ot">NA</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb579-8"><a href="raster-analysis.html#cb579-8"></a><span class="st">      </span><span class="kw">pull</span>(masked) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb579-9"><a href="raster-analysis.html#cb579-9"></a><span class="st">      </span><span class="kw">mean</span>(<span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb579-10"><a href="raster-analysis.html#cb579-10"></a>  })</span>
+<span id="cb579-11"><a href="raster-analysis.html#cb579-11"></a>}) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb579-12"><a href="raster-analysis.html#cb579-12"></a><span class="st">  </span><span class="kw">bind_cols</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb579-13"><a href="raster-analysis.html#cb579-13"></a><span class="st">  </span><span class="kw">set_names</span>(cover_types) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb579-14"><a href="raster-analysis.html#cb579-14"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">month =</span> months) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb579-15"><a href="raster-analysis.html#cb579-15"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="op">-</span>month, <span class="dt">names_to =</span> <span class="st">&#39;cover&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;tmean&#39;</span>)</span></code></pre></div>
+<p>Визуализируем полученные результаты:</p>
+<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb580-1"><a href="raster-analysis.html#cb580-1"></a><span class="kw">ggplot</span>(zonal_stats) <span class="op">+</span></span>
+<span id="cb580-2"><a href="raster-analysis.html#cb580-2"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> month, <span class="dt">y =</span> tmean, <span class="dt">color =</span> cover), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb580-3"><a href="raster-analysis.html#cb580-3"></a><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> pal) <span class="op">+</span></span>
+<span id="cb580-4"><a href="raster-analysis.html#cb580-4"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> months)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-548-1.png" width="672" /></p>
+<p>Перед вычислением целесообразно разделить растр землепользования на северное и южное полушарие (т.к. ход температур в них противоположный):</p>
+<div class="sourceCode" id="cb581"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb581-1"><a href="raster-analysis.html#cb581-1"></a>cover_north =<span class="st"> </span><span class="kw">crop</span>(cover, <span class="kw">extent</span>(<span class="op">-</span><span class="dv">180</span>, <span class="dv">180</span>, <span class="dv">0</span>, <span class="dv">90</span>))</span>
+<span id="cb581-2"><a href="raster-analysis.html#cb581-2"></a>cover_south =<span class="st"> </span><span class="kw">crop</span>(cover, <span class="kw">extent</span>(<span class="op">-</span><span class="dv">180</span>, <span class="dv">180</span>, <span class="dv">-60</span>, <span class="dv">0</span>))</span>
+<span id="cb581-3"><a href="raster-analysis.html#cb581-3"></a></span>
+<span id="cb581-4"><a href="raster-analysis.html#cb581-4"></a>temp_north =<span class="st"> </span><span class="kw">crop</span>(temp, <span class="kw">extent</span>(<span class="op">-</span><span class="dv">180</span>, <span class="dv">180</span>, <span class="dv">0</span>, <span class="dv">90</span>))</span>
+<span id="cb581-5"><a href="raster-analysis.html#cb581-5"></a>temp_south =<span class="st"> </span><span class="kw">crop</span>(temp, <span class="kw">extent</span>(<span class="op">-</span><span class="dv">180</span>, <span class="dv">180</span>, <span class="dv">-60</span>, <span class="dv">0</span>))</span>
+<span id="cb581-6"><a href="raster-analysis.html#cb581-6"></a></span>
+<span id="cb581-7"><a href="raster-analysis.html#cb581-7"></a>mtemp_north_tidy =<span class="st"> </span><span class="kw">zonal</span>(temp_north, cover_north, <span class="st">&#39;mean&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb581-8"><a href="raster-analysis.html#cb581-8"></a><span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb581-9"><a href="raster-analysis.html#cb581-9"></a><span class="st">  </span><span class="kw">left_join</span>(tbl[[<span class="dv">1</span>]], <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;zone&#39;</span> =<span class="st"> &#39;ID&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb581-10"><a href="raster-analysis.html#cb581-10"></a><span class="st">  </span><span class="kw">gather</span>(month, tmean, tmean1<span class="op">:</span>tmean12) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb581-11"><a href="raster-analysis.html#cb581-11"></a><span class="st">  </span><span class="kw">separate</span>(month, <span class="kw">c</span>(<span class="st">&#39;dummy&#39;</span>, <span class="st">&#39;month&#39;</span>), <span class="dt">sep =</span> <span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb581-12"><a href="raster-analysis.html#cb581-12"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">month =</span> <span class="kw">as.integer</span>(month),</span>
+<span id="cb581-13"><a href="raster-analysis.html#cb581-13"></a>         <span class="dt">hemisphere =</span> <span class="st">&#39;north&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb581-14"><a href="raster-analysis.html#cb581-14"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>COUNT, <span class="op">-</span>dummy)</span>
+<span id="cb581-15"><a href="raster-analysis.html#cb581-15"></a></span>
+<span id="cb581-16"><a href="raster-analysis.html#cb581-16"></a>mtemp_south_tidy =<span class="st"> </span><span class="kw">zonal</span>(temp_south, cover_south, <span class="st">&#39;mean&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb581-17"><a href="raster-analysis.html#cb581-17"></a><span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb581-18"><a href="raster-analysis.html#cb581-18"></a><span class="st">  </span><span class="kw">left_join</span>(tbl[[<span class="dv">1</span>]], <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;zone&#39;</span> =<span class="st"> &#39;ID&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb581-19"><a href="raster-analysis.html#cb581-19"></a><span class="st">  </span><span class="kw">gather</span>(month, tmean, tmean1<span class="op">:</span>tmean12) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb581-20"><a href="raster-analysis.html#cb581-20"></a><span class="st">  </span><span class="kw">separate</span>(month, <span class="kw">c</span>(<span class="st">&#39;dummy&#39;</span>, <span class="st">&#39;month&#39;</span>), <span class="dt">sep =</span> <span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb581-21"><a href="raster-analysis.html#cb581-21"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">month =</span> <span class="kw">as.integer</span>(month),</span>
+<span id="cb581-22"><a href="raster-analysis.html#cb581-22"></a>         <span class="dt">hemisphere =</span> <span class="st">&#39;south&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb581-23"><a href="raster-analysis.html#cb581-23"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>COUNT, <span class="op">-</span>dummy)</span>
+<span id="cb581-24"><a href="raster-analysis.html#cb581-24"></a></span>
+<span id="cb581-25"><a href="raster-analysis.html#cb581-25"></a>mtemp_tidy2 =<span class="st"> </span><span class="kw">bind_rows</span>(mtemp_north_tidy, mtemp_south_tidy)</span>
+<span id="cb581-26"><a href="raster-analysis.html#cb581-26"></a></span>
+<span id="cb581-27"><a href="raster-analysis.html#cb581-27"></a><span class="kw">ggplot</span>(mtemp_tidy2) <span class="op">+</span></span>
+<span id="cb581-28"><a href="raster-analysis.html#cb581-28"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> month, <span class="dt">y =</span> tmean, <span class="dt">color =</span> cover), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb581-29"><a href="raster-analysis.html#cb581-29"></a><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> pal) <span class="op">+</span></span>
+<span id="cb581-30"><a href="raster-analysis.html#cb581-30"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">12</span>) <span class="op">+</span></span>
+<span id="cb581-31"><a href="raster-analysis.html#cb581-31"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>hemisphere, <span class="dt">ncol =</span> <span class="dv">1</span>)</span></code></pre></div>
+</div>
+<div id="raster_global" class="section level3">
+<h3><span class="header-section-number">12.2.4</span> Глобальные операции</h3>
+<p>Глобальные операции охватывают все ячейки растра. По сути, можно говорить, что это частный случай зональной операции, когда зона одна и покрывает растр целиком. В пакете raster для расчета глобальных статистик можно использовать функцию <code>cellStats()</code>, передав ей название растра и агрегирующей функции:</p>
+<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb582-1"><a href="raster-analysis.html#cb582-1"></a><span class="kw">cellStats</span>(temp_north, max) </span>
+<span id="cb582-2"><a href="raster-analysis.html#cb582-2"></a><span class="kw">cellStats</span>(temp_south, min) </span></code></pre></div>
+</div>
+</div>
+<div id="raster_extract" class="section level2">
+<h2><span class="header-section-number">12.3</span> Извлечение данных</h2>
+<p>Растровая модель данных обеспечивает сплошное покрытие территории (с дискретностью, определяемой размером ячейки). В то же время, достаточно часто требуется получить значения растра в заданных местоположениях. Местоположения могут быть как конкретными объектами (например, точками почвенных разрезов), так и абстрактными географическими локациями, для которых известны координаты.</p>
+<p>Для извлечения растровых данных можно воспользоваться функцией <code>extract()</code>. Получать данные можно как по координатам (записанным в фрейм данных), так и используя пространственные объекты класса <code>Spatial</code>. Например, узнаем мощность покровного оледенения в точке в центре Гренландии:</p>
+<div class="sourceCode" id="cb583"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb583-1"><a href="raster-analysis.html#cb583-1"></a>coords =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">-45</span>, <span class="dt">y =</span> <span class="dv">70</span>)</span>
+<span id="cb583-2"><a href="raster-analysis.html#cb583-2"></a>z =<span class="st"> </span>raster<span class="op">::</span><span class="kw">extract</span>(ice.depth, coords)</span>
+<span id="cb583-3"><a href="raster-analysis.html#cb583-3"></a></span>
+<span id="cb583-4"><a href="raster-analysis.html#cb583-4"></a><span class="kw">plot</span>(bed, </span>
+<span id="cb583-5"><a href="raster-analysis.html#cb583-5"></a>     <span class="dt">breaks =</span> brks, </span>
+<span id="cb583-6"><a href="raster-analysis.html#cb583-6"></a>     <span class="dt">col =</span> <span class="kw">gray.colors</span>(nclass),</span>
+<span id="cb583-7"><a href="raster-analysis.html#cb583-7"></a>     <span class="dt">legend =</span> F)</span>
+<span id="cb583-8"><a href="raster-analysis.html#cb583-8"></a><span class="kw">plot</span>(ice.depth, </span>
+<span id="cb583-9"><a href="raster-analysis.html#cb583-9"></a>     <span class="dt">col =</span> <span class="kw">cm.colors</span>(<span class="dv">255</span>),</span>
+<span id="cb583-10"><a href="raster-analysis.html#cb583-10"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb583-11"><a href="raster-analysis.html#cb583-11"></a><span class="kw">points</span>(coords)</span>
+<span id="cb583-12"><a href="raster-analysis.html#cb583-12"></a><span class="kw">text</span>(coords, <span class="dt">labels =</span> z, <span class="dt">pos =</span> <span class="dv">4</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-551-1.png" width="672" /></p>
+<p>Одна из наиболее распространенных задач по извлечению растровых данных — это построение профиля вдоль заданной линии. Воспользуемся интерактивным редактором для проведения линии профиля</p>
+<div class="sourceCode" id="cb584"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb584-1"><a href="raster-analysis.html#cb584-1"></a>mp =<span class="st"> </span><span class="kw">mapview</span>(temp<span class="op">$</span>tmean6)</span>
+<span id="cb584-2"><a href="raster-analysis.html#cb584-2"></a>profile =<span class="st"> </span>mapedit<span class="op">::</span><span class="kw">drawFeatures</span>(mp)</span></code></pre></div>
+<p><img src="images/mapedit_profile.png" /></p>
+<div class="sourceCode" id="cb585"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb585-1"><a href="raster-analysis.html#cb585-1"></a>temprof =<span class="st"> </span>raster<span class="op">::</span><span class="kw">extract</span>(temp<span class="op">$</span>tmean6, <span class="kw">as</span>(profile, <span class="st">&#39;Spatial&#39;</span>), </span>
+<span id="cb585-2"><a href="raster-analysis.html#cb585-2"></a>                          <span class="dt">along =</span> <span class="ot">TRUE</span>, <span class="dt">cellnumbers =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb585-3"><a href="raster-analysis.html#cb585-3"></a><span class="kw">head</span>(temprof[[<span class="dv">1</span>]])</span></code></pre></div>
+<p>Для построения линии профиля далее нам необходимо преобразовать идентификаторы ячеек растра в расстояние от начала профиля:</p>
+<div class="sourceCode" id="cb586"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb586-1"><a href="raster-analysis.html#cb586-1"></a>tempdf =<span class="st"> </span>temprof[[<span class="dv">1</span>]] <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb586-2"><a href="raster-analysis.html#cb586-2"></a><span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb586-3"><a href="raster-analysis.html#cb586-3"></a><span class="st">  </span><span class="kw">bind_cols</span>(<span class="kw">xyFromCell</span>(temp, .<span class="op">$</span>cell) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_tibble</span>()) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb586-4"><a href="raster-analysis.html#cb586-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">dist =</span> <span class="fl">0.001</span> <span class="op">*</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, dplyr<span class="op">::</span><span class="kw">select</span>(., x, y) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb586-5"><a href="raster-analysis.html#cb586-5"></a><span class="st">                             </span>geosphere<span class="op">::</span><span class="kw">distGeo</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb586-6"><a href="raster-analysis.html#cb586-6"></a><span class="st">                             </span><span class="kw">cumsum</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb586-7"><a href="raster-analysis.html#cb586-7"></a><span class="st">                             </span><span class="kw">head</span>(<span class="op">-</span><span class="dv">1</span>)))</span>
+<span id="cb586-8"><a href="raster-analysis.html#cb586-8"></a></span>
+<span id="cb586-9"><a href="raster-analysis.html#cb586-9"></a>pts =<span class="st"> </span>profile <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb586-10"><a href="raster-analysis.html#cb586-10"></a><span class="st">  </span><span class="kw">st_cast</span>(<span class="st">&#39;POINT&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb586-11"><a href="raster-analysis.html#cb586-11"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">label =</span> <span class="kw">c</span>(<span class="st">&#39;A&#39;</span>, <span class="st">&#39;B&#39;</span>))</span>
+<span id="cb586-12"><a href="raster-analysis.html#cb586-12"></a></span>
+<span id="cb586-13"><a href="raster-analysis.html#cb586-13"></a><span class="kw">tm_shape</span>(temp) <span class="op">+</span></span>
+<span id="cb586-14"><a href="raster-analysis.html#cb586-14"></a><span class="st">  </span><span class="kw">tm_raster</span>(<span class="st">&#39;tmean6&#39;</span>, <span class="dt">midpoint =</span> <span class="dv">0</span>, <span class="dt">palette =</span> <span class="st">&#39;-RdBu&#39;</span>) <span class="op">+</span></span>
+<span id="cb586-15"><a href="raster-analysis.html#cb586-15"></a><span class="kw">tm_shape</span>(profile) <span class="op">+</span></span>
+<span id="cb586-16"><a href="raster-analysis.html#cb586-16"></a><span class="st">  </span><span class="kw">tm_lines</span>() <span class="op">+</span></span>
+<span id="cb586-17"><a href="raster-analysis.html#cb586-17"></a><span class="kw">tm_shape</span>(pts) <span class="op">+</span></span>
+<span id="cb586-18"><a href="raster-analysis.html#cb586-18"></a><span class="st">  </span><span class="kw">tm_bubbles</span>(<span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb586-19"><a href="raster-analysis.html#cb586-19"></a><span class="st">  </span><span class="kw">tm_text</span>(<span class="st">&#39;label&#39;</span>, <span class="dt">remove.overlap =</span> <span class="ot">TRUE</span>, <span class="dt">auto.placement =</span> <span class="ot">TRUE</span>) <span class="op">+</span></span>
+<span id="cb586-20"><a href="raster-analysis.html#cb586-20"></a><span class="kw">tm_layout</span>(<span class="dt">legend.position =</span> <span class="kw">c</span>(<span class="st">&#39;left&#39;</span>, <span class="st">&#39;bottom&#39;</span>))</span>
+<span id="cb586-21"><a href="raster-analysis.html#cb586-21"></a></span>
+<span id="cb586-22"><a href="raster-analysis.html#cb586-22"></a><span class="kw">ggplot</span>(tempdf, <span class="kw">aes</span>(<span class="dt">x =</span> dist, <span class="dt">y =</span> tmean6)) <span class="op">+</span></span>
+<span id="cb586-23"><a href="raster-analysis.html#cb586-23"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
+<span id="cb586-24"><a href="raster-analysis.html#cb586-24"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">span =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb586-25"><a href="raster-analysis.html#cb586-25"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&#39;text&#39;</span>, <span class="dt">x =</span> <span class="dv">0</span>, <span class="dt">y =</span> <span class="dv">10</span>, <span class="dt">label =</span> <span class="st">&#39;A&#39;</span>) <span class="op">+</span></span>
+<span id="cb586-26"><a href="raster-analysis.html#cb586-26"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&#39;text&#39;</span>, <span class="dt">x =</span> <span class="kw">max</span>(tempdf<span class="op">$</span>dist), <span class="dt">y =</span> <span class="dv">10</span>, <span class="dt">label =</span> <span class="st">&#39;B&#39;</span>) <span class="op">+</span></span>
+<span id="cb586-27"><a href="raster-analysis.html#cb586-27"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Профиль среднемесячной температуры июня по линии A—B&#39;</span>)</span></code></pre></div>
+</div>
+<div id="questions_tasks_raster" class="section level2">
+<h2><span class="header-section-number">12.4</span> Контрольные вопросы и упражнения</h2>
+<div id="questions_raster" class="section level3">
+<h3><span class="header-section-number">12.4.1</span> Вопросы</h3>
+<ol style="list-style-type: decimal">
+<li>Дайте описание локальных, фокальных, зональных и глобальных операций растровой алгебры. Приведите примеры использования данных типов операций.</li>
+<li>Каким требованиям должна отвечать геометрия растров, участвующих в локальных и зональных операциях?</li>
+<li>В чем заключается отличие фокальных операций с фиксированной и расширенной окрестностью?</li>
+<li>Чем отличается геометрия растра до и после применения фокальной операции?</li>
+<li>Какая функция пакета <strong>raster</strong> реализует возможности фокальной обработки растров?</li>
+<li>Какой эффект оказывает сглаживающая фильтрация на значения растра?</li>
+<li>Какие виды производных морфометрических величин позволяет получать функция <code>terrain()</code> из пакета <strong>raster</strong>?</li>
+<li>Какие два растра необходимо рассчитать для построения аналитической отмывки средствами функции <code>terrain()</code>?</li>
+<li>Опишите последовательность действий, которую необходимо выполнить для построения растра <strong>Евклидовых расстояний</strong> от заданных объектов?</li>
+<li>Какой метод интерполяции необходимо использовать для передискретизации категориальных растров? В чем заключается принцип его действия?</li>
+<li>Какая функция пакета <strong>raster</strong> используется для выполнения зональных операций? Какой тип результата она возвращает?</li>
+<li>Опишите возможности функции <code>extract()</code> по извлечению информации из растровых данных. В какой формате можно задать анализируемые локации? Что будет результатом вызова этой функции в зависимости от формата входных данных?</li>
+<li>Опишите последовательность действий, которую необходимо выполнить для построения профиля растровой поверхности средствами <strong>R</strong>.</li>
+<li>Можно ли построить профиль по растру, имеющему привязку в географической системе координат (координаты выражены градусах)? Если да, то как добиться того, чтобы расстояния между точками профиля были посчитаны в метрических единицах?</li>
+</ol>
+</div>
+<div id="tasks_raster" class="section level3">
+<h3><span class="header-section-number">12.4.2</span> Упражнения</h3>
+<ol style="list-style-type: decimal">
+<li><p>В пакете <strong>tmap</strong> содержится растровый каталог <code>land</code>, включающий в себя растр <code>elevation</code>. Используя пакет <strong>mapedit</strong>, оцифруйте произвольную линию и постройте средствами <strong>ggplot</strong> профиль рельефа вдоль этой линии.</p></li>
+<li><p><em>Индекс континентальности Хромова</em> рассчитывается по формуле <span class="math inline">\(K = (A - 5.4 \sin \phi)/A\)</span>, где <span class="math inline">\(A\)</span> — годовая амплитуда хода температуры, <span class="math inline">\(\phi\)</span> — широта точки. Используя данные <strong>WorldClim</strong>, рассчитайте растр индекса континентальности на территорию суши и нанесите его на карту средствами <strong>tmap</strong>.</p>
+<blockquote>
+<p><strong>Подсказка:</strong> используйте функцию <code>xyFromCell()</code>, чтобы получить широты всех ячеек растра температур. Далее создайте новый растр и запишите в него широты в качестве значений. Растры минимальных и максимальных значений из стека растров можно получить, используя обычные статистические функции <code>min()</code> и <code>max()</code>.</p>
+</blockquote></li>
+<li><p>Постройте растр, который содержит расстояние до береговой линии. Используйте данные <strong>Natural Earth</strong>. Задайте грубое разрешение растра, чтобы расчеты не производились долго (100 x 50 ячеек будет достаточно). Где находится самая удаленная от берега точка на суше? А самая удаленная точка на океане? Постройте карту, которая отображает полученный растр и береговую линию.</p></li>
+<li><p>Рассчитайте морфометрические коэффициенты TPI, TRI и roughness для <a href="https://github.com/tsamsonov/r-geo-course/blob/master/data/dem_fergana.tif">цифровой модели рельефа Ферганской долины</a>, которая использовалась в текущей лекции. В чем их суть? Изучите справку к инструменту <code>terrain()</code>.</p></li>
+</ol>
+<table>
+<tbody>
+<tr class="odd">
+<td><em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, <code>lubridate::year(Sys.Date())</code>. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a></td>
+</tr>
+</tbody>
+</table>
+
+<div id="refs" class="references">
+<div>
+<p>Cleveland, William S. 1979. “Robust Locally Weighted Regression and Smoothing Scatterplots.” <em>Journal of the American Statistical Association</em> 74 (368): 829. <a href="https://doi.org/10.2307/2286407">https://doi.org/10.2307/2286407</a>.</p>
+</div>
+<div>
+<p>Mardia, K V, and P E Jupp. 2000. <em>Directional Statistics</em>. Chichester New York: Wiley.</p>
+</div>
+<div>
+<p>Oliveira, Ma’ria, Rosa M. Crujeiras, and Alberto Rod’riguez-Casal. 2014. “NPCirc : An R Package for Nonparametric Circular Methods.” <em>Journal of Statistical Software</em> 61 (9): 1–26. <a href="https://doi.org/10.18637/jss.v061.i09">https://doi.org/10.18637/jss.v061.i09</a>.</p>
+</div>
+<div>
+<p>Oliveira, M., R. M. Crujeiras, and A. Rod’riguez-Casal. 2012. “A Plug-in Rule for Bandwidth Selection in Circular Density Estimation.” <em>Computational Statistics and Data Analysis</em> 56 (12): 3898–3908. <a href="https://doi.org/10.1016/j.csda.2012.05.021">https://doi.org/10.1016/j.csda.2012.05.021</a>.</p>
+</div>
+<div>
+<p>Pewsey, Arthur, Markus Neuhäuser, and Graeme D. Ruxton. 2013. <em>Circular Statistics in R</em>. Oxford New York: Oxford University Press.</p>
+</div>
+<div>
+<p>Tomlin, Dana. 2012. <em>GIS and Cartographic Modeling</em>. 2nd Editio. ESRI Press.</p>
+</div>
+<div>
+<p>Wickham, Hadley. 2019. <em>Advanced R</em>. 2nd ed. Chapman and Hall/CRC.</p>
+</div>
+<div>
+<p>Прохоров, Ю. С. 2011. “Математическая статистика.” In <em>Большая российская энциклопедия. Том 19</em>, 349–52. Издательство «Большая российская энциклопедия».</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-Tomlin2012">
+<p>Tomlin, Dana. 2012. <em>GIS and Cartographic Modeling</em>. 2nd Editio. ESRI Press.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="vector-analysis.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"edit": "https://github.com/tsamsonov/r-geo-course/edit/master/%s"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
