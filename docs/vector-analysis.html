@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Глава 11 Векторный и сетевой анализ | Визуализация и анализ географических данных на языке R</title>
+  <meta name="description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Глава 11 Векторный и сетевой анализ | Визуализация и анализ географических данных на языке R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  <meta name="github-repo" content="tsamsonov/r-geo-course" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Глава 11 Векторный и сетевой анализ | Визуализация и анализ географических данных на языке R" />
+  
+  <meta name="twitter:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  
+
+<meta name="author" content="Тимофей Самсонов" />
+
+
+<meta name="date" content="2020-02-10" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="thematic-mapping-new.html"/>
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.11/datatables.js"></script>
+<link href="libs/dt-core-1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.19/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.19/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Визуализация и анализ географических данных на языке R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Введение</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#программное-обеспечение"><i class="fa fa-check"></i>Программное обеспечение</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#установка-и-подключение-пакетов"><i class="fa fa-check"></i>Установка и подключение пакетов</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#выполнение-программного-кода"><i class="fa fa-check"></i>Выполнение программного кода</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#установка-рабочей-директории"><i class="fa fa-check"></i>Установка рабочей директории</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#диагностические-функции"><i class="fa fa-check"></i>Диагностические функции</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#получение-справки"><i class="fa fa-check"></i>Получение справки</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#комментарии"><i class="fa fa-check"></i>Комментарии</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#стандарт-оформления-кода-на-r"><i class="fa fa-check"></i>Стандарт оформления кода на R</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#зарезервированные-слова"><i class="fa fa-check"></i>Зарезервированные слова</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#названия-переменных"><i class="fa fa-check"></i>Названия переменных</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#названия-специальных-символов"><i class="fa fa-check"></i>Названия специальных символов</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#ссылка-на-пособие"><i class="fa fa-check"></i>Ссылка на пособие</a></li>
+</ul></li>
+<li class="part"><span><b>I Основы языка R</b></span></li>
+<li class="chapter" data-level="1" data-path="data-types.html"><a href="data-types.html"><i class="fa fa-check"></i><b>1</b> Типы данных, условия, ввод и вывод</a><ul>
+<li class="chapter" data-level="1.1" data-path="data-types.html"><a href="data-types.html#data_types"><i class="fa fa-check"></i><b>1.1</b> Типы данных</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="data-types.html"><a href="data-types.html#numbers"><i class="fa fa-check"></i><b>1.1.1</b> Числа</a></li>
+<li class="chapter" data-level="1.1.2" data-path="data-types.html"><a href="data-types.html#strings"><i class="fa fa-check"></i><b>1.1.2</b> Строки</a></li>
+<li class="chapter" data-level="1.1.3" data-path="data-types.html"><a href="data-types.html#dates"><i class="fa fa-check"></i><b>1.1.3</b> Даты</a></li>
+<li class="chapter" data-level="1.1.4" data-path="data-types.html"><a href="data-types.html#booleans"><i class="fa fa-check"></i><b>1.1.4</b> Логические</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="data-types.html"><a href="data-types.html#manipulations"><i class="fa fa-check"></i><b>1.2</b> Манипуляции с типами</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="data-types.html"><a href="data-types.html#determine_data_type"><i class="fa fa-check"></i><b>1.2.1</b> Определение типа данных</a></li>
+<li class="chapter" data-level="1.2.2" data-path="data-types.html"><a href="data-types.html#conversion"><i class="fa fa-check"></i><b>1.2.2</b> Преобразование типов данных</a></li>
+<li class="chapter" data-level="1.2.3" data-path="data-types.html"><a href="data-types.html#check_types"><i class="fa fa-check"></i><b>1.2.3</b> Проверка типов данных и пустых значений</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="data-types.html"><a href="data-types.html#read_write_console"><i class="fa fa-check"></i><b>1.3</b> Ввод и вывод данных в консоли</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="data-types.html"><a href="data-types.html#read_console"><i class="fa fa-check"></i><b>1.3.1</b> Ввод данных</a></li>
+<li class="chapter" data-level="1.3.2" data-path="data-types.html"><a href="data-types.html#write_console"><i class="fa fa-check"></i><b>1.3.2</b> Вывод данных</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="data-types.html"><a href="data-types.html#ifelse"><i class="fa fa-check"></i><b>1.4</b> Условный оператор</a></li>
+<li class="chapter" data-level="1.5" data-path="data-types.html"><a href="data-types.html#switch"><i class="fa fa-check"></i><b>1.5</b> Оператор переключения</a></li>
+<li class="chapter" data-level="1.6" data-path="data-types.html"><a href="data-types.html#stop"><i class="fa fa-check"></i><b>1.6</b> Прерывание программы</a></li>
+<li class="chapter" data-level="1.7" data-path="data-types.html"><a href="data-types.html#basics-detail"><i class="fa fa-check"></i><b>1.7</b> Технические детали</a></li>
+<li class="chapter" data-level="1.8" data-path="data-types.html"><a href="data-types.html#review"><i class="fa fa-check"></i><b>1.8</b> Краткий обзор</a></li>
+<li class="chapter" data-level="1.9" data-path="data-types.html"><a href="data-types.html#questions_tasks_basics"><i class="fa fa-check"></i><b>1.9</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="1.9.1" data-path="data-types.html"><a href="data-types.html#questions_basics"><i class="fa fa-check"></i><b>1.9.1</b> Вопросы</a></li>
+<li class="chapter" data-level="1.9.2" data-path="data-types.html"><a href="data-types.html#tasks_basic"><i class="fa fa-check"></i><b>1.9.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-structures.html"><a href="data-structures.html"><i class="fa fa-check"></i><b>2</b> Структуры данных и циклы</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-structures.html"><a href="data-structures.html#data_structures_homo"><i class="fa fa-check"></i><b>2.1</b> Однородные структуры данных</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="data-structures.html"><a href="data-structures.html#vectors"><i class="fa fa-check"></i><b>2.1.1</b> Векторы</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-structures.html"><a href="data-structures.html#matrices"><i class="fa fa-check"></i><b>2.1.2</b> Матрицы</a></li>
+<li class="chapter" data-level="2.1.3" data-path="data-structures.html"><a href="data-structures.html#arrays"><i class="fa fa-check"></i><b>2.1.3</b> Массивы</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-structures.html"><a href="data-structures.html#heterogeneous"><i class="fa fa-check"></i><b>2.2</b> Разнородные структуры данных</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="data-structures.html"><a href="data-structures.html#data_frames"><i class="fa fa-check"></i><b>2.2.1</b> Фреймы данных</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-structures.html"><a href="data-structures.html#lists"><i class="fa fa-check"></i><b>2.2.2</b> Списки</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="data-structures.html"><a href="data-structures.html#factors"><i class="fa fa-check"></i><b>2.3</b> Факторы</a></li>
+<li class="chapter" data-level="2.4" data-path="data-structures.html"><a href="data-structures.html#vector_desc"><i class="fa fa-check"></i><b>2.4</b> Описание структуры данных</a></li>
+<li class="chapter" data-level="2.5" data-path="data-structures.html"><a href="data-structures.html#cycles"><i class="fa fa-check"></i><b>2.5</b> Циклы</a></li>
+<li class="chapter" data-level="2.6" data-path="data-structures.html"><a href="data-structures.html#structures-detail"><i class="fa fa-check"></i><b>2.6</b> Технические детали</a></li>
+<li class="chapter" data-level="2.7" data-path="data-structures.html"><a href="data-structures.html#review_structures"><i class="fa fa-check"></i><b>2.7</b> Краткий обзор</a></li>
+<li class="chapter" data-level="2.8" data-path="data-structures.html"><a href="data-structures.html#questions_tasks_vectors"><i class="fa fa-check"></i><b>2.8</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="2.8.1" data-path="data-structures.html"><a href="data-structures.html#questions_vectors"><i class="fa fa-check"></i><b>2.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="2.8.2" data-path="data-structures.html"><a href="data-structures.html#tasks_vectors"><i class="fa fa-check"></i><b>2.8.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="tables.html"><a href="tables.html"><i class="fa fa-check"></i><b>3</b> Табличные данные</a><ul>
+<li class="chapter" data-level="3.1" data-path="tables.html"><a href="tables.html#tables_prerequisites"><i class="fa fa-check"></i><b>3.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="3.2" data-path="tables.html"><a href="tables.html#tables_datastructures"><i class="fa fa-check"></i><b>3.2</b> Структуры данных</a></li>
+<li class="chapter" data-level="3.3" data-path="tables.html"><a href="tables.html#tables_reading"><i class="fa fa-check"></i><b>3.3</b> Чтение</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="tables.html"><a href="tables.html#tables_reading_inner"><i class="fa fa-check"></i><b>3.3.1</b> Встроенные данные</a></li>
+<li class="chapter" data-level="3.3.2" data-path="tables.html"><a href="tables.html#tables_reading_text"><i class="fa fa-check"></i><b>3.3.2</b> Текстовые таблицы</a></li>
+<li class="chapter" data-level="3.3.3" data-path="tables.html"><a href="tables.html#tables_reading_excel"><i class="fa fa-check"></i><b>3.3.3</b> Таблицы Microsoft Excel</a></li>
+<li class="chapter" data-level="3.3.4" data-path="tables.html"><a href="tables.html#tables_reading_params"><i class="fa fa-check"></i><b>3.3.4</b> Параметры</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="tables.html"><a href="tables.html#tables_view"><i class="fa fa-check"></i><b>3.4</b> Просмотр</a></li>
+<li class="chapter" data-level="3.5" data-path="tables.html"><a href="tables.html#tables_elements"><i class="fa fa-check"></i><b>3.5</b> Столбцы, строки и ячейки</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="tables.html"><a href="tables.html#tables_elements_names"><i class="fa fa-check"></i><b>3.5.1</b> Названия</a></li>
+<li class="chapter" data-level="3.5.2" data-path="tables.html"><a href="tables.html#tables_elements_columns"><i class="fa fa-check"></i><b>3.5.2</b> Обращение к столбцам</a></li>
+<li class="chapter" data-level="3.5.3" data-path="tables.html"><a href="tables.html#tables_elements_rows"><i class="fa fa-check"></i><b>3.5.3</b> Обращение к строкам</a></li>
+<li class="chapter" data-level="3.5.4" data-path="tables.html"><a href="tables.html#tables_elements_cells"><i class="fa fa-check"></i><b>3.5.4</b> Обращение к ячейкам</a></li>
+</ul></li>
+<li class="chapter" data-level="3.6" data-path="tables.html"><a href="tables.html#tables_manipuilations"><i class="fa fa-check"></i><b>3.6</b> Преобразования</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="tables.html"><a href="tables.html#tables_manipiulations_grammar"><i class="fa fa-check"></i><b>3.6.1</b> Грамматика манипуляций</a></li>
+<li class="chapter" data-level="3.6.2" data-path="tables.html"><a href="tables.html#tables_manipiulations_pipeline"><i class="fa fa-check"></i><b>3.6.2</b> Конвейер манипуляций</a></li>
+<li class="chapter" data-level="3.6.3" data-path="tables.html"><a href="tables.html#tables_tidy"><i class="fa fa-check"></i><b>3.6.3</b> Преобразование структуры</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="tables.html"><a href="tables.html#tables_join"><i class="fa fa-check"></i><b>3.7</b> Соединение</a></li>
+<li class="chapter" data-level="3.8" data-path="tables.html"><a href="tables.html#tables_write"><i class="fa fa-check"></i><b>3.8</b> Запись</a></li>
+<li class="chapter" data-level="3.9" data-path="tables.html"><a href="tables.html#tables_rules"><i class="fa fa-check"></i><b>3.9</b> Рекомендации по подготовке таблиц для чтения в R</a></li>
+<li class="chapter" data-level="3.10" data-path="tables.html"><a href="tables.html#tables_review"><i class="fa fa-check"></i><b>3.10</b> Краткий обзор</a></li>
+<li class="chapter" data-level="3.11" data-path="tables.html"><a href="tables.html#tables_questions"><i class="fa fa-check"></i><b>3.11</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="3.11.1" data-path="tables.html"><a href="tables.html#tables_questions_questions"><i class="fa fa-check"></i><b>3.11.1</b> Вопросы</a></li>
+<li class="chapter" data-level="3.11.2" data-path="tables.html"><a href="tables.html#tables_questions_tasks"><i class="fa fa-check"></i><b>3.11.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="tech.html"><a href="tech.html"><i class="fa fa-check"></i><b>4</b> Техники программирования</a><ul>
+<li class="chapter" data-level="4.1" data-path="tech.html"><a href="tech.html#tech-fun"><i class="fa fa-check"></i><b>4.1</b> Функциональное программирование</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="tech.html"><a href="tech.html#tech-fun-functions"><i class="fa fa-check"></i><b>4.1.1</b> Функции</a></li>
+<li class="chapter" data-level="4.1.2" data-path="tech.html"><a href="tech.html#tech-fun-functionals"><i class="fa fa-check"></i><b>4.1.2</b> Функционалы</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="tech.html"><a href="tech.html#tech-meta"><i class="fa fa-check"></i><b>4.2</b> Метапрограммирование</a></li>
+<li class="chapter" data-level="4.3" data-path="tech.html"><a href="tech.html#tech_review"><i class="fa fa-check"></i><b>4.3</b> Краткий обзор</a></li>
+<li class="chapter" data-level="4.4" data-path="tech.html"><a href="tech.html#tech_questions"><i class="fa fa-check"></i><b>4.4</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="tech.html"><a href="tech.html#tech_questions_questions"><i class="fa fa-check"></i><b>4.4.1</b> Вопросы</a></li>
+<li class="chapter" data-level="4.4.2" data-path="tech.html"><a href="tech.html#tech_questions_tasks"><i class="fa fa-check"></i><b>4.4.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>II Графика и статистика</b></span></li>
+<li class="chapter" data-level="5" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>5</b> Базовая графика</a><ul>
+<li class="chapter" data-level="5.1" data-path="graphics.html"><a href="graphics.html#yfxcharts"><i class="fa fa-check"></i><b>5.1</b> Стандартные графики</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="graphics.html"><a href="graphics.html#scatterplots"><i class="fa fa-check"></i><b>5.1.1</b> Диаграммы рассеяния</a></li>
+<li class="chapter" data-level="5.1.2" data-path="graphics.html"><a href="graphics.html#linear_graphs"><i class="fa fa-check"></i><b>5.1.2</b> Линейные графики</a></li>
+<li class="chapter" data-level="5.1.3" data-path="graphics.html"><a href="graphics.html#graph_combining"><i class="fa fa-check"></i><b>5.1.3</b> Совмещение графиков</a></li>
+<li class="chapter" data-level="5.1.4" data-path="graphics.html"><a href="graphics.html#func_parameters"><i class="fa fa-check"></i><b>5.1.4</b> Функциональные параметры</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="graphics.html"><a href="graphics.html#histograms"><i class="fa fa-check"></i><b>5.2</b> Гистограммы</a></li>
+<li class="chapter" data-level="5.3" data-path="graphics.html"><a href="graphics.html#barplots"><i class="fa fa-check"></i><b>5.3</b> Столбчатые графики</a></li>
+<li class="chapter" data-level="5.4" data-path="graphics.html"><a href="graphics.html#piecharts"><i class="fa fa-check"></i><b>5.4</b> Круговые (секторные) диаграммы</a></li>
+<li class="chapter" data-level="5.5" data-path="graphics.html"><a href="graphics.html#colors"><i class="fa fa-check"></i><b>5.5</b> Цвет и прозрачность</a></li>
+<li class="chapter" data-level="5.6" data-path="graphics.html"><a href="graphics.html#disp_settings"><i class="fa fa-check"></i><b>5.6</b> Настройки отображения</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="graphics.html"><a href="graphics.html#graph_params"><i class="fa fa-check"></i><b>5.6.1</b> Графические параметры</a></li>
+<li class="chapter" data-level="5.6.2" data-path="graphics.html"><a href="graphics.html#axes"><i class="fa fa-check"></i><b>5.6.2</b> Разметка осей, рамка, сетка координат и произвольные линии</a></li>
+<li class="chapter" data-level="5.6.3" data-path="graphics.html"><a href="graphics.html#annotations"><i class="fa fa-check"></i><b>5.6.3</b> Аннотации данных (текст на графике)</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="graphics.html"><a href="graphics.html#legend"><i class="fa fa-check"></i><b>5.7</b> Легенда</a></li>
+<li class="chapter" data-level="5.8" data-path="graphics.html"><a href="graphics.html#questions_tasks_graphics"><i class="fa fa-check"></i><b>5.8</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="5.8.1" data-path="graphics.html"><a href="graphics.html#questions_graphics"><i class="fa fa-check"></i><b>5.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="5.8.2" data-path="graphics.html"><a href="graphics.html#tasks_graphics"><i class="fa fa-check"></i><b>5.8.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="advgraphics.html"><a href="advgraphics.html"><i class="fa fa-check"></i><b>6</b> Продвинутая графика</a><ul>
+<li class="chapter" data-level="6.1" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_prerequisites"><i class="fa fa-check"></i><b>6.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="6.2" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_eurostat"><i class="fa fa-check"></i><b>6.2</b> Загрузка данных Евростата</a></li>
+<li class="chapter" data-level="6.3" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_nasapower"><i class="fa fa-check"></i><b>6.3</b> Загрузка данных NASA POWER</a></li>
+<li class="chapter" data-level="6.4" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_template"><i class="fa fa-check"></i><b>6.4</b> Базовый шаблон ggplot</a></li>
+<li class="chapter" data-level="6.5" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_geoms"><i class="fa fa-check"></i><b>6.5</b> Геометрические типы и преобразования</a></li>
+<li class="chapter" data-level="6.6" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_aes"><i class="fa fa-check"></i><b>6.6</b> Графические переменные и группировки</a></li>
+<li class="chapter" data-level="6.7" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_coords"><i class="fa fa-check"></i><b>6.7</b> Системы координат</a></li>
+<li class="chapter" data-level="6.8" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_titles"><i class="fa fa-check"></i><b>6.8</b> Названия осей и легенды</a></li>
+<li class="chapter" data-level="6.9" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_axes"><i class="fa fa-check"></i><b>6.9</b> Разметка осей</a></li>
+<li class="chapter" data-level="6.10" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_labels"><i class="fa fa-check"></i><b>6.10</b> Подписи и аннотации</a></li>
+<li class="chapter" data-level="6.11" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_facets"><i class="fa fa-check"></i><b>6.11</b> Фасеты</a></li>
+<li class="chapter" data-level="6.12" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_themes"><i class="fa fa-check"></i><b>6.12</b> Темы</a></li>
+<li class="chapter" data-level="6.13" data-path="advgraphics.html"><a href="advgraphics.html#questions_tasks_advgraphics"><i class="fa fa-check"></i><b>6.13</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="6.13.1" data-path="advgraphics.html"><a href="advgraphics.html#questions_advgraphics"><i class="fa fa-check"></i><b>6.13.1</b> Вопросы</a></li>
+<li class="chapter" data-level="6.13.2" data-path="advgraphics.html"><a href="advgraphics.html#tasks_advgraphics"><i class="fa fa-check"></i><b>6.13.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="stat-analysis.html"><a href="stat-analysis.html"><i class="fa fa-check"></i><b>7</b> Основы статистики</a><ul>
+<li class="chapter" data-level="7.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_prerequisites"><i class="fa fa-check"></i><b>7.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="7.2" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_intro"><i class="fa fa-check"></i><b>7.2</b> Введение</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_intro_sources"><i class="fa fa-check"></i><b>7.2.1</b> Источники данных</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one"><i class="fa fa-check"></i><b>7.3</b> Одна переменная</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one_distr"><i class="fa fa-check"></i><b>7.3.1</b> Оценка распределения</a></li>
+<li class="chapter" data-level="7.3.2" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one_summary"><i class="fa fa-check"></i><b>7.3.2</b> Описательные статистики</a></li>
+<li class="chapter" data-level="7.3.3" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one_tests"><i class="fa fa-check"></i><b>7.3.3</b> Статистические тесты</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_two"><i class="fa fa-check"></i><b>7.4</b> Две переменных</a><ul>
+<li class="chapter" data-level="7.4.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_two_distr"><i class="fa fa-check"></i><b>7.4.1</b> Оценка распределения</a></li>
+<li class="chapter" data-level="7.4.2" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_two_distr_correg"><i class="fa fa-check"></i><b>7.4.2</b> Корреляция и регрессия</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="stat-analysis.html"><a href="stat-analysis.html#questions_tasks_stat_analysis"><i class="fa fa-check"></i><b>7.5</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="7.5.1" data-path="stat-analysis.html"><a href="stat-analysis.html#questions_stat_analysis"><i class="fa fa-check"></i><b>7.5.1</b> Вопросы</a></li>
+<li class="chapter" data-level="7.5.2" data-path="stat-analysis.html"><a href="stat-analysis.html#tasks_stat_analysis"><i class="fa fa-check"></i><b>7.5.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="circular.html"><a href="circular.html"><i class="fa fa-check"></i><b>8</b> Дирекционные и временные данные</a><ul>
+<li class="chapter" data-level="8.1" data-path="circular.html"><a href="circular.html#circular_prerequisites"><i class="fa fa-check"></i><b>8.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="8.2" data-path="circular.html"><a href="circular.html#circular_circ"><i class="fa fa-check"></i><b>8.2</b> Статистика направлений</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="circular.html"><a href="circular.html#circular_circ_theory"><i class="fa fa-check"></i><b>8.2.1</b> Теория</a></li>
+<li class="chapter" data-level="8.2.2" data-path="circular.html"><a href="circular.html#circular_circ_vis"><i class="fa fa-check"></i><b>8.2.2</b> Практика</a></li>
+<li class="chapter" data-level="8.2.3" data-path="circular.html"><a href="circular.html#circular_tests"><i class="fa fa-check"></i><b>8.2.3</b> Статистические тесты</a></li>
+<li class="chapter" data-level="8.2.4" data-path="circular.html"><a href="circular.html#circular_correlation"><i class="fa fa-check"></i><b>8.2.4</b> Корреляция и регрессия</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="circular.html"><a href="circular.html#circular_time"><i class="fa fa-check"></i><b>8.3</b> Временные ряды</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="circular.html"><a href="circular.html#circular_time_lubridate"><i class="fa fa-check"></i><b>8.3.1</b> Создание и преобразование дат и времени</a></li>
+<li class="chapter" data-level="8.3.2" data-path="circular.html"><a href="circular.html#circular_time_complete"><i class="fa fa-check"></i><b>8.3.2</b> Восстановление пропусков и проверка корректности дат</a></li>
+<li class="chapter" data-level="8.3.3" data-path="circular.html"><a href="circular.html#circular_time_interp"><i class="fa fa-check"></i><b>8.3.3</b> Интерполяция по времени</a></li>
+<li class="chapter" data-level="8.3.4" data-path="circular.html"><a href="circular.html#circular_time_tests"><i class="fa fa-check"></i><b>8.3.4</b> Статистики</a></li>
+<li class="chapter" data-level="8.3.5" data-path="circular.html"><a href="circular.html#circular_time_animation"><i class="fa fa-check"></i><b>8.3.5</b> Анимация</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="circular.html"><a href="circular.html#questions_tasks_circular"><i class="fa fa-check"></i><b>8.4</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="8.4.1" data-path="circular.html"><a href="circular.html#questions_circular"><i class="fa fa-check"></i><b>8.4.1</b> Вопросы</a></li>
+<li class="chapter" data-level="8.4.2" data-path="circular.html"><a href="circular.html#tasks_circular"><i class="fa fa-check"></i><b>8.4.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>III Пространственные данные</b></span></li>
+<li class="chapter" data-level="9" data-path="spatial-data.html"><a href="spatial-data.html"><i class="fa fa-check"></i><b>9</b> Пространственные данные</a><ul>
+<li class="chapter" data-level="9.1" data-path="circular.html"><a href="circular.html#circular_prerequisites"><i class="fa fa-check"></i><b>9.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="9.2" data-path="spatial-data.html"><a href="spatial-data.html#spatial_models"><i class="fa fa-check"></i><b>9.2</b> Модели пространственных данных</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="spatial-data.html"><a href="spatial-data.html#simple_features"><i class="fa fa-check"></i><b>9.2.1</b> Векторные данные</a></li>
+<li class="chapter" data-level="9.2.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_data"><i class="fa fa-check"></i><b>9.2.2</b> Растровые данные</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="spatial-data.html"><a href="spatial-data.html#spatref"><i class="fa fa-check"></i><b>9.3</b> Пространственная привязка</a><ul>
+<li class="chapter" data-level="9.3.1" data-path="spatial-data.html"><a href="spatial-data.html#spatref_components"><i class="fa fa-check"></i><b>9.3.1</b> Компоненты пространственной привязки</a></li>
+<li class="chapter" data-level="9.3.2" data-path="spatial-data.html"><a href="spatial-data.html#spatref_formats"><i class="fa fa-check"></i><b>9.3.2</b> Форматы описания пространственной привязки</a></li>
+<li class="chapter" data-level="9.3.3" data-path="spatial-data.html"><a href="spatial-data.html#spatref_transform"><i class="fa fa-check"></i><b>9.3.3</b> Преобразование координат</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_r"><i class="fa fa-check"></i><b>9.4</b> Векторные данные</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_packages"><i class="fa fa-check"></i><b>9.4.1</b> Базовые библиотеки</a></li>
+<li class="chapter" data-level="9.4.2" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_reading"><i class="fa fa-check"></i><b>9.4.2</b> Чтение</a></li>
+<li class="chapter" data-level="9.4.3" data-path="spatial-data.html"><a href="spatial-data.html#sf_structure"><i class="fa fa-check"></i><b>9.4.3</b> Внутренняя структура</a></li>
+<li class="chapter" data-level="9.4.4" data-path="spatial-data.html"><a href="spatial-data.html#sf_plotting"><i class="fa fa-check"></i><b>9.4.4</b> Визуализация</a></li>
+<li class="chapter" data-level="9.4.5" data-path="spatial-data.html"><a href="spatial-data.html#sf_crs"><i class="fa fa-check"></i><b>9.4.5</b> Системы координат и проекции</a></li>
+<li class="chapter" data-level="9.4.6" data-path="spatial-data.html"><a href="spatial-data.html#sf_attrs"><i class="fa fa-check"></i><b>9.4.6</b> Атрибутивные операции</a></li>
+<li class="chapter" data-level="9.4.7" data-path="spatial-data.html"><a href="spatial-data.html#sf_spat_selection"><i class="fa fa-check"></i><b>9.4.7</b> Пространственные операции</a></li>
+<li class="chapter" data-level="9.4.8" data-path="spatial-data.html"><a href="spatial-data.html#sf_creation"><i class="fa fa-check"></i><b>9.4.8</b> Создание пространственных объектов</a></li>
+<li class="chapter" data-level="9.4.9" data-path="spatial-data.html"><a href="spatial-data.html#sf_geom_attrs"><i class="fa fa-check"></i><b>9.4.9</b> Геометрические атрибуты</a></li>
+<li class="chapter" data-level="9.4.10" data-path="spatial-data.html"><a href="spatial-data.html#sf_export"><i class="fa fa-check"></i><b>9.4.10</b> Экспорт</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5" data-path="spatial-data.html"><a href="spatial-data.html#raster_data_r"><i class="fa fa-check"></i><b>9.5</b> Растровые данные</a><ul>
+<li class="chapter" data-level="9.5.1" data-path="spatial-data.html"><a href="spatial-data.html#raster_read"><i class="fa fa-check"></i><b>9.5.1</b> Чтение</a></li>
+<li class="chapter" data-level="9.5.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_viz"><i class="fa fa-check"></i><b>9.5.2</b> Визуализация</a></li>
+<li class="chapter" data-level="9.5.3" data-path="spatial-data.html"><a href="spatial-data.html#raster_proj"><i class="fa fa-check"></i><b>9.5.3</b> Системы координат и проекции</a></li>
+<li class="chapter" data-level="9.5.4" data-path="spatial-data.html"><a href="spatial-data.html#raster_values"><i class="fa fa-check"></i><b>9.5.4</b> Операции со значениями</a></li>
+<li class="chapter" data-level="9.5.5" data-path="spatial-data.html"><a href="spatial-data.html#raster_export"><i class="fa fa-check"></i><b>9.5.5</b> Экспорт</a></li>
+</ul></li>
+<li class="chapter" data-level="9.6" data-path="spatial-data.html"><a href="spatial-data.html#spatial_ggplot2"><i class="fa fa-check"></i><b>9.6</b> Визуализация средствами ggplot2</a></li>
+<li class="chapter" data-level="9.7" data-path="spatial-data.html"><a href="spatial-data.html#spatial_interactive"><i class="fa fa-check"></i><b>9.7</b> Интерактивные карты</a></li>
+<li class="chapter" data-level="9.8" data-path="spatial-data.html"><a href="spatial-data.html#questions_tasks_spatial"><i class="fa fa-check"></i><b>9.8</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="9.8.1" data-path="spatial-data.html"><a href="spatial-data.html#questions_spatial"><i class="fa fa-check"></i><b>9.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="9.8.2" data-path="spatial-data.html"><a href="spatial-data.html#tasks_spatial"><i class="fa fa-check"></i><b>9.8.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html"><i class="fa fa-check"></i><b>10</b> Тематические карты</a><ul>
+<li class="chapter" data-level="" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#предварительные-условия"><i class="fa fa-check"></i>Предварительные условия</a></li>
+<li class="chapter" data-level="10.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro"><i class="fa fa-check"></i><b>10.1</b> Введение</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro_ne"><i class="fa fa-check"></i><b>10.1.1</b> Данные Natural Earth</a></li>
+<li class="chapter" data-level="10.1.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro_wc"><i class="fa fa-check"></i><b>10.1.2</b> Данные WorldClim</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_tmap"><i class="fa fa-check"></i><b>10.2</b> Способы изображения</a><ul>
+<li class="chapter" data-level="10.2.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_vectors"><i class="fa fa-check"></i><b>10.2.1</b> Векторные данные</a></li>
+<li class="chapter" data-level="10.2.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_rasters"><i class="fa fa-check"></i><b>10.2.2</b> Растровые данные</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_color_scales"><i class="fa fa-check"></i><b>10.3</b> Цветовые шкалы</a></li>
+<li class="chapter" data-level="10.4" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class"><i class="fa fa-check"></i><b>10.4</b> Классификация</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class_methods"><i class="fa fa-check"></i><b>10.4.1</b> Методы классификации</a></li>
+<li class="chapter" data-level="10.4.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class_application"><i class="fa fa-check"></i><b>10.4.2</b> Применение на картах</a></li>
+<li class="chapter" data-level="10.4.3" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class_application"><i class="fa fa-check"></i><b>10.4.3</b> Классификация при отображении</a></li>
+<li class="chapter" data-level="10.4.4" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_na"><i class="fa fa-check"></i><b>10.4.4</b> Пропущенные данные</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_layouts"><i class="fa fa-check"></i><b>10.5</b> Компоновка</a></li>
+<li class="chapter" data-level="10.6" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_facets"><i class="fa fa-check"></i><b>10.6</b> Фасеты и серии карт</a></li>
+<li class="chapter" data-level="10.7" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_animations"><i class="fa fa-check"></i><b>10.7</b> Картографические анимации</a></li>
+<li class="chapter" data-level="10.8" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_interactive"><i class="fa fa-check"></i><b>10.8</b> Интерактивные карты</a></li>
+<li class="chapter" data-level="10.9" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#questions_tasks_tmap"><i class="fa fa-check"></i><b>10.9</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="10.9.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#questions_tmap"><i class="fa fa-check"></i><b>10.9.1</b> Вопросы</a></li>
+<li class="chapter" data-level="10.9.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#tasks_tmap"><i class="fa fa-check"></i><b>10.9.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="vector-analysis.html"><a href="vector-analysis.html"><i class="fa fa-check"></i><b>11</b> Векторный и сетевой анализ</a><ul>
+<li class="chapter" data-level="11.1" data-path="vector-analysis.html"><a href="vector-analysis.html#spatial_queries"><i class="fa fa-check"></i><b>11.1</b> Пространственные запросы</a><ul>
+<li class="chapter" data-level="11.1.1" data-path="vector-analysis.html"><a href="vector-analysis.html#context_objects"><i class="fa fa-check"></i><b>11.1.1</b> Контекстные и целевые объекты</a></li>
+<li class="chapter" data-level="11.1.2" data-path="vector-analysis.html"><a href="vector-analysis.html#zones"><i class="fa fa-check"></i><b>11.1.2</b> Зоны окружения объектов</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="vector-analysis.html"><a href="vector-analysis.html#use_case"><i class="fa fa-check"></i><b>11.2</b> Постановка задач и изучение данных</a></li>
+<li class="chapter" data-level="11.3" data-path="vector-analysis.html"><a href="vector-analysis.html#distance_analysis"><i class="fa fa-check"></i><b>11.3</b> Анализ расстояний</a></li>
+<li class="chapter" data-level="11.4" data-path="vector-analysis.html"><a href="vector-analysis.html#topology_analysis"><i class="fa fa-check"></i><b>11.4</b> Анализ взаимного положения (топологический)</a></li>
+<li class="chapter" data-level="11.5" data-path="vector-analysis.html"><a href="vector-analysis.html#absolute_zones"><i class="fa fa-check"></i><b>11.5</b> Анализ абсолютных зон окружения</a></li>
+<li class="chapter" data-level="11.6" data-path="vector-analysis.html"><a href="vector-analysis.html#conc_zones"><i class="fa fa-check"></i><b>11.6</b> Анализ конкурентных зон окружения</a></li>
+<li class="chapter" data-level="11.7" data-path="vector-analysis.html"><a href="vector-analysis.html#transport_zones"><i class="fa fa-check"></i><b>11.7</b> Анализ зон транспортной доступности</a></li>
+<li class="chapter" data-level="11.8" data-path="vector-analysis.html"><a href="vector-analysis.html#routes"><i class="fa fa-check"></i><b>11.8</b> Построение маршрутов и матриц времени движения</a></li>
+<li class="chapter" data-level="11.9" data-path="vector-analysis.html"><a href="vector-analysis.html#qtasks_vector_analysis"><i class="fa fa-check"></i><b>11.9</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="11.9.1" data-path="vector-analysis.html"><a href="vector-analysis.html#questions_vector_analysis"><i class="fa fa-check"></i><b>11.9.1</b> Вопросы</a></li>
+<li class="chapter" data-level="11.9.2" data-path="vector-analysis.html"><a href="vector-analysis.html#tasks_vector_analysis"><i class="fa fa-check"></i><b>11.9.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://istina.msu.ru/profile/tsamsonov/" target="blank">Тимофей Самсонов</a></li>
+<li><a href="https://doi.org/10.5281/zenodo.901911"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.901911.svg" title="DOI"></a><li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Визуализация и анализ географических данных на языке R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="vector_analysis" class="section level1">
+<h1><span class="header-section-number">Глава 11</span> Векторный и сетевой анализ</h1>
+<p>Данный модуль посвящен пространственному анализу в R. Несмотря на то, что пространственный анализ — чрезвычайно широкая и многогранная область геоинформатики, все методы, которые объединяются под этим заголовком, базируются на ограниченном числе базовых операций, таких как вычисление расстояний, оценка плотности распределения, построение буферных зон и выполнение пространственных запросов. В настоящем модуле мы рассмотрим, как одно и то же множество пространственных объектов можно анализировать в различных контекстах, используя базовые методы пространственного анализа</p>
+<p>Пространственный анализ связан с оценкой <em>размещения</em> объектов и <em>распределения</em> величин в географическом пространстве. В геоинформатике для этих целей используется два подхода: геометрический и статистический. Эти подходы образуют две ступени пространственного анализа: как правило, данные геометрического анализа представляют собой входную информацию для анализа статистического.</p>
+<p>Геометрический подход связан с вычислением расстояний между географическими локациями, а также агрегированием объектов/интегрированием показателей в пределах заданных областей, вдоль линий или в окрестности точек. Поиск входной информации для агрегирования решается путем выполнения <em>пространственных запросов</em>.</p>
+<div id="spatial_queries" class="section level2">
+<h2><span class="header-section-number">11.1</span> Пространственные запросы</h2>
+<p><strong>Пространственные запросы</strong> связаны с поиском объектов (географических локаций), удовлетворяющих условию, заданному на множестве пространственных отношений. В свою очередь, пространственные отношения бывают трех типов: <em>дирекционные</em> (направления), <em>метрические</em> (расстояния) и <em>топологические</em> (взаимное размещение). Примеры пространственных запросов знакомы любому географу:</p>
+<ul>
+<li>Найти все объекты внутри административного района (топологические отношения)</li>
+<li>Найти все объекты не далее 100 метров от дороги (метрические отношения)</li>
+<li>Найти все объекты, расположенные к северу от точки (дирекционные отношения)</li>
+</ul>
+<p>Пространственные запросы могут объединять несколько условий. Можно найти объекты, удовлетворяющие одновременно <em>всем</em> (<em>логическое И</em>) вышеперечисленным условиям: внутри района, не далее 100 м от дороги и к северу от выбранной точки; или <em>хотя бы одному</em> (<em>логическое ИЛИ</em>) из вышеперечисленных условий. Результат выполнения такого комплексного запроса будет являться, соответственно, пересечением множеств объектов, полученных каждым из запросов, или их объединением.</p>
+<p>Наконец, пространственные запросы можно объединять с <em>атрибутивными</em> и <em>временными</em>. Атрибутивные запросы связаны с поиском объектов (географических локаций), удовлетворяющих условию, заданному на множестве характеристик объектов. Временные запросы определены на множестве шкалы времени. Например, можно найти все населенные пункты населением свыше 10 000 человек (атрибутивный запрос), находящиеся в пределах выбранного административного района (пространственный запрос, основанный на топологических отношениях), время движения от которых до районного центра не превышает 90 минут (временной запрос).</p>
+<div id="context_objects" class="section level3">
+<h3><span class="header-section-number">11.1.1</span> Контекстные и целевые объекты</h3>
+<p>При выполнении пространственного анализа, в общем случае, имеются множества объектов двух типов:</p>
+<ul>
+<li><strong>контекстные</strong> — объекты, относительно которых будет оцениваться размещение других объектов, то есть, определяющие <em>контекст анализа</em></li>
+<li><strong>целевые</strong> — объекты, размещение которых анализируется по отношению к контекстным объектам, что является <em>целью</em> анализа</li>
+</ul>
+<p>Эти множества, разумеется, могут совпадать. Скажем, мы можем проанализировать размещение магазинов относительно других магазинов.</p>
+</div>
+<div id="zones" class="section level3">
+<h3><span class="header-section-number">11.1.2</span> Зоны окружения объектов</h3>
+<p>Весьма часто в качестве контекстного множества используются не реальные пространственные объекты, а набор абстрактных геометрических объектов, каждый из которых является производным от оригинального пространственного объекта. Как правило, такие геометрии представляют из себя <em>зоны окружения</em> объектов, построенные по некоторому формальному признаку.</p>
+<p>Методы построения зон окружения можно разделить по двум критериям: учету взаимного размещения объектов (абсолютные и конкурентные зоны) и пространству признаков, в котором эти зоны строятся.</p>
+<p>Если зоны окружения строятся без учета взаимного размещения объектов, то есть, независимо для каждого объекта, то мы будем называть их абсолютными. Абсолютные зоны окружения строятся путем фиксации порогового расстояния либо времени движения относительно исходного объекта. Такие зоны носят название буферных зон (по расстоянию) или зон доступности (по времени). Границей абсолютной зоны окружения является изолиния, построенная по соответствующему показателю. В случае времени это будет <em>изохрона</em>. Примеры абсолютных зон окружения:</p>
+<ul>
+<li>Водоохранная зона реки 200 метров (буферная зона)</li>
+<li>Площадь городской территории, в любую точку которой вы можете доехать из дома на машине в течение 30 минут (зона доступности)</li>
+</ul>
+<p>Если же при построении зон окружения учитывается взаимное размещение объектов, то в данном случае зоны доступности строятся не исходя из порогового значения показателя (хотя оно может использоваться дополнительно), а исходя из того, какой объект является ближайшим. Конкурентные зоны окружения представляют собой <a href="https://ru.wikipedia.org/wiki/Разбиение_множества">разбиение</a> пространства на неперекрывающиеся участки без дыр, каждый из которых является зоной окружения соответствующего пространственного объекта. При этом любая точка внутри зоны окружения объекта ближе к этому объекту по выбранному признаку (времени или расстоянию), нежели к любому другому объекту. Конкурентные зоны окружения, построенные по расстоянию, можно реализовать средствами <a href="https://ru.wikipedia.org/wiki/Диаграмма_Вороного">диаграммы Вороного</a>.</p>
+</div>
+</div>
+<div id="use_case" class="section level2">
+<h2><span class="header-section-number">11.2</span> Постановка задач и изучение данных</h2>
+<p>В настоящем модуле мы рассмотрим вышеперечисленные методы на примере анализа размещения пунктов общественного питания — кафе, ресторанов и т.д. Используя методы пространственного анализа в среде R, мы ответим на следующие вопросы:</p>
+<ul>
+<li>Какие улицы являются местами наибольшей концентрации заведений общественного питания?</li>
+<li>Как распределены заведения общественного питания по районам центра Москвы?</li>
+<li>Какие заведения общественного питания находятся вблизи метро и на берегу реки?</li>
+<li>В какие заведения общественного питания можно доехать от выбранной точки в течение 5 минут?</li>
+<li>Каков оптимальный маршрут между вашим местоположением и заведением, в котором вы хотите пообедать?</li>
+</ul>
+<p>В качестве источника данных используем <a href="http://www.openstreetmap.org">OpenStreetMap</a> — краудсорсинговый интернет-проект по созданию бесплатных и открытых пространственных данных глобального охвата. Данные OpenStreetMap в удобном для использования в ГИС виде доступны на <a href="http://beryllium.gis-lab.info/project/osmshp/">портале GIS-Lab</a>.</p>
+<p>Для решения задач настоящего модуля нам понадобятся следующие дополнительные пакеты, которые мы не использовали ранее:</p>
+<ul>
+<li><a href="https://cran.r-project.org/web/packages/osrm/index.html">osrm</a> — построение зон доступности, маршрутов и матриц корреспонденции онлайн на основе данных OpenStreetMap и <a href="http://project-osrm.org">OSRM API</a>.</li>
+<li><a href="https://cran.r-project.org/web/packages/cartography/index.html">cartography</a> — пакет, облегчающий построение тематических карт и легенд средствами стандартной функции <code>plot()</code>.</li>
+</ul>
+<p>Начнем наше исследование с визуального анализа исходных данных</p>
+<div class="sourceCode" id="cb541"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb541-1"><a href="vector-analysis.html#cb541-1"></a><span class="kw">library</span>(sf)</span>
+<span id="cb541-2"><a href="vector-analysis.html#cb541-2"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb541-3"><a href="vector-analysis.html#cb541-3"></a><span class="kw">library</span>(classInt)</span>
+<span id="cb541-4"><a href="vector-analysis.html#cb541-4"></a><span class="kw">library</span>(osrm) <span class="co"># Использование онлайн-сервиса маршрутизации OSRM</span></span>
+<span id="cb541-5"><a href="vector-analysis.html#cb541-5"></a><span class="kw">library</span>(cartography) <span class="co"># Удобное построение тематических карт средствами plot()</span></span>
+<span id="cb541-6"><a href="vector-analysis.html#cb541-6"></a></span>
+<span id="cb541-7"><a href="vector-analysis.html#cb541-7"></a><span class="co"># Чтение данных</span></span>
+<span id="cb541-8"><a href="vector-analysis.html#cb541-8"></a>roads =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/roads.gpkg&quot;</span>) <span class="co"># Дороги</span></span>
+<span id="cb541-9"><a href="vector-analysis.html#cb541-9"></a>poi =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/poi_point.gpkg&quot;</span>) <span class="co"># Точки интереса</span></span>
+<span id="cb541-10"><a href="vector-analysis.html#cb541-10"></a>rayons =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/boundary_polygon.gpkg&quot;</span>) <span class="co"># Границы районов</span></span>
+<span id="cb541-11"><a href="vector-analysis.html#cb541-11"></a>stations =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/metro_stations.gpkg&quot;</span>) <span class="co"># Станции метро</span></span>
+<span id="cb541-12"><a href="vector-analysis.html#cb541-12"></a>water =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;data/water_polygon.gpkg&quot;</span>) <span class="co"># Водные объекты</span></span>
+<span id="cb541-13"><a href="vector-analysis.html#cb541-13"></a></span>
+<span id="cb541-14"><a href="vector-analysis.html#cb541-14"></a><span class="co"># Прочитаем текущие параметры компоновки</span></span>
+<span id="cb541-15"><a href="vector-analysis.html#cb541-15"></a>def =<span class="st"> </span><span class="kw">par</span>(<span class="dt">no.readonly =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb541-16"><a href="vector-analysis.html#cb541-16"></a></span>
+<span id="cb541-17"><a href="vector-analysis.html#cb541-17"></a><span class="co"># Уберем поля, чтобы карта занимала весь экран</span></span>
+<span id="cb541-18"><a href="vector-analysis.html#cb541-18"></a><span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>))</span>
+<span id="cb541-19"><a href="vector-analysis.html#cb541-19"></a></span>
+<span id="cb541-20"><a href="vector-analysis.html#cb541-20"></a><span class="co"># Получим ограничивающий прямоугольник слоя дорог в качестве общего охвата карты</span></span>
+<span id="cb541-21"><a href="vector-analysis.html#cb541-21"></a>frame =<span class="st"> </span>roads <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_bbox</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_as_sfc</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>()</span>
+<span id="cb541-22"><a href="vector-analysis.html#cb541-22"></a></span>
+<span id="cb541-23"><a href="vector-analysis.html#cb541-23"></a><span class="co">## ОБЗОР ИСХОДНЫХ ДАННЫХ -------------------------------------</span></span>
+<span id="cb541-24"><a href="vector-analysis.html#cb541-24"></a></span>
+<span id="cb541-25"><a href="vector-analysis.html#cb541-25"></a><span class="co"># Визуализируем входные данные</span></span>
+<span id="cb541-26"><a href="vector-analysis.html#cb541-26"></a><span class="kw">plot</span>(frame)</span>
+<span id="cb541-27"><a href="vector-analysis.html#cb541-27"></a><span class="kw">plot</span>(water <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb541-28"><a href="vector-analysis.html#cb541-28"></a>     <span class="dt">col =</span> <span class="st">&quot;lightskyblue1&quot;</span>,</span>
+<span id="cb541-29"><a href="vector-analysis.html#cb541-29"></a>     <span class="dt">border =</span> <span class="st">&quot;lightskyblue3&quot;</span>,</span>
+<span id="cb541-30"><a href="vector-analysis.html#cb541-30"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb541-31"><a href="vector-analysis.html#cb541-31"></a><span class="kw">plot</span>(roads <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(),</span>
+<span id="cb541-32"><a href="vector-analysis.html#cb541-32"></a>     <span class="dt">col =</span> <span class="st">&quot;gray70&quot;</span>, </span>
+<span id="cb541-33"><a href="vector-analysis.html#cb541-33"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb541-34"><a href="vector-analysis.html#cb541-34"></a><span class="kw">plot</span>(poi <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb541-35"><a href="vector-analysis.html#cb541-35"></a>     <span class="dt">col =</span> <span class="st">&quot;deepskyblue4&quot;</span>, </span>
+<span id="cb541-36"><a href="vector-analysis.html#cb541-36"></a>     <span class="dt">pch =</span> <span class="dv">20</span>, </span>
+<span id="cb541-37"><a href="vector-analysis.html#cb541-37"></a>     <span class="dt">cex =</span> <span class="fl">0.2</span>, </span>
+<span id="cb541-38"><a href="vector-analysis.html#cb541-38"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-514-1.png" width="672" /></p>
+<p>Теперь приступим к изучению данных, хранящихся в слое <code>poi</code> (от англ. POI — Point Of Interest). Данный слой содержит все точечные маркеры OSM, которыми были отмечены на карте объекты, представляющие (по мнению создателей данных) интерес для пользователей. В POI включаются самые разнообразные объекты, такие как: объекты сферы услуг (amenity), места для отдыха (leisure), офисные здания (office), магазины и торговые центры (shop), туристические достопримечательности (tourism), спортивные объекты (sport), примечательные инженерные сооружения (man_made). В наших данных информация разнесена по соответствующим полям, каждый объект снабжен уникальным идентификатором:</p>
+<pre><code>## Simple feature collection with 6623 features and 9 fields
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: 410947.3 ymin: 6176678 xmax: 415889.9 ymax: 6181909
+## epsg (SRID):    32637
+## proj4string:    +proj=utm +zone=37 +datum=WGS84 +units=m +no_defs
+## First 10 features:
+##        OSM_ID              NAME MAN_MADE LEISURE          AMENITY OFFICE
+## 1  2932331614       Арт-квартал     &lt;NA&gt;    &lt;NA&gt;             &lt;NA&gt;   &lt;NA&gt;
+## 2  3639408399              &lt;NA&gt;     &lt;NA&gt;    &lt;NA&gt;         pharmacy   &lt;NA&gt;
+## 3  3707882299              &lt;NA&gt;     &lt;NA&gt;    &lt;NA&gt; parking_entrance   &lt;NA&gt;
+## 4  3639408396      Стиль золото     &lt;NA&gt;    &lt;NA&gt;             &lt;NA&gt;   &lt;NA&gt;
+## 5  3639408397 Цветочная база №1     &lt;NA&gt;    &lt;NA&gt;             &lt;NA&gt;   &lt;NA&gt;
+## 6  1413216563      Азбука Вкуса     &lt;NA&gt;    &lt;NA&gt;             &lt;NA&gt;   &lt;NA&gt;
+## 7  3641139540              &lt;NA&gt;     &lt;NA&gt;    &lt;NA&gt;   waste_disposal   &lt;NA&gt;
+## 8  3636920934             Аршин     &lt;NA&gt;    &lt;NA&gt;       restaurant   &lt;NA&gt;
+## 9  3644422074            Адамас     &lt;NA&gt;    &lt;NA&gt;             &lt;NA&gt;   &lt;NA&gt;
+## 10 3424516009          Андерсон     &lt;NA&gt;    &lt;NA&gt;       restaurant   &lt;NA&gt;
+##            SHOP TOURISM SPORT                 geometry
+## 1  doityourself    &lt;NA&gt;  &lt;NA&gt; POINT (410947.3 6181185)
+## 2          &lt;NA&gt;    &lt;NA&gt;  &lt;NA&gt; POINT (410961.8 6181858)
+## 3          &lt;NA&gt;    &lt;NA&gt;  &lt;NA&gt; POINT (410953.8 6181302)
+## 4       jewelry    &lt;NA&gt;  &lt;NA&gt; POINT (410966.7 6181864)
+## 5       florist    &lt;NA&gt;  &lt;NA&gt;   POINT (410973 6181862)
+## 6   supermarket    &lt;NA&gt;  &lt;NA&gt; POINT (410963.7 6181250)
+## 7          &lt;NA&gt;    &lt;NA&gt;  &lt;NA&gt; POINT (410973.9 6181676)
+## 8          &lt;NA&gt;    &lt;NA&gt;  &lt;NA&gt; POINT (410975.2 6181661)
+## 9       jewelry    &lt;NA&gt;  &lt;NA&gt; POINT (410982.5 6181905)
+## 10         &lt;NA&gt;    &lt;NA&gt;  &lt;NA&gt; POINT (410954.9 6180118)</code></pre>
+<p>Заведения общественного питания по классификатору OSM относятся к классу <em>amenity</em>. Поскольку данный классификатор представляет собой множество номинальных (категориальных) данных, можно начать изучение состава данных с помощью таблицы частот, которая строится средствами функции <code>table()</code>:</p>
+<div class="sourceCode" id="cb543"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb543-1"><a href="vector-analysis.html#cb543-1"></a><span class="kw">data.frame</span>(<span class="kw">table</span>(poi<span class="op">$</span>AMENITY))</span>
+<span id="cb543-2"><a href="vector-analysis.html#cb543-2"></a><span class="co">##                  Var1 Freq</span></span>
+<span id="cb543-3"><a href="vector-analysis.html#cb543-3"></a><span class="co">## 1         arts_centre   17</span></span>
+<span id="cb543-4"><a href="vector-analysis.html#cb543-4"></a><span class="co">## 2                 atm  153</span></span>
+<span id="cb543-5"><a href="vector-analysis.html#cb543-5"></a><span class="co">## 3                bank  407</span></span>
+<span id="cb543-6"><a href="vector-analysis.html#cb543-6"></a><span class="co">## 4                 bar  161</span></span>
+<span id="cb543-7"><a href="vector-analysis.html#cb543-7"></a><span class="co">## 5               bench  210</span></span>
+<span id="cb543-8"><a href="vector-analysis.html#cb543-8"></a><span class="co">## 6     bicycle_parking   81</span></span>
+<span id="cb543-9"><a href="vector-analysis.html#cb543-9"></a><span class="co">## 7      bicycle_rental  116</span></span>
+<span id="cb543-10"><a href="vector-analysis.html#cb543-10"></a><span class="co">## 8          biergarten    1</span></span>
+<span id="cb543-11"><a href="vector-analysis.html#cb543-11"></a><span class="co">## 9             brothel    1</span></span>
+<span id="cb543-12"><a href="vector-analysis.html#cb543-12"></a><span class="co">## 10   bureau_de_change   21</span></span>
+<span id="cb543-13"><a href="vector-analysis.html#cb543-13"></a><span class="co">## 11        bus_station    1</span></span>
+<span id="cb543-14"><a href="vector-analysis.html#cb543-14"></a><span class="co">## 12               cafe  490</span></span>
+<span id="cb543-15"><a href="vector-analysis.html#cb543-15"></a><span class="co">## 13         car_rental    1</span></span>
+<span id="cb543-16"><a href="vector-analysis.html#cb543-16"></a><span class="co">## 14           car_wash   12</span></span>
+<span id="cb543-17"><a href="vector-analysis.html#cb543-17"></a><span class="co">## 15   charging_station    1</span></span>
+<span id="cb543-18"><a href="vector-analysis.html#cb543-18"></a><span class="co">## 16         child_care    1</span></span>
+<span id="cb543-19"><a href="vector-analysis.html#cb543-19"></a><span class="co">## 17             cinema   16</span></span>
+<span id="cb543-20"><a href="vector-analysis.html#cb543-20"></a><span class="co">## 18             clinic   51</span></span>
+<span id="cb543-21"><a href="vector-analysis.html#cb543-21"></a><span class="co">## 19              clock   10</span></span>
+<span id="cb543-22"><a href="vector-analysis.html#cb543-22"></a><span class="co">## 20            college    5</span></span>
+<span id="cb543-23"><a href="vector-analysis.html#cb543-23"></a><span class="co">## 21         commercial    1</span></span>
+<span id="cb543-24"><a href="vector-analysis.html#cb543-24"></a><span class="co">## 22   community_centre    4</span></span>
+<span id="cb543-25"><a href="vector-analysis.html#cb543-25"></a><span class="co">## 23         courthouse    3</span></span>
+<span id="cb543-26"><a href="vector-analysis.html#cb543-26"></a><span class="co">## 24     dancing_school    1</span></span>
+<span id="cb543-27"><a href="vector-analysis.html#cb543-27"></a><span class="co">## 25            dentist   58</span></span>
+<span id="cb543-28"><a href="vector-analysis.html#cb543-28"></a><span class="co">## 26            doctors   22</span></span>
+<span id="cb543-29"><a href="vector-analysis.html#cb543-29"></a><span class="co">## 27     drinking_water    3</span></span>
+<span id="cb543-30"><a href="vector-analysis.html#cb543-30"></a><span class="co">## 28     driving_school    2</span></span>
+<span id="cb543-31"><a href="vector-analysis.html#cb543-31"></a><span class="co">## 29            embassy   31</span></span>
+<span id="cb543-32"><a href="vector-analysis.html#cb543-32"></a><span class="co">## 30    emergency_phone    5</span></span>
+<span id="cb543-33"><a href="vector-analysis.html#cb543-33"></a><span class="co">## 31          fast_food  169</span></span>
+<span id="cb543-34"><a href="vector-analysis.html#cb543-34"></a><span class="co">## 32     ferry_terminal    5</span></span>
+<span id="cb543-35"><a href="vector-analysis.html#cb543-35"></a><span class="co">## 33         food_court    3</span></span>
+<span id="cb543-36"><a href="vector-analysis.html#cb543-36"></a><span class="co">## 34           fountain   32</span></span>
+<span id="cb543-37"><a href="vector-analysis.html#cb543-37"></a><span class="co">## 35               fuel    8</span></span>
+<span id="cb543-38"><a href="vector-analysis.html#cb543-38"></a><span class="co">## 36                gym    1</span></span>
+<span id="cb543-39"><a href="vector-analysis.html#cb543-39"></a><span class="co">## 37           hospital    2</span></span>
+<span id="cb543-40"><a href="vector-analysis.html#cb543-40"></a><span class="co">## 38              hotel    1</span></span>
+<span id="cb543-41"><a href="vector-analysis.html#cb543-41"></a><span class="co">## 39          ice_cream    3</span></span>
+<span id="cb543-42"><a href="vector-analysis.html#cb543-42"></a><span class="co">## 40       kindergarten   13</span></span>
+<span id="cb543-43"><a href="vector-analysis.html#cb543-43"></a><span class="co">## 41            library   17</span></span>
+<span id="cb543-44"><a href="vector-analysis.html#cb543-44"></a><span class="co">## 42     musical_school    1</span></span>
+<span id="cb543-45"><a href="vector-analysis.html#cb543-45"></a><span class="co">## 43          nightclub   19</span></span>
+<span id="cb543-46"><a href="vector-analysis.html#cb543-46"></a><span class="co">## 44           official    1</span></span>
+<span id="cb543-47"><a href="vector-analysis.html#cb543-47"></a><span class="co">## 45            parking   92</span></span>
+<span id="cb543-48"><a href="vector-analysis.html#cb543-48"></a><span class="co">## 46   parking_entrance   72</span></span>
+<span id="cb543-49"><a href="vector-analysis.html#cb543-49"></a><span class="co">## 47      parking_space    1</span></span>
+<span id="cb543-50"><a href="vector-analysis.html#cb543-50"></a><span class="co">## 48   payment_terminal    6</span></span>
+<span id="cb543-51"><a href="vector-analysis.html#cb543-51"></a><span class="co">## 49           pharmacy  166</span></span>
+<span id="cb543-52"><a href="vector-analysis.html#cb543-52"></a><span class="co">## 50           photolab    1</span></span>
+<span id="cb543-53"><a href="vector-analysis.html#cb543-53"></a><span class="co">## 51   place_of_worship   23</span></span>
+<span id="cb543-54"><a href="vector-analysis.html#cb543-54"></a><span class="co">## 52             police   21</span></span>
+<span id="cb543-55"><a href="vector-analysis.html#cb543-55"></a><span class="co">## 53           post_box    4</span></span>
+<span id="cb543-56"><a href="vector-analysis.html#cb543-56"></a><span class="co">## 54        post_office   37</span></span>
+<span id="cb543-57"><a href="vector-analysis.html#cb543-57"></a><span class="co">## 55                pub   96</span></span>
+<span id="cb543-58"><a href="vector-analysis.html#cb543-58"></a><span class="co">## 56    public_bookcase    2</span></span>
+<span id="cb543-59"><a href="vector-analysis.html#cb543-59"></a><span class="co">## 57    public_building    8</span></span>
+<span id="cb543-60"><a href="vector-analysis.html#cb543-60"></a><span class="co">## 58          recycling    6</span></span>
+<span id="cb543-61"><a href="vector-analysis.html#cb543-61"></a><span class="co">## 59    register_office    2</span></span>
+<span id="cb543-62"><a href="vector-analysis.html#cb543-62"></a><span class="co">## 60         restaurant  844</span></span>
+<span id="cb543-63"><a href="vector-analysis.html#cb543-63"></a><span class="co">## 61             school   10</span></span>
+<span id="cb543-64"><a href="vector-analysis.html#cb543-64"></a><span class="co">## 62            shelter    2</span></span>
+<span id="cb543-65"><a href="vector-analysis.html#cb543-65"></a><span class="co">## 63               shop    4</span></span>
+<span id="cb543-66"><a href="vector-analysis.html#cb543-66"></a><span class="co">## 64    social_facility    3</span></span>
+<span id="cb543-67"><a href="vector-analysis.html#cb543-67"></a><span class="co">## 65          stripclub    4</span></span>
+<span id="cb543-68"><a href="vector-analysis.html#cb543-68"></a><span class="co">## 66               taxi    1</span></span>
+<span id="cb543-69"><a href="vector-analysis.html#cb543-69"></a><span class="co">## 67          telephone   58</span></span>
+<span id="cb543-70"><a href="vector-analysis.html#cb543-70"></a><span class="co">## 68            theatre   48</span></span>
+<span id="cb543-71"><a href="vector-analysis.html#cb543-71"></a><span class="co">## 69            toilets   82</span></span>
+<span id="cb543-72"><a href="vector-analysis.html#cb543-72"></a><span class="co">## 70           training   15</span></span>
+<span id="cb543-73"><a href="vector-analysis.html#cb543-73"></a><span class="co">## 71         university   15</span></span>
+<span id="cb543-74"><a href="vector-analysis.html#cb543-74"></a><span class="co">## 72 vehicle_inspection    1</span></span>
+<span id="cb543-75"><a href="vector-analysis.html#cb543-75"></a><span class="co">## 73    vending_machine   98</span></span>
+<span id="cb543-76"><a href="vector-analysis.html#cb543-76"></a><span class="co">## 74       waste_basket   52</span></span>
+<span id="cb543-77"><a href="vector-analysis.html#cb543-77"></a><span class="co">## 75     waste_disposal  102</span></span></code></pre></div>
+<p>Для дальнейшего анализа отберем из всего множества объектов сферы услуг заведения, где можно поесть: рестораны, кафе, бары, пабы и заведения быстрого питания (фастфуд). В классификаторе OSM эти заведения имеют тип <em>restaurant</em>, <em>bar</em>, <em>cafe</em>, <em>pub</em> и <em>fast_food</em>. Для отбора нужных строк и столбцов используем dplyr:</p>
+<div class="sourceCode" id="cb544"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb544-1"><a href="vector-analysis.html#cb544-1"></a>poi.food =<span class="st"> </span>poi <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb544-2"><a href="vector-analysis.html#cb544-2"></a><span class="st">            </span>dplyr<span class="op">::</span><span class="kw">select</span>(NAME, AMENITY) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb544-3"><a href="vector-analysis.html#cb544-3"></a><span class="st">            </span><span class="kw">filter</span>(AMENITY <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;restaurant&quot;</span>, <span class="st">&quot;bar&quot;</span>, <span class="st">&quot;cafe&quot;</span>, <span class="st">&quot;pub&quot;</span>, <span class="st">&quot;fast_food&quot;</span>))</span>
+<span id="cb544-4"><a href="vector-analysis.html#cb544-4"></a><span class="kw">head</span>(poi.food)</span>
+<span id="cb544-5"><a href="vector-analysis.html#cb544-5"></a><span class="co">## Simple feature collection with 6 features and 2 fields</span></span>
+<span id="cb544-6"><a href="vector-analysis.html#cb544-6"></a><span class="co">## geometry type:  POINT</span></span>
+<span id="cb544-7"><a href="vector-analysis.html#cb544-7"></a><span class="co">## dimension:      XY</span></span>
+<span id="cb544-8"><a href="vector-analysis.html#cb544-8"></a><span class="co">## bbox:           xmin: 410954.9 ymin: 6178842 xmax: 411023.8 ymax: 6181896</span></span>
+<span id="cb544-9"><a href="vector-analysis.html#cb544-9"></a><span class="co">## epsg (SRID):    32637</span></span>
+<span id="cb544-10"><a href="vector-analysis.html#cb544-10"></a><span class="co">## proj4string:    +proj=utm +zone=37 +datum=WGS84 +units=m +no_defs</span></span>
+<span id="cb544-11"><a href="vector-analysis.html#cb544-11"></a><span class="co">##          NAME    AMENITY                 geometry</span></span>
+<span id="cb544-12"><a href="vector-analysis.html#cb544-12"></a><span class="co">## 1       Аршин restaurant POINT (410975.2 6181661)</span></span>
+<span id="cb544-13"><a href="vector-analysis.html#cb544-13"></a><span class="co">## 2    Андерсон restaurant POINT (410954.9 6180118)</span></span>
+<span id="cb544-14"><a href="vector-analysis.html#cb544-14"></a><span class="co">## 3    Holynoot  fast_food POINT (410958.8 6179938)</span></span>
+<span id="cb544-15"><a href="vector-analysis.html#cb544-15"></a><span class="co">## 4    Gayane&#39;s restaurant POINT (410958.4 6178842)</span></span>
+<span id="cb544-16"><a href="vector-analysis.html#cb544-16"></a><span class="co">## 5  Molon Lave restaurant POINT (411013.7 6181448)</span></span>
+<span id="cb544-17"><a href="vector-analysis.html#cb544-17"></a><span class="co">## 6 Шоколадница       cafe POINT (411023.8 6181896)</span></span></code></pre></div>
+</div>
+<div id="distance_analysis" class="section level2">
+<h2><span class="header-section-number">11.3</span> Анализ расстояний</h2>
+<p>Метрические отношения связывают объекты в терминах расстояний между ними. Предположим, что мы хотим определить улицы, являющиеся сосредоточением заведений питания. Один из вариантов решения состоит в том, чтобы для каждого пункта обслуживания определить ближайшую к нему улицу и далее для каждой улицы просуммировать количество раз, которое улиц оказалось ближайшей. Подробнее алгоритм решения выглядит следующим образом:</p>
+<ol style="list-style-type: decimal">
+<li>Вычислить матрицу расстояний между пунктами обслуживания и улицами. Размер матрицы <span class="math inline">\(M \times N\)</span>, где <span class="math inline">\(M\)</span> — количество улиц (строк), <span class="math inline">\(N\)</span> — количество пунктов (столбцов)</li>
+<li>Найти в каждом столбце минимальное расстояние.</li>
+<li>Получить идентификатор улицы (номер строки), соответствующий данному расстоянию.</li>
+<li>Записать идентификатор в выходной вектор.</li>
+</ol>
+<p>Таким образом, мы получим вектор из идентификаторов улиц, при этом каждый идентификатор будет встречаться в этом векторе столько раз, сколько раз данная улица оказалась ближайшей к какому-то объекту.</p>
+<p>Вычислим матрицу расстояний с помощью функции <code>st_distance()</code> из пакета <strong>sf</strong>:</p>
+<div class="sourceCode" id="cb545"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb545-1"><a href="vector-analysis.html#cb545-1"></a></span>
+<span id="cb545-2"><a href="vector-analysis.html#cb545-2"></a><span class="co">## АНАЛИЗ РАССТОЯНИЙ -------------------------------------</span></span>
+<span id="cb545-3"><a href="vector-analysis.html#cb545-3"></a></span>
+<span id="cb545-4"><a href="vector-analysis.html#cb545-4"></a>dist.matrix =<span class="st"> </span><span class="kw">st_distance</span>(roads, poi.food)</span>
+<span id="cb545-5"><a href="vector-analysis.html#cb545-5"></a></span>
+<span id="cb545-6"><a href="vector-analysis.html#cb545-6"></a><span class="co"># посмотрим, как выглядит результат на примере первых пяти объектов</span></span>
+<span id="cb545-7"><a href="vector-analysis.html#cb545-7"></a><span class="kw">print</span>(dist.matrix[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])</span>
+<span id="cb545-8"><a href="vector-analysis.html#cb545-8"></a><span class="co">## Units: [m]</span></span>
+<span id="cb545-9"><a href="vector-analysis.html#cb545-9"></a><span class="co">##          [,1]      [,2]      [,3]      [,4]     [,5]</span></span>
+<span id="cb545-10"><a href="vector-analysis.html#cb545-10"></a><span class="co">## [1,] 4962.292 3420.6849 3240.2066 2145.2044 4748.686</span></span>
+<span id="cb545-11"><a href="vector-analysis.html#cb545-11"></a><span class="co">## [2,] 2247.737  705.2923  524.9411  570.3986 2035.341</span></span>
+<span id="cb545-12"><a href="vector-analysis.html#cb545-12"></a><span class="co">## [3,] 2213.236  670.7904  490.4167  605.1606 2000.759</span></span>
+<span id="cb545-13"><a href="vector-analysis.html#cb545-13"></a><span class="co">## [4,] 2197.874  655.4285  475.0629  620.4411 1985.242</span></span>
+<span id="cb545-14"><a href="vector-analysis.html#cb545-14"></a><span class="co">## [5,] 3910.957 2368.5560 2188.1348 1092.5472 3698.246</span></span></code></pre></div>
+<p>Далее необходимо в каждом столбце матрицы найти номер строки с минимальным расстоянием. Для этого необходимо получить порядок сортировки элементов по возрастанию значений данного столбца и взять номер первого элемента. Операцию можно применить с помощью <code>apply</code> ко всем столбцам:</p>
+<div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb546-1"><a href="vector-analysis.html#cb546-1"></a>ids =<span class="st"> </span><span class="kw">apply</span>(dist.matrix, <span class="dv">2</span>, <span class="cf">function</span>(X) <span class="kw">order</span>(X)[<span class="dv">1</span>])</span></code></pre></div>
+<p>Теперь применим уже знакомую нам функцию <code>table()</code>, чтобы подсчитать, сколько раз каждая улица оказалась наиболее близкой. Далее присоединим статистику к исходным улицам, однако для этого нам потребуется вынести названия строк (номеров) улиц в отдельный столбец.</p>
+<div class="sourceCode" id="cb547"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb547-1"><a href="vector-analysis.html#cb547-1"></a>count.stats =<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">table</span>(ids))</span>
+<span id="cb547-2"><a href="vector-analysis.html#cb547-2"></a>roads =<span class="st"> </span>roads <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">id =</span> <span class="kw">row.names</span>(.))</span>
+<span id="cb547-3"><a href="vector-analysis.html#cb547-3"></a>roads.poi =<span class="st"> </span><span class="kw">merge</span>(roads, </span>
+<span id="cb547-4"><a href="vector-analysis.html#cb547-4"></a>                   count.stats, </span>
+<span id="cb547-5"><a href="vector-analysis.html#cb547-5"></a>                   <span class="dt">by.x =</span> <span class="st">&#39;id&#39;</span>, </span>
+<span id="cb547-6"><a href="vector-analysis.html#cb547-6"></a>                   <span class="dt">by.y =</span> <span class="st">&#39;ids&#39;</span>, </span>
+<span id="cb547-7"><a href="vector-analysis.html#cb547-7"></a>                   <span class="dt">all.x =</span> T)</span></code></pre></div>
+<p>Посмотрим первые 10 улиц по количеству общепита:</p>
+<div class="sourceCode" id="cb548"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb548-1"><a href="vector-analysis.html#cb548-1"></a><span class="co"># Статистика по улицам в табличном представлении (первые 10)</span></span>
+<span id="cb548-2"><a href="vector-analysis.html#cb548-2"></a>roads.poi <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb548-3"><a href="vector-analysis.html#cb548-3"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(NAME, Freq) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb548-4"><a href="vector-analysis.html#cb548-4"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(Freq)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb548-5"><a href="vector-analysis.html#cb548-5"></a><span class="st">  </span><span class="kw">head</span>(<span class="dv">10</span>)</span>
+<span id="cb548-6"><a href="vector-analysis.html#cb548-6"></a><span class="co">## Simple feature collection with 10 features and 2 fields</span></span>
+<span id="cb548-7"><a href="vector-analysis.html#cb548-7"></a><span class="co">## geometry type:  MULTILINESTRING</span></span>
+<span id="cb548-8"><a href="vector-analysis.html#cb548-8"></a><span class="co">## dimension:      XY</span></span>
+<span id="cb548-9"><a href="vector-analysis.html#cb548-9"></a><span class="co">## bbox:           xmin: 411105.1 ymin: 6178083 xmax: 414504.1 ymax: 6181734</span></span>
+<span id="cb548-10"><a href="vector-analysis.html#cb548-10"></a><span class="co">## epsg (SRID):    32637</span></span>
+<span id="cb548-11"><a href="vector-analysis.html#cb548-11"></a><span class="co">## proj4string:    +proj=utm +zone=37 +datum=WGS84 +units=m +no_defs</span></span>
+<span id="cb548-12"><a href="vector-analysis.html#cb548-12"></a><span class="co">##                       NAME Freq                       geometry</span></span>
+<span id="cb548-13"><a href="vector-analysis.html#cb548-13"></a><span class="co">## 1              улица Арбат   43 MULTILINESTRING ((412157.9 ...</span></span>
+<span id="cb548-14"><a href="vector-analysis.html#cb548-14"></a><span class="co">## 2        улица Новый Арбат   24 MULTILINESTRING ((411105.1 ...</span></span>
+<span id="cb548-15"><a href="vector-analysis.html#cb548-15"></a><span class="co">## 3          Цветной бульвар   22 MULTILINESTRING ((413491.7 ...</span></span>
+<span id="cb548-16"><a href="vector-analysis.html#cb548-16"></a><span class="co">## 4          Мясницкая улица   20 MULTILINESTRING ((414504.1 ...</span></span>
+<span id="cb548-17"><a href="vector-analysis.html#cb548-17"></a><span class="co">## 5         Никольская улица   17 MULTILINESTRING ((413704.5 ...</span></span>
+<span id="cb548-18"><a href="vector-analysis.html#cb548-18"></a><span class="co">## 6          Пятницкая улица   17 MULTILINESTRING ((413895.8 ...</span></span>
+<span id="cb548-19"><a href="vector-analysis.html#cb548-19"></a><span class="co">## 7          Неглинная улица   14 MULTILINESTRING ((413498.2 ...</span></span>
+<span id="cb548-20"><a href="vector-analysis.html#cb548-20"></a><span class="co">## 8       улица Рождественка   14 MULTILINESTRING ((413628.1 ...</span></span>
+<span id="cb548-21"><a href="vector-analysis.html#cb548-21"></a><span class="co">## 9        Козицкий переулок   14 MULTILINESTRING ((412831.7 ...</span></span>
+<span id="cb548-22"><a href="vector-analysis.html#cb548-22"></a><span class="co">## 10 улица Большая Дмитровка   14 MULTILINESTRING ((413262.7 ...</span></span></code></pre></div>
+<p>Для завершения анализа осталось визуализировать результаты. Чтобы усилить наглядность визуализации, мы не будем каждую улицу утолщать пропорционально количеству привязанных объектов, а разделим это количество на 4 класса. Каждый класс покажем линией соответствующей толщины и интенсивности цвета (чем больше объектов привязано к улице, тем толще линия, темнее и насыщеннее ее цвет).</p>
+<p>Для классификации используем функцию <code>cut()</code>, позволяющую перекодировать интервальные данные в номинальные, то есть сопоставить каждому элементу вектора некий класс, которому он принадлежит. На выходе будем иметь вектор, который состоит из такого же количества элементов, что и исходный, но вместо исходных значений будут стоять названия классов.</p>
+<div class="sourceCode" id="cb549"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb549-1"><a href="vector-analysis.html#cb549-1"></a><span class="co"># Получим границы классов</span></span>
+<span id="cb549-2"><a href="vector-analysis.html#cb549-2"></a>nclasses =<span class="st"> </span><span class="dv">4</span></span>
+<span id="cb549-3"><a href="vector-analysis.html#cb549-3"></a>class.breaks =<span class="st"> </span><span class="kw">classIntervals</span>(roads.poi<span class="op">$</span>Freq, </span>
+<span id="cb549-4"><a href="vector-analysis.html#cb549-4"></a>                               <span class="dt">n =</span> nclasses, </span>
+<span id="cb549-5"><a href="vector-analysis.html#cb549-5"></a>                               <span class="dt">style =</span> <span class="st">&quot;jenks&quot;</span>)</span>
+<span id="cb549-6"><a href="vector-analysis.html#cb549-6"></a><span class="co"># Извлечем граничные интервалы</span></span>
+<span id="cb549-7"><a href="vector-analysis.html#cb549-7"></a>borders =<span class="st"> </span>class.breaks<span class="op">$</span>brks</span>
+<span id="cb549-8"><a href="vector-analysis.html#cb549-8"></a></span>
+<span id="cb549-9"><a href="vector-analysis.html#cb549-9"></a><span class="co"># Названия классов — они же толщины линия от 1 до 4</span></span>
+<span id="cb549-10"><a href="vector-analysis.html#cb549-10"></a>line.widths =<span class="st"> </span><span class="dv">1</span><span class="op">:</span>nclasses</span>
+<span id="cb549-11"><a href="vector-analysis.html#cb549-11"></a></span>
+<span id="cb549-12"><a href="vector-analysis.html#cb549-12"></a><span class="co"># Перекодируем столбец количества присоединенных пунктов в классы</span></span>
+<span id="cb549-13"><a href="vector-analysis.html#cb549-13"></a>sizes =<span class="st"> </span><span class="kw">cut</span>(roads.poi<span class="op">$</span>Freq, </span>
+<span id="cb549-14"><a href="vector-analysis.html#cb549-14"></a>             <span class="dt">breaks =</span> borders, </span>
+<span id="cb549-15"><a href="vector-analysis.html#cb549-15"></a>             <span class="dt">labels =</span> line.widths)</span></code></pre></div>
+<p>Теперь присвоим каждому объекту свой цвет в соответствии с классом, который ему присвоен. Удобная функция <code>findColours()</code> позволяет найти цвет для каждого объекта в соответствии с полученной классификацией:</p>
+<div class="sourceCode" id="cb550"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb550-1"><a href="vector-analysis.html#cb550-1"></a>base.colors =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;mistyrose&quot;</span>, <span class="st">&quot;red&quot;</span>)</span>
+<span id="cb550-2"><a href="vector-analysis.html#cb550-2"></a>ramp =<span class="st"> </span><span class="kw">colorRampPalette</span>(base.colors)</span>
+<span id="cb550-3"><a href="vector-analysis.html#cb550-3"></a>colors =<span class="st"> </span><span class="kw">findColours</span>(class.breaks, base.colors)</span>
+<span id="cb550-4"><a href="vector-analysis.html#cb550-4"></a></span>
+<span id="cb550-5"><a href="vector-analysis.html#cb550-5"></a><span class="kw">plot</span>(frame)</span>
+<span id="cb550-6"><a href="vector-analysis.html#cb550-6"></a></span>
+<span id="cb550-7"><a href="vector-analysis.html#cb550-7"></a><span class="kw">plot</span>(water <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb550-8"><a href="vector-analysis.html#cb550-8"></a>     <span class="dt">col =</span> <span class="st">&quot;lightskyblue1&quot;</span>,</span>
+<span id="cb550-9"><a href="vector-analysis.html#cb550-9"></a>     <span class="dt">border =</span> <span class="st">&quot;lightskyblue3&quot;</span>,</span>
+<span id="cb550-10"><a href="vector-analysis.html#cb550-10"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb550-11"><a href="vector-analysis.html#cb550-11"></a></span>
+<span id="cb550-12"><a href="vector-analysis.html#cb550-12"></a><span class="kw">plot</span>(roads <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(),</span>
+<span id="cb550-13"><a href="vector-analysis.html#cb550-13"></a>     <span class="dt">col =</span> <span class="st">&quot;gray70&quot;</span>,</span>
+<span id="cb550-14"><a href="vector-analysis.html#cb550-14"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb550-15"><a href="vector-analysis.html#cb550-15"></a></span>
+<span id="cb550-16"><a href="vector-analysis.html#cb550-16"></a><span class="kw">plot</span>(roads.poi <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(),</span>
+<span id="cb550-17"><a href="vector-analysis.html#cb550-17"></a>     <span class="dt">lwd =</span> sizes, </span>
+<span id="cb550-18"><a href="vector-analysis.html#cb550-18"></a>     <span class="dt">col =</span> colors,</span>
+<span id="cb550-19"><a href="vector-analysis.html#cb550-19"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb550-20"><a href="vector-analysis.html#cb550-20"></a></span>
+<span id="cb550-21"><a href="vector-analysis.html#cb550-21"></a><span class="kw">plot</span>(poi.food <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb550-22"><a href="vector-analysis.html#cb550-22"></a>     <span class="dt">col =</span> <span class="st">&quot;deepskyblue4&quot;</span>, </span>
+<span id="cb550-23"><a href="vector-analysis.html#cb550-23"></a>     <span class="dt">pch =</span> <span class="dv">20</span>, </span>
+<span id="cb550-24"><a href="vector-analysis.html#cb550-24"></a>     <span class="dt">cex =</span> <span class="fl">0.2</span>, </span>
+<span id="cb550-25"><a href="vector-analysis.html#cb550-25"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb550-26"><a href="vector-analysis.html#cb550-26"></a></span>
+<span id="cb550-27"><a href="vector-analysis.html#cb550-27"></a><span class="co"># Функция legendGradLines из пакета cartography позволяет строить</span></span>
+<span id="cb550-28"><a href="vector-analysis.html#cb550-28"></a><span class="co"># легенду для карт линий градуированных размеров:</span></span>
+<span id="cb550-29"><a href="vector-analysis.html#cb550-29"></a><span class="kw">legendGradLines</span>(<span class="dt">title.txt =</span> <span class="st">&quot;Пункты питания&quot;</span>, </span>
+<span id="cb550-30"><a href="vector-analysis.html#cb550-30"></a>                <span class="dt">pos =</span> <span class="st">&quot;left&quot;</span>,</span>
+<span id="cb550-31"><a href="vector-analysis.html#cb550-31"></a>                <span class="dt">title.cex =</span> <span class="fl">0.8</span>,</span>
+<span id="cb550-32"><a href="vector-analysis.html#cb550-32"></a>                <span class="dt">values.cex =</span> <span class="fl">0.6</span>, </span>
+<span id="cb550-33"><a href="vector-analysis.html#cb550-33"></a>                <span class="dt">breaks =</span> borders,</span>
+<span id="cb550-34"><a href="vector-analysis.html#cb550-34"></a>                <span class="dt">lwd =</span> line.widths,</span>
+<span id="cb550-35"><a href="vector-analysis.html#cb550-35"></a>                <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-523-1.png" width="672" /></p>
+</div>
+<div id="topology_analysis" class="section level2">
+<h2><span class="header-section-number">11.4</span> Анализ взаимного положения (топологический)</h2>
+<p>Пространственные запросы, основанные на топологических отношениях, позволяют находить объекты, находящиеся внутри других объектов, соприкасающиеся с другими объектами, пересекающиеся с ними и так далее. Топологические отношения сохраняются при взаимно-однозначных и непрерывных преобразованиях плоскости.</p>
+<p>Отличия от метрических отношений легко пояснить на примере преобразования проекции. Представьте, что карту России в <a href="http://geocnt.geonet.ru/projections/html/viewer.html">конической проекции</a> с концентрическими параллелями (известную по учебникам и атласам) вы трансформировали в карту России в проекции Меркатора (такую же как на <a href="https://www.google.ru/maps/place/Россия/">Google Maps</a>). Изогнутые параллели превратились в прямые линии; форма регионов, площади и расстояния между населенными пунктами значительно изменились. Однако Красноярск по-прежнему находится в Красноярском крае, Ярославль — на реке Волге, Нижний Новгород — на правом берегу Волги, озеро Белое — внутри Вологодской области, а Московская область как не граничила с Тамбовской, так и не граничит после трансформации проекции. Это и есть топологические отношения.</p>
+<p>Формально топологические отношения в ГИС описываются с помощью <a href="https://en.wikipedia.org/wiki/DE-9IM">модели девяти пересечений DE-9IM</a>, которая была рассмотрена в предыдущей лекции.</p>
+<div class="sourceCode" id="cb551"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb551-1"><a href="vector-analysis.html#cb551-1"></a><span class="co">## АНАЛИЗ ВЗАИМНОГО ПОЛОЖЕНИЯ -------------------------------------</span></span>
+<span id="cb551-2"><a href="vector-analysis.html#cb551-2"></a>poi.food =<span class="st"> </span>poi.food <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">count =</span> <span class="dv">1</span>)</span>
+<span id="cb551-3"><a href="vector-analysis.html#cb551-3"></a>rayons.poi =<span class="st"> </span><span class="kw">aggregate</span>(poi.food[<span class="st">&#39;count&#39;</span>], rayons, sum)</span></code></pre></div>
+<div class="sourceCode" id="cb552"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb552-1"><a href="vector-analysis.html#cb552-1"></a><span class="co"># Преобразуем результат в относительный показатель</span></span>
+<span id="cb552-2"><a href="vector-analysis.html#cb552-2"></a><span class="co"># (единиц на кв.км. площади) и запишем в таблицу районов:</span></span>
+<span id="cb552-3"><a href="vector-analysis.html#cb552-3"></a>rayons.poi<span class="op">$</span>density =<span class="st"> </span><span class="dv">1000000</span> <span class="op">*</span><span class="st"> </span>rayons.poi<span class="op">$</span>count <span class="op">/</span><span class="st"> </span><span class="kw">st_area</span>(rayons.poi)</span></code></pre></div>
+<p>Масштабный множитель 1000000 в коде понадобился чтобы перевести площадь, хранящуюся в поле Shape_Area из квадратных метров в квадратные километры. Обратите внимание на то, что в данном случае мы не стали ограничивать фигурными скобками тело анонимной функции (<code>table(X)[2]</code>) внутри <code>apply()</code>, поскольку выполняемая операция достаточно компактна.</p>
+<p>Подготовим параметры отображения:</p>
+<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb553-1"><a href="vector-analysis.html#cb553-1"></a><span class="co"># Настроим параметры отображения</span></span>
+<span id="cb553-2"><a href="vector-analysis.html#cb553-2"></a>choro.pal =<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;lightgoldenrodyellow&quot;</span>, <span class="st">&quot;orangered&quot;</span>))</span>
+<span id="cb553-3"><a href="vector-analysis.html#cb553-3"></a></span>
+<span id="cb553-4"><a href="vector-analysis.html#cb553-4"></a>intervals =<span class="st"> </span><span class="kw">classIntervals</span>(rayons.poi<span class="op">$</span>density, </span>
+<span id="cb553-5"><a href="vector-analysis.html#cb553-5"></a>                            <span class="dt">n =</span> <span class="dv">5</span>, </span>
+<span id="cb553-6"><a href="vector-analysis.html#cb553-6"></a>                            <span class="dt">style =</span> <span class="st">&quot;quantile&quot;</span>)</span></code></pre></div>
+<p>Далее используем функции <code>choroLayer()</code> и <code>legendChoro()</code> из пакета <code>cartography</code> для построения картограмм плотности пунктов питания и соответствующей им легенды средствами обычной функции <code>plot()</code>:</p>
+<div class="sourceCode" id="cb554"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb554-1"><a href="vector-analysis.html#cb554-1"></a><span class="kw">choroLayer</span>(rayons.poi, <span class="co"># Исходный слой типа SpatialPolygonsDataFrame</span></span>
+<span id="cb554-2"><a href="vector-analysis.html#cb554-2"></a>           <span class="dt">var =</span> <span class="st">&quot;density&quot;</span>, <span class="co"># Картографируемая переменная (столбец) </span></span>
+<span id="cb554-3"><a href="vector-analysis.html#cb554-3"></a>           <span class="dt">breaks =</span> intervals<span class="op">$</span>brks, <span class="co"># Границы интервалов</span></span>
+<span id="cb554-4"><a href="vector-analysis.html#cb554-4"></a>           <span class="dt">col =</span> <span class="kw">choro.pal</span>(<span class="dv">5</span>), <span class="co"># Цвета для соответствующих интервалов</span></span>
+<span id="cb554-5"><a href="vector-analysis.html#cb554-5"></a>           <span class="dt">legend.pos =</span> <span class="st">&quot;n&quot;</span>) <span class="co"># Легенду мы нарисуем позднее, поверх всех слоев</span></span>
+<span id="cb554-6"><a href="vector-analysis.html#cb554-6"></a><span class="kw">plot</span>(water <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb554-7"><a href="vector-analysis.html#cb554-7"></a>     <span class="dt">col =</span> <span class="st">&quot;lightskyblue1&quot;</span>,</span>
+<span id="cb554-8"><a href="vector-analysis.html#cb554-8"></a>     <span class="dt">border =</span> <span class="st">&quot;lightskyblue3&quot;</span>,</span>
+<span id="cb554-9"><a href="vector-analysis.html#cb554-9"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb554-10"><a href="vector-analysis.html#cb554-10"></a><span class="kw">plot</span>(roads <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(),</span>
+<span id="cb554-11"><a href="vector-analysis.html#cb554-11"></a>     <span class="dt">col =</span> <span class="st">&quot;gray50&quot;</span>,</span>
+<span id="cb554-12"><a href="vector-analysis.html#cb554-12"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb554-13"><a href="vector-analysis.html#cb554-13"></a><span class="kw">plot</span>(poi.food <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb554-14"><a href="vector-analysis.html#cb554-14"></a>     <span class="dt">col =</span> <span class="st">&quot;deepskyblue4&quot;</span>, </span>
+<span id="cb554-15"><a href="vector-analysis.html#cb554-15"></a>     <span class="dt">pch =</span> <span class="dv">20</span>, </span>
+<span id="cb554-16"><a href="vector-analysis.html#cb554-16"></a>     <span class="dt">cex =</span> <span class="fl">0.5</span>, </span>
+<span id="cb554-17"><a href="vector-analysis.html#cb554-17"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb554-18"><a href="vector-analysis.html#cb554-18"></a><span class="kw">plot</span>(rayons <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(),</span>
+<span id="cb554-19"><a href="vector-analysis.html#cb554-19"></a>     <span class="dt">border =</span> <span class="st">&quot;black&quot;</span>,</span>
+<span id="cb554-20"><a href="vector-analysis.html#cb554-20"></a>     <span class="dt">lwd =</span> <span class="dv">3</span>,</span>
+<span id="cb554-21"><a href="vector-analysis.html#cb554-21"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb554-22"><a href="vector-analysis.html#cb554-22"></a><span class="kw">text</span>(rayons <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_centroid</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_coordinates</span>(),</span>
+<span id="cb554-23"><a href="vector-analysis.html#cb554-23"></a>     <span class="dt">labels =</span> <span class="kw">gsub</span>(<span class="st">&#39; &#39;</span>, <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>, rayons<span class="op">$</span>NAME),</span>
+<span id="cb554-24"><a href="vector-analysis.html#cb554-24"></a>     <span class="dt">font =</span> <span class="dv">2</span>,</span>
+<span id="cb554-25"><a href="vector-analysis.html#cb554-25"></a>     <span class="dt">cex =</span> <span class="fl">0.6</span>)</span>
+<span id="cb554-26"><a href="vector-analysis.html#cb554-26"></a></span>
+<span id="cb554-27"><a href="vector-analysis.html#cb554-27"></a><span class="co"># Рисуем легенду</span></span>
+<span id="cb554-28"><a href="vector-analysis.html#cb554-28"></a><span class="kw">legendChoro</span>(<span class="dt">breaks =</span> intervals<span class="op">$</span>brks, </span>
+<span id="cb554-29"><a href="vector-analysis.html#cb554-29"></a>            <span class="dt">col =</span> <span class="kw">choro.pal</span>(<span class="dv">5</span>),</span>
+<span id="cb554-30"><a href="vector-analysis.html#cb554-30"></a>            <span class="dt">pos =</span> <span class="st">&quot;topleft&quot;</span>,</span>
+<span id="cb554-31"><a href="vector-analysis.html#cb554-31"></a>            <span class="dt">frame =</span> <span class="ot">FALSE</span>, </span>
+<span id="cb554-32"><a href="vector-analysis.html#cb554-32"></a>            <span class="dt">title.txt =</span> <span class="st">&quot;Заведений</span><span class="ch">\n</span><span class="st">на 1 кв.км&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-527-1.png" width="672" /></p>
+<p>Итак, используя топологический пространственный запрос “Содержит”, мы смогли агрегировать точечные объекты внутри площадных и построить картограммы плотности распределения пунктов питания по районам центра Москвы.</p>
+</div>
+<div id="absolute_zones" class="section level2">
+<h2><span class="header-section-number">11.5</span> Анализ абсолютных зон окружения</h2>
+<p>Задача данного раздела модуля звучит следующим образом: определить, какие пункты питания находятся в радиусе 300 метров от метро “Кропоткинская”. Контекстом анализа в данном случае служит 300-метровая зона окружения станции метро. Поставленную задачу можно решить двумя способами:</p>
+<ul>
+<li>Рассчитать расстояния от каждого пункта питания до станции метро “Кропоткинская” и выбрать точки, для которых это расстояние меньше или равно 300 метрам.</li>
+<li>Построить буферную зону радиусом 300 метров и выбрать ею точки, используя топологическое отношение пересечения</li>
+</ul>
+<p>Мы будем использовать второй вариант решения. Алгоритм выглядит следующим образом:</p>
+<ol style="list-style-type: decimal">
+<li>Построить буферную зону, используя функцию <code>st_buffer()</code> из пакета <strong>sf</strong>.</li>
+<li>Выбрать полученной зоной точки пунктов питания, используя стандартный оператор <code>[]</code>.</li>
+<li>Визуализировать на карте полученные точки и буферную зону.</li>
+</ol>
+<p>Определим функцию <code>plotBasemap()</code>, которая будет рисовать объекты картографической основы, ее мы будем использовать далее неоднократно.</p>
+<div class="sourceCode" id="cb555"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb555-1"><a href="vector-analysis.html#cb555-1"></a><span class="co">## АНАЛИЗ АБСОЛЮТНЫХ ЗОН ОКРУЖЕНИЯ -------------------------------------</span></span>
+<span id="cb555-2"><a href="vector-analysis.html#cb555-2"></a></span>
+<span id="cb555-3"><a href="vector-analysis.html#cb555-3"></a><span class="co"># Функция отвечает за рисование базовой карты</span></span>
+<span id="cb555-4"><a href="vector-analysis.html#cb555-4"></a>plotBasemap =<span class="st"> </span><span class="cf">function</span>(<span class="dt">add =</span> <span class="ot">FALSE</span>){</span>
+<span id="cb555-5"><a href="vector-analysis.html#cb555-5"></a>  </span>
+<span id="cb555-6"><a href="vector-analysis.html#cb555-6"></a>  <span class="kw">plot</span>(frame, <span class="dt">add =</span> add)</span>
+<span id="cb555-7"><a href="vector-analysis.html#cb555-7"></a></span>
+<span id="cb555-8"><a href="vector-analysis.html#cb555-8"></a>  <span class="kw">plot</span>(water <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb555-9"><a href="vector-analysis.html#cb555-9"></a>       <span class="dt">col =</span> <span class="st">&quot;lightskyblue1&quot;</span>,</span>
+<span id="cb555-10"><a href="vector-analysis.html#cb555-10"></a>       <span class="dt">border =</span> <span class="st">&quot;lightskyblue3&quot;</span>,</span>
+<span id="cb555-11"><a href="vector-analysis.html#cb555-11"></a>       <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb555-12"><a href="vector-analysis.html#cb555-12"></a>  </span>
+<span id="cb555-13"><a href="vector-analysis.html#cb555-13"></a>  <span class="kw">plot</span>(roads <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(),</span>
+<span id="cb555-14"><a href="vector-analysis.html#cb555-14"></a>       <span class="dt">col =</span> <span class="st">&quot;gray70&quot;</span>,</span>
+<span id="cb555-15"><a href="vector-analysis.html#cb555-15"></a>       <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb555-16"><a href="vector-analysis.html#cb555-16"></a>  </span>
+<span id="cb555-17"><a href="vector-analysis.html#cb555-17"></a>  <span class="kw">plot</span>(poi.food <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb555-18"><a href="vector-analysis.html#cb555-18"></a>       <span class="dt">col =</span> <span class="st">&quot;deepskyblue4&quot;</span>, </span>
+<span id="cb555-19"><a href="vector-analysis.html#cb555-19"></a>       <span class="dt">pch =</span> <span class="dv">20</span>, </span>
+<span id="cb555-20"><a href="vector-analysis.html#cb555-20"></a>       <span class="dt">cex =</span> <span class="fl">0.3</span>, </span>
+<span id="cb555-21"><a href="vector-analysis.html#cb555-21"></a>       <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb555-22"><a href="vector-analysis.html#cb555-22"></a>  <span class="kw">plot</span>(stations <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb555-23"><a href="vector-analysis.html#cb555-23"></a>       <span class="dt">col =</span> <span class="st">&quot;slategray4&quot;</span>, </span>
+<span id="cb555-24"><a href="vector-analysis.html#cb555-24"></a>       <span class="dt">pch =</span> <span class="dv">20</span>, </span>
+<span id="cb555-25"><a href="vector-analysis.html#cb555-25"></a>       <span class="dt">cex =</span> <span class="dv">2</span>, </span>
+<span id="cb555-26"><a href="vector-analysis.html#cb555-26"></a>       <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb555-27"><a href="vector-analysis.html#cb555-27"></a>  <span class="kw">text</span>(stations <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_centroid</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_coordinates</span>(),</span>
+<span id="cb555-28"><a href="vector-analysis.html#cb555-28"></a>       <span class="dt">labels =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb555-29"><a href="vector-analysis.html#cb555-29"></a>       <span class="dt">col =</span> <span class="st">&quot;white&quot;</span>,</span>
+<span id="cb555-30"><a href="vector-analysis.html#cb555-30"></a>       <span class="dt">cex =</span> <span class="fl">0.4</span>)</span>
+<span id="cb555-31"><a href="vector-analysis.html#cb555-31"></a>}</span></code></pre></div>
+<p>Определив вспомогательные функции, можем приступать к выполнению анализа:</p>
+<div class="sourceCode" id="cb556"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb556-1"><a href="vector-analysis.html#cb556-1"></a><span class="co"># Выберем станцию метро и построим буферную зону</span></span>
+<span id="cb556-2"><a href="vector-analysis.html#cb556-2"></a>krop =<span class="st"> </span>stations <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(NAME <span class="op">==</span><span class="st"> &quot;Кропоткинская&quot;</span>)</span>
+<span id="cb556-3"><a href="vector-analysis.html#cb556-3"></a>zone =<span class="st"> </span><span class="kw">st_buffer</span>(krop, <span class="dt">dist =</span> <span class="dv">300</span>)</span>
+<span id="cb556-4"><a href="vector-analysis.html#cb556-4"></a></span>
+<span id="cb556-5"><a href="vector-analysis.html#cb556-5"></a><span class="co"># Применим разработанную функцию для отбора точек</span></span>
+<span id="cb556-6"><a href="vector-analysis.html#cb556-6"></a>selected.poi =<span class="st"> </span>poi.food[zone, ]</span>
+<span id="cb556-7"><a href="vector-analysis.html#cb556-7"></a></span>
+<span id="cb556-8"><a href="vector-analysis.html#cb556-8"></a><span class="co"># Применим разработанную функцию для рисования картографической основы</span></span>
+<span id="cb556-9"><a href="vector-analysis.html#cb556-9"></a><span class="kw">plotBasemap</span>()</span>
+<span id="cb556-10"><a href="vector-analysis.html#cb556-10"></a></span>
+<span id="cb556-11"><a href="vector-analysis.html#cb556-11"></a><span class="co"># Визуализируем результаты анализа</span></span>
+<span id="cb556-12"><a href="vector-analysis.html#cb556-12"></a><span class="kw">plot</span>(krop <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb556-13"><a href="vector-analysis.html#cb556-13"></a>     <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>, </span>
+<span id="cb556-14"><a href="vector-analysis.html#cb556-14"></a>     <span class="dt">pch =</span> <span class="dv">20</span>, </span>
+<span id="cb556-15"><a href="vector-analysis.html#cb556-15"></a>     <span class="dt">cex =</span> <span class="dv">4</span>, </span>
+<span id="cb556-16"><a href="vector-analysis.html#cb556-16"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb556-17"><a href="vector-analysis.html#cb556-17"></a></span>
+<span id="cb556-18"><a href="vector-analysis.html#cb556-18"></a><span class="kw">text</span>(krop <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_coordinates</span>(),</span>
+<span id="cb556-19"><a href="vector-analysis.html#cb556-19"></a>     <span class="dt">labels =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb556-20"><a href="vector-analysis.html#cb556-20"></a>     <span class="dt">col =</span> <span class="st">&quot;white&quot;</span>,</span>
+<span id="cb556-21"><a href="vector-analysis.html#cb556-21"></a>     <span class="dt">cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb556-22"><a href="vector-analysis.html#cb556-22"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb556-23"><a href="vector-analysis.html#cb556-23"></a></span>
+<span id="cb556-24"><a href="vector-analysis.html#cb556-24"></a><span class="kw">plot</span>(zone <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(),</span>
+<span id="cb556-25"><a href="vector-analysis.html#cb556-25"></a>     <span class="dt">col =</span> <span class="kw">adjustcolor</span>(<span class="st">&quot;sienna3&quot;</span>, <span class="dt">alpha.f =</span> <span class="fl">0.5</span>),</span>
+<span id="cb556-26"><a href="vector-analysis.html#cb556-26"></a>     <span class="dt">border =</span> <span class="st">&quot;sienna3&quot;</span>,</span>
+<span id="cb556-27"><a href="vector-analysis.html#cb556-27"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb556-28"><a href="vector-analysis.html#cb556-28"></a></span>
+<span id="cb556-29"><a href="vector-analysis.html#cb556-29"></a><span class="kw">plot</span>(selected.poi <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb556-30"><a href="vector-analysis.html#cb556-30"></a>     <span class="dt">col =</span> <span class="st">&quot;sienna4&quot;</span>, </span>
+<span id="cb556-31"><a href="vector-analysis.html#cb556-31"></a>     <span class="dt">pch =</span> <span class="dv">20</span>, </span>
+<span id="cb556-32"><a href="vector-analysis.html#cb556-32"></a>     <span class="dt">cex =</span> <span class="fl">0.5</span>, </span>
+<span id="cb556-33"><a href="vector-analysis.html#cb556-33"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-529-1.png" width="672" /></p>
+<pre><code>## Simple feature collection with 23 features and 3 fields
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: 412142.7 ymin: 6178370 xmax: 412593.7 ymax: 6178811
+## epsg (SRID):    32637
+## proj4string:    +proj=utm +zone=37 +datum=WGS84 +units=m +no_defs
+## First 10 features:
+##               NAME    AMENITY                 geometry count
+## 440      Азия Кафе restaurant POINT (412142.7 6178592)     1
+## 444     Баба Марта restaurant POINT (412154.8 6178720)     1
+## 447        Теремок  fast_food   POINT (412153 6178584)     1
+## 456        Воронеж       cafe POINT (412177.7 6178535)     1
+## 457     Пафф Пойнт  fast_food POINT (412180.6 6178620)     1
+## 458 What&#39;s Up Dog!  fast_food POINT (412181.4 6178606)     1
+## 461        Воронеж restaurant POINT (412183.4 6178538)     1
+## 463       GlowSubs  fast_food POINT (412190.1 6178599)     1
+## 464        Mr. Pit  fast_food POINT (412193.2 6178610)     1
+## 469    Шоколадница       cafe POINT (412204.3 6178570)     1</code></pre>
+<p>В качестве примера аналогичного анализа отберем все пункты питания, находящиеся в пределах 100 метров от реки Москвы:</p>
+<div class="sourceCode" id="cb558"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb558-1"><a href="vector-analysis.html#cb558-1"></a>river =<span class="st"> </span>water <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(NAME <span class="op">==</span><span class="st"> &quot;Москва&quot;</span>)</span>
+<span id="cb558-2"><a href="vector-analysis.html#cb558-2"></a>zone =<span class="st"> </span><span class="kw">st_buffer</span>(river, <span class="dt">dist =</span> <span class="dv">100</span>)</span>
+<span id="cb558-3"><a href="vector-analysis.html#cb558-3"></a></span>
+<span id="cb558-4"><a href="vector-analysis.html#cb558-4"></a>selected.poi =<span class="st"> </span>poi.food[zone, ]</span>
+<span id="cb558-5"><a href="vector-analysis.html#cb558-5"></a></span>
+<span id="cb558-6"><a href="vector-analysis.html#cb558-6"></a><span class="kw">plotBasemap</span>()</span>
+<span id="cb558-7"><a href="vector-analysis.html#cb558-7"></a></span>
+<span id="cb558-8"><a href="vector-analysis.html#cb558-8"></a><span class="kw">plot</span>(zone <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(),</span>
+<span id="cb558-9"><a href="vector-analysis.html#cb558-9"></a>     <span class="dt">col =</span> <span class="kw">adjustcolor</span>(<span class="st">&quot;orange&quot;</span>, <span class="dt">alpha.f =</span> <span class="fl">0.5</span>),</span>
+<span id="cb558-10"><a href="vector-analysis.html#cb558-10"></a>     <span class="dt">border =</span> <span class="st">&quot;orange&quot;</span>,</span>
+<span id="cb558-11"><a href="vector-analysis.html#cb558-11"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb558-12"><a href="vector-analysis.html#cb558-12"></a></span>
+<span id="cb558-13"><a href="vector-analysis.html#cb558-13"></a><span class="kw">plot</span>(river <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb558-14"><a href="vector-analysis.html#cb558-14"></a>     <span class="dt">col =</span> <span class="kw">adjustcolor</span>(<span class="st">&quot;deepskyblue&quot;</span>, <span class="dt">alpha.f =</span> <span class="fl">0.5</span>), </span>
+<span id="cb558-15"><a href="vector-analysis.html#cb558-15"></a>     <span class="dt">border =</span> F,</span>
+<span id="cb558-16"><a href="vector-analysis.html#cb558-16"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb558-17"><a href="vector-analysis.html#cb558-17"></a></span>
+<span id="cb558-18"><a href="vector-analysis.html#cb558-18"></a><span class="kw">plot</span>(selected.poi <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb558-19"><a href="vector-analysis.html#cb558-19"></a>     <span class="dt">col =</span> <span class="st">&quot;firebrick1&quot;</span>, </span>
+<span id="cb558-20"><a href="vector-analysis.html#cb558-20"></a>     <span class="dt">pch =</span> <span class="dv">20</span>, </span>
+<span id="cb558-21"><a href="vector-analysis.html#cb558-21"></a>     <span class="dt">cex =</span> <span class="fl">0.5</span>, </span>
+<span id="cb558-22"><a href="vector-analysis.html#cb558-22"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-531-1.png" width="672" /></p>
+<pre><code>## Simple feature collection with 39 features and 3 fields
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: 411661.2 ymin: 6176685 xmax: 415287.1 ymax: 6178953
+## epsg (SRID):    32637
+## proj4string:    +proj=utm +zone=37 +datum=WGS84 +units=m +no_defs
+## First 10 features:
+##                     NAME    AMENITY                 geometry count
+## 244        Белый журавль restaurant POINT (411661.2 6177029)     1
+## 332       What&#39;s Up Dog!  fast_food POINT (411871.8 6176685)     1
+## 360 Coffee@Парк Горького       cafe POINT (411917.7 6176775)     1
+## 386                Sekta restaurant   POINT (411975 6176908)     1
+## 424             GlowSubs  fast_food POINT (412060.5 6177161)     1
+## 473           Чай &amp; кофе       cafe POINT (412197.5 6177284)     1
+## 479             Академия restaurant POINT (412222.4 6177790)     1
+## 509            Kaffebrod       cafe POINT (412280.3 6177452)     1
+## 512                  Les       cafe POINT (412299.1 6177468)     1
+## 522              Beefbar restaurant POINT (412344.9 6177823)     1</code></pre>
+</div>
+<div id="conc_zones" class="section level2">
+<h2><span class="header-section-number">11.6</span> Анализ конкурентных зон окружения</h2>
+<p>В данном разделе мы решим следующую задачу: разбить всю изучаемую территорию на зоны окружения станций метро и подсчитать количество пунктов питания, попадающих в каждую зону. Полученные зоны должны быть конкурентными: любая точка, находящаяся в зоне окружения конкретной станции метро, должна быть ближе к этой станции, чем к любой другой станции.</p>
+<p>Ранее мы говорили о том, что конкурентные зоны окружения по расстоянию можно реализовать с помощью диаграммы Вороного. Применим функцию <code>voronoi()</code> из пакета <strong>dismo</strong>, чтобы посмотреть, как выглядит диаграмма Вороного для точек станций метро. Нам потребуется для этого конвертировать объекты в тип <code>Spatial</code>, а результат преобразовать вернуть обратно в <code>sf</code>:</p>
+<div class="sourceCode" id="cb560"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb560-1"><a href="vector-analysis.html#cb560-1"></a></span>
+<span id="cb560-2"><a href="vector-analysis.html#cb560-2"></a><span class="co">## АНАЛИЗ КОНКУРЕНТНЫХ ЗОН ОКРУЖЕНИЯ -------------------------------------</span></span>
+<span id="cb560-3"><a href="vector-analysis.html#cb560-3"></a></span>
+<span id="cb560-4"><a href="vector-analysis.html#cb560-4"></a>zones =<span class="st"> </span>stations <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb560-5"><a href="vector-analysis.html#cb560-5"></a><span class="st">  </span><span class="kw">as</span>(<span class="st">&#39;Spatial&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb560-6"><a href="vector-analysis.html#cb560-6"></a><span class="st">  </span>dismo<span class="op">::</span><span class="kw">voronoi</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb560-7"><a href="vector-analysis.html#cb560-7"></a><span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb560-8"><a href="vector-analysis.html#cb560-8"></a><span class="st">  </span><span class="kw">st_crop</span>(frame)</span>
+<span id="cb560-9"><a href="vector-analysis.html#cb560-9"></a>  </span>
+<span id="cb560-10"><a href="vector-analysis.html#cb560-10"></a></span>
+<span id="cb560-11"><a href="vector-analysis.html#cb560-11"></a><span class="kw">plot</span>(zones <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>())</span>
+<span id="cb560-12"><a href="vector-analysis.html#cb560-12"></a><span class="kw">plot</span>(stations, <span class="dt">add =</span> <span class="ot">TRUE</span>, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">col =</span> <span class="st">&#39;black&#39;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-533-1.png" width="672" /></p>
+<p>Для визуализации результатов мы будем использовать метод картодиаграмм (пропорциональных символов), реализованный в функции <code>propSymbolsLayer()</code> пакета <code>cartography</code>. Размером кружка покажем количество пунктов питания, оказавшихся в каждой зоне окружения:</p>
+<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb561-1"><a href="vector-analysis.html#cb561-1"></a><span class="co"># Агрегруем данные по каждой зоне</span></span>
+<span id="cb561-2"><a href="vector-analysis.html#cb561-2"></a>zones.poi =<span class="st"> </span><span class="kw">aggregate</span>(poi.food[<span class="st">&#39;count&#39;</span>], zones, sum)</span>
+<span id="cb561-3"><a href="vector-analysis.html#cb561-3"></a></span>
+<span id="cb561-4"><a href="vector-analysis.html#cb561-4"></a><span class="co"># Визуализируем результат</span></span>
+<span id="cb561-5"><a href="vector-analysis.html#cb561-5"></a></span>
+<span id="cb561-6"><a href="vector-analysis.html#cb561-6"></a><span class="kw">plotBasemap</span>()</span>
+<span id="cb561-7"><a href="vector-analysis.html#cb561-7"></a></span>
+<span id="cb561-8"><a href="vector-analysis.html#cb561-8"></a><span class="kw">plot</span>(zones <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(),</span>
+<span id="cb561-9"><a href="vector-analysis.html#cb561-9"></a>     <span class="dt">col =</span> <span class="kw">adjustcolor</span>(<span class="st">&quot;white&quot;</span>, <span class="dt">alpha.f =</span> <span class="fl">0.5</span>),</span>
+<span id="cb561-10"><a href="vector-analysis.html#cb561-10"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb561-11"><a href="vector-analysis.html#cb561-11"></a></span>
+<span id="cb561-12"><a href="vector-analysis.html#cb561-12"></a><span class="kw">propSymbolsLayer</span>(zones.poi, </span>
+<span id="cb561-13"><a href="vector-analysis.html#cb561-13"></a>                 <span class="dt">var =</span> <span class="st">&quot;count&quot;</span>, </span>
+<span id="cb561-14"><a href="vector-analysis.html#cb561-14"></a>                 <span class="dt">symbols =</span> <span class="st">&quot;circle&quot;</span>,</span>
+<span id="cb561-15"><a href="vector-analysis.html#cb561-15"></a>                 <span class="dt">col =</span> <span class="kw">adjustcolor</span>(<span class="st">&quot;turquoise3&quot;</span>, <span class="dt">alpha.f =</span> <span class="fl">0.5</span>),</span>
+<span id="cb561-16"><a href="vector-analysis.html#cb561-16"></a>                 <span class="dt">border =</span> F,</span>
+<span id="cb561-17"><a href="vector-analysis.html#cb561-17"></a>                 <span class="dt">legend.title.txt =</span> <span class="st">&quot;Заведений</span><span class="ch">\n</span><span class="st">питания&quot;</span>)</span>
+<span id="cb561-18"><a href="vector-analysis.html#cb561-18"></a></span>
+<span id="cb561-19"><a href="vector-analysis.html#cb561-19"></a><span class="kw">text</span>(zones <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_centroid</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_coordinates</span>(), </span>
+<span id="cb561-20"><a href="vector-analysis.html#cb561-20"></a>     <span class="dt">labels =</span> zones.poi<span class="op">$</span>count,</span>
+<span id="cb561-21"><a href="vector-analysis.html#cb561-21"></a>     <span class="dt">col =</span> <span class="st">&quot;turquoise4&quot;</span>,</span>
+<span id="cb561-22"><a href="vector-analysis.html#cb561-22"></a>     <span class="dt">cex =</span> <span class="kw">log</span>(zones.poi<span class="op">$</span>count)<span class="op">/</span><span class="dv">4</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-534-1.png" width="672" /></p>
+</div>
+<div id="transport_zones" class="section level2">
+<h2><span class="header-section-number">11.7</span> Анализ зон транспортной доступности</h2>
+<p>Зоны транспортной доступности представляют из себя зоны окружения объектов, построенные не по евклидову расстоянию, а по расстоянию или времени движения по дорожной сети. В задачах логистики и геомаркетинга зоны транспортной доступности часто называют <em>зонами обслуживания</em> (service area), поскольку используются для определения территории, которую может покрыть объект, предоставляющий некоторые услуги. Например, для пожарного депо зона 10-минутной доступности показывает территорию города, в любую точку которой пожарная машина может доехать <strong>из</strong> данного депо в течение 10 минут. И наоборот, для торгового центра зона 10-минутной доступности показывает территорию города, <strong>из</strong> любой точки которой можно добраться до ТЦ в течение 10 минут. Очевидно, что продолжительность прямого и обратного маршрута неодинакова, на нее может оказывать влияние схема движения, приоритет дорог и так далее.</p>
+<p>Задача, которую мы решим в данном разделе, звучит так: определить все заведения питания, находящиеся в 7 минутах езды от Центрального детского магазина. Для построения зоны доступности мы будем использовать пакет <a href="https://cran.r-project.org/web/packages/osrm/index.html">osrm</a>, предоставляющий интерфейс <strong>R</strong> к онлайн-библиотеке маршрутизации <a href="http://project-osrm.org">OSRM</a>, работающей на основе данных OSM. Для построения зоны доступности (изохроны) нам понадобится функция <code>osrmIsochrone()</code> из данного пакета.</p>
+<blockquote>
+<p>Внимание: для выполнения этого раздела модуля необходимо подключение к Интернету</p>
+</blockquote>
+<p>Поскольку данные, используемые в настоящем модуле, предварительно были конвертированы в проекцию <a href="https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system">UTM</a> и хранятся в метрах, а OSRM решает все задачи в географических координатах (широте и долготе относительно эллипсоида <a href="https://en.wikipedia.org/wiki/World_Geodetic_System">WGS84</a>), нам необходимо научиться работать с проекциями данных и преобразовывать системы координат между собой.</p>
+<div class="sourceCode" id="cb562"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb562-1"><a href="vector-analysis.html#cb562-1"></a></span>
+<span id="cb562-2"><a href="vector-analysis.html#cb562-2"></a><span class="co">## АНАЛИЗ ЗОН ТРАНСПОРТНОЙ ДОСТУПНОСТИ -------------------------------------</span></span>
+<span id="cb562-3"><a href="vector-analysis.html#cb562-3"></a></span>
+<span id="cb562-4"><a href="vector-analysis.html#cb562-4"></a><span class="co"># Инициализируем систему координат WGS84, используемую в OSRM</span></span>
+<span id="cb562-5"><a href="vector-analysis.html#cb562-5"></a>WGS84 =<span class="st"> </span><span class="kw">st_crs</span>(<span class="dv">4326</span>)</span>
+<span id="cb562-6"><a href="vector-analysis.html#cb562-6"></a></span>
+<span id="cb562-7"><a href="vector-analysis.html#cb562-7"></a><span class="co"># Извлечем информацию о системе координат исходных точек</span></span>
+<span id="cb562-8"><a href="vector-analysis.html#cb562-8"></a>UTM =<span class="st"> </span><span class="kw">st_crs</span>(poi)</span>
+<span id="cb562-9"><a href="vector-analysis.html#cb562-9"></a></span>
+<span id="cb562-10"><a href="vector-analysis.html#cb562-10"></a><span class="co"># Выберем целевой объект</span></span>
+<span id="cb562-11"><a href="vector-analysis.html#cb562-11"></a>psel =<span class="st"> </span>poi <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(NAME <span class="op">==</span><span class="st"> &quot;Центральный детский магазин&quot;</span> <span class="op">&amp;</span><span class="st"> </span>SHOP <span class="op">==</span><span class="st"> &quot;toys&quot;</span>)</span>
+<span id="cb562-12"><a href="vector-analysis.html#cb562-12"></a></span>
+<span id="cb562-13"><a href="vector-analysis.html#cb562-13"></a><span class="co"># Преобразуем координаты точки в WGS84</span></span>
+<span id="cb562-14"><a href="vector-analysis.html#cb562-14"></a>psel.wgs =<span class="st"> </span><span class="kw">st_transform</span>(psel, WGS84)</span>
+<span id="cb562-15"><a href="vector-analysis.html#cb562-15"></a></span>
+<span id="cb562-16"><a href="vector-analysis.html#cb562-16"></a><span class="co"># Получаем 5-минутную зону транспортной доступности</span></span>
+<span id="cb562-17"><a href="vector-analysis.html#cb562-17"></a><span class="co"># с помощью пакета osrm</span></span>
+<span id="cb562-18"><a href="vector-analysis.html#cb562-18"></a>service_area =<span class="st"> </span><span class="kw">osrmIsochrone</span>(<span class="dt">loc =</span> <span class="kw">as</span>(psel.wgs, <span class="st">&#39;Spatial&#39;</span>), <span class="dt">breaks =</span> <span class="dv">7</span>)</span>
+<span id="cb562-19"><a href="vector-analysis.html#cb562-19"></a></span>
+<span id="cb562-20"><a href="vector-analysis.html#cb562-20"></a><span class="co"># Преобразуем зону обратно в UTM для дальнейших операций</span></span>
+<span id="cb562-21"><a href="vector-analysis.html#cb562-21"></a>service_area_utm =<span class="st"> </span><span class="kw">st_transform</span>(<span class="kw">st_as_sf</span>(service_area), UTM)</span>
+<span id="cb562-22"><a href="vector-analysis.html#cb562-22"></a></span>
+<span id="cb562-23"><a href="vector-analysis.html#cb562-23"></a><span class="co"># Отбираем точки</span></span>
+<span id="cb562-24"><a href="vector-analysis.html#cb562-24"></a>selected_poi =<span class="st"> </span>poi.food[service_area_utm, ]</span>
+<span id="cb562-25"><a href="vector-analysis.html#cb562-25"></a></span>
+<span id="cb562-26"><a href="vector-analysis.html#cb562-26"></a><span class="co"># Визуализируем результат</span></span>
+<span id="cb562-27"><a href="vector-analysis.html#cb562-27"></a><span class="kw">plotBasemap</span>()</span>
+<span id="cb562-28"><a href="vector-analysis.html#cb562-28"></a></span>
+<span id="cb562-29"><a href="vector-analysis.html#cb562-29"></a><span class="kw">plot</span>(service_area_utm <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(),</span>
+<span id="cb562-30"><a href="vector-analysis.html#cb562-30"></a>     <span class="dt">col =</span> <span class="kw">adjustcolor</span>(<span class="st">&quot;violetred3&quot;</span>, <span class="dt">alpha.f =</span> <span class="fl">0.2</span>),</span>
+<span id="cb562-31"><a href="vector-analysis.html#cb562-31"></a>     <span class="dt">border =</span> <span class="st">&quot;violetred3&quot;</span>,</span>
+<span id="cb562-32"><a href="vector-analysis.html#cb562-32"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb562-33"><a href="vector-analysis.html#cb562-33"></a></span>
+<span id="cb562-34"><a href="vector-analysis.html#cb562-34"></a><span class="kw">plot</span>(selected_poi  <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb562-35"><a href="vector-analysis.html#cb562-35"></a>     <span class="dt">col =</span> <span class="st">&quot;violetred3&quot;</span>, </span>
+<span id="cb562-36"><a href="vector-analysis.html#cb562-36"></a>     <span class="dt">pch =</span> <span class="dv">20</span>, </span>
+<span id="cb562-37"><a href="vector-analysis.html#cb562-37"></a>     <span class="dt">cex =</span> <span class="fl">0.5</span>, </span>
+<span id="cb562-38"><a href="vector-analysis.html#cb562-38"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb562-39"><a href="vector-analysis.html#cb562-39"></a></span>
+<span id="cb562-40"><a href="vector-analysis.html#cb562-40"></a><span class="kw">plot</span>(psel <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb562-41"><a href="vector-analysis.html#cb562-41"></a>     <span class="dt">col =</span> <span class="st">&quot;violetred4&quot;</span>, </span>
+<span id="cb562-42"><a href="vector-analysis.html#cb562-42"></a>     <span class="dt">pch =</span> <span class="dv">20</span>, </span>
+<span id="cb562-43"><a href="vector-analysis.html#cb562-43"></a>     <span class="dt">cex =</span> <span class="dv">4</span>, </span>
+<span id="cb562-44"><a href="vector-analysis.html#cb562-44"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-535-1.png" width="672" /></p>
+<p>Итак, в данном разделе мы научились строить зоны транспортной доступности в виде полигонов, ограниченных изохроной времени движения.</p>
+</div>
+<div id="routes" class="section level2">
+<h2><span class="header-section-number">11.8</span> Построение маршрутов и матриц времени движения</h2>
+<p>В этом разделе модуля пространственного анализа мы посмотрим, каким образом можно построить оптимальный маршрут между двумя точками, а также получить матрицу времени движения между точками (на примере станций метро). Для решения этих задач используем следующие функции пакета osrm:</p>
+<ul>
+<li><code>osrmRoute(src, dest)</code> — строит оптимальный маршрут между точками <code>src</code> и <code>dest</code></li>
+<li><code>osrmTable(loc)</code> — строит матрицу времени движения между всеми парами точек в <code>loc</code></li>
+</ul>
+<p>Так же, как и в предыдущем разделе, нам понадобятся преобразования координат. Построим оптимальный маршрут между книжным магазином “Молодая Гвардия” на Полянке и чебуречной “Дружба” на метро Сухаревская:</p>
+<div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb563-1"><a href="vector-analysis.html#cb563-1"></a></span>
+<span id="cb563-2"><a href="vector-analysis.html#cb563-2"></a><span class="co">## ПОСТРОЕНИЕ МАРШРУТОВ -------------------------------------</span></span>
+<span id="cb563-3"><a href="vector-analysis.html#cb563-3"></a></span>
+<span id="cb563-4"><a href="vector-analysis.html#cb563-4"></a><span class="co"># Выбираем и проецируем начальную точку</span></span>
+<span id="cb563-5"><a href="vector-analysis.html#cb563-5"></a>origin =<span class="st"> </span>poi <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(NAME <span class="op">==</span><span class="st"> &#39;Молодая Гвардия&#39;</span>)</span>
+<span id="cb563-6"><a href="vector-analysis.html#cb563-6"></a>origin_wgs =<span class="st"> </span><span class="kw">st_transform</span>(origin, WGS84)</span>
+<span id="cb563-7"><a href="vector-analysis.html#cb563-7"></a>  </span>
+<span id="cb563-8"><a href="vector-analysis.html#cb563-8"></a><span class="co"># Выбираем и проецируем конечную точку</span></span>
+<span id="cb563-9"><a href="vector-analysis.html#cb563-9"></a>destination =<span class="st"> </span>poi <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(NAME <span class="op">==</span><span class="st"> &#39;Чебуречная &quot;Дружба&quot;&#39;</span>)</span>
+<span id="cb563-10"><a href="vector-analysis.html#cb563-10"></a>destination_wgs =<span class="st"> </span><span class="kw">st_transform</span>(destination, WGS84)</span>
+<span id="cb563-11"><a href="vector-analysis.html#cb563-11"></a></span>
+<span id="cb563-12"><a href="vector-analysis.html#cb563-12"></a><span class="co"># Строим маршрут</span></span>
+<span id="cb563-13"><a href="vector-analysis.html#cb563-13"></a>route =<span class="st"> </span><span class="kw">osrmRoute</span>(<span class="kw">as</span>(origin_wgs, <span class="st">&#39;Spatial&#39;</span>), </span>
+<span id="cb563-14"><a href="vector-analysis.html#cb563-14"></a>                  <span class="kw">as</span>(destination_wgs, <span class="st">&#39;Spatial&#39;</span>), </span>
+<span id="cb563-15"><a href="vector-analysis.html#cb563-15"></a>                  <span class="dt">overview =</span> <span class="st">&quot;full&quot;</span>, <span class="co"># запретить генерализацию линий</span></span>
+<span id="cb563-16"><a href="vector-analysis.html#cb563-16"></a>                  <span class="dt">sp =</span> <span class="ot">TRUE</span>) <span class="co"># вернуть результат в виде объекта класса Spatial</span></span>
+<span id="cb563-17"><a href="vector-analysis.html#cb563-17"></a></span>
+<span id="cb563-18"><a href="vector-analysis.html#cb563-18"></a><span class="co"># Преобразуем результат обратно в UTM</span></span>
+<span id="cb563-19"><a href="vector-analysis.html#cb563-19"></a>route.utm =<span class="st"> </span><span class="kw">st_transform</span>(route <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_as_sf</span>(), UTM)</span>
+<span id="cb563-20"><a href="vector-analysis.html#cb563-20"></a></span>
+<span id="cb563-21"><a href="vector-analysis.html#cb563-21"></a><span class="co"># Визуализируем результат:</span></span>
+<span id="cb563-22"><a href="vector-analysis.html#cb563-22"></a><span class="kw">plotBasemap</span>()</span>
+<span id="cb563-23"><a href="vector-analysis.html#cb563-23"></a></span>
+<span id="cb563-24"><a href="vector-analysis.html#cb563-24"></a><span class="kw">plot</span>(route.utm <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(),</span>
+<span id="cb563-25"><a href="vector-analysis.html#cb563-25"></a>     <span class="dt">lwd =</span> <span class="dv">3</span>,</span>
+<span id="cb563-26"><a href="vector-analysis.html#cb563-26"></a>     <span class="dt">col =</span> <span class="st">&quot;orange&quot;</span>,</span>
+<span id="cb563-27"><a href="vector-analysis.html#cb563-27"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb563-28"><a href="vector-analysis.html#cb563-28"></a></span>
+<span id="cb563-29"><a href="vector-analysis.html#cb563-29"></a><span class="kw">plot</span>(origin <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb563-30"><a href="vector-analysis.html#cb563-30"></a>     <span class="dt">col =</span> <span class="st">&quot;tomato3&quot;</span>, </span>
+<span id="cb563-31"><a href="vector-analysis.html#cb563-31"></a>     <span class="dt">pch =</span> <span class="dv">20</span>, </span>
+<span id="cb563-32"><a href="vector-analysis.html#cb563-32"></a>     <span class="dt">cex =</span> <span class="dv">3</span>, </span>
+<span id="cb563-33"><a href="vector-analysis.html#cb563-33"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb563-34"><a href="vector-analysis.html#cb563-34"></a><span class="kw">text</span>(origin <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_coordinates</span>(),</span>
+<span id="cb563-35"><a href="vector-analysis.html#cb563-35"></a>     <span class="dt">labels =</span> <span class="st">&quot;O&quot;</span>,</span>
+<span id="cb563-36"><a href="vector-analysis.html#cb563-36"></a>     <span class="dt">col =</span> <span class="st">&quot;tomato4&quot;</span>,</span>
+<span id="cb563-37"><a href="vector-analysis.html#cb563-37"></a>     <span class="dt">cex =</span> <span class="fl">0.5</span>)</span>
+<span id="cb563-38"><a href="vector-analysis.html#cb563-38"></a></span>
+<span id="cb563-39"><a href="vector-analysis.html#cb563-39"></a><span class="kw">plot</span>(destination <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), </span>
+<span id="cb563-40"><a href="vector-analysis.html#cb563-40"></a>     <span class="dt">col =</span> <span class="st">&quot;tomato&quot;</span>, </span>
+<span id="cb563-41"><a href="vector-analysis.html#cb563-41"></a>     <span class="dt">pch =</span> <span class="dv">20</span>, </span>
+<span id="cb563-42"><a href="vector-analysis.html#cb563-42"></a>     <span class="dt">cex =</span> <span class="dv">4</span>, </span>
+<span id="cb563-43"><a href="vector-analysis.html#cb563-43"></a>     <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb563-44"><a href="vector-analysis.html#cb563-44"></a><span class="kw">text</span>(destination <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_coordinates</span>(),</span>
+<span id="cb563-45"><a href="vector-analysis.html#cb563-45"></a>     <span class="dt">labels =</span> <span class="st">&quot;D&quot;</span>,</span>
+<span id="cb563-46"><a href="vector-analysis.html#cb563-46"></a>     <span class="dt">col =</span> <span class="st">&quot;tomato4&quot;</span>,</span>
+<span id="cb563-47"><a href="vector-analysis.html#cb563-47"></a>     <span class="dt">cex =</span> <span class="fl">0.7</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-536-1.png" width="672" /></p>
+</div>
+<div id="qtasks_vector_analysis" class="section level2">
+<h2><span class="header-section-number">11.9</span> Контрольные вопросы и упражнения</h2>
+<div id="questions_vector_analysis" class="section level3">
+<h3><span class="header-section-number">11.9.1</span> Вопросы</h3>
+<ol style="list-style-type: decimal">
+<li>Перечислите три основных вида пространственных отношений, приведите их примеры.</li>
+<li>Чем отличаются контекстные и целевые объекты?</li>
+<li>В чем заключается отличие абсолютных и конкурентных зон окружения?</li>
+<li>Какая функция пакета sf позволяет вычислять расстояния между объектами? Как с помощью полученного результата определить для каждого объекта из множества <span class="math inline">\(A\)</span> определить ближайший к нему объект из множества <span class="math inline">\(B\)</span>?</li>
+<li>Опишите последовательность действий, которую необходимо выполнить для подсчета количества точечных объектов по заданной сетке полигонов.</li>
+<li>С помощью какой функции можно построить буферную зону вокруг пространственного объекта? Есть ли ограничения на размерность буферизуемого пространственного объекта (точка, линия, полигон)? Можно ли построить буфер вокруг поверхности?</li>
+<li>Какая геометрическая структура используется для построения конкурентных зон окружения?</li>
+<li>Что такое OSRM?</li>
+<li>Какими средствами можно построить зоны транспортной доступности и маршруты в среде R? В какой системе координат должны быть точки, участвующие в сетевом анализе?</li>
+<li>Опишите возможности и основные функции пакета <code>cartography</code>, с помощью которых можно строить тематические карты способами картограмм, картодиаграмм и линейных знаков, а также легенды к ним.</li>
+</ol>
+</div>
+<div id="tasks_vector_analysis" class="section level3">
+<h3><span class="header-section-number">11.9.2</span> Упражнения</h3>
+<table>
+<tbody>
+<tr class="odd">
+<td><em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, 2020. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a></td>
+</tr>
+</tbody>
+</table>
+
+<div id="refs" class="references">
+<div>
+<p>Cleveland, William S. 1979. “Robust Locally Weighted Regression and Smoothing Scatterplots.” <em>Journal of the American Statistical Association</em> 74 (368): 829. <a href="https://doi.org/10.2307/2286407">https://doi.org/10.2307/2286407</a>.</p>
+</div>
+<div>
+<p>Mardia, K V, and P E Jupp. 2000. <em>Directional Statistics</em>. Chichester New York: Wiley.</p>
+</div>
+<div>
+<p>Oliveira, Ma’ria, Rosa M. Crujeiras, and Alberto Rod’riguez-Casal. 2014. “NPCirc : An R Package for Nonparametric Circular Methods.” <em>Journal of Statistical Software</em> 61 (9): 1–26. <a href="https://doi.org/10.18637/jss.v061.i09">https://doi.org/10.18637/jss.v061.i09</a>.</p>
+</div>
+<div>
+<p>Oliveira, M., R. M. Crujeiras, and A. Rod’riguez-Casal. 2012. “A Plug-in Rule for Bandwidth Selection in Circular Density Estimation.” <em>Computational Statistics and Data Analysis</em> 56 (12): 3898–3908. <a href="https://doi.org/10.1016/j.csda.2012.05.021">https://doi.org/10.1016/j.csda.2012.05.021</a>.</p>
+</div>
+<div>
+<p>Pewsey, Arthur, Markus Neuhäuser, and Graeme D. Ruxton. 2013. <em>Circular Statistics in R</em>. Oxford New York: Oxford University Press.</p>
+</div>
+<div>
+<p>Wickham, Hadley. 2019. <em>Advanced R</em>. 2nd ed. Chapman and Hall/CRC.</p>
+</div>
+<div>
+<p>Прохоров, Ю. С. 2011. “Математическая статистика.” In <em>Большая российская энциклопедия. Том 19</em>, 349–52. Издательство «Большая российская энциклопедия».</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="thematic-mapping-new.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"edit": "https://github.com/tsamsonov/r-geo-course/edit/master/%s"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

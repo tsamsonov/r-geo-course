@@ -107,30 +107,14 @@ plot(poi %>% st_geometry(),
 ```
 
 Теперь приступим к изучению данных, хранящихся в слое `poi` (от англ. POI --- Point Of Interest). Данный слой содержит все точечные маркеры OSM, которыми были отмечены на карте объекты, представляющие (по мнению создателей данных) интерес для пользователей. В POI включаются самые разнообразные объекты, такие как: объекты сферы услуг (amenity), места для отдыха (leisure), офисные здания (office), магазины и торговые центры (shop), туристические достопримечательности (tourism), спортивные объекты (sport), примечательные инженерные сооружения (man_made). В наших данных информация разнесена по соответствующим полям, каждый объект снабжен уникальным идентификатором:
-```{r, collapse = TRUE, eval=FALSE}
-View(poi)
-```
-```{r, echo = FALSE, purl = FALSE}
-rmarkdown::paged_table(poi)
-```
 
-
-```{r, echo = FALSE, purl = FALSE, eval=FALSE}
-datatable(poi, options = list(pageLength = 10, scrollX = TRUE))
+```{r, echo = FALSE, purl = FALSE, paged.print = TRUE}
+poi
 ```
 
 Заведения общественного питания по классификатору OSM относятся к классу _amenity_. Поскольку данный классификатор представляет собой множество номинальных (категориальных) данных, можно начать изучение состава данных с помощью таблицы частот, которая строится средствами функции `table()`:
-```{r, collapse = TRUE}
-stats = data.frame(table(poi$AMENITY))
-```
-```{r, eval=FALSE, collapse = TRUE}
-View(stats)
-```
-```{r, echo = FALSE, purl = FALSE}
-rmarkdown::paged_table(stats)
-```
-```{r, echo = FALSE, purl = FALSE, eval=FALSE}
-datatable(stats, options = list(pageLength = 10, scrollX = TRUE))
+```{r, collapse = TRUE, paged.print = TRUE}
+data.frame(table(poi$AMENITY))
 ```
 
 Для дальнейшего анализа отберем из всего множества объектов сферы услуг заведения, где можно поесть: рестораны, кафе, бары, пабы и заведения быстрого питания (фастфуд). В классификаторе OSM эти заведения имеют тип _restaurant_, _bar_, _cafe_, _pub_ и _fast\_food_. Для отбора нужных строк и столбцов используем dplyr: 
@@ -262,9 +246,7 @@ legendGradLines(title.txt = "Пункты питания",
 Формально топологические отношения в ГИС описываются с помощью [модели девяти пересечений DE-9IM](https://en.wikipedia.org/wiki/DE-9IM), которая была рассмотрена в предыдущей лекции.
 
 ```{r}
-
 ## АНАЛИЗ ВЗАИМНОГО ПОЛОЖЕНИЯ -------------------------------------
-
 poi.food = poi.food %>% mutate(count = 1)
 rayons.poi = aggregate(poi.food['count'], rayons, sum)
 ```
@@ -341,7 +323,6 @@ legendChoro(breaks = intervals$brks,
 Определим функцию `plotBasemap()`, которая будет рисовать объекты картографической основы, ее мы будем использовать далее неоднократно.
 
 ```{r, collapse=TRUE}
-
 ## АНАЛИЗ АБСОЛЮТНЫХ ЗОН ОКРУЖЕНИЯ -------------------------------------
 
 # Функция отвечает за рисование базовой карты
@@ -412,15 +393,9 @@ plot(selected.poi %>% st_geometry(),
      add = TRUE)
 ```
 
-```{r, eval=FALSE}
+```{r, echo = FALSE, purl = FALSE, paged.print = TRUE}
 # Найденные объекты в табличном представлении:
-View(selected.poi)
-```
-```{r, echo = FALSE, purl = FALSE}
-rmarkdown::paged_table(selected.poi)
-```
-```{r, echo = FALSE, purl = FALSE, eval=FALSE}
-datatable(selected.poi, options = list(pageLength = 10, scrollX = TRUE))
+selected.poi
 ```
 
 В качестве примера аналогичного анализа отберем все пункты питания, находящиеся в пределах 100 метров от реки Москвы:
@@ -449,15 +424,9 @@ plot(selected.poi %>% st_geometry(),
      add = TRUE)
 ```
 
-```{r, eval = FALSE}
+```{r, echo = FALSE, purl = FALSE, paged.print = TRUE}
 # Найденные объекты в табличном представлении:
-View(selected.poi)
-```
-```{r, echo = FALSE, purl = FALSE}
-rmarkdown::paged_table(selected.poi)
-```
-```{r, echo = FALSE, purl = FALSE, eval = FALSE}
-datatable(selected.poi, options = list(pageLength = 10, scrollX = TRUE))
+selected.poi
 ```
 
 ## Анализ конкурентных зон окружения  {#conc_zones}
