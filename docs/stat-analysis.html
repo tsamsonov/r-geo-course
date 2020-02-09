@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Глава 7 Основы статистики | Визуализация и анализ географических данных на языке R</title>
+  <meta name="description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Глава 7 Основы статистики | Визуализация и анализ географических данных на языке R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  <meta name="github-repo" content="tsamsonov/r-geo-course" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Глава 7 Основы статистики | Визуализация и анализ географических данных на языке R" />
+  
+  <meta name="twitter:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  
+
+<meta name="author" content="Тимофей Самсонов" />
+
+
+<meta name="date" content="2020-02-10" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="advgraphics.html"/>
+<link rel="next" href="circular.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.11/datatables.js"></script>
+<link href="libs/dt-core-1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.19/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.19/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Визуализация и анализ географических данных на языке R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Введение</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#программное-обеспечение"><i class="fa fa-check"></i>Программное обеспечение</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#установка-и-подключение-пакетов"><i class="fa fa-check"></i>Установка и подключение пакетов</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#выполнение-программного-кода"><i class="fa fa-check"></i>Выполнение программного кода</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#установка-рабочей-директории"><i class="fa fa-check"></i>Установка рабочей директории</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#диагностические-функции"><i class="fa fa-check"></i>Диагностические функции</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#получение-справки"><i class="fa fa-check"></i>Получение справки</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#комментарии"><i class="fa fa-check"></i>Комментарии</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#стандарт-оформления-кода-на-r"><i class="fa fa-check"></i>Стандарт оформления кода на R</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#зарезервированные-слова"><i class="fa fa-check"></i>Зарезервированные слова</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#названия-переменных"><i class="fa fa-check"></i>Названия переменных</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#названия-специальных-символов"><i class="fa fa-check"></i>Названия специальных символов</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#ссылка-на-пособие"><i class="fa fa-check"></i>Ссылка на пособие</a></li>
+</ul></li>
+<li class="part"><span><b>I Основы языка R</b></span></li>
+<li class="chapter" data-level="1" data-path="data-types.html"><a href="data-types.html"><i class="fa fa-check"></i><b>1</b> Типы данных, условия, ввод и вывод</a><ul>
+<li class="chapter" data-level="1.1" data-path="data-types.html"><a href="data-types.html#data_types"><i class="fa fa-check"></i><b>1.1</b> Типы данных</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="data-types.html"><a href="data-types.html#numbers"><i class="fa fa-check"></i><b>1.1.1</b> Числа</a></li>
+<li class="chapter" data-level="1.1.2" data-path="data-types.html"><a href="data-types.html#strings"><i class="fa fa-check"></i><b>1.1.2</b> Строки</a></li>
+<li class="chapter" data-level="1.1.3" data-path="data-types.html"><a href="data-types.html#dates"><i class="fa fa-check"></i><b>1.1.3</b> Даты</a></li>
+<li class="chapter" data-level="1.1.4" data-path="data-types.html"><a href="data-types.html#booleans"><i class="fa fa-check"></i><b>1.1.4</b> Логические</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="data-types.html"><a href="data-types.html#manipulations"><i class="fa fa-check"></i><b>1.2</b> Манипуляции с типами</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="data-types.html"><a href="data-types.html#determine_data_type"><i class="fa fa-check"></i><b>1.2.1</b> Определение типа данных</a></li>
+<li class="chapter" data-level="1.2.2" data-path="data-types.html"><a href="data-types.html#conversion"><i class="fa fa-check"></i><b>1.2.2</b> Преобразование типов данных</a></li>
+<li class="chapter" data-level="1.2.3" data-path="data-types.html"><a href="data-types.html#check_types"><i class="fa fa-check"></i><b>1.2.3</b> Проверка типов данных и пустых значений</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="data-types.html"><a href="data-types.html#read_write_console"><i class="fa fa-check"></i><b>1.3</b> Ввод и вывод данных в консоли</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="data-types.html"><a href="data-types.html#read_console"><i class="fa fa-check"></i><b>1.3.1</b> Ввод данных</a></li>
+<li class="chapter" data-level="1.3.2" data-path="data-types.html"><a href="data-types.html#write_console"><i class="fa fa-check"></i><b>1.3.2</b> Вывод данных</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="data-types.html"><a href="data-types.html#ifelse"><i class="fa fa-check"></i><b>1.4</b> Условный оператор</a></li>
+<li class="chapter" data-level="1.5" data-path="data-types.html"><a href="data-types.html#switch"><i class="fa fa-check"></i><b>1.5</b> Оператор переключения</a></li>
+<li class="chapter" data-level="1.6" data-path="data-types.html"><a href="data-types.html#stop"><i class="fa fa-check"></i><b>1.6</b> Прерывание программы</a></li>
+<li class="chapter" data-level="1.7" data-path="data-types.html"><a href="data-types.html#basics-detail"><i class="fa fa-check"></i><b>1.7</b> Технические детали</a></li>
+<li class="chapter" data-level="1.8" data-path="data-types.html"><a href="data-types.html#review"><i class="fa fa-check"></i><b>1.8</b> Краткий обзор</a></li>
+<li class="chapter" data-level="1.9" data-path="data-types.html"><a href="data-types.html#questions_tasks_basics"><i class="fa fa-check"></i><b>1.9</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="1.9.1" data-path="data-types.html"><a href="data-types.html#questions_basics"><i class="fa fa-check"></i><b>1.9.1</b> Вопросы</a></li>
+<li class="chapter" data-level="1.9.2" data-path="data-types.html"><a href="data-types.html#tasks_basic"><i class="fa fa-check"></i><b>1.9.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-structures.html"><a href="data-structures.html"><i class="fa fa-check"></i><b>2</b> Структуры данных и циклы</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-structures.html"><a href="data-structures.html#data_structures_homo"><i class="fa fa-check"></i><b>2.1</b> Однородные структуры данных</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="data-structures.html"><a href="data-structures.html#vectors"><i class="fa fa-check"></i><b>2.1.1</b> Векторы</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-structures.html"><a href="data-structures.html#matrices"><i class="fa fa-check"></i><b>2.1.2</b> Матрицы</a></li>
+<li class="chapter" data-level="2.1.3" data-path="data-structures.html"><a href="data-structures.html#arrays"><i class="fa fa-check"></i><b>2.1.3</b> Массивы</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-structures.html"><a href="data-structures.html#heterogeneous"><i class="fa fa-check"></i><b>2.2</b> Разнородные структуры данных</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="data-structures.html"><a href="data-structures.html#data_frames"><i class="fa fa-check"></i><b>2.2.1</b> Фреймы данных</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-structures.html"><a href="data-structures.html#lists"><i class="fa fa-check"></i><b>2.2.2</b> Списки</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="data-structures.html"><a href="data-structures.html#factors"><i class="fa fa-check"></i><b>2.3</b> Факторы</a></li>
+<li class="chapter" data-level="2.4" data-path="data-structures.html"><a href="data-structures.html#vector_desc"><i class="fa fa-check"></i><b>2.4</b> Описание структуры данных</a></li>
+<li class="chapter" data-level="2.5" data-path="data-structures.html"><a href="data-structures.html#cycles"><i class="fa fa-check"></i><b>2.5</b> Циклы</a></li>
+<li class="chapter" data-level="2.6" data-path="data-structures.html"><a href="data-structures.html#structures-detail"><i class="fa fa-check"></i><b>2.6</b> Технические детали</a></li>
+<li class="chapter" data-level="2.7" data-path="data-structures.html"><a href="data-structures.html#review_structures"><i class="fa fa-check"></i><b>2.7</b> Краткий обзор</a></li>
+<li class="chapter" data-level="2.8" data-path="data-structures.html"><a href="data-structures.html#questions_tasks_vectors"><i class="fa fa-check"></i><b>2.8</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="2.8.1" data-path="data-structures.html"><a href="data-structures.html#questions_vectors"><i class="fa fa-check"></i><b>2.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="2.8.2" data-path="data-structures.html"><a href="data-structures.html#tasks_vectors"><i class="fa fa-check"></i><b>2.8.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="tables.html"><a href="tables.html"><i class="fa fa-check"></i><b>3</b> Табличные данные</a><ul>
+<li class="chapter" data-level="3.1" data-path="tables.html"><a href="tables.html#tables_prerequisites"><i class="fa fa-check"></i><b>3.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="3.2" data-path="tables.html"><a href="tables.html#tables_datastructures"><i class="fa fa-check"></i><b>3.2</b> Структуры данных</a></li>
+<li class="chapter" data-level="3.3" data-path="tables.html"><a href="tables.html#tables_reading"><i class="fa fa-check"></i><b>3.3</b> Чтение</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="tables.html"><a href="tables.html#tables_reading_inner"><i class="fa fa-check"></i><b>3.3.1</b> Встроенные данные</a></li>
+<li class="chapter" data-level="3.3.2" data-path="tables.html"><a href="tables.html#tables_reading_text"><i class="fa fa-check"></i><b>3.3.2</b> Текстовые таблицы</a></li>
+<li class="chapter" data-level="3.3.3" data-path="tables.html"><a href="tables.html#tables_reading_excel"><i class="fa fa-check"></i><b>3.3.3</b> Таблицы Microsoft Excel</a></li>
+<li class="chapter" data-level="3.3.4" data-path="tables.html"><a href="tables.html#tables_reading_params"><i class="fa fa-check"></i><b>3.3.4</b> Параметры</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="tables.html"><a href="tables.html#tables_view"><i class="fa fa-check"></i><b>3.4</b> Просмотр</a></li>
+<li class="chapter" data-level="3.5" data-path="tables.html"><a href="tables.html#tables_elements"><i class="fa fa-check"></i><b>3.5</b> Столбцы, строки и ячейки</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="tables.html"><a href="tables.html#tables_elements_names"><i class="fa fa-check"></i><b>3.5.1</b> Названия</a></li>
+<li class="chapter" data-level="3.5.2" data-path="tables.html"><a href="tables.html#tables_elements_columns"><i class="fa fa-check"></i><b>3.5.2</b> Обращение к столбцам</a></li>
+<li class="chapter" data-level="3.5.3" data-path="tables.html"><a href="tables.html#tables_elements_rows"><i class="fa fa-check"></i><b>3.5.3</b> Обращение к строкам</a></li>
+<li class="chapter" data-level="3.5.4" data-path="tables.html"><a href="tables.html#tables_elements_cells"><i class="fa fa-check"></i><b>3.5.4</b> Обращение к ячейкам</a></li>
+</ul></li>
+<li class="chapter" data-level="3.6" data-path="tables.html"><a href="tables.html#tables_manipuilations"><i class="fa fa-check"></i><b>3.6</b> Преобразования</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="tables.html"><a href="tables.html#tables_manipiulations_grammar"><i class="fa fa-check"></i><b>3.6.1</b> Грамматика манипуляций</a></li>
+<li class="chapter" data-level="3.6.2" data-path="tables.html"><a href="tables.html#tables_manipiulations_pipeline"><i class="fa fa-check"></i><b>3.6.2</b> Конвейер манипуляций</a></li>
+<li class="chapter" data-level="3.6.3" data-path="tables.html"><a href="tables.html#tables_tidy"><i class="fa fa-check"></i><b>3.6.3</b> Преобразование структуры</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="tables.html"><a href="tables.html#tables_join"><i class="fa fa-check"></i><b>3.7</b> Соединение</a></li>
+<li class="chapter" data-level="3.8" data-path="tables.html"><a href="tables.html#tables_write"><i class="fa fa-check"></i><b>3.8</b> Запись</a></li>
+<li class="chapter" data-level="3.9" data-path="tables.html"><a href="tables.html#tables_rules"><i class="fa fa-check"></i><b>3.9</b> Рекомендации по подготовке таблиц для чтения в R</a></li>
+<li class="chapter" data-level="3.10" data-path="tables.html"><a href="tables.html#tables_review"><i class="fa fa-check"></i><b>3.10</b> Краткий обзор</a></li>
+<li class="chapter" data-level="3.11" data-path="tables.html"><a href="tables.html#tables_questions"><i class="fa fa-check"></i><b>3.11</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="3.11.1" data-path="tables.html"><a href="tables.html#tables_questions_questions"><i class="fa fa-check"></i><b>3.11.1</b> Вопросы</a></li>
+<li class="chapter" data-level="3.11.2" data-path="tables.html"><a href="tables.html#tables_questions_tasks"><i class="fa fa-check"></i><b>3.11.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="tech.html"><a href="tech.html"><i class="fa fa-check"></i><b>4</b> Техники программирования</a><ul>
+<li class="chapter" data-level="4.1" data-path="tech.html"><a href="tech.html#tech-fun"><i class="fa fa-check"></i><b>4.1</b> Функциональное программирование</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="tech.html"><a href="tech.html#tech-fun-functions"><i class="fa fa-check"></i><b>4.1.1</b> Функции</a></li>
+<li class="chapter" data-level="4.1.2" data-path="tech.html"><a href="tech.html#tech-fun-functionals"><i class="fa fa-check"></i><b>4.1.2</b> Функционалы</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="tech.html"><a href="tech.html#tech-meta"><i class="fa fa-check"></i><b>4.2</b> Метапрограммирование</a></li>
+<li class="chapter" data-level="4.3" data-path="tech.html"><a href="tech.html#tech_review"><i class="fa fa-check"></i><b>4.3</b> Краткий обзор</a></li>
+<li class="chapter" data-level="4.4" data-path="tech.html"><a href="tech.html#tech_questions"><i class="fa fa-check"></i><b>4.4</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="tech.html"><a href="tech.html#tech_questions_questions"><i class="fa fa-check"></i><b>4.4.1</b> Вопросы</a></li>
+<li class="chapter" data-level="4.4.2" data-path="tech.html"><a href="tech.html#tech_questions_tasks"><i class="fa fa-check"></i><b>4.4.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>II Графика и статистика</b></span></li>
+<li class="chapter" data-level="5" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>5</b> Базовая графика</a><ul>
+<li class="chapter" data-level="5.1" data-path="graphics.html"><a href="graphics.html#yfxcharts"><i class="fa fa-check"></i><b>5.1</b> Стандартные графики</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="graphics.html"><a href="graphics.html#scatterplots"><i class="fa fa-check"></i><b>5.1.1</b> Диаграммы рассеяния</a></li>
+<li class="chapter" data-level="5.1.2" data-path="graphics.html"><a href="graphics.html#linear_graphs"><i class="fa fa-check"></i><b>5.1.2</b> Линейные графики</a></li>
+<li class="chapter" data-level="5.1.3" data-path="graphics.html"><a href="graphics.html#graph_combining"><i class="fa fa-check"></i><b>5.1.3</b> Совмещение графиков</a></li>
+<li class="chapter" data-level="5.1.4" data-path="graphics.html"><a href="graphics.html#func_parameters"><i class="fa fa-check"></i><b>5.1.4</b> Функциональные параметры</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="graphics.html"><a href="graphics.html#histograms"><i class="fa fa-check"></i><b>5.2</b> Гистограммы</a></li>
+<li class="chapter" data-level="5.3" data-path="graphics.html"><a href="graphics.html#barplots"><i class="fa fa-check"></i><b>5.3</b> Столбчатые графики</a></li>
+<li class="chapter" data-level="5.4" data-path="graphics.html"><a href="graphics.html#piecharts"><i class="fa fa-check"></i><b>5.4</b> Круговые (секторные) диаграммы</a></li>
+<li class="chapter" data-level="5.5" data-path="graphics.html"><a href="graphics.html#colors"><i class="fa fa-check"></i><b>5.5</b> Цвет и прозрачность</a></li>
+<li class="chapter" data-level="5.6" data-path="graphics.html"><a href="graphics.html#disp_settings"><i class="fa fa-check"></i><b>5.6</b> Настройки отображения</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="graphics.html"><a href="graphics.html#graph_params"><i class="fa fa-check"></i><b>5.6.1</b> Графические параметры</a></li>
+<li class="chapter" data-level="5.6.2" data-path="graphics.html"><a href="graphics.html#axes"><i class="fa fa-check"></i><b>5.6.2</b> Разметка осей, рамка, сетка координат и произвольные линии</a></li>
+<li class="chapter" data-level="5.6.3" data-path="graphics.html"><a href="graphics.html#annotations"><i class="fa fa-check"></i><b>5.6.3</b> Аннотации данных (текст на графике)</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="graphics.html"><a href="graphics.html#legend"><i class="fa fa-check"></i><b>5.7</b> Легенда</a></li>
+<li class="chapter" data-level="5.8" data-path="graphics.html"><a href="graphics.html#questions_tasks_graphics"><i class="fa fa-check"></i><b>5.8</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="5.8.1" data-path="graphics.html"><a href="graphics.html#questions_graphics"><i class="fa fa-check"></i><b>5.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="5.8.2" data-path="graphics.html"><a href="graphics.html#tasks_graphics"><i class="fa fa-check"></i><b>5.8.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="advgraphics.html"><a href="advgraphics.html"><i class="fa fa-check"></i><b>6</b> Продвинутая графика</a><ul>
+<li class="chapter" data-level="6.1" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_prerequisites"><i class="fa fa-check"></i><b>6.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="6.2" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_eurostat"><i class="fa fa-check"></i><b>6.2</b> Загрузка данных Евростата</a></li>
+<li class="chapter" data-level="6.3" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_nasapower"><i class="fa fa-check"></i><b>6.3</b> Загрузка данных NASA POWER</a></li>
+<li class="chapter" data-level="6.4" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_template"><i class="fa fa-check"></i><b>6.4</b> Базовый шаблон ggplot</a></li>
+<li class="chapter" data-level="6.5" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_geoms"><i class="fa fa-check"></i><b>6.5</b> Геометрические типы и преобразования</a></li>
+<li class="chapter" data-level="6.6" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_aes"><i class="fa fa-check"></i><b>6.6</b> Графические переменные и группировки</a></li>
+<li class="chapter" data-level="6.7" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_coords"><i class="fa fa-check"></i><b>6.7</b> Системы координат</a></li>
+<li class="chapter" data-level="6.8" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_titles"><i class="fa fa-check"></i><b>6.8</b> Названия осей и легенды</a></li>
+<li class="chapter" data-level="6.9" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_axes"><i class="fa fa-check"></i><b>6.9</b> Разметка осей</a></li>
+<li class="chapter" data-level="6.10" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_labels"><i class="fa fa-check"></i><b>6.10</b> Подписи и аннотации</a></li>
+<li class="chapter" data-level="6.11" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_facets"><i class="fa fa-check"></i><b>6.11</b> Фасеты</a></li>
+<li class="chapter" data-level="6.12" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_themes"><i class="fa fa-check"></i><b>6.12</b> Темы</a></li>
+<li class="chapter" data-level="6.13" data-path="advgraphics.html"><a href="advgraphics.html#questions_tasks_advgraphics"><i class="fa fa-check"></i><b>6.13</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="6.13.1" data-path="advgraphics.html"><a href="advgraphics.html#questions_advgraphics"><i class="fa fa-check"></i><b>6.13.1</b> Вопросы</a></li>
+<li class="chapter" data-level="6.13.2" data-path="advgraphics.html"><a href="advgraphics.html#tasks_advgraphics"><i class="fa fa-check"></i><b>6.13.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="stat-analysis.html"><a href="stat-analysis.html"><i class="fa fa-check"></i><b>7</b> Основы статистики</a><ul>
+<li class="chapter" data-level="7.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_prerequisites"><i class="fa fa-check"></i><b>7.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="7.2" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_intro"><i class="fa fa-check"></i><b>7.2</b> Введение</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_intro_sources"><i class="fa fa-check"></i><b>7.2.1</b> Источники данных</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one"><i class="fa fa-check"></i><b>7.3</b> Одна переменная</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one_distr"><i class="fa fa-check"></i><b>7.3.1</b> Оценка распределения</a></li>
+<li class="chapter" data-level="7.3.2" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one_summary"><i class="fa fa-check"></i><b>7.3.2</b> Описательные статистики</a></li>
+<li class="chapter" data-level="7.3.3" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one_tests"><i class="fa fa-check"></i><b>7.3.3</b> Статистические тесты</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_two"><i class="fa fa-check"></i><b>7.4</b> Две переменных</a><ul>
+<li class="chapter" data-level="7.4.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_two_distr"><i class="fa fa-check"></i><b>7.4.1</b> Оценка распределения</a></li>
+<li class="chapter" data-level="7.4.2" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_two_distr_correg"><i class="fa fa-check"></i><b>7.4.2</b> Корреляция и регрессия</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="stat-analysis.html"><a href="stat-analysis.html#questions_tasks_stat_analysis"><i class="fa fa-check"></i><b>7.5</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="7.5.1" data-path="stat-analysis.html"><a href="stat-analysis.html#questions_stat_analysis"><i class="fa fa-check"></i><b>7.5.1</b> Вопросы</a></li>
+<li class="chapter" data-level="7.5.2" data-path="stat-analysis.html"><a href="stat-analysis.html#tasks_stat_analysis"><i class="fa fa-check"></i><b>7.5.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="circular.html"><a href="circular.html"><i class="fa fa-check"></i><b>8</b> Дирекционные и временные данные</a><ul>
+<li class="chapter" data-level="8.1" data-path="circular.html"><a href="circular.html#circular_prerequisites"><i class="fa fa-check"></i><b>8.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="8.2" data-path="circular.html"><a href="circular.html#circular_circ"><i class="fa fa-check"></i><b>8.2</b> Статистика направлений</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="circular.html"><a href="circular.html#circular_circ_theory"><i class="fa fa-check"></i><b>8.2.1</b> Теория</a></li>
+<li class="chapter" data-level="8.2.2" data-path="circular.html"><a href="circular.html#circular_circ_vis"><i class="fa fa-check"></i><b>8.2.2</b> Практика</a></li>
+<li class="chapter" data-level="8.2.3" data-path="circular.html"><a href="circular.html#circular_tests"><i class="fa fa-check"></i><b>8.2.3</b> Статистические тесты</a></li>
+<li class="chapter" data-level="8.2.4" data-path="circular.html"><a href="circular.html#circular_correlation"><i class="fa fa-check"></i><b>8.2.4</b> Корреляция и регрессия</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="circular.html"><a href="circular.html#circular_time"><i class="fa fa-check"></i><b>8.3</b> Временные ряды</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="circular.html"><a href="circular.html#circular_time_lubridate"><i class="fa fa-check"></i><b>8.3.1</b> Создание и преобразование дат и времени</a></li>
+<li class="chapter" data-level="8.3.2" data-path="circular.html"><a href="circular.html#circular_time_complete"><i class="fa fa-check"></i><b>8.3.2</b> Восстановление пропусков и проверка корректности дат</a></li>
+<li class="chapter" data-level="8.3.3" data-path="circular.html"><a href="circular.html#circular_time_interp"><i class="fa fa-check"></i><b>8.3.3</b> Интерполяция по времени</a></li>
+<li class="chapter" data-level="8.3.4" data-path="circular.html"><a href="circular.html#circular_time_tests"><i class="fa fa-check"></i><b>8.3.4</b> Статистики</a></li>
+<li class="chapter" data-level="8.3.5" data-path="circular.html"><a href="circular.html#circular_time_animation"><i class="fa fa-check"></i><b>8.3.5</b> Анимация</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="circular.html"><a href="circular.html#questions_tasks_circular"><i class="fa fa-check"></i><b>8.4</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="8.4.1" data-path="circular.html"><a href="circular.html#questions_circular"><i class="fa fa-check"></i><b>8.4.1</b> Вопросы</a></li>
+<li class="chapter" data-level="8.4.2" data-path="circular.html"><a href="circular.html#tasks_circular"><i class="fa fa-check"></i><b>8.4.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://istina.msu.ru/profile/tsamsonov/" target="blank">Тимофей Самсонов</a></li>
+<li><a href="https://doi.org/10.5281/zenodo.901911"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.901911.svg" title="DOI"></a><li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Визуализация и анализ географических данных на языке R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="stat_analysis" class="section level1">
+<h1><span class="header-section-number">Глава 7</span> Основы статистики</h1>
+<div id="stat_analysis_prerequisites" class="section level2">
+<h2><span class="header-section-number">7.1</span> Предварительные требования</h2>
+<p>Для работы по теме текущей лекции вам понадобятся пакеты из <strong>tidyverse</strong>. Помимо этого, мы будем работать с данными через интерфейс <em>Google Sheets</em> напрямую с использованием пакетов <a href="https://googledrive.tidyverse.org/"><strong>googledrive</strong></a> и <a href="https://googlesheets4.tidyverse.org/"><strong>googlesheets4</strong></a>. Также в лекции используется пакет <strong>ggrepel</strong>, позволяющий устранять конфликты подписей на графиках <strong>ggplot</strong>:</p>
+<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb326-1"><a href="stat-analysis.html#cb326-1"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb326-2"><a href="stat-analysis.html#cb326-2"></a><span class="kw">library</span>(googledrive)</span>
+<span id="cb326-3"><a href="stat-analysis.html#cb326-3"></a><span class="kw">library</span>(googlesheets4)</span>
+<span id="cb326-4"><a href="stat-analysis.html#cb326-4"></a><span class="kw">library</span>(ggrepel)</span></code></pre></div>
+<blockquote>
+<p><strong>Внимание:</strong> пакет <strong>googlesheets4</strong> в настоящий момент не доступен на CRAN. Для его установки вам необходимо сначала стандартным путём установить пакет <a href="https://devtools.r-lib.org/"><strong>devtools</strong></a>, а затем вызвать в консоли команду <code>devtools::install_github("tidyverse/googlesheets4")</code>. Эта команда устанавливает пакет из репозитория GitHub.</p>
+</blockquote>
+</div>
+<div id="stat_analysis_intro" class="section level2">
+<h2><span class="header-section-number">7.2</span> Введение</h2>
+<p><strong>Математическая статистика</strong> — раздел математики, посвящённый математическим методам систематизации, обработки и использования статистических данных для научных и практических выводов. Под статистическими данными обычно понимают числовую информацию, извлекаемую из результатов выборочных обследований, результаты серии неточных измерений и вообще любую систему количественных данных <span class="citation">(Прохоров <a href="#ref-bigenc:matstat" role="doc-biblioref">2011</a>)</span>.</p>
+<p>Статистический метод представляет собой важнейший инструмент исследования, применяющийся во всех без исключения областях науки и технологий. Математическая статистика тесно связана с теорией вероятностей – разделом математики, изучающим математические модели случайных явлений. В силу огромного разнообразия статистических методов и специфики их применения в разных приложения, в одной лекции нет возможности (и смысла) представить их в одной лекции.</p>
+<p>В связи с этим в настоящем разделе представляются основные инструменты статистики, такие как: простейшие приемы статистического описания (описательные статистики), проверка статистических гипотез, оценка плотности распределения, корреляция и регрессия. Помимо этого, в настоящем разделе большое внимание уделено построению специализированных графиков, отражающих особенности распределения величины: гистограмм, диаграмм размаха, линий регрессии и локальной регрессии, кривых и поверхностей плотности распределения.</p>
+<div id="stat_analysis_intro_sources" class="section level3">
+<h3><span class="header-section-number">7.2.1</span> Источники данных</h3>
+<div id="stat_analysis_intro_gapminder" class="section level4">
+<h4><span class="header-section-number">7.2.1.1</span> База данных Gapminder</h4>
+<p>В данной лекции мы будем работать с базой данных <a href="https://www.gapminder.org/"><strong>Gapminder</strong></a>, которая содержит уникальный набор показателей по странам мира, агрегированный из различных источников (многие показатели имеют ряды на несколько столетий!):</p>
+<div class="figure">
+<img src="images/gapminder.png" alt="" />
+<p class="caption">База данных Gapminder</p>
+</div>
+<p><strong>Gapminder</strong> отлично подходит для знакомства со основами статистического анализа в R, поскольку эта база данных содержит показатели с разным видом распределения, которые сгруппированы по макрорегионам и континентам, и, разумеется, имеют между собой ряд взаимосвязей, совместное поведение которых можно изучать посредством корреляционного и регрессионного анализа.</p>
+<p>Данные <strong>Gapminder</strong> можно загружать в текстовом формате и формате <em>Microsoft Excel</em>, но куда интереснее делать это непосредственно онлайн через программный интерфейс Google Sheets. Для этого нам потребуется знать ключ каждой таблицы, которую мы загружаем. Ключ можно определить, нажав “лупу” для просмотра данных и скопировав его из адресной строки (см. выделение):</p>
+<div class="figure">
+<img src="images/gapminder_key.png" alt="" />
+<p class="caption">Ключ таблицы Google Sheets из базы данных Gapminder</p>
+</div>
+</div>
+<div id="stat_analysis_intro_gapminder_google" class="section level4">
+<h4><span class="header-section-number">7.2.1.2</span> Пакет googlesheets</h4>
+<p>Доступ к облачным таблицам — удобный способ работы с табличными данными, который позволяет избавиться от манипуляций с локальными файлами. Свои данные вы тоже можете хранить в таблицах Google. Если таблицы регулярно обновляются держателем данных, загрузка их из облачного хранилища будет гарантировать вам актуальность анализируемой информации. Ограниченем такого режима работы является то, что для доступа к данным вам нужен Интернет.</p>
+<p>Пакет <a href="https://googlesheets4.tidyverse.org/"><strong>googlesheets4</strong></a> разработан профессором статистики <a href="https://github.com/jennybc">Дженнифер Брайан</a> для обеспечения онлайн-доступа к таблицам Google. С кратким руководством по использованию пакета вы можете ознакомиться <a href="https://googlesheets4.tidyverse.org/articles/articles/drive-and-sheets.html">тут</a>. Данный пакет использует версию <em>4.x Google Sheets API</em> (отсюда цифра 4 в навании) и рекомендуется к использованию вместо устаревшего пакета <a href="https://cran.r-project.org/web/packages/googlesheets/"><strong>googlesheets</strong></a>.</p>
+<p>Пакет <strong>googlesheets4</strong> работает в связке с пакетом <strong>googledrive</strong>, обеспечивающим общие методы доступа к Google Drive. Стандартная последовательность действий чтобы получить в текущей сессии таблицу с <em>Google Drive</em>, выглядит так:</p>
+<ol style="list-style-type: decimal">
+<li>Подключить библиотеки <strong>googledrive</strong> и <strong>googlesheets4</strong>.</li>
+<li>Выполнить авторизацию пользователя путем вызова <code>drive_auth()</code>. При вызове этой функции откроется браузер на странице аутентификации Google. Вам необходимо будет войти в систему под своей учетной записью Google.</li>
+<li>Загрузить таблицу с помощью функции <code>drive_get()</code>, передав ей в качестве аргумента название таблицы (в этом случае она будет искаться на <em>вашем</em> диске Google) или идентификатор таблицы (этим способом можно выгрузить в среду R таблицу из любого открытого хранилища Google Drive). Если передается идентификатор таблицы, его необходимо обернуть в класс <code>drive_id</code> путем вызова функции <code>as_id()</code>.</li>
+</ol>
+<p>Рассмотрим как это работает на примере загрузки данных из хранилища <em>Gapminder</em>.</p>
+</div>
+</div>
+</div>
+<div id="stat_analysis_one" class="section level2">
+<h2><span class="header-section-number">7.3</span> Одна переменная</h2>
+<div id="stat_analysis_one_distr" class="section level3">
+<h3><span class="header-section-number">7.3.1</span> Оценка распределения</h3>
+<p>Для оценки распределения случайной величины можно использовать графические и статистические способы. Выявление типа распределения важно, поскольку статистические методы не универсальны, и во многих случаях предполагают, что изучаемая переменная подчиняется определенному закону распределения (как правило, нормальному).</p>
+<p>В качестве примера возьмем данные по ВВП на душу населения, они содержатся в таблице gapminder с ниже приведенным кодом</p>
+<div class="sourceCode" id="cb327"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb327-1"><a href="stat-analysis.html#cb327-1"></a>(<span class="st">&#39;1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co">### ВВП на душу населения</span></span>
+<span id="cb327-2"><a href="stat-analysis.html#cb327-2"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
+<span id="cb327-3"><a href="stat-analysis.html#cb327-3"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb327-4"><a href="stat-analysis.html#cb327-4"></a><span class="st">  </span><span class="kw">read_sheet</span>() -&gt;<span class="st"> </span>gdpdf) <span class="co"># выгружаем данные по ВВП на душу населения и сохраняем в переменную incdf</span></span>
+<span id="cb327-5"><a href="stat-analysis.html#cb327-5"></a><span class="co">## Using an auto-discovered, cached token.</span></span>
+<span id="cb327-6"><a href="stat-analysis.html#cb327-6"></a><span class="co">## To suppress this message, modify your code or options to clearly consent to the use of a cached token.</span></span>
+<span id="cb327-7"><a href="stat-analysis.html#cb327-7"></a><span class="co">## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</span></span>
+<span id="cb327-8"><a href="stat-analysis.html#cb327-8"></a><span class="co">## https://gargle.r-lib.org/articles/non-interactive-auth.html</span></span>
+<span id="cb327-9"><a href="stat-analysis.html#cb327-9"></a><span class="co">## The googledrive package is using a cached token for iamste@yandex.ru.</span></span>
+<span id="cb327-10"><a href="stat-analysis.html#cb327-10"></a><span class="co">## Using an auto-discovered, cached token.</span></span>
+<span id="cb327-11"><a href="stat-analysis.html#cb327-11"></a><span class="co">## To suppress this message, modify your code or options to clearly consent to the use of a cached token.</span></span>
+<span id="cb327-12"><a href="stat-analysis.html#cb327-12"></a><span class="co">## See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</span></span>
+<span id="cb327-13"><a href="stat-analysis.html#cb327-13"></a><span class="co">## https://gargle.r-lib.org/articles/non-interactive-auth.html</span></span>
+<span id="cb327-14"><a href="stat-analysis.html#cb327-14"></a><span class="co">## The googlesheets4 package is using a cached token for iamste@yandex.ru.</span></span>
+<span id="cb327-15"><a href="stat-analysis.html#cb327-15"></a><span class="co">## # A tibble: 260 x 256</span></span>
+<span id="cb327-16"><a href="stat-analysis.html#cb327-16"></a><span class="co">##    `GDP per capita… `1764` `1765` `1766` `1767` `1768` `1769` `1770` `1771`</span></span>
+<span id="cb327-17"><a href="stat-analysis.html#cb327-17"></a><span class="co">##    &lt;chr&gt;             &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb327-18"><a href="stat-analysis.html#cb327-18"></a><span class="co">##  1 Abkhazia             NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb327-19"><a href="stat-analysis.html#cb327-19"></a><span class="co">##  2 Afghanistan          NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb327-20"><a href="stat-analysis.html#cb327-20"></a><span class="co">##  3 Akrotiri and Dh…     NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb327-21"><a href="stat-analysis.html#cb327-21"></a><span class="co">##  4 Albania              NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb327-22"><a href="stat-analysis.html#cb327-22"></a><span class="co">##  5 Algeria              NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb327-23"><a href="stat-analysis.html#cb327-23"></a><span class="co">##  6 American Samoa       NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb327-24"><a href="stat-analysis.html#cb327-24"></a><span class="co">##  7 Andorra              NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb327-25"><a href="stat-analysis.html#cb327-25"></a><span class="co">##  8 Angola               NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb327-26"><a href="stat-analysis.html#cb327-26"></a><span class="co">##  9 Anguilla             NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb327-27"><a href="stat-analysis.html#cb327-27"></a><span class="co">## 10 Antigua and Bar…     NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb327-28"><a href="stat-analysis.html#cb327-28"></a><span class="co">## # … with 250 more rows, and 247 more variables: `1772` &lt;dbl&gt;, `1773` &lt;dbl&gt;,</span></span>
+<span id="cb327-29"><a href="stat-analysis.html#cb327-29"></a><span class="co">## #   `1774` &lt;dbl&gt;, `1775` &lt;dbl&gt;, `1776` &lt;dbl&gt;, `1777` &lt;dbl&gt;, `1778` &lt;dbl&gt;,</span></span>
+<span id="cb327-30"><a href="stat-analysis.html#cb327-30"></a><span class="co">## #   `1779` &lt;dbl&gt;, `1780` &lt;dbl&gt;, `1781` &lt;dbl&gt;, `1782` &lt;dbl&gt;, `1783` &lt;dbl&gt;,</span></span>
+<span id="cb327-31"><a href="stat-analysis.html#cb327-31"></a><span class="co">## #   `1784` &lt;dbl&gt;, `1785` &lt;dbl&gt;, `1786` &lt;dbl&gt;, `1787` &lt;dbl&gt;, `1788` &lt;dbl&gt;,</span></span>
+<span id="cb327-32"><a href="stat-analysis.html#cb327-32"></a><span class="co">## #   `1789` &lt;dbl&gt;, `1790` &lt;dbl&gt;, `1791` &lt;dbl&gt;, `1792` &lt;dbl&gt;, `1793` &lt;dbl&gt;,</span></span>
+<span id="cb327-33"><a href="stat-analysis.html#cb327-33"></a><span class="co">## #   `1794` &lt;dbl&gt;, `1795` &lt;dbl&gt;, `1796` &lt;dbl&gt;, `1797` &lt;dbl&gt;, `1798` &lt;dbl&gt;,</span></span>
+<span id="cb327-34"><a href="stat-analysis.html#cb327-34"></a><span class="co">## #   `1799` &lt;dbl&gt;, `1800` &lt;dbl&gt;, `1801` &lt;dbl&gt;, `1802` &lt;dbl&gt;, `1803` &lt;dbl&gt;,</span></span>
+<span id="cb327-35"><a href="stat-analysis.html#cb327-35"></a><span class="co">## #   `1804` &lt;dbl&gt;, `1805` &lt;dbl&gt;, `1806` &lt;dbl&gt;, `1807` &lt;dbl&gt;, `1808` &lt;dbl&gt;,</span></span>
+<span id="cb327-36"><a href="stat-analysis.html#cb327-36"></a><span class="co">## #   `1809` &lt;dbl&gt;, `1810` &lt;dbl&gt;, `1811` &lt;dbl&gt;, `1812` &lt;dbl&gt;, `1813` &lt;dbl&gt;,</span></span>
+<span id="cb327-37"><a href="stat-analysis.html#cb327-37"></a><span class="co">## #   `1814` &lt;dbl&gt;, `1815` &lt;dbl&gt;, `1816` &lt;dbl&gt;, `1817` &lt;dbl&gt;, `1818` &lt;dbl&gt;,</span></span>
+<span id="cb327-38"><a href="stat-analysis.html#cb327-38"></a><span class="co">## #   `1819` &lt;dbl&gt;, `1820` &lt;dbl&gt;, `1821` &lt;dbl&gt;, `1822` &lt;dbl&gt;, `1823` &lt;dbl&gt;,</span></span>
+<span id="cb327-39"><a href="stat-analysis.html#cb327-39"></a><span class="co">## #   `1824` &lt;dbl&gt;, `1825` &lt;dbl&gt;, `1826` &lt;dbl&gt;, `1827` &lt;dbl&gt;, `1828` &lt;dbl&gt;,</span></span>
+<span id="cb327-40"><a href="stat-analysis.html#cb327-40"></a><span class="co">## #   `1829` &lt;dbl&gt;, `1830` &lt;dbl&gt;, `1831` &lt;dbl&gt;, `1832` &lt;dbl&gt;, `1833` &lt;dbl&gt;,</span></span>
+<span id="cb327-41"><a href="stat-analysis.html#cb327-41"></a><span class="co">## #   `1834` &lt;dbl&gt;, `1835` &lt;dbl&gt;, `1836` &lt;dbl&gt;, `1837` &lt;dbl&gt;, `1838` &lt;dbl&gt;,</span></span>
+<span id="cb327-42"><a href="stat-analysis.html#cb327-42"></a><span class="co">## #   `1839` &lt;dbl&gt;, `1840` &lt;dbl&gt;, `1841` &lt;dbl&gt;, `1842` &lt;dbl&gt;, `1843` &lt;dbl&gt;,</span></span>
+<span id="cb327-43"><a href="stat-analysis.html#cb327-43"></a><span class="co">## #   `1844` &lt;dbl&gt;, `1845` &lt;dbl&gt;, `1846` &lt;dbl&gt;, `1847` &lt;dbl&gt;, `1848` &lt;dbl&gt;,</span></span>
+<span id="cb327-44"><a href="stat-analysis.html#cb327-44"></a><span class="co">## #   `1849` &lt;dbl&gt;, `1850` &lt;dbl&gt;, `1851` &lt;dbl&gt;, `1852` &lt;dbl&gt;, `1853` &lt;dbl&gt;,</span></span>
+<span id="cb327-45"><a href="stat-analysis.html#cb327-45"></a><span class="co">## #   `1854` &lt;dbl&gt;, `1855` &lt;dbl&gt;, `1856` &lt;dbl&gt;, `1857` &lt;dbl&gt;, `1858` &lt;dbl&gt;,</span></span>
+<span id="cb327-46"><a href="stat-analysis.html#cb327-46"></a><span class="co">## #   `1859` &lt;dbl&gt;, `1860` &lt;dbl&gt;, `1861` &lt;dbl&gt;, `1862` &lt;dbl&gt;, `1863` &lt;dbl&gt;,</span></span>
+<span id="cb327-47"><a href="stat-analysis.html#cb327-47"></a><span class="co">## #   `1864` &lt;dbl&gt;, `1865` &lt;dbl&gt;, `1866` &lt;dbl&gt;, `1867` &lt;dbl&gt;, `1868` &lt;dbl&gt;,</span></span>
+<span id="cb327-48"><a href="stat-analysis.html#cb327-48"></a><span class="co">## #   `1869` &lt;dbl&gt;, `1870` &lt;dbl&gt;, `1871` &lt;dbl&gt;, …</span></span></code></pre></div>
+<p>Для дальнейшей работы целесообразно привести данные к аккуратному виду, избавившись от множества столбцов с годом измерения. Сразу получим данные за 2015 год для анализа:</p>
+<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb328-1"><a href="stat-analysis.html#cb328-1"></a>(<span class="dt">gdpdf_tidy =</span> gdpdf <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb328-2"><a href="stat-analysis.html#cb328-2"></a><span class="st">   </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1764</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2018</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;gdp&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb328-3"><a href="stat-analysis.html#cb328-3"></a><span class="st">   </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>))</span>
+<span id="cb328-4"><a href="stat-analysis.html#cb328-4"></a><span class="co">## # A tibble: 66,300 x 3</span></span>
+<span id="cb328-5"><a href="stat-analysis.html#cb328-5"></a><span class="co">##    Country  year    gdp</span></span>
+<span id="cb328-6"><a href="stat-analysis.html#cb328-6"></a><span class="co">##    &lt;chr&gt;    &lt;chr&gt; &lt;dbl&gt;</span></span>
+<span id="cb328-7"><a href="stat-analysis.html#cb328-7"></a><span class="co">##  1 Abkhazia 1764     NA</span></span>
+<span id="cb328-8"><a href="stat-analysis.html#cb328-8"></a><span class="co">##  2 Abkhazia 1765     NA</span></span>
+<span id="cb328-9"><a href="stat-analysis.html#cb328-9"></a><span class="co">##  3 Abkhazia 1766     NA</span></span>
+<span id="cb328-10"><a href="stat-analysis.html#cb328-10"></a><span class="co">##  4 Abkhazia 1767     NA</span></span>
+<span id="cb328-11"><a href="stat-analysis.html#cb328-11"></a><span class="co">##  5 Abkhazia 1768     NA</span></span>
+<span id="cb328-12"><a href="stat-analysis.html#cb328-12"></a><span class="co">##  6 Abkhazia 1769     NA</span></span>
+<span id="cb328-13"><a href="stat-analysis.html#cb328-13"></a><span class="co">##  7 Abkhazia 1770     NA</span></span>
+<span id="cb328-14"><a href="stat-analysis.html#cb328-14"></a><span class="co">##  8 Abkhazia 1771     NA</span></span>
+<span id="cb328-15"><a href="stat-analysis.html#cb328-15"></a><span class="co">##  9 Abkhazia 1772     NA</span></span>
+<span id="cb328-16"><a href="stat-analysis.html#cb328-16"></a><span class="co">## 10 Abkhazia 1773     NA</span></span>
+<span id="cb328-17"><a href="stat-analysis.html#cb328-17"></a><span class="co">## # … with 66,290 more rows</span></span>
+<span id="cb328-18"><a href="stat-analysis.html#cb328-18"></a></span>
+<span id="cb328-19"><a href="stat-analysis.html#cb328-19"></a>gdpdf15 =<span class="st"> </span><span class="kw">filter</span>(gdpdf_tidy, year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>)</span></code></pre></div>
+<p>Для визуальной проверки вида распределения можно использовать геометрию <code>geom_histogram()</code>:</p>
+<div class="sourceCode" id="cb329"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb329-1"><a href="stat-analysis.html#cb329-1"></a><span class="kw">ggplot</span>(gdpdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb329-2"><a href="stat-analysis.html#cb329-2"></a><span class="st">  </span><span class="kw">geom_histogram</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-303-1.png" width="672" /></p>
+<p>Изменить ширину кармана можно, используя параметр <code>binwidth</code>:</p>
+<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb330-1"><a href="stat-analysis.html#cb330-1"></a><span class="kw">ggplot</span>(gdpdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb330-2"><a href="stat-analysis.html#cb330-2"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">5000</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-304-1.png" width="672" /></p>
+<p>Аналогично рассмотрим показатель ожидаемой продолжительности жизни:</p>
+<div class="sourceCode" id="cb331"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb331-1"><a href="stat-analysis.html#cb331-1"></a>(<span class="st">&#39;1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># продолжительность жизни</span></span>
+<span id="cb331-2"><a href="stat-analysis.html#cb331-2"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
+<span id="cb331-3"><a href="stat-analysis.html#cb331-3"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb331-4"><a href="stat-analysis.html#cb331-4"></a><span class="st">  </span><span class="kw">read_sheet</span>()  -&gt;<span class="st"> </span>lifedf) <span class="co"># выгружаем данные по ВВП на душу населения и сохраняем в переменную lifedf</span></span>
+<span id="cb331-5"><a href="stat-analysis.html#cb331-5"></a><span class="co">## # A tibble: 260 x 218</span></span>
+<span id="cb331-6"><a href="stat-analysis.html#cb331-6"></a><span class="co">##    `Life expectanc… `1800` `1801` `1802` `1803` `1804` `1805` `1806` `1807`</span></span>
+<span id="cb331-7"><a href="stat-analysis.html#cb331-7"></a><span class="co">##    &lt;chr&gt;             &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb331-8"><a href="stat-analysis.html#cb331-8"></a><span class="co">##  1 Abkhazia           NA     NA     NA     NA     NA     NA     NA     NA  </span></span>
+<span id="cb331-9"><a href="stat-analysis.html#cb331-9"></a><span class="co">##  2 Afghanistan        28.2   28.2   28.2   28.2   28.2   28.2   28.2   28.1</span></span>
+<span id="cb331-10"><a href="stat-analysis.html#cb331-10"></a><span class="co">##  3 Akrotiri and Dh…   NA     NA     NA     NA     NA     NA     NA     NA  </span></span>
+<span id="cb331-11"><a href="stat-analysis.html#cb331-11"></a><span class="co">##  4 Albania            35.4   35.4   35.4   35.4   35.4   35.4   35.4   35.4</span></span>
+<span id="cb331-12"><a href="stat-analysis.html#cb331-12"></a><span class="co">##  5 Algeria            28.8   28.8   28.8   28.8   28.8   28.8   28.8   28.8</span></span>
+<span id="cb331-13"><a href="stat-analysis.html#cb331-13"></a><span class="co">##  6 American Samoa     NA     NA     NA     NA     NA     NA     NA     NA  </span></span>
+<span id="cb331-14"><a href="stat-analysis.html#cb331-14"></a><span class="co">##  7 Andorra            NA     NA     NA     NA     NA     NA     NA     NA  </span></span>
+<span id="cb331-15"><a href="stat-analysis.html#cb331-15"></a><span class="co">##  8 Angola             27.0   27.0   27.0   27.0   27.0   27.0   27.0   27.0</span></span>
+<span id="cb331-16"><a href="stat-analysis.html#cb331-16"></a><span class="co">##  9 Anguilla           NA     NA     NA     NA     NA     NA     NA     NA  </span></span>
+<span id="cb331-17"><a href="stat-analysis.html#cb331-17"></a><span class="co">## 10 Antigua and Bar…   33.5   33.5   33.5   33.5   33.5   33.5   33.5   33.5</span></span>
+<span id="cb331-18"><a href="stat-analysis.html#cb331-18"></a><span class="co">## # … with 250 more rows, and 209 more variables: `1808` &lt;dbl&gt;, `1809` &lt;dbl&gt;,</span></span>
+<span id="cb331-19"><a href="stat-analysis.html#cb331-19"></a><span class="co">## #   `1810` &lt;dbl&gt;, `1811` &lt;dbl&gt;, `1812` &lt;dbl&gt;, `1813` &lt;dbl&gt;, `1814` &lt;dbl&gt;,</span></span>
+<span id="cb331-20"><a href="stat-analysis.html#cb331-20"></a><span class="co">## #   `1815` &lt;dbl&gt;, `1816` &lt;dbl&gt;, `1817` &lt;dbl&gt;, `1818` &lt;dbl&gt;, `1819` &lt;dbl&gt;,</span></span>
+<span id="cb331-21"><a href="stat-analysis.html#cb331-21"></a><span class="co">## #   `1820` &lt;dbl&gt;, `1821` &lt;dbl&gt;, `1822` &lt;dbl&gt;, `1823` &lt;dbl&gt;, `1824` &lt;dbl&gt;,</span></span>
+<span id="cb331-22"><a href="stat-analysis.html#cb331-22"></a><span class="co">## #   `1825` &lt;dbl&gt;, `1826` &lt;dbl&gt;, `1827` &lt;dbl&gt;, `1828` &lt;dbl&gt;, `1829` &lt;dbl&gt;,</span></span>
+<span id="cb331-23"><a href="stat-analysis.html#cb331-23"></a><span class="co">## #   `1830` &lt;dbl&gt;, `1831` &lt;dbl&gt;, `1832` &lt;dbl&gt;, `1833` &lt;dbl&gt;, `1834` &lt;dbl&gt;,</span></span>
+<span id="cb331-24"><a href="stat-analysis.html#cb331-24"></a><span class="co">## #   `1835` &lt;dbl&gt;, `1836` &lt;dbl&gt;, `1837` &lt;dbl&gt;, `1838` &lt;dbl&gt;, `1839` &lt;dbl&gt;,</span></span>
+<span id="cb331-25"><a href="stat-analysis.html#cb331-25"></a><span class="co">## #   `1840` &lt;dbl&gt;, `1841` &lt;dbl&gt;, `1842` &lt;dbl&gt;, `1843` &lt;dbl&gt;, `1844` &lt;dbl&gt;,</span></span>
+<span id="cb331-26"><a href="stat-analysis.html#cb331-26"></a><span class="co">## #   `1845` &lt;dbl&gt;, `1846` &lt;dbl&gt;, `1847` &lt;dbl&gt;, `1848` &lt;dbl&gt;, `1849` &lt;dbl&gt;,</span></span>
+<span id="cb331-27"><a href="stat-analysis.html#cb331-27"></a><span class="co">## #   `1850` &lt;dbl&gt;, `1851` &lt;dbl&gt;, `1852` &lt;dbl&gt;, `1853` &lt;dbl&gt;, `1854` &lt;dbl&gt;,</span></span>
+<span id="cb331-28"><a href="stat-analysis.html#cb331-28"></a><span class="co">## #   `1855` &lt;dbl&gt;, `1856` &lt;dbl&gt;, `1857` &lt;dbl&gt;, `1858` &lt;dbl&gt;, `1859` &lt;dbl&gt;,</span></span>
+<span id="cb331-29"><a href="stat-analysis.html#cb331-29"></a><span class="co">## #   `1860` &lt;dbl&gt;, `1861` &lt;dbl&gt;, `1862` &lt;dbl&gt;, `1863` &lt;dbl&gt;, `1864` &lt;dbl&gt;,</span></span>
+<span id="cb331-30"><a href="stat-analysis.html#cb331-30"></a><span class="co">## #   `1865` &lt;dbl&gt;, `1866` &lt;dbl&gt;, `1867` &lt;dbl&gt;, `1868` &lt;dbl&gt;, `1869` &lt;dbl&gt;,</span></span>
+<span id="cb331-31"><a href="stat-analysis.html#cb331-31"></a><span class="co">## #   `1870` &lt;dbl&gt;, `1871` &lt;dbl&gt;, `1872` &lt;dbl&gt;, `1873` &lt;dbl&gt;, `1874` &lt;dbl&gt;,</span></span>
+<span id="cb331-32"><a href="stat-analysis.html#cb331-32"></a><span class="co">## #   `1875` &lt;dbl&gt;, `1876` &lt;dbl&gt;, `1877` &lt;dbl&gt;, `1878` &lt;dbl&gt;, `1879` &lt;dbl&gt;,</span></span>
+<span id="cb331-33"><a href="stat-analysis.html#cb331-33"></a><span class="co">## #   `1880` &lt;dbl&gt;, `1881` &lt;dbl&gt;, `1882` &lt;dbl&gt;, `1883` &lt;dbl&gt;, `1884` &lt;dbl&gt;,</span></span>
+<span id="cb331-34"><a href="stat-analysis.html#cb331-34"></a><span class="co">## #   `1885` &lt;dbl&gt;, `1886` &lt;dbl&gt;, `1887` &lt;dbl&gt;, `1888` &lt;dbl&gt;, `1889` &lt;dbl&gt;,</span></span>
+<span id="cb331-35"><a href="stat-analysis.html#cb331-35"></a><span class="co">## #   `1890` &lt;dbl&gt;, `1891` &lt;dbl&gt;, `1892` &lt;dbl&gt;, `1893` &lt;dbl&gt;, `1894` &lt;dbl&gt;,</span></span>
+<span id="cb331-36"><a href="stat-analysis.html#cb331-36"></a><span class="co">## #   `1895` &lt;dbl&gt;, `1896` &lt;dbl&gt;, `1897` &lt;dbl&gt;, `1898` &lt;dbl&gt;, `1899` &lt;dbl&gt;,</span></span>
+<span id="cb331-37"><a href="stat-analysis.html#cb331-37"></a><span class="co">## #   `1900` &lt;dbl&gt;, `1901` &lt;dbl&gt;, `1902` &lt;dbl&gt;, `1903` &lt;dbl&gt;, `1904` &lt;dbl&gt;,</span></span>
+<span id="cb331-38"><a href="stat-analysis.html#cb331-38"></a><span class="co">## #   `1905` &lt;dbl&gt;, `1906` &lt;dbl&gt;, `1907` &lt;dbl&gt;, …</span></span></code></pre></div>
+<p>Преобразуем в аккуратный вид и строим гистограмму распределения:</p>
+<div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb332-1"><a href="stat-analysis.html#cb332-1"></a>lifedf_tidy =<span class="st"> </span>lifedf <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb332-2"><a href="stat-analysis.html#cb332-2"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2016</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;lifexp&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb332-3"><a href="stat-analysis.html#cb332-3"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
+<span id="cb332-4"><a href="stat-analysis.html#cb332-4"></a></span>
+<span id="cb332-5"><a href="stat-analysis.html#cb332-5"></a>lifedf15 =<span class="st"> </span><span class="kw">filter</span>(lifedf_tidy, year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>)</span>
+<span id="cb332-6"><a href="stat-analysis.html#cb332-6"></a></span>
+<span id="cb332-7"><a href="stat-analysis.html#cb332-7"></a><span class="kw">ggplot</span>(lifedf15, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb332-8"><a href="stat-analysis.html#cb332-8"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">2</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-306-1.png" width="672" /></p>
+<p>Для графической оценки распределения удобно использовать не только гистограмму, но также метод <strong>ядерного сглаживания</strong> (<em>kernel density</em>), который позволяет строить аппроксимацию функции плотности вероятности. Условно говоря, ядро является функцией, которая позволяет распространить потенциал каждого элемента выборки на его ближайшую окрестность. Чем больше элементов выборки сконцентрировано вблизи данной точки, тем сильнее будет их совокупно наведенный потенциал в данной точке, и тем, соответственно, выше оценка плотности распределения, которая получается суперпозицией этих потенциалов. Математически операция ядерной оценки плотности в точке <span class="math inline">\(x\)</span> определяется как:
+<span class="math display">\[
+\hat f_h (x) = \frac{1}{nh}\sum_{i=1}^{n}K\Big(\frac{x - x_i}{h}\Big)
+\]</span>
+где <span class="math inline">\(K\)</span> — ядерная функция, <span class="math inline">\(h &gt; 0\)</span> — сглаживающий параметр, <span class="math inline">\(x_i\)</span> — элементы выборки, <span class="math inline">\(n\)</span> — размер выборки. Ядерная функция должна удовлетворять двум критериям: <span class="math inline">\(K(x) \geq 0\)</span>, <span class="math inline">\(\int_{-\infty}^{+\infty} K(x) dx = 1\)</span>. Отсюда ясно, что любая модель функции плотности распределения может быть использована в качестве ядра: равномерное, нормальное и т.д. Как правило, ядерная функция носит бесконечно убывающий характер: чем дальше мы находимся от точки, тем меньше ее вклад в плотность распределения.</p>
+<p>В <strong>ggplot</strong> за аппроксимацию плотности распределения методом ядерного сглаживания отвечает геометрия <code>geom_density()</code>:</p>
+<div class="sourceCode" id="cb333"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb333-1"><a href="stat-analysis.html#cb333-1"></a><span class="kw">ggplot</span>(gdpdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb333-2"><a href="stat-analysis.html#cb333-2"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-307-1.png" width="672" /></p>
+<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb334-1"><a href="stat-analysis.html#cb334-1"></a></span>
+<span id="cb334-2"><a href="stat-analysis.html#cb334-2"></a><span class="kw">ggplot</span>(lifedf15, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb334-3"><a href="stat-analysis.html#cb334-3"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-307-2.png" width="672" /></p>
+<p>Вы можете комбинировать гистограммы и оценку плотности распределения, но для этого гистограмма по оси <em>Y</em> должна отражать не фактическое количество элементов в каждом классе, а <em>долю</em> или плотность вероятности (<code>y = stat(density)</code>):</p>
+<div class="sourceCode" id="cb335"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb335-1"><a href="stat-analysis.html#cb335-1"></a><span class="kw">ggplot</span>(gdpdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb335-2"><a href="stat-analysis.html#cb335-2"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y =</span> <span class="kw">stat</span>(density)), <span class="dt">fill =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb335-3"><a href="stat-analysis.html#cb335-3"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-308-1.png" width="672" /></p>
+<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb336-1"><a href="stat-analysis.html#cb336-1"></a></span>
+<span id="cb336-2"><a href="stat-analysis.html#cb336-2"></a><span class="kw">ggplot</span>(lifedf15, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb336-3"><a href="stat-analysis.html#cb336-3"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y =</span> <span class="kw">stat</span>(density)), <span class="dt">fill =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb336-4"><a href="stat-analysis.html#cb336-4"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-308-2.png" width="672" /></p>
+<p>При построении гистограмм и оценке плотности распределения мы допустили ошибку: приняли, что все измерения являются равнозначными. Однако в данном случае это не так. Население Люксембурга и Пакистана отличается на два порядка — это означает, что Пакистан должен иметь соответственно больший вес при построении гистограммы. Для учета этой характеристики подгрузим из <strong>Gapminder</strong> данные по численности населения и присоединим их к нашим таблицам по ВВП и продолжительности жизни:</p>
+<div class="sourceCode" id="cb337"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb337-1"><a href="stat-analysis.html#cb337-1"></a><span class="st">&#39;1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8&#39;</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># численность населения</span></span>
+<span id="cb337-2"><a href="stat-analysis.html#cb337-2"></a><span class="st">  </span><span class="kw">as_id</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
+<span id="cb337-3"><a href="stat-analysis.html#cb337-3"></a><span class="st">  </span><span class="kw">drive_get</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb337-4"><a href="stat-analysis.html#cb337-4"></a><span class="st">  </span><span class="kw">read_sheet</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># первый лист</span></span>
+<span id="cb337-5"><a href="stat-analysis.html#cb337-5"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2015</span><span class="st">`</span>, <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;pop&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb337-6"><a href="stat-analysis.html#cb337-6"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>) -&gt;<span class="st"> </span>popdf_tidy</span>
+<span id="cb337-7"><a href="stat-analysis.html#cb337-7"></a></span>
+<span id="cb337-8"><a href="stat-analysis.html#cb337-8"></a>(<span class="dt">tab =</span> gdpdf_tidy <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">inner_join</span>(lifedf_tidy) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">inner_join</span>(popdf_tidy))</span>
+<span id="cb337-9"><a href="stat-analysis.html#cb337-9"></a><span class="co">## # A tibble: 19,359 x 5</span></span>
+<span id="cb337-10"><a href="stat-analysis.html#cb337-10"></a><span class="co">##    Country  year    gdp lifexp   pop</span></span>
+<span id="cb337-11"><a href="stat-analysis.html#cb337-11"></a><span class="co">##    &lt;chr&gt;    &lt;chr&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb337-12"><a href="stat-analysis.html#cb337-12"></a><span class="co">##  1 Abkhazia 1800     NA     NA    NA</span></span>
+<span id="cb337-13"><a href="stat-analysis.html#cb337-13"></a><span class="co">##  2 Abkhazia 1810     NA     NA    NA</span></span>
+<span id="cb337-14"><a href="stat-analysis.html#cb337-14"></a><span class="co">##  3 Abkhazia 1820     NA     NA    NA</span></span>
+<span id="cb337-15"><a href="stat-analysis.html#cb337-15"></a><span class="co">##  4 Abkhazia 1830     NA     NA    NA</span></span>
+<span id="cb337-16"><a href="stat-analysis.html#cb337-16"></a><span class="co">##  5 Abkhazia 1840     NA     NA    NA</span></span>
+<span id="cb337-17"><a href="stat-analysis.html#cb337-17"></a><span class="co">##  6 Abkhazia 1850     NA     NA    NA</span></span>
+<span id="cb337-18"><a href="stat-analysis.html#cb337-18"></a><span class="co">##  7 Abkhazia 1860     NA     NA    NA</span></span>
+<span id="cb337-19"><a href="stat-analysis.html#cb337-19"></a><span class="co">##  8 Abkhazia 1870     NA     NA    NA</span></span>
+<span id="cb337-20"><a href="stat-analysis.html#cb337-20"></a><span class="co">##  9 Abkhazia 1880     NA     NA    NA</span></span>
+<span id="cb337-21"><a href="stat-analysis.html#cb337-21"></a><span class="co">## 10 Abkhazia 1890     NA     NA    NA</span></span>
+<span id="cb337-22"><a href="stat-analysis.html#cb337-22"></a><span class="co">## # … with 19,349 more rows</span></span></code></pre></div>
+<p>Теперь мы можем произвести взвешенную оценку плотности распределения:</p>
+<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb338-1"><a href="stat-analysis.html#cb338-1"></a>tab15 =<span class="st"> </span><span class="kw">filter</span>(tab, year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">drop_na</span>() <span class="co"># все веса должны быть непустыми!</span></span>
+<span id="cb338-2"><a href="stat-analysis.html#cb338-2"></a></span>
+<span id="cb338-3"><a href="stat-analysis.html#cb338-3"></a><span class="kw">ggplot</span>(tab15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp, <span class="dt">y =</span> <span class="kw">stat</span>(density), <span class="dt">weight =</span> pop<span class="op">/</span><span class="kw">sum</span>(pop))) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb338-4"><a href="stat-analysis.html#cb338-4"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">5000</span>, <span class="dt">fill =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb338-5"><a href="stat-analysis.html#cb338-5"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-310-1.png" width="672" /></p>
+<div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb339-1"><a href="stat-analysis.html#cb339-1"></a></span>
+<span id="cb339-2"><a href="stat-analysis.html#cb339-2"></a><span class="kw">ggplot</span>(tab15, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp, <span class="dt">y =</span> <span class="kw">stat</span>(density), <span class="dt">weight =</span> pop<span class="op">/</span><span class="kw">sum</span>(pop))) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb339-3"><a href="stat-analysis.html#cb339-3"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="fl">2.5</span>, <span class="dt">fill =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb339-4"><a href="stat-analysis.html#cb339-4"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-310-2.png" width="672" /></p>
+<p>Графики плотности распределения удобны тем, что их, в отличие от гистограмм, удобно комбинировать на одном изображении, используя цвет для разделения по еще одной переменной. Например, мы можем оценить, как изменились мировые диспропорции в продолжительности жизни и доходов населения за последние 50 лет (обратите внимание на параметр <code>fill = year</code> в эстетике:</p>
+<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="stat-analysis.html#cb340-1"></a>tab85 =<span class="st"> </span>tab <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(year <span class="op">%in%</span><span class="st">  </span><span class="kw">c</span>(<span class="dv">1965</span>, <span class="dv">2015</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">drop_na</span>()</span>
+<span id="cb340-2"><a href="stat-analysis.html#cb340-2"></a></span>
+<span id="cb340-3"><a href="stat-analysis.html#cb340-3"></a><span class="kw">ggplot</span>(tab85, <span class="kw">aes</span>(<span class="dt">x =</span> gdp, <span class="dt">fill =</span> year, <span class="dt">weight =</span> pop<span class="op">/</span><span class="kw">sum</span>(pop))) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb340-4"><a href="stat-analysis.html#cb340-4"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-311-1.png" width="672" /></p>
+<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb341-1"><a href="stat-analysis.html#cb341-1"></a></span>
+<span id="cb341-2"><a href="stat-analysis.html#cb341-2"></a><span class="kw">ggplot</span>(tab85, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp, <span class="dt">fill =</span> year, <span class="dt">weight =</span> pop<span class="op">/</span><span class="kw">sum</span>(pop))) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb341-3"><a href="stat-analysis.html#cb341-3"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-311-2.png" width="672" /></p>
+</div>
+<div id="stat_analysis_one_summary" class="section level3">
+<h3><span class="header-section-number">7.3.2</span> Описательные статистики</h3>
+<p>Описательные статистики — это числовые характеристики, описывающие особенности статистического распределения изучаемой величины. К таким характеристикам относят выборочное среднее, медиану, минимум, максимум и ряд других величин. Можно вычислять эти характеристики для всей выборки, но для включения географического контекста мы стратифицируем ее по макрорегионам, которые используются в базе данных <strong>Gapminder</strong>. Подгрузим эту информацию (данные скачиваются <a href="https://www.gapminder.org/data/geo/">отсюда</a>):</p>
+<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="stat-analysis.html#cb342-1"></a><span class="kw">library</span>(readxl)</span>
+<span id="cb342-2"><a href="stat-analysis.html#cb342-2"></a>countries =<span class="st"> </span><span class="kw">read_excel</span>(<span class="st">&#39;data/gapminder.xlsx&#39;</span>, <span class="dv">2</span>) <span class="op">%&gt;%</span></span>
+<span id="cb342-3"><a href="stat-analysis.html#cb342-3"></a><span class="st">  </span><span class="kw">select</span>(<span class="dt">Country =</span> name, <span class="dt">Region =</span> eight_regions) <span class="op">%&gt;%</span></span>
+<span id="cb342-4"><a href="stat-analysis.html#cb342-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Country =</span> <span class="kw">factor</span>(Country, <span class="dt">levels =</span> Country[<span class="kw">order</span>(.<span class="op">$</span>Region)]))</span>
+<span id="cb342-5"><a href="stat-analysis.html#cb342-5"></a></span>
+<span id="cb342-6"><a href="stat-analysis.html#cb342-6"></a><span class="co"># &#39;1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8&#39; %&gt;% # численность населения</span></span>
+<span id="cb342-7"><a href="stat-analysis.html#cb342-7"></a><span class="co">#   as_id() %&gt;% # преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
+<span id="cb342-8"><a href="stat-analysis.html#cb342-8"></a><span class="co">#   drive_get() %&gt;% </span></span>
+<span id="cb342-9"><a href="stat-analysis.html#cb342-9"></a><span class="co">#   read_sheet(sheet = 2) -&gt; countries</span></span>
+<span id="cb342-10"><a href="stat-analysis.html#cb342-10"></a></span>
+<span id="cb342-11"><a href="stat-analysis.html#cb342-11"></a><span class="kw">ggplot</span>(countries, <span class="kw">aes</span>(<span class="dt">x =</span> Country, <span class="dt">y =</span> <span class="dv">1</span>, <span class="dt">fill =</span> Region)) <span class="op">+</span></span>
+<span id="cb342-12"><a href="stat-analysis.html#cb342-12"></a><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span></span>
+<span id="cb342-13"><a href="stat-analysis.html#cb342-13"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">y =</span> <span class="fl">0.5</span>, <span class="dt">label =</span> Country), <span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span></span>
+<span id="cb342-14"><a href="stat-analysis.html#cb342-14"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>Region, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>, <span class="dt">ncol =</span> <span class="dv">4</span>) <span class="op">+</span></span>
+<span id="cb342-15"><a href="stat-analysis.html#cb342-15"></a><span class="st">  </span><span class="kw">theme_bw</span>()<span class="op">+</span></span>
+<span id="cb342-16"><a href="stat-analysis.html#cb342-16"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">panel.grid =</span> <span class="kw">element_blank</span>(),</span>
+<span id="cb342-17"><a href="stat-analysis.html#cb342-17"></a>        <span class="dt">axis.title.y =</span> <span class="kw">element_blank</span>(),</span>
+<span id="cb342-18"><a href="stat-analysis.html#cb342-18"></a>        <span class="dt">axis.text.y =</span> <span class="kw">element_blank</span>(),</span>
+<span id="cb342-19"><a href="stat-analysis.html#cb342-19"></a>        <span class="dt">axis.ticks.y =</span> <span class="kw">element_blank</span>(),</span>
+<span id="cb342-20"><a href="stat-analysis.html#cb342-20"></a>        <span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>(),</span>
+<span id="cb342-21"><a href="stat-analysis.html#cb342-21"></a>        <span class="dt">axis.text.x =</span> <span class="kw">element_blank</span>(),</span>
+<span id="cb342-22"><a href="stat-analysis.html#cb342-22"></a>        <span class="dt">axis.ticks.x =</span> <span class="kw">element_blank</span>()) <span class="op">+</span></span>
+<span id="cb342-23"><a href="stat-analysis.html#cb342-23"></a><span class="st">  </span><span class="kw">guides</span>(<span class="dt">fill=</span><span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb342-24"><a href="stat-analysis.html#cb342-24"></a><span class="st">  </span><span class="kw">coord_flip</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-312-1.png" width="672" /></p>
+<p>Присоединим эти данные к исходной таблице:</p>
+<div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb343-1"><a href="stat-analysis.html#cb343-1"></a>(<span class="dt">tabreg =</span> tab <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb343-2"><a href="stat-analysis.html#cb343-2"></a><span class="st">  </span><span class="kw">left_join</span>(countries) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb343-3"><a href="stat-analysis.html#cb343-3"></a><span class="st">  </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb343-4"><a href="stat-analysis.html#cb343-4"></a><span class="st">  </span><span class="kw">drop_na</span>())</span>
+<span id="cb343-5"><a href="stat-analysis.html#cb343-5"></a><span class="co">## # A tibble: 172 x 6</span></span>
+<span id="cb343-6"><a href="stat-analysis.html#cb343-6"></a><span class="co">##    Country             year     gdp lifexp      pop Region            </span></span>
+<span id="cb343-7"><a href="stat-analysis.html#cb343-7"></a><span class="co">##    &lt;chr&gt;               &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;             </span></span>
+<span id="cb343-8"><a href="stat-analysis.html#cb343-8"></a><span class="co">##  1 Afghanistan         2015   1418.   53.8 32526562 asia_west         </span></span>
+<span id="cb343-9"><a href="stat-analysis.html#cb343-9"></a><span class="co">##  2 Albania             2015   7343.   78    2896679 europe_east       </span></span>
+<span id="cb343-10"><a href="stat-analysis.html#cb343-10"></a><span class="co">##  3 Algeria             2015   6797.   76.4 39666519 africa_north      </span></span>
+<span id="cb343-11"><a href="stat-analysis.html#cb343-11"></a><span class="co">##  4 Angola              2015   6512.   59.6 25021974 africa_sub_saharan</span></span>
+<span id="cb343-12"><a href="stat-analysis.html#cb343-12"></a><span class="co">##  5 Antigua and Barbuda 2015  14884.   76.4    91818 america_north     </span></span>
+<span id="cb343-13"><a href="stat-analysis.html#cb343-13"></a><span class="co">##  6 Argentina           2015  16640.   76.5 43416755 america_south     </span></span>
+<span id="cb343-14"><a href="stat-analysis.html#cb343-14"></a><span class="co">##  7 Armenia             2015   5561.   74.7  3017712 europe_east       </span></span>
+<span id="cb343-15"><a href="stat-analysis.html#cb343-15"></a><span class="co">##  8 Australia           2015  38085.   82.3 23968973 east_asia_pacific </span></span>
+<span id="cb343-16"><a href="stat-analysis.html#cb343-16"></a><span class="co">##  9 Austria             2015  37811.   81.3  8544586 europe_west       </span></span>
+<span id="cb343-17"><a href="stat-analysis.html#cb343-17"></a><span class="co">## 10 Azerbaijan          2015  10475.   72.9  9753968 europe_east       </span></span>
+<span id="cb343-18"><a href="stat-analysis.html#cb343-18"></a><span class="co">## # … with 162 more rows</span></span></code></pre></div>
+<p>Мы уже знакомы с функциями <code>min()</code>, <code>max()</code>, <code>median()</code>, <code>mean()</code>, <code>sd()</code>, которые дают значения соответствующих описательных статистик для векторов данных. Как представить их все одновременно? Для визуализации отличий в статистических параметрах исследуемой выборки удобно использовать тип графика, который называется <a href="https://ru.wikipedia.org/wiki/%D0%AF%D1%89%D0%B8%D0%BA_%D1%81_%D1%83%D1%81%D0%B0%D0%BC%D0%B8"><strong>boxplot</strong></a> (а по русски — диаграмма размаха, улей, или ящик с усами). В <strong>ggplot</strong> за него отвечает геометрия <code>geom_boxplot()</code>:</p>
+<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb344-1"><a href="stat-analysis.html#cb344-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(<span class="dt">x =</span> Region, <span class="dt">y =</span> gdp)) <span class="op">+</span></span>
+<span id="cb344-2"><a href="stat-analysis.html#cb344-2"></a><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">coord_flip</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-314-1.png" width="672" /></p>
+<div class="sourceCode" id="cb345"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb345-1"><a href="stat-analysis.html#cb345-1"></a></span>
+<span id="cb345-2"><a href="stat-analysis.html#cb345-2"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(<span class="dt">x =</span> Region, <span class="dt">y =</span> lifexp)) <span class="op">+</span></span>
+<span id="cb345-3"><a href="stat-analysis.html#cb345-3"></a><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">coord_flip</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-314-2.png" width="672" /></p>
+<p>Данные графики наглядно показывают, что регионы отличаются по ряду статистических параметров исследуемой переменной: среднему значению, размаху вариации (разбросу значений), среднеквадратическому отклонению Эти статистики можно получить и в табличном виде:</p>
+<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb346-1"><a href="stat-analysis.html#cb346-1"></a>(tabreg <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb346-2"><a href="stat-analysis.html#cb346-2"></a><span class="st">  </span><span class="kw">group_by</span>(Region) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb346-3"><a href="stat-analysis.html#cb346-3"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">gdp_mean =</span> <span class="kw">mean</span>(gdp),</span>
+<span id="cb346-4"><a href="stat-analysis.html#cb346-4"></a>            <span class="dt">gdp_sd =</span> <span class="kw">sd</span>(gdp),</span>
+<span id="cb346-5"><a href="stat-analysis.html#cb346-5"></a>            <span class="dt">lifexp_mean =</span> <span class="kw">mean</span>(lifexp),</span>
+<span id="cb346-6"><a href="stat-analysis.html#cb346-6"></a>            <span class="dt">lifexp_sd =</span> <span class="kw">sd</span>(lifexp)))</span>
+<span id="cb346-7"><a href="stat-analysis.html#cb346-7"></a><span class="co">## # A tibble: 8 x 5</span></span>
+<span id="cb346-8"><a href="stat-analysis.html#cb346-8"></a><span class="co">##   Region             gdp_mean gdp_sd lifexp_mean lifexp_sd</span></span>
+<span id="cb346-9"><a href="stat-analysis.html#cb346-9"></a><span class="co">##   &lt;chr&gt;                 &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb346-10"><a href="stat-analysis.html#cb346-10"></a><span class="co">## 1 africa_north          6897.  3386.        73        4.97</span></span>
+<span id="cb346-11"><a href="stat-analysis.html#cb346-11"></a><span class="co">## 2 africa_sub_saharan    3583.  4553.        62.3      5.31</span></span>
+<span id="cb346-12"><a href="stat-analysis.html#cb346-12"></a><span class="co">## 3 america_north        13835. 11451.        74.9      4.00</span></span>
+<span id="cb346-13"><a href="stat-analysis.html#cb346-13"></a><span class="co">## 4 america_south        10350.  4277.        75.1      3.50</span></span>
+<span id="cb346-14"><a href="stat-analysis.html#cb346-14"></a><span class="co">## 5 asia_west            16374. 20957.        73.7      6.51</span></span>
+<span id="cb346-15"><a href="stat-analysis.html#cb346-15"></a><span class="co">## 6 east_asia_pacific    14062. 16634.        72.4      6.68</span></span>
+<span id="cb346-16"><a href="stat-analysis.html#cb346-16"></a><span class="co">## 7 europe_east          13634.  7030.        75.9      2.86</span></span>
+<span id="cb346-17"><a href="stat-analysis.html#cb346-17"></a><span class="co">## 8 europe_west          33571. 11104.        81.5      1.24</span></span></code></pre></div>
+</div>
+<div id="stat_analysis_one_tests" class="section level3">
+<h3><span class="header-section-number">7.3.3</span> Статистические тесты</h3>
+<p>Прежде чем манипулировать вычисленными статистиками (говорить, что в Западной Европе ВВП на душу населения в 10 раз выше, чем в Южной Африке), необходимо убедиться, что их отличия являются статистически значимыми. На статистическую значимость влияет не только абсолютная разность средних, но также характер распределения и объем выборки — выборки малого объема не могут дать высокой статистической значимости.</p>
+<p>Для сравнения средних значений и дисперсий двух статистических выборок обычно используют <a href="https://ru.wikipedia.org/wiki/T-%D0%9A%D1%80%D0%B8%D1%82%D0%B5%D1%80%D0%B8%D0%B9_%D0%A1%D1%82%D1%8C%D1%8E%D0%B4%D0%B5%D0%BD%D1%82%D0%B0"><strong>тест Стьюдента</strong></a> и <a href="https://ru.wikipedia.org/wiki/F-%D1%82%D0%B5%D1%81%D1%82"><strong>тест Фишера</strong></a> соответственно.</p>
+<p>Проведем тесты для сравнения средних по Европе и Южной Африке используя функцию <code>t.test()</code> (на самом деле это <a href="https://en.wikipedia.org/wiki/Welch%27s_t-test">тест Уэлча</a>, являющийся модификацией теста Стьюдента):</p>
+<div class="sourceCode" id="cb347"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb347-1"><a href="stat-analysis.html#cb347-1"></a><span class="kw">t.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;africa_sub_saharan&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp),</span>
+<span id="cb347-2"><a href="stat-analysis.html#cb347-2"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_west&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp))</span>
+<span id="cb347-3"><a href="stat-analysis.html#cb347-3"></a><span class="co">## </span></span>
+<span id="cb347-4"><a href="stat-analysis.html#cb347-4"></a><span class="co">##  Welch Two Sample t-test</span></span>
+<span id="cb347-5"><a href="stat-analysis.html#cb347-5"></a><span class="co">## </span></span>
+<span id="cb347-6"><a href="stat-analysis.html#cb347-6"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;africa_sub_saharan&quot;) %&gt;% pull(gdp) and tabreg %&gt;% filter(Region == &quot;europe_west&quot;) %&gt;% pull(gdp)</span></span>
+<span id="cb347-7"><a href="stat-analysis.html#cb347-7"></a><span class="co">## t = -11.384, df = 20.547, p-value = 0.0000000002487</span></span>
+<span id="cb347-8"><a href="stat-analysis.html#cb347-8"></a><span class="co">## alternative hypothesis: true difference in means is not equal to 0</span></span>
+<span id="cb347-9"><a href="stat-analysis.html#cb347-9"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb347-10"><a href="stat-analysis.html#cb347-10"></a><span class="co">##  -35473.63 -24502.15</span></span>
+<span id="cb347-11"><a href="stat-analysis.html#cb347-11"></a><span class="co">## sample estimates:</span></span>
+<span id="cb347-12"><a href="stat-analysis.html#cb347-12"></a><span class="co">## mean of x mean of y </span></span>
+<span id="cb347-13"><a href="stat-analysis.html#cb347-13"></a><span class="co">##  3583.326 33571.214</span></span>
+<span id="cb347-14"><a href="stat-analysis.html#cb347-14"></a></span>
+<span id="cb347-15"><a href="stat-analysis.html#cb347-15"></a><span class="kw">t.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;africa_sub_saharan&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp),</span>
+<span id="cb347-16"><a href="stat-analysis.html#cb347-16"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_west&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp))</span>
+<span id="cb347-17"><a href="stat-analysis.html#cb347-17"></a><span class="co">## </span></span>
+<span id="cb347-18"><a href="stat-analysis.html#cb347-18"></a><span class="co">##  Welch Two Sample t-test</span></span>
+<span id="cb347-19"><a href="stat-analysis.html#cb347-19"></a><span class="co">## </span></span>
+<span id="cb347-20"><a href="stat-analysis.html#cb347-20"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;africa_sub_saharan&quot;) %&gt;% pull(lifexp) and tabreg %&gt;% filter(Region == &quot;europe_west&quot;) %&gt;% pull(lifexp)</span></span>
+<span id="cb347-21"><a href="stat-analysis.html#cb347-21"></a><span class="co">## t = -23.037, df = 55.262, p-value &lt; 0.00000000000000022</span></span>
+<span id="cb347-22"><a href="stat-analysis.html#cb347-22"></a><span class="co">## alternative hypothesis: true difference in means is not equal to 0</span></span>
+<span id="cb347-23"><a href="stat-analysis.html#cb347-23"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb347-24"><a href="stat-analysis.html#cb347-24"></a><span class="co">##  -20.87392 -17.53317</span></span>
+<span id="cb347-25"><a href="stat-analysis.html#cb347-25"></a><span class="co">## sample estimates:</span></span>
+<span id="cb347-26"><a href="stat-analysis.html#cb347-26"></a><span class="co">## mean of x mean of y </span></span>
+<span id="cb347-27"><a href="stat-analysis.html#cb347-27"></a><span class="co">##  62.25435  81.45789</span></span></code></pre></div>
+<p><a href="https://ru.wikipedia.org/wiki/P-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D0%B5"><strong>p-значения</strong></a> для данных тестов очень малы, что позволяет нам принять (не отвергать) гипотезу о неравенстве средних для Западной Европы и Южной Африки.</p>
+<p>Проверим, так ли значимы отличия в средних для Северной и Южной Америки:</p>
+<div class="sourceCode" id="cb348"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb348-1"><a href="stat-analysis.html#cb348-1"></a><span class="kw">t.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;america_north&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp),</span>
+<span id="cb348-2"><a href="stat-analysis.html#cb348-2"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;america_south&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp))</span>
+<span id="cb348-3"><a href="stat-analysis.html#cb348-3"></a><span class="co">## </span></span>
+<span id="cb348-4"><a href="stat-analysis.html#cb348-4"></a><span class="co">##  Welch Two Sample t-test</span></span>
+<span id="cb348-5"><a href="stat-analysis.html#cb348-5"></a><span class="co">## </span></span>
+<span id="cb348-6"><a href="stat-analysis.html#cb348-6"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;america_north&quot;) %&gt;% pull(gdp) and tabreg %&gt;% filter(Region == &quot;america_south&quot;) %&gt;% pull(gdp)</span></span>
+<span id="cb348-7"><a href="stat-analysis.html#cb348-7"></a><span class="co">## t = 1.1742, df = 23.283, p-value = 0.2522</span></span>
+<span id="cb348-8"><a href="stat-analysis.html#cb348-8"></a><span class="co">## alternative hypothesis: true difference in means is not equal to 0</span></span>
+<span id="cb348-9"><a href="stat-analysis.html#cb348-9"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb348-10"><a href="stat-analysis.html#cb348-10"></a><span class="co">##  -2650.736  9620.806</span></span>
+<span id="cb348-11"><a href="stat-analysis.html#cb348-11"></a><span class="co">## sample estimates:</span></span>
+<span id="cb348-12"><a href="stat-analysis.html#cb348-12"></a><span class="co">## mean of x mean of y </span></span>
+<span id="cb348-13"><a href="stat-analysis.html#cb348-13"></a><span class="co">##  13834.72  10349.69</span></span>
+<span id="cb348-14"><a href="stat-analysis.html#cb348-14"></a></span>
+<span id="cb348-15"><a href="stat-analysis.html#cb348-15"></a><span class="kw">t.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;america_north&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp),</span>
+<span id="cb348-16"><a href="stat-analysis.html#cb348-16"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;america_south&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp))</span>
+<span id="cb348-17"><a href="stat-analysis.html#cb348-17"></a><span class="co">## </span></span>
+<span id="cb348-18"><a href="stat-analysis.html#cb348-18"></a><span class="co">##  Welch Two Sample t-test</span></span>
+<span id="cb348-19"><a href="stat-analysis.html#cb348-19"></a><span class="co">## </span></span>
+<span id="cb348-20"><a href="stat-analysis.html#cb348-20"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;america_north&quot;) %&gt;% pull(lifexp) and tabreg %&gt;% filter(Region == &quot;america_south&quot;) %&gt;% pull(lifexp)</span></span>
+<span id="cb348-21"><a href="stat-analysis.html#cb348-21"></a><span class="co">## t = -0.20306, df = 25.802, p-value = 0.8407</span></span>
+<span id="cb348-22"><a href="stat-analysis.html#cb348-22"></a><span class="co">## alternative hypothesis: true difference in means is not equal to 0</span></span>
+<span id="cb348-23"><a href="stat-analysis.html#cb348-23"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb348-24"><a href="stat-analysis.html#cb348-24"></a><span class="co">##  -3.121651  2.560540</span></span>
+<span id="cb348-25"><a href="stat-analysis.html#cb348-25"></a><span class="co">## sample estimates:</span></span>
+<span id="cb348-26"><a href="stat-analysis.html#cb348-26"></a><span class="co">## mean of x mean of y </span></span>
+<span id="cb348-27"><a href="stat-analysis.html#cb348-27"></a><span class="co">##  74.86111  75.14167</span></span></code></pre></div>
+<p>В данном случае, несмотря на то, что вычисленные значения средних отличаются, тест показывает очень высокие <strong>p-значения</strong> (0.25 и 0.84 соответственно), что не позволяет нам говорить о том, что эти отличия статистически значимы. Соответственно, делать на их основе какие-либо научные выводы нельзя.</p>
+<p>Аналогичным образом можно проверить статистическую значимость отличий в дисперсии (вариации значений) для разных регионов. Для этого используем функцию <code>var.test()</code> применительно к регионам Западной и Восточной Европы:</p>
+<div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb349-1"><a href="stat-analysis.html#cb349-1"></a><span class="kw">var.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_east&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp),</span>
+<span id="cb349-2"><a href="stat-analysis.html#cb349-2"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_west&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp))</span>
+<span id="cb349-3"><a href="stat-analysis.html#cb349-3"></a><span class="co">## </span></span>
+<span id="cb349-4"><a href="stat-analysis.html#cb349-4"></a><span class="co">##  F test to compare two variances</span></span>
+<span id="cb349-5"><a href="stat-analysis.html#cb349-5"></a><span class="co">## </span></span>
+<span id="cb349-6"><a href="stat-analysis.html#cb349-6"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;europe_east&quot;) %&gt;% pull(gdp) and tabreg %&gt;% filter(Region == &quot;europe_west&quot;) %&gt;% pull(gdp)</span></span>
+<span id="cb349-7"><a href="stat-analysis.html#cb349-7"></a><span class="co">## F = 0.40087, num df = 22, denom df = 18, p-value = 0.0434</span></span>
+<span id="cb349-8"><a href="stat-analysis.html#cb349-8"></a><span class="co">## alternative hypothesis: true ratio of variances is not equal to 1</span></span>
+<span id="cb349-9"><a href="stat-analysis.html#cb349-9"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb349-10"><a href="stat-analysis.html#cb349-10"></a><span class="co">##  0.1585416 0.9726112</span></span>
+<span id="cb349-11"><a href="stat-analysis.html#cb349-11"></a><span class="co">## sample estimates:</span></span>
+<span id="cb349-12"><a href="stat-analysis.html#cb349-12"></a><span class="co">## ratio of variances </span></span>
+<span id="cb349-13"><a href="stat-analysis.html#cb349-13"></a><span class="co">##          0.4008741</span></span>
+<span id="cb349-14"><a href="stat-analysis.html#cb349-14"></a></span>
+<span id="cb349-15"><a href="stat-analysis.html#cb349-15"></a><span class="kw">var.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_east&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp),</span>
+<span id="cb349-16"><a href="stat-analysis.html#cb349-16"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_west&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp))</span>
+<span id="cb349-17"><a href="stat-analysis.html#cb349-17"></a><span class="co">## </span></span>
+<span id="cb349-18"><a href="stat-analysis.html#cb349-18"></a><span class="co">##  F test to compare two variances</span></span>
+<span id="cb349-19"><a href="stat-analysis.html#cb349-19"></a><span class="co">## </span></span>
+<span id="cb349-20"><a href="stat-analysis.html#cb349-20"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;europe_east&quot;) %&gt;% pull(lifexp) and tabreg %&gt;% filter(Region == &quot;europe_west&quot;) %&gt;% pull(lifexp)</span></span>
+<span id="cb349-21"><a href="stat-analysis.html#cb349-21"></a><span class="co">## F = 5.3246, num df = 22, denom df = 18, p-value = 0.0006859</span></span>
+<span id="cb349-22"><a href="stat-analysis.html#cb349-22"></a><span class="co">## alternative hypothesis: true ratio of variances is not equal to 1</span></span>
+<span id="cb349-23"><a href="stat-analysis.html#cb349-23"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb349-24"><a href="stat-analysis.html#cb349-24"></a><span class="co">##   2.105831 12.918723</span></span>
+<span id="cb349-25"><a href="stat-analysis.html#cb349-25"></a><span class="co">## sample estimates:</span></span>
+<span id="cb349-26"><a href="stat-analysis.html#cb349-26"></a><span class="co">## ratio of variances </span></span>
+<span id="cb349-27"><a href="stat-analysis.html#cb349-27"></a><span class="co">##           5.324617</span></span></code></pre></div>
+<p>Данный тест показывает, что отличия в вариации значений ВВП на душу населения для Западной и Восточной Европы носят пограничный характер (p = 0.04), и принимать их можно только если стоит относительно высокое пороговое значение p = 0.05. В то же время, вариация продолжительности жизни для Западной Европы существенной меньше, чем для Восточной и при данной выборке это отличие обладает высокой статистической значимостью (p = 0.0007). Соответственно, его можно принимать с уверенностью.</p>
+</div>
+</div>
+<div id="stat_analysis_two" class="section level2">
+<h2><span class="header-section-number">7.4</span> Две переменных</h2>
+<p>Достаточно часто в задачах анализа данных возникает необходимость совместного изучения нескольких переменных. Данный раздел посвящен анализу двух переменных.</p>
+<div id="stat_analysis_two_distr" class="section level3">
+<h3><span class="header-section-number">7.4.1</span> Оценка распределения</h3>
+<div id="stat_analysis_two_distr_scatter" class="section level4">
+<h4><span class="header-section-number">7.4.1.1</span> Диаграмма рассеяния</h4>
+<p>Первичный анализ производится путем оценки совместного распределения переменных на плоскости (для двух переменных) путем построения диаграммы рассеяния. С этим графиком мы уже хорошо знакомы:</p>
+<div class="sourceCode" id="cb350"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb350-1"><a href="stat-analysis.html#cb350-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb350-2"><a href="stat-analysis.html#cb350-2"></a><span class="st">  </span><span class="kw">geom_point</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-319-1.png" width="672" /></p>
+<p>Очевидно, что в данном случае мы имеем с нелинейной зависимостью. Чтобы упростить задачу по дальнейшему анализу, можно попробовать перейти к логарифмической шкале по оси <em>X</em>:</p>
+<div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb351-1"><a href="stat-analysis.html#cb351-1"></a><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>)</span>
+<span id="cb351-2"><a href="stat-analysis.html#cb351-2"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb351-3"><a href="stat-analysis.html#cb351-3"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
+<span id="cb351-4"><a href="stat-analysis.html#cb351-4"></a><span class="st">  </span><span class="kw">scale_x_log10</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-320-1.png" width="672" /></p>
+<p>На диаграмме рассеяния важно показать не только местоположение точек, но также их весовую значимость, которая в данном случае определяется численностью населения в стране. Введем соответствующую графическую переменную — размер точки:</p>
+<div class="sourceCode" id="cb352"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb352-1"><a href="stat-analysis.html#cb352-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp, <span class="dt">size =</span> pop)) <span class="op">+</span></span>
+<span id="cb352-2"><a href="stat-analysis.html#cb352-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb352-3"><a href="stat-analysis.html#cb352-3"></a><span class="st">  </span><span class="kw">scale_x_log10</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-321-1.png" width="672" /></p>
+<p>Еще сильнее повысить информативность диаграммы рассеяния можно, используя цвет точек для обозначения региона принадлежности. Это позволит понять связь между введенной нами <em>географической стратификацией</em> и распределением элементов выборки на диаграмме рассеяния:</p>
+<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb353-1"><a href="stat-analysis.html#cb353-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp, <span class="dt">size =</span> pop, <span class="dt">color =</span> Region)) <span class="op">+</span></span>
+<span id="cb353-2"><a href="stat-analysis.html#cb353-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb353-3"><a href="stat-analysis.html#cb353-3"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb353-4"><a href="stat-analysis.html#cb353-4"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-322-1.png" width="672" /></p>
+<p>Использование цвета наглядно показывает, что африканские страны занимают нижнюю левую часть диаграммы рассеяния с малой величиной ВВП и низкой продолжительностью жизни.</p>
+<p>Целесообразно также добавить подписи крупнейших стран мира с населением более 100 млн чел, а также страны, занимающие экстремальные позиции по обеим осям, чтобы понять положение ключевых игроков на диаграмме:</p>
+<div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb354-1"><a href="stat-analysis.html#cb354-1"></a></span>
+<span id="cb354-2"><a href="stat-analysis.html#cb354-2"></a>tablab =<span class="st"> </span>tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># табличка для подписей</span></span>
+<span id="cb354-3"><a href="stat-analysis.html#cb354-3"></a><span class="st">  </span><span class="kw">filter</span>(</span>
+<span id="cb354-4"><a href="stat-analysis.html#cb354-4"></a>    pop <span class="op">&gt;</span><span class="st"> </span><span class="fl">1e8</span> <span class="op">|</span><span class="st"> </span></span>
+<span id="cb354-5"><a href="stat-analysis.html#cb354-5"></a><span class="st">    </span>gdp <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(gdp) <span class="op">|</span><span class="st"> </span></span>
+<span id="cb354-6"><a href="stat-analysis.html#cb354-6"></a><span class="st">    </span>gdp <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(gdp) <span class="op">|</span><span class="st"> </span></span>
+<span id="cb354-7"><a href="stat-analysis.html#cb354-7"></a><span class="st">    </span>lifexp <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(lifexp) <span class="op">|</span><span class="st"> </span></span>
+<span id="cb354-8"><a href="stat-analysis.html#cb354-8"></a><span class="st">    </span>lifexp <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(lifexp)</span>
+<span id="cb354-9"><a href="stat-analysis.html#cb354-9"></a>  )</span>
+<span id="cb354-10"><a href="stat-analysis.html#cb354-10"></a></span>
+<span id="cb354-11"><a href="stat-analysis.html#cb354-11"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp, <span class="dt">color =</span> Region)) <span class="op">+</span></span>
+<span id="cb354-12"><a href="stat-analysis.html#cb354-12"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> pop), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb354-13"><a href="stat-analysis.html#cb354-13"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">data =</span> tablab, </span>
+<span id="cb354-14"><a href="stat-analysis.html#cb354-14"></a>            <span class="kw">aes</span>(<span class="dt">label =</span> Country),</span>
+<span id="cb354-15"><a href="stat-analysis.html#cb354-15"></a>            <span class="dt">check_overlap =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb354-16"><a href="stat-analysis.html#cb354-16"></a>            <span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span><span class="st"> </span><span class="co"># убрать текст из легенды</span></span>
+<span id="cb354-17"><a href="stat-analysis.html#cb354-17"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb354-18"><a href="stat-analysis.html#cb354-18"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-323-1.png" width="672" /></p>
+<p>Устранение перекрытий подписей можно осуществить, используя геометрию <code>geom_text_repel()</code> из пакета <strong>ggrepel</strong> вместо стандартной <code>geom_text()</code></p>
+<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb355-1"><a href="stat-analysis.html#cb355-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp,  <span class="dt">color =</span> Region)) <span class="op">+</span></span>
+<span id="cb355-2"><a href="stat-analysis.html#cb355-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> pop), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb355-3"><a href="stat-analysis.html#cb355-3"></a><span class="st">  </span><span class="kw">geom_text_repel</span>(<span class="dt">data =</span> tablab, </span>
+<span id="cb355-4"><a href="stat-analysis.html#cb355-4"></a>                  <span class="kw">aes</span>(<span class="dt">label =</span> Country),</span>
+<span id="cb355-5"><a href="stat-analysis.html#cb355-5"></a>                  <span class="dt">box.padding =</span> <span class="fl">0.7</span>,  <span class="co"># зазор вокруг подписи</span></span>
+<span id="cb355-6"><a href="stat-analysis.html#cb355-6"></a>                  <span class="dt">segment.size =</span> <span class="fl">0.2</span>, <span class="co"># толщина линии выноски</span></span>
+<span id="cb355-7"><a href="stat-analysis.html#cb355-7"></a>                  <span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span><span class="st"> </span><span class="co"># убрать текст из легенды</span></span>
+<span id="cb355-8"><a href="stat-analysis.html#cb355-8"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb355-9"><a href="stat-analysis.html#cb355-9"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">label =</span> <span class="kw">element_blank</span>()) <span class="op">+</span></span>
+<span id="cb355-10"><a href="stat-analysis.html#cb355-10"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-324-1.png" width="672" /></p>
+</div>
+<div id="stat_analysis_two_distr_density" class="section level4">
+<h4><span class="header-section-number">7.4.1.2</span> Плотность распределения</h4>
+<p>Плотность совместного распределения двух случайных величин представляет собой уже не кривую, а поверхность, которую можно построить с использованием геометрии <code>geom_density_2d()</code>. По умолчанию эта геометрия визуализируется в форме изолиний:</p>
+<div class="sourceCode" id="cb356"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb356-1"><a href="stat-analysis.html#cb356-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb356-2"><a href="stat-analysis.html#cb356-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb356-3"><a href="stat-analysis.html#cb356-3"></a><span class="st">  </span><span class="kw">geom_density_2d</span>()<span class="op">+</span></span>
+<span id="cb356-4"><a href="stat-analysis.html#cb356-4"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb356-5"><a href="stat-analysis.html#cb356-5"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-325-1.png" width="672" /></p>
+<p>Усилить наглядность представления можно, добавив вспомогательную растровую поверхность плотности распределения (по которой, собственно, и строятся изолинии). Обратите внимание, что для растра используется функция <code>stat_density()</code>:</p>
+<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb357-1"><a href="stat-analysis.html#cb357-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb357-2"><a href="stat-analysis.html#cb357-2"></a><span class="st">  </span><span class="kw">stat_density_2d</span>(<span class="dt">geom =</span> <span class="st">&quot;raster&quot;</span>, <span class="kw">aes</span>(<span class="dt">fill =</span> <span class="kw">stat</span>(density)), <span class="dt">contour =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb357-3"><a href="stat-analysis.html#cb357-3"></a><span class="st">  </span><span class="kw">geom_density_2d</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span></span>
+<span id="cb357-4"><a href="stat-analysis.html#cb357-4"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb357-5"><a href="stat-analysis.html#cb357-5"></a><span class="st">  </span><span class="kw">scale_fill_gradient</span>(<span class="dt">low =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">high =</span> <span class="st">&quot;red&quot;</span>) <span class="op">+</span></span>
+<span id="cb357-6"><a href="stat-analysis.html#cb357-6"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb357-7"><a href="stat-analysis.html#cb357-7"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-326-1.png" width="672" /></p>
+<p>График двумерной плотности распределения показывает, что <em>мода</em> распределения, т.е. наиболее часто встречающийся случай, примерно соответствует странам с продолжительностью жизни 75 лет и ВВП на душу населения $10000.</p>
+<p>В некоторых случаях удобнее оказывается не аппроксимация непрерывной поверхности плотности распределения, а подсчет количества измерений по ячейкам регулярной сетки — квадратным или гексагональным. Такой подход бывает особенно полезен, когда точек измерений очень много и из-за их количества оказывается проблематично разглядеть области их концентрации. Агрегирование данных по ячейкам осуществляется путем применения геометрий <code>geom_bin2d()</code> и <code>geom_hex()</code>:</p>
+<div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb358-1"><a href="stat-analysis.html#cb358-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb358-2"><a href="stat-analysis.html#cb358-2"></a><span class="st">  </span><span class="kw">geom_bin2d</span>(<span class="dt">bins =</span> <span class="dv">10</span>)<span class="op">+</span></span>
+<span id="cb358-3"><a href="stat-analysis.html#cb358-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb358-4"><a href="stat-analysis.html#cb358-4"></a><span class="st">  </span><span class="kw">scale_fill_gradient</span>(<span class="dt">low =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">high =</span> <span class="st">&quot;red&quot;</span>) <span class="op">+</span></span>
+<span id="cb358-5"><a href="stat-analysis.html#cb358-5"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb358-6"><a href="stat-analysis.html#cb358-6"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-327-1.png" width="672" /></p>
+<div class="sourceCode" id="cb359"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb359-1"><a href="stat-analysis.html#cb359-1"></a></span>
+<span id="cb359-2"><a href="stat-analysis.html#cb359-2"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb359-3"><a href="stat-analysis.html#cb359-3"></a><span class="st">  </span><span class="kw">geom_hex</span>(<span class="dt">bins =</span> <span class="dv">10</span>) <span class="op">+</span></span>
+<span id="cb359-4"><a href="stat-analysis.html#cb359-4"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb359-5"><a href="stat-analysis.html#cb359-5"></a><span class="st">  </span><span class="kw">scale_fill_gradient</span>(<span class="dt">low =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">high =</span> <span class="st">&quot;red&quot;</span>) <span class="op">+</span></span>
+<span id="cb359-6"><a href="stat-analysis.html#cb359-6"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb359-7"><a href="stat-analysis.html#cb359-7"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-327-2.png" width="672" /></p>
+</div>
+</div>
+<div id="stat_analysis_two_distr_correg" class="section level3">
+<h3><span class="header-section-number">7.4.2</span> Корреляция и регрессия</h3>
+<p><a href="https://bigenc.ru/mathematics/text/2099814">Корреляционный анализ</a> позволяет дать численную характеристику статистической связи между двумя случайными величинами, а <a href="https://bigenc.ru/mathematics/text/3502638">регрессионный анализ</a> — <em>моделировать</em> эту взаимосвязь посредством построения функции взаимосвязи зависимой и множества независимых переменных.</p>
+<div id="stat_analysis_two_distr_correg_corr" class="section level4">
+<h4><span class="header-section-number">7.4.2.1</span> Корреляция</h4>
+<p><a href="https://bigenc.ru/mathematics/text/2099711"><strong>Коэффициент корреляции</strong></a> — это числовая характеристика совместного распределения двух случайных величин, характеризующая их взаимосвязь. Наиболее часто в статистике употребляется выборочный коэффициент корреляции Пирсона, в котором перебираются все пары соответствующих друг другу значений из рядов <span class="math inline">\(X = \{x_i\}\)</span> и <span class="math inline">\(Y = \{y_i\}\)</span>:
+<span class="math display">\[
+r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(x_i - \bar x)^2} \sqrt{\sum_{i=1}^{n}(y_i - \bar y)^2}},
+\]</span>
+где <span class="math inline">\(\bar x\)</span> и <span class="math inline">\(\bar y\)</span> соответствуют выборочным средним для <span class="math inline">\(X\)</span> и <span class="math inline">\(Y\)</span>.</p>
+<p>Важно помнить, что коэффициент корреляции Пирсона характеризует силу <em>линейной</em> связи между двумя величинами. Поэтому, если наблюдаемая нами картина взаимосвязи носит нелинейный характер, необходимо предварительно линеаризовать ее, то есть выполнить преобразование над переменными, приводящее к получению линейной зависимости. В нашем в случае изучения ВВП на душу населения и продолжительности жизни мы видели, что линеаризация возможна путем логарифмирования показателя ВВП.</p>
+<p>Для вычисления коэффициента корреляции Пирсона в <strong>R</strong> с оценкой уровня значимости используется функция <code>cor.test()</code>:</p>
+<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb360-1"><a href="stat-analysis.html#cb360-1"></a><span class="kw">cor.test</span>(tabreg<span class="op">$</span>gdp, tabreg<span class="op">$</span>lifexp)</span>
+<span id="cb360-2"><a href="stat-analysis.html#cb360-2"></a><span class="co">## </span></span>
+<span id="cb360-3"><a href="stat-analysis.html#cb360-3"></a><span class="co">##  Pearson&#39;s product-moment correlation</span></span>
+<span id="cb360-4"><a href="stat-analysis.html#cb360-4"></a><span class="co">## </span></span>
+<span id="cb360-5"><a href="stat-analysis.html#cb360-5"></a><span class="co">## data:  tabreg$gdp and tabreg$lifexp</span></span>
+<span id="cb360-6"><a href="stat-analysis.html#cb360-6"></a><span class="co">## t = 11.376, df = 170, p-value &lt; 0.00000000000000022</span></span>
+<span id="cb360-7"><a href="stat-analysis.html#cb360-7"></a><span class="co">## alternative hypothesis: true correlation is not equal to 0</span></span>
+<span id="cb360-8"><a href="stat-analysis.html#cb360-8"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb360-9"><a href="stat-analysis.html#cb360-9"></a><span class="co">##  0.5632175 0.7347928</span></span>
+<span id="cb360-10"><a href="stat-analysis.html#cb360-10"></a><span class="co">## sample estimates:</span></span>
+<span id="cb360-11"><a href="stat-analysis.html#cb360-11"></a><span class="co">##       cor </span></span>
+<span id="cb360-12"><a href="stat-analysis.html#cb360-12"></a><span class="co">## 0.6574446</span></span></code></pre></div>
+<p>Результат теста в данном случае показывает, что коэффициент корреляции с вероятностью 0,95 находится в интервале от 0,56 до 0,73, и его математическое ожидание равно 0,66.</p>
+<p>Проверим, можно ли уточнить эту оценку, выполнив логарифмирование показателя ВВП:</p>
+<div class="sourceCode" id="cb361"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb361-1"><a href="stat-analysis.html#cb361-1"></a><span class="kw">cor.test</span>(<span class="kw">log</span>(tabreg<span class="op">$</span>gdp), tabreg<span class="op">$</span>lifexp)</span>
+<span id="cb361-2"><a href="stat-analysis.html#cb361-2"></a><span class="co">## </span></span>
+<span id="cb361-3"><a href="stat-analysis.html#cb361-3"></a><span class="co">##  Pearson&#39;s product-moment correlation</span></span>
+<span id="cb361-4"><a href="stat-analysis.html#cb361-4"></a><span class="co">## </span></span>
+<span id="cb361-5"><a href="stat-analysis.html#cb361-5"></a><span class="co">## data:  log(tabreg$gdp) and tabreg$lifexp</span></span>
+<span id="cb361-6"><a href="stat-analysis.html#cb361-6"></a><span class="co">## t = 17.327, df = 170, p-value &lt; 0.00000000000000022</span></span>
+<span id="cb361-7"><a href="stat-analysis.html#cb361-7"></a><span class="co">## alternative hypothesis: true correlation is not equal to 0</span></span>
+<span id="cb361-8"><a href="stat-analysis.html#cb361-8"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb361-9"><a href="stat-analysis.html#cb361-9"></a><span class="co">##  0.7375973 0.8473619</span></span>
+<span id="cb361-10"><a href="stat-analysis.html#cb361-10"></a><span class="co">## sample estimates:</span></span>
+<span id="cb361-11"><a href="stat-analysis.html#cb361-11"></a><span class="co">##       cor </span></span>
+<span id="cb361-12"><a href="stat-analysis.html#cb361-12"></a><span class="co">## 0.7990415</span></span></code></pre></div>
+<p>Видим, что логарифмирование показателя позволяет повысить значение коэффициента корреляции до 0,8. При этом доверительный интервал, заключающий в себя эту величину с вероятностью 0,95 существенно сузился: с 0,17 до 0,11. Очевидно, мы получили более корректную оценку взаимосвязи.</p>
+</div>
+<div id="stat_analysis_two_distr_correg_reg" class="section level4">
+<h4><span class="header-section-number">7.4.2.2</span> Регрессия</h4>
+<p>Для построения статистической модели этой зависимости, позволяющей по значениям независимой переменной вычислять значения зависимой переменной, необходимо провести <strong>регрессионный анализ</strong>. В общем случае кривая регрессии обычно выражается линейной комбинацией набора функций:
+<span class="math display">\[
+y(x) = β_0φ_0(x)+ β_1φ_1(x)+...+ β_mφ_m(x)
+\]</span>
+Наиболее часто используется <em>полиномиальная регрессия</em>, при которой
+<span class="math display">\[
+y(x) = β_0+β_1x+...+ β_mx^m.
+\]</span>
+В этом случае основная задача регрессионного анализа сводится к поиску неизвестных коэффициентов <span class="math inline">\(β_0,...,β_m\)</span>, который осуществляется <a href="https://bigenc.ru/mathematics/text/2245173">методом наименьших квадратов</a>. Результатом этого поиска являются выборочные коэффициенты регрессии <span class="math inline">\(\hat β_0,...,\hat β_m\)</span>, которые дают оценку искомых параметров <span class="math inline">\(β_0,...,β_m\)</span>. В итоге эмпирическая линия регрессии определяется многочленом
+<span class="math display">\[
+\hat y(x)=\hat β_0+\hat β_1x+...+\hat β_mx_m,
+\]</span>
+который и служит статистической оценкой неизвестной формы функциональной зависимости между исследуемыми величинами.</p>
+<p>Для представления моделей в R существует специальный объект, который называется <strong>формула</strong>. Формула имеет вид <code>f ~ x + y + ...</code>, что интерпретируется соответствующими функциями как <span class="math inline">\(f = β_0 + β_1x + β_2y + \dots\)</span></p>
+<blockquote>
+<p><strong>Обратите внимание</strong> на символ <em>тильды</em> (<code>~</code>) — он является отличительной особенностью формулы и интерпретируется как <em>«зависит от»</em>.</p>
+</blockquote>
+<p>Вместо переменных в формуле вы можете использовать функции от переменных. Например <code>log(f) ~ log(x) + sqrt(y)</code> означает модель <span class="math inline">\(\log f = β_0 + β_1 \log x + β_2 \sqrt y\)</span>. Если необходимо выполнить алгебраические преобразования переменных или задать конкретное значение свободного члена, то их необходимо заключить в специальную функцию <code>I()</code>: <code>f ~ log(x) + I(y ^ 2) + I(0)</code> будет означать модель вида <span class="math inline">\(f = β_1 \log x + β_2 y^2\)</span>.</p>
+<p>Для краткой записи полиномиальной зависимости можно использовать вспомогательную функцию <code>poly()</code>, которая в качестве второго аргумента принимает степень многочлена. Т.е. <code>f ~ poly(x, 3)</code> означает модель вида <span class="math inline">\(f = β_0 + β_1x + β_2x^2 + β_3x^3\)</span>.</p>
+<p>Оценка параметров линейных моделей осуществляется с помощью функции <code>lm()</code>. В нашем случае модель носит простой характер:</p>
+<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb362-1"><a href="stat-analysis.html#cb362-1"></a>model =<span class="st"> </span><span class="kw">lm</span>(lifexp <span class="op">~</span><span class="st"> </span><span class="kw">log</span>(gdp), <span class="dt">data =</span> tabreg)</span>
+<span id="cb362-2"><a href="stat-analysis.html#cb362-2"></a><span class="kw">coef</span>(model)</span>
+<span id="cb362-3"><a href="stat-analysis.html#cb362-3"></a><span class="co">## (Intercept)    log(gdp) </span></span>
+<span id="cb362-4"><a href="stat-analysis.html#cb362-4"></a><span class="co">##   25.129347    5.261476</span></span></code></pre></div>
+<p>Полученные данные говорят нам о том, что уравнение имеет вид <span class="math inline">\(lifexp = 25.13 + 5.26 \log(gdp)\)</span>. Чтобы получить подробную сводку о качестве модели, мы можем вызвать <code>summary()</code>:</p>
+<div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb363-1"><a href="stat-analysis.html#cb363-1"></a><span class="kw">summary</span>(model)</span>
+<span id="cb363-2"><a href="stat-analysis.html#cb363-2"></a><span class="co">## </span></span>
+<span id="cb363-3"><a href="stat-analysis.html#cb363-3"></a><span class="co">## Call:</span></span>
+<span id="cb363-4"><a href="stat-analysis.html#cb363-4"></a><span class="co">## lm(formula = lifexp ~ log(gdp), data = tabreg)</span></span>
+<span id="cb363-5"><a href="stat-analysis.html#cb363-5"></a><span class="co">## </span></span>
+<span id="cb363-6"><a href="stat-analysis.html#cb363-6"></a><span class="co">## Residuals:</span></span>
+<span id="cb363-7"><a href="stat-analysis.html#cb363-7"></a><span class="co">##      Min       1Q   Median       3Q      Max </span></span>
+<span id="cb363-8"><a href="stat-analysis.html#cb363-8"></a><span class="co">## -18.4327  -1.9398   0.6394   3.1638  10.1937 </span></span>
+<span id="cb363-9"><a href="stat-analysis.html#cb363-9"></a><span class="co">## </span></span>
+<span id="cb363-10"><a href="stat-analysis.html#cb363-10"></a><span class="co">## Coefficients:</span></span>
+<span id="cb363-11"><a href="stat-analysis.html#cb363-11"></a><span class="co">##             Estimate Std. Error t value            Pr(&gt;|t|)    </span></span>
+<span id="cb363-12"><a href="stat-analysis.html#cb363-12"></a><span class="co">## (Intercept)  25.1293     2.7178   9.246 &lt;0.0000000000000002 ***</span></span>
+<span id="cb363-13"><a href="stat-analysis.html#cb363-13"></a><span class="co">## log(gdp)      5.2615     0.3037  17.327 &lt;0.0000000000000002 ***</span></span>
+<span id="cb363-14"><a href="stat-analysis.html#cb363-14"></a><span class="co">## ---</span></span>
+<span id="cb363-15"><a href="stat-analysis.html#cb363-15"></a><span class="co">## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb363-16"><a href="stat-analysis.html#cb363-16"></a><span class="co">## </span></span>
+<span id="cb363-17"><a href="stat-analysis.html#cb363-17"></a><span class="co">## Residual standard error: 4.785 on 170 degrees of freedom</span></span>
+<span id="cb363-18"><a href="stat-analysis.html#cb363-18"></a><span class="co">## Multiple R-squared:  0.6385, Adjusted R-squared:  0.6363 </span></span>
+<span id="cb363-19"><a href="stat-analysis.html#cb363-19"></a><span class="co">## F-statistic: 300.2 on 1 and 170 DF,  p-value: &lt; 0.00000000000000022</span></span></code></pre></div>
+<p>Результаты оценки говорят о том, что регрессия построена удовлетворительно. <a href="https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D1%8D%D1%84%D1%84%D0%B8%D1%86%D0%B8%D0%B5%D0%BD%D1%82_%D0%B4%D0%B5%D1%82%D0%B5%D1%80%D0%BC%D0%B8%D0%BD%D0%B0%D1%86%D0%B8%D0%B8">Коэффициент детерминации</a> (квадрат коэффициента корреляции) равен 0,64.</p>
+<p>Для визуализации модели можно извлечь из нее значения используя функцию <code>fitted()</code>:</p>
+<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb364-1"><a href="stat-analysis.html#cb364-1"></a>df =<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">lifexp =</span> <span class="kw">fitted</span>(model),</span>
+<span id="cb364-2"><a href="stat-analysis.html#cb364-2"></a>            <span class="dt">gdp =</span> tabreg<span class="op">$</span>gdp)</span>
+<span id="cb364-3"><a href="stat-analysis.html#cb364-3"></a>              </span>
+<span id="cb364-4"><a href="stat-analysis.html#cb364-4"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb364-5"><a href="stat-analysis.html#cb364-5"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb364-6"><a href="stat-analysis.html#cb364-6"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">data =</span> df, <span class="kw">aes</span>(gdp, lifexp), <span class="dt">color =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb364-7"><a href="stat-analysis.html#cb364-7"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-332-1.png" width="672" /></p>
+<p>Если вам нужно только построить линию регрессии, но не находить ее коэффициенты, то вы можете пропустить этап оценки параметров модели и вывести график линейной регрессии средствами <strong>ggplot</strong>, используя геометрию <code>geom_smooth()</code> с параметром <code>method = lm</code>:</p>
+<div class="sourceCode" id="cb365"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb365-1"><a href="stat-analysis.html#cb365-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb365-2"><a href="stat-analysis.html#cb365-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb365-3"><a href="stat-analysis.html#cb365-3"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&#39;lm&#39;</span>,</span>
+<span id="cb365-4"><a href="stat-analysis.html#cb365-4"></a>              <span class="dt">color =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb365-5"><a href="stat-analysis.html#cb365-5"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb365-6"><a href="stat-analysis.html#cb365-6"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-333-1.png" width="672" /></p>
+</div>
+<div id="stat_analysis_two_distr_correg_loess" class="section level4">
+<h4><span class="header-section-number">7.4.2.3</span> Локальная регрессия</h4>
+<p>Метод <strong>локальной регрессии</strong> изначально был разработан для построения кривых регрессии в случае когда зависимость между переменными ведет себя сложным образом и не может быть описана в терминах традиционной линейной и нелинейной регрессии — глобальных методов. В этом случае область значений независимой переменной <span class="math inline">\(X\)</span> можно покрыть конечным числом отрезков, для каждого из которых далее находят регрессию традиционным методом — как правило, линейную или квадратичную. Данный метод получил название <em>LOWESS (Locally weighted scatterplot smoothing)</em>. В дальнейшем эта аббревиатура была редуцирована до <em>LOESS</em>.</p>
+<p>В классической постановке метод <strong>LOESS</strong> реализуется следующим образом <span class="citation">(Cleveland <a href="#ref-cleveland:1979" role="doc-biblioref">1979</a>)</span>. Пусть дано <span class="math inline">\(n\)</span> точек исходных данных с координатами <span class="math inline">\(x\)</span> (независимая переменная) и <span class="math inline">\(y\)</span> (зависимая). Задается число <span class="math inline">\(0 &lt; \alpha \leq 1\)</span>, которое обозначает долю от общего количества точек <span class="math inline">\(n\)</span>, выбираемую в окрестности каждой точки для построения регрессии. В абсолютном исчислении количество ближайших точек будет равно <span class="math inline">\(r = [\alpha n]\)</span>, где <span class="math inline">\([\cdot]\)</span> — округление до ближайшего целого.</p>
+<p>Тогда вес, который будет иметь каждая <span class="math inline">\(k\)</span>-я точка исходных данных в уравнении регрессии для <span class="math inline">\(i\)</span>-й точки исходных данных будет определяться по формуле:</p>
+<p><span class="math display">\[w_k (x_i) = W\big((x_k - x_i)h_i^{-1}\big),\]</span></p>
+<p>где <span class="math inline">\(h_i\)</span> — расстояние до <span class="math inline">\(r\)</span>-го по близости соседа точки <span class="math inline">\(x_i\)</span>, а <span class="math inline">\(W\)</span> — весовая функция, отвечающая следующим условиям:</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(W(x) &gt; 0\)</span> если <span class="math inline">\(|x| &lt; 1\)</span>;</li>
+<li><span class="math inline">\(W(-x) = W(x)\)</span>;</li>
+<li><span class="math inline">\(W(x)\)</span> невозрастающая функция для <span class="math inline">\(x \geq 0\)</span>;</li>
+<li><span class="math inline">\(W(x) = 0\)</span> если <span class="math inline">\(|x| \geq 1\)</span>.</li>
+</ol>
+<p>Одним из стандартных вариантов весовой функции является <em>“трикубическая”</em> функция, определяемая как:</p>
+<p><span class="math display">\[
+W(x) = \begin{cases}
+(1 - |x|^3)^3, &amp; \text{если } |x| &lt; 1, \\
+ 0, &amp; \text{если } |x| \geq 1.
+\end{cases}
+\]</span></p>
+<p>Согласно определению весовой функции более близкие к <span class="math inline">\(x_i\)</span> точки оказывают большее влияние на коэффициенты регрессии. Помимо этого за пределами расстояния <span class="math inline">\(h_i\)</span> веса всех точек исходных данных будут обнуляться.</p>
+<p>Сглаженная оценка <span class="math inline">\(\hat{y}_i\)</span> в точке <span class="math inline">\(x_i\)</span> получается в виде полинома степени <span class="math inline">\(d\)</span>:</p>
+<p><span class="math display">\[\hat{y}_i = \sum_{j=0}^d \hat{\beta}_j (x_i) x_i^j,\]</span>
+где коэффициенты <span class="math inline">\(\hat{\beta}_j\)</span> находятся методом наименьших квадратов путем минимизации ошибки:</p>
+<p><span class="math display">\[\sum_{k=1}^n w_k (x_i) (y_k - \beta_0 - \beta_1 x_k - ... - \beta_d x_k^d)^2\]</span>
+Процедура поиска коэффициентов регрессии посторяется для каждой из <span class="math inline">\(n\)</span> точек.</p>
+<p>В методе <strong>LOESS</strong> используются степени регрессии <span class="math inline">\(d = 0, 1, 2\)</span>. Кубические и более высокие степени полиномов на практике не применяются. При степени равной 0 метод носит название <em>сглаживающего среднего</em>. Для построения линии локальной регрессии используйте функцию <code>geom_smooth()</code> без параметра <code>method</code> или с явным указанием параметра <code>method = 'loess'</code>:</p>
+<div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb366-1"><a href="stat-analysis.html#cb366-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb366-2"><a href="stat-analysis.html#cb366-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb366-3"><a href="stat-analysis.html#cb366-3"></a><span class="st">  </span><span class="kw">geom_smooth</span>() <span class="op">+</span></span>
+<span id="cb366-4"><a href="stat-analysis.html#cb366-4"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-334-1.png" width="672" /></p>
+<p>При визуализации линии локальной регрессии <strong>ggplot</strong> автоматически добавляет доверительные интервалы, показывающие диапазон нахождения искомой регрессионной кривой с вероятностью 0,95. Вы можете регулировать поведение локальной регрессии, задавая параметры <code>n</code> (количество ближайших точек <span class="math inline">\(r\)</span>), <code>span</code> (доля ближайших точек <span class="math inline">\(\alpha\)</span>) и <code>formula</code> (формула аппроксимируемой зависимости). По умолчанию используется регрессия первой степени (<code>formula = y ~ x</code>), значения <code>n = 80</code> и <code>span = 0.75</code>. Вы можете их изменить, например задать более компактный охват для поиска коэффициентов. В этом случае кривая будет более чувствительна к локальному разбросу элементов выборки:</p>
+<div class="sourceCode" id="cb367"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb367-1"><a href="stat-analysis.html#cb367-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb367-2"><a href="stat-analysis.html#cb367-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb367-3"><a href="stat-analysis.html#cb367-3"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">span =</span> <span class="fl">0.3</span>) <span class="op">+</span></span>
+<span id="cb367-4"><a href="stat-analysis.html#cb367-4"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-335-1.png" width="672" /></p>
+<p>Вместо координат исходных точек для построения регрессии можно использовать и произвольные координаты <span class="math inline">\(X\)</span>. В этом случае кривая будет соединять точки, полученные локальной регрессионной оценкой в заданных координатах <span class="math inline">\(X\)</span>. Именно этот принцип используется в двумерном (и многомерном) случае. Пусть даны измерения показателя в <span class="math inline">\(N\)</span> исходных точках и задано число <span class="math inline">\(\alpha\)</span> — сглаживающий параметр. Тогда аппроксимация показателя в каждом узле интерполяции получается путем построения поверхности тренда (см. выше) по <span class="math inline">\(\alpha N\)</span> ближайшим исходным точкам. Как и в одномерном случае, близкие точки будут оказывать более сильное влияние на коэффициенты регрессии, чем удаленные.</p>
+<p>Метод <em>LOESS</em> предоставляет широкие возможности настройки благодаря вариативности параметра сглаживания и степени регрессионного полинома.</p>
+</div>
+</div>
+</div>
+<div id="questions_tasks_stat_analysis" class="section level2">
+<h2><span class="header-section-number">7.5</span> Контрольные вопросы и упражнения</h2>
+<div id="questions_stat_analysis" class="section level3">
+<h3><span class="header-section-number">7.5.1</span> Вопросы</h3>
+<ol style="list-style-type: decimal">
+<li>Перечислите названия геометрий <strong>ggplot2</strong>, отвечающих за построение гистограммы и функции плотности распределения.</li>
+<li>Как работает метод ядерного сглаживания, используемый для аппроксимации функции плотности распределения? Каким критериям должна отвечать ядерная функция?</li>
+<li>Как совместить на одном графике гистограмму распределения и функцию плотности вероятности? Какой показатель должна отображать гистограмма высотой столбиков?</li>
+<li>Можно ли при построении графиков статистического характера определить различные веса для измерений? В какой параметр они должны передаваться? Какому критерию должны отвечать веса?</li>
+<li>С помощью какой геометрии можно построить диаграмму размаха средствами <strong>ggplot2</strong>? Как следует интерпретировать этот график?</li>
+<li>Как оценить статистическую значимость отличий в средних значениях и дисперсиях двух выборок? Какие тесты можно использовать для этого?</li>
+<li>Что из себя представляет плотность совместного распределения двух случайных величин? Какая геометрия <strong>ggplot2</strong> позволяет аппроксимировать ее и нанести на диаграмму рассеяния?</li>
+<li>С помощью каких геометрий <strong>ggplot2</strong> можно сгруппировать элементы диаграммы рассеяния ячейками ортогональной и гексагональной сеток? В каких случаях это оказывается полезно?</li>
+<li>Что такое коэффициент корреляции Пирсона, и какими ограничениями обладает этот показатель?</li>
+<li>Какая функция позволяет осуществить тест на корреляцию между двумя переменными в <strong>R</strong>?</li>
+<li>Что позволяет получить регрессионный анализ?</li>
+<li>Какой вид имеет уравнение регрессии в общем случае?</li>
+<li>Какой вид регрессии используется чаще всего?</li>
+<li>С помощью какого метода находят выборочные коэффициенты регрессии?</li>
+<li>Что такое формула в <strong>R</strong>, и для чего она используется?</li>
+<li>Как называется символ <code>~</code>, и что он означает в формулах?</li>
+<li>Каким образов в формуле можно указать алгебраическое преобразование переменной?</li>
+<li>С помощью какой функции осуществляется оценка параметров линейных регрессионных моделей в <strong>R</strong>?</li>
+<li>Какие функции позволяют извлечь из модели выборочные коэффициенты регрессии, а также смоделированные (<em>fitted</em>) значения?</li>
+<li>Как на основе полученной модели нанести линию регрессии на график <strong>ggplot2</strong>? Опишите последовательность действий.</li>
+<li>Можно ли нанести линию регрессии на график <strong>ggplot2</strong>, не используя явное построение модели? Какую геометрию и с какими параметрами следует использовать для этого?</li>
+<li>Что такое локальная регрессия (<em>LOESS</em>), и как работает этот метод?</li>
+<li>Какая геометрия, и с какими параметрами используется для построения линии локальной регрессии на графике <strong>ggplot2</strong>?</li>
+<li>Что показывает полупрозрачная серая полоса вокруг линии регрессии на графике <strong>ggplot2</strong>?</li>
+</ol>
+</div>
+<div id="tasks_stat_analysis" class="section level3">
+<h3><span class="header-section-number">7.5.2</span> Упражнения</h3>
+<ol style="list-style-type: decimal">
+<li><p>Изучите по данным Gapminder такие показатели как <a href="https://docs.google.com/spreadsheets/d/1StdAfQCYzvpSYQMvLfXkZ1FMKqcRh6BbZ6B-bLARIz8/pub">использование энергии</a> и <a href="https://docs.google.com/spreadsheets/d/1RjqGm7RG82GGVf7E4RXPPwFF7O1So6T0SFx2fVfcUJA/pub">выбросы <span class="math inline">\(CO_2\)</span></a> на душу населения. Постройте для них гистограммы и кривые плотности распределения. Какое распределение имеют данные показатели? Как изменилось оно с 1990 к 2010 году? Вычислите коэффициент корреляции между этими показателями и постройте регрессионную зависимость (на 2010 год). Дайте оценку статистической значимости полученных результатов.</p></li>
+<li><p>Изучите по данным Gapminder соотношение <a href="https://docs.google.com/spreadsheets/d/1c2RNsNlhv2kMHrqjl8rpFiVkz6iGu56tWlR3ClgaQ4M/pub">доли сельскохозяйсвенных земель в общей площади</a> и <a href="https://docs.google.com/spreadsheets/d/1qpvu21VCsvz-hYu5s1h0fc-3mRpxvsF1Y2M0Ie3d3CU/pub">доле водозабора на сельскохозяйственные нужды</a> за 2002 год. Есть ли какая-то зависимость между этими переменными? Что можно сказать о том, как распределены страны мира по этим двум показателям? Постройте по ним диаграммы размаха, сгруппировав по 4, 6 или 8 регионам Gapminder. Дайте оценку статистической значимости отличий в средних значениях и дисперсии между двумя выбранными вами регионами по доле водозабора на сельскохозяйственные нужды.</p></li>
+</ol>
+<table>
+<tbody>
+<tr class="odd">
+<td><em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, 2020. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a></td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-cleveland:1979">
+<p>Cleveland, William S. 1979. “Robust Locally Weighted Regression and Smoothing Scatterplots.” <em>Journal of the American Statistical Association</em> 74 (368): 829. <a href="https://doi.org/10.2307/2286407">https://doi.org/10.2307/2286407</a>.</p>
+</div>
+<div id="ref-bigenc:matstat">
+<p>Прохоров, Ю. С. 2011. “Математическая статистика.” In <em>Большая российская энциклопедия. Том 19</em>, 349–52. Издательство «Большая российская энциклопедия».</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="advgraphics.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="circular.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"edit": "https://github.com/tsamsonov/r-geo-course/edit/master/%s"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
