@@ -68,8 +68,6 @@ pts = read_table2("data/Rainfall.dat") %>%
 
 # Координаты пригодятся нам в дальнейшем
 coords = st_coordinates(pts)
-
-mapview(pts, zcol = 'rain_24')
 ```
 
 Построение карты
@@ -353,10 +351,10 @@ $$
 
 # Интерполируем количество осадков:
 px_grid = px_grid %>% 
-  mutate(z_idw2 = idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 2.0)$var1.pred,
-         z_idw3 = idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 3.0)$var1.pred,
-         z_idw4 = idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 4.0)$var1.pred,
-         z_idw5 = idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 5.0)$var1.pred)
+  mutate(z_idw2 = gstat::idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 2.0)$var1.pred,
+         z_idw3 = gstat::idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 3.0)$var1.pred,
+         z_idw4 = gstat::idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 4.0)$var1.pred,
+         z_idw5 = gstat::idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 5.0)$var1.pred)
 
 cont_idw2 = st_contour(px_grid['z_idw2'], 
                        breaks = rain_levels, 
@@ -423,7 +421,7 @@ layout(p, scene = list(aspectratio =
 Это легко проверить на практике, задав достаточно большой параметр `idp`, например $30$:
 ```{r, message = FALSE, collapse=TRUE}
 px_grid = px_grid %>% 
-  mutate(z_idw30 = idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 30.0)$var1.pred)
+  mutate(z_idw30 = gstat::idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 30.0)$var1.pred)
 
 cont_idw30 = st_contour(px_grid['z_idw30'], 
                        breaks = rain_levels, 
