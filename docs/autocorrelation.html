@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Глава 15 Пространственная регрессия | Визуализация и анализ географических данных на языке R</title>
+  <meta name="description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Глава 15 Пространственная регрессия | Визуализация и анализ географических данных на языке R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  <meta name="github-repo" content="tsamsonov/r-geo-course" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Глава 15 Пространственная регрессия | Визуализация и анализ географических данных на языке R" />
+  
+  <meta name="twitter:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
+  
+
+<meta name="author" content="Тимофей Самсонов" />
+
+
+<meta name="date" content="2020-02-10" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="kriging.html"/>
+<link rel="next" href="point-patterns.html"/>
+<script src="libs/jquery/jquery.min.js"></script>
+<link href="libs/gitbook/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets/htmlwidgets.js"></script>
+<link href="libs/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding/datatables.js"></script>
+<link href="libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk/js/crosstalk.min.js"></script>
+<script src="libs/plotly-binding/plotly.js"></script>
+<script src="libs/typedarray/typedarray.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Визуализация и анализ географических данных на языке R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Введение</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#программное-обеспечение"><i class="fa fa-check"></i>Программное обеспечение</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#установка-и-подключение-пакетов"><i class="fa fa-check"></i>Установка и подключение пакетов</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#выполнение-программного-кода"><i class="fa fa-check"></i>Выполнение программного кода</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#установка-рабочей-директории"><i class="fa fa-check"></i>Установка рабочей директории</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#диагностические-функции"><i class="fa fa-check"></i>Диагностические функции</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#получение-справки"><i class="fa fa-check"></i>Получение справки</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#комментарии"><i class="fa fa-check"></i>Комментарии</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#стандарт-оформления-кода-на-r"><i class="fa fa-check"></i>Стандарт оформления кода на R</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#зарезервированные-слова"><i class="fa fa-check"></i>Зарезервированные слова</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#названия-переменных"><i class="fa fa-check"></i>Названия переменных</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#названия-специальных-символов"><i class="fa fa-check"></i>Названия специальных символов</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#ссылка-на-пособие"><i class="fa fa-check"></i>Ссылка на пособие</a></li>
+</ul></li>
+<li class="part"><span><b>I Основы языка R</b></span></li>
+<li class="chapter" data-level="1" data-path="data-types.html"><a href="data-types.html"><i class="fa fa-check"></i><b>1</b> Типы данных, условия, ввод и вывод</a><ul>
+<li class="chapter" data-level="1.1" data-path="data-types.html"><a href="data-types.html#data_types"><i class="fa fa-check"></i><b>1.1</b> Типы данных</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="data-types.html"><a href="data-types.html#numbers"><i class="fa fa-check"></i><b>1.1.1</b> Числа</a></li>
+<li class="chapter" data-level="1.1.2" data-path="data-types.html"><a href="data-types.html#strings"><i class="fa fa-check"></i><b>1.1.2</b> Строки</a></li>
+<li class="chapter" data-level="1.1.3" data-path="data-types.html"><a href="data-types.html#dates"><i class="fa fa-check"></i><b>1.1.3</b> Даты</a></li>
+<li class="chapter" data-level="1.1.4" data-path="data-types.html"><a href="data-types.html#booleans"><i class="fa fa-check"></i><b>1.1.4</b> Логические</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="data-types.html"><a href="data-types.html#manipulations"><i class="fa fa-check"></i><b>1.2</b> Манипуляции с типами</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="data-types.html"><a href="data-types.html#determine_data_type"><i class="fa fa-check"></i><b>1.2.1</b> Определение типа данных</a></li>
+<li class="chapter" data-level="1.2.2" data-path="data-types.html"><a href="data-types.html#conversion"><i class="fa fa-check"></i><b>1.2.2</b> Преобразование типов данных</a></li>
+<li class="chapter" data-level="1.2.3" data-path="data-types.html"><a href="data-types.html#check_types"><i class="fa fa-check"></i><b>1.2.3</b> Проверка типов данных и пустых значений</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="data-types.html"><a href="data-types.html#read_write_console"><i class="fa fa-check"></i><b>1.3</b> Ввод и вывод данных в консоли</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="data-types.html"><a href="data-types.html#read_console"><i class="fa fa-check"></i><b>1.3.1</b> Ввод данных</a></li>
+<li class="chapter" data-level="1.3.2" data-path="data-types.html"><a href="data-types.html#write_console"><i class="fa fa-check"></i><b>1.3.2</b> Вывод данных</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="data-types.html"><a href="data-types.html#ifelse"><i class="fa fa-check"></i><b>1.4</b> Условный оператор</a></li>
+<li class="chapter" data-level="1.5" data-path="data-types.html"><a href="data-types.html#switch"><i class="fa fa-check"></i><b>1.5</b> Оператор переключения</a></li>
+<li class="chapter" data-level="1.6" data-path="data-types.html"><a href="data-types.html#stop"><i class="fa fa-check"></i><b>1.6</b> Прерывание программы</a></li>
+<li class="chapter" data-level="1.7" data-path="data-types.html"><a href="data-types.html#basics-detail"><i class="fa fa-check"></i><b>1.7</b> Технические детали</a></li>
+<li class="chapter" data-level="1.8" data-path="data-types.html"><a href="data-types.html#review"><i class="fa fa-check"></i><b>1.8</b> Краткий обзор</a></li>
+<li class="chapter" data-level="1.9" data-path="data-types.html"><a href="data-types.html#questions_tasks_basics"><i class="fa fa-check"></i><b>1.9</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="1.9.1" data-path="data-types.html"><a href="data-types.html#questions_basics"><i class="fa fa-check"></i><b>1.9.1</b> Вопросы</a></li>
+<li class="chapter" data-level="1.9.2" data-path="data-types.html"><a href="data-types.html#tasks_basic"><i class="fa fa-check"></i><b>1.9.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-structures.html"><a href="data-structures.html"><i class="fa fa-check"></i><b>2</b> Структуры данных и циклы</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-structures.html"><a href="data-structures.html#data_structures_homo"><i class="fa fa-check"></i><b>2.1</b> Однородные структуры данных</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="data-structures.html"><a href="data-structures.html#vectors"><i class="fa fa-check"></i><b>2.1.1</b> Векторы</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-structures.html"><a href="data-structures.html#matrices"><i class="fa fa-check"></i><b>2.1.2</b> Матрицы</a></li>
+<li class="chapter" data-level="2.1.3" data-path="data-structures.html"><a href="data-structures.html#arrays"><i class="fa fa-check"></i><b>2.1.3</b> Массивы</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-structures.html"><a href="data-structures.html#heterogeneous"><i class="fa fa-check"></i><b>2.2</b> Разнородные структуры данных</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="data-structures.html"><a href="data-structures.html#data_frames"><i class="fa fa-check"></i><b>2.2.1</b> Фреймы данных</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-structures.html"><a href="data-structures.html#lists"><i class="fa fa-check"></i><b>2.2.2</b> Списки</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="data-structures.html"><a href="data-structures.html#factors"><i class="fa fa-check"></i><b>2.3</b> Факторы</a></li>
+<li class="chapter" data-level="2.4" data-path="data-structures.html"><a href="data-structures.html#vector_desc"><i class="fa fa-check"></i><b>2.4</b> Описание структуры данных</a></li>
+<li class="chapter" data-level="2.5" data-path="data-structures.html"><a href="data-structures.html#cycles"><i class="fa fa-check"></i><b>2.5</b> Циклы</a></li>
+<li class="chapter" data-level="2.6" data-path="data-structures.html"><a href="data-structures.html#structures-detail"><i class="fa fa-check"></i><b>2.6</b> Технические детали</a></li>
+<li class="chapter" data-level="2.7" data-path="data-structures.html"><a href="data-structures.html#review_structures"><i class="fa fa-check"></i><b>2.7</b> Краткий обзор</a></li>
+<li class="chapter" data-level="2.8" data-path="data-structures.html"><a href="data-structures.html#questions_tasks_vectors"><i class="fa fa-check"></i><b>2.8</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="2.8.1" data-path="data-structures.html"><a href="data-structures.html#questions_vectors"><i class="fa fa-check"></i><b>2.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="2.8.2" data-path="data-structures.html"><a href="data-structures.html#tasks_vectors"><i class="fa fa-check"></i><b>2.8.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="tables.html"><a href="tables.html"><i class="fa fa-check"></i><b>3</b> Табличные данные</a><ul>
+<li class="chapter" data-level="3.1" data-path="tables.html"><a href="tables.html#tables_prerequisites"><i class="fa fa-check"></i><b>3.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="3.2" data-path="tables.html"><a href="tables.html#tables_datastructures"><i class="fa fa-check"></i><b>3.2</b> Структуры данных</a></li>
+<li class="chapter" data-level="3.3" data-path="tables.html"><a href="tables.html#tables_reading"><i class="fa fa-check"></i><b>3.3</b> Чтение</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="tables.html"><a href="tables.html#tables_reading_inner"><i class="fa fa-check"></i><b>3.3.1</b> Встроенные данные</a></li>
+<li class="chapter" data-level="3.3.2" data-path="tables.html"><a href="tables.html#tables_reading_text"><i class="fa fa-check"></i><b>3.3.2</b> Текстовые таблицы</a></li>
+<li class="chapter" data-level="3.3.3" data-path="tables.html"><a href="tables.html#tables_reading_excel"><i class="fa fa-check"></i><b>3.3.3</b> Таблицы Microsoft Excel</a></li>
+<li class="chapter" data-level="3.3.4" data-path="tables.html"><a href="tables.html#tables_reading_params"><i class="fa fa-check"></i><b>3.3.4</b> Параметры</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="tables.html"><a href="tables.html#tables_view"><i class="fa fa-check"></i><b>3.4</b> Просмотр</a></li>
+<li class="chapter" data-level="3.5" data-path="tables.html"><a href="tables.html#tables_elements"><i class="fa fa-check"></i><b>3.5</b> Столбцы, строки и ячейки</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="tables.html"><a href="tables.html#tables_elements_names"><i class="fa fa-check"></i><b>3.5.1</b> Названия</a></li>
+<li class="chapter" data-level="3.5.2" data-path="tables.html"><a href="tables.html#tables_elements_columns"><i class="fa fa-check"></i><b>3.5.2</b> Обращение к столбцам</a></li>
+<li class="chapter" data-level="3.5.3" data-path="tables.html"><a href="tables.html#tables_elements_rows"><i class="fa fa-check"></i><b>3.5.3</b> Обращение к строкам</a></li>
+<li class="chapter" data-level="3.5.4" data-path="tables.html"><a href="tables.html#tables_elements_cells"><i class="fa fa-check"></i><b>3.5.4</b> Обращение к ячейкам</a></li>
+</ul></li>
+<li class="chapter" data-level="3.6" data-path="tables.html"><a href="tables.html#tables_manipuilations"><i class="fa fa-check"></i><b>3.6</b> Преобразования</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="tables.html"><a href="tables.html#tables_manipiulations_grammar"><i class="fa fa-check"></i><b>3.6.1</b> Грамматика манипуляций</a></li>
+<li class="chapter" data-level="3.6.2" data-path="tables.html"><a href="tables.html#tables_manipiulations_pipeline"><i class="fa fa-check"></i><b>3.6.2</b> Конвейер манипуляций</a></li>
+<li class="chapter" data-level="3.6.3" data-path="tables.html"><a href="tables.html#tables_tidy"><i class="fa fa-check"></i><b>3.6.3</b> Преобразование структуры</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="tables.html"><a href="tables.html#tables_join"><i class="fa fa-check"></i><b>3.7</b> Соединение</a></li>
+<li class="chapter" data-level="3.8" data-path="tables.html"><a href="tables.html#tables_write"><i class="fa fa-check"></i><b>3.8</b> Запись</a></li>
+<li class="chapter" data-level="3.9" data-path="tables.html"><a href="tables.html#tables_rules"><i class="fa fa-check"></i><b>3.9</b> Рекомендации по подготовке таблиц для чтения в R</a></li>
+<li class="chapter" data-level="3.10" data-path="tables.html"><a href="tables.html#tables_review"><i class="fa fa-check"></i><b>3.10</b> Краткий обзор</a></li>
+<li class="chapter" data-level="3.11" data-path="tables.html"><a href="tables.html#tables_questions"><i class="fa fa-check"></i><b>3.11</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="3.11.1" data-path="tables.html"><a href="tables.html#tables_questions_questions"><i class="fa fa-check"></i><b>3.11.1</b> Вопросы</a></li>
+<li class="chapter" data-level="3.11.2" data-path="tables.html"><a href="tables.html#tables_questions_tasks"><i class="fa fa-check"></i><b>3.11.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="tech.html"><a href="tech.html"><i class="fa fa-check"></i><b>4</b> Техники программирования</a><ul>
+<li class="chapter" data-level="4.1" data-path="tech.html"><a href="tech.html#tech-fun"><i class="fa fa-check"></i><b>4.1</b> Функциональное программирование</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="tech.html"><a href="tech.html#tech-fun-functions"><i class="fa fa-check"></i><b>4.1.1</b> Функции</a></li>
+<li class="chapter" data-level="4.1.2" data-path="tech.html"><a href="tech.html#tech-fun-functionals"><i class="fa fa-check"></i><b>4.1.2</b> Функционалы</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="tech.html"><a href="tech.html#tech-meta"><i class="fa fa-check"></i><b>4.2</b> Метапрограммирование</a></li>
+<li class="chapter" data-level="4.3" data-path="tech.html"><a href="tech.html#tech_review"><i class="fa fa-check"></i><b>4.3</b> Краткий обзор</a></li>
+<li class="chapter" data-level="4.4" data-path="tech.html"><a href="tech.html#tech_questions"><i class="fa fa-check"></i><b>4.4</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="tech.html"><a href="tech.html#tech_questions_questions"><i class="fa fa-check"></i><b>4.4.1</b> Вопросы</a></li>
+<li class="chapter" data-level="4.4.2" data-path="tech.html"><a href="tech.html#tech_questions_tasks"><i class="fa fa-check"></i><b>4.4.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>II Графика и статистика</b></span></li>
+<li class="chapter" data-level="5" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>5</b> Базовая графика</a><ul>
+<li class="chapter" data-level="5.1" data-path="graphics.html"><a href="graphics.html#yfxcharts"><i class="fa fa-check"></i><b>5.1</b> Стандартные графики</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="graphics.html"><a href="graphics.html#scatterplots"><i class="fa fa-check"></i><b>5.1.1</b> Диаграммы рассеяния</a></li>
+<li class="chapter" data-level="5.1.2" data-path="graphics.html"><a href="graphics.html#linear_graphs"><i class="fa fa-check"></i><b>5.1.2</b> Линейные графики</a></li>
+<li class="chapter" data-level="5.1.3" data-path="graphics.html"><a href="graphics.html#graph_combining"><i class="fa fa-check"></i><b>5.1.3</b> Совмещение графиков</a></li>
+<li class="chapter" data-level="5.1.4" data-path="graphics.html"><a href="graphics.html#func_parameters"><i class="fa fa-check"></i><b>5.1.4</b> Функциональные параметры</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="graphics.html"><a href="graphics.html#histograms"><i class="fa fa-check"></i><b>5.2</b> Гистограммы</a></li>
+<li class="chapter" data-level="5.3" data-path="graphics.html"><a href="graphics.html#barplots"><i class="fa fa-check"></i><b>5.3</b> Столбчатые графики</a></li>
+<li class="chapter" data-level="5.4" data-path="graphics.html"><a href="graphics.html#piecharts"><i class="fa fa-check"></i><b>5.4</b> Круговые (секторные) диаграммы</a></li>
+<li class="chapter" data-level="5.5" data-path="graphics.html"><a href="graphics.html#colors"><i class="fa fa-check"></i><b>5.5</b> Цвет и прозрачность</a></li>
+<li class="chapter" data-level="5.6" data-path="graphics.html"><a href="graphics.html#disp_settings"><i class="fa fa-check"></i><b>5.6</b> Настройки отображения</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="graphics.html"><a href="graphics.html#graph_params"><i class="fa fa-check"></i><b>5.6.1</b> Графические параметры</a></li>
+<li class="chapter" data-level="5.6.2" data-path="graphics.html"><a href="graphics.html#axes"><i class="fa fa-check"></i><b>5.6.2</b> Разметка осей, рамка, сетка координат и произвольные линии</a></li>
+<li class="chapter" data-level="5.6.3" data-path="graphics.html"><a href="graphics.html#annotations"><i class="fa fa-check"></i><b>5.6.3</b> Аннотации данных (текст на графике)</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="graphics.html"><a href="graphics.html#legend"><i class="fa fa-check"></i><b>5.7</b> Легенда</a></li>
+<li class="chapter" data-level="5.8" data-path="graphics.html"><a href="graphics.html#questions_tasks_graphics"><i class="fa fa-check"></i><b>5.8</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="5.8.1" data-path="graphics.html"><a href="graphics.html#questions_graphics"><i class="fa fa-check"></i><b>5.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="5.8.2" data-path="graphics.html"><a href="graphics.html#tasks_graphics"><i class="fa fa-check"></i><b>5.8.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="advgraphics.html"><a href="advgraphics.html"><i class="fa fa-check"></i><b>6</b> Продвинутая графика</a><ul>
+<li class="chapter" data-level="6.1" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_prerequisites"><i class="fa fa-check"></i><b>6.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="6.2" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_eurostat"><i class="fa fa-check"></i><b>6.2</b> Загрузка данных Евростата</a></li>
+<li class="chapter" data-level="6.3" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_nasapower"><i class="fa fa-check"></i><b>6.3</b> Загрузка данных NASA POWER</a></li>
+<li class="chapter" data-level="6.4" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_template"><i class="fa fa-check"></i><b>6.4</b> Базовый шаблон ggplot</a></li>
+<li class="chapter" data-level="6.5" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_geoms"><i class="fa fa-check"></i><b>6.5</b> Геометрические типы и преобразования</a></li>
+<li class="chapter" data-level="6.6" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_aes"><i class="fa fa-check"></i><b>6.6</b> Графические переменные и группировки</a></li>
+<li class="chapter" data-level="6.7" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_coords"><i class="fa fa-check"></i><b>6.7</b> Системы координат</a></li>
+<li class="chapter" data-level="6.8" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_titles"><i class="fa fa-check"></i><b>6.8</b> Названия осей и легенды</a></li>
+<li class="chapter" data-level="6.9" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_axes"><i class="fa fa-check"></i><b>6.9</b> Разметка осей</a></li>
+<li class="chapter" data-level="6.10" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_labels"><i class="fa fa-check"></i><b>6.10</b> Подписи и аннотации</a></li>
+<li class="chapter" data-level="6.11" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_facets"><i class="fa fa-check"></i><b>6.11</b> Фасеты</a></li>
+<li class="chapter" data-level="6.12" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_themes"><i class="fa fa-check"></i><b>6.12</b> Темы</a></li>
+<li class="chapter" data-level="6.13" data-path="advgraphics.html"><a href="advgraphics.html#questions_tasks_advgraphics"><i class="fa fa-check"></i><b>6.13</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="6.13.1" data-path="advgraphics.html"><a href="advgraphics.html#questions_advgraphics"><i class="fa fa-check"></i><b>6.13.1</b> Вопросы</a></li>
+<li class="chapter" data-level="6.13.2" data-path="advgraphics.html"><a href="advgraphics.html#tasks_advgraphics"><i class="fa fa-check"></i><b>6.13.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="stat-analysis.html"><a href="stat-analysis.html"><i class="fa fa-check"></i><b>7</b> Основы статистики</a><ul>
+<li class="chapter" data-level="7.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_prerequisites"><i class="fa fa-check"></i><b>7.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="7.2" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_intro"><i class="fa fa-check"></i><b>7.2</b> Введение</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_intro_sources"><i class="fa fa-check"></i><b>7.2.1</b> Источники данных</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one"><i class="fa fa-check"></i><b>7.3</b> Одна переменная</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one_distr"><i class="fa fa-check"></i><b>7.3.1</b> Оценка распределения</a></li>
+<li class="chapter" data-level="7.3.2" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one_summary"><i class="fa fa-check"></i><b>7.3.2</b> Описательные статистики</a></li>
+<li class="chapter" data-level="7.3.3" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_one_tests"><i class="fa fa-check"></i><b>7.3.3</b> Статистические тесты</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_two"><i class="fa fa-check"></i><b>7.4</b> Две переменных</a><ul>
+<li class="chapter" data-level="7.4.1" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_two_distr"><i class="fa fa-check"></i><b>7.4.1</b> Оценка распределения</a></li>
+<li class="chapter" data-level="7.4.2" data-path="stat-analysis.html"><a href="stat-analysis.html#stat_analysis_two_distr_correg"><i class="fa fa-check"></i><b>7.4.2</b> Корреляция и регрессия</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="stat-analysis.html"><a href="stat-analysis.html#questions_tasks_stat_analysis"><i class="fa fa-check"></i><b>7.5</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="7.5.1" data-path="stat-analysis.html"><a href="stat-analysis.html#questions_stat_analysis"><i class="fa fa-check"></i><b>7.5.1</b> Вопросы</a></li>
+<li class="chapter" data-level="7.5.2" data-path="stat-analysis.html"><a href="stat-analysis.html#tasks_stat_analysis"><i class="fa fa-check"></i><b>7.5.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="circular.html"><a href="circular.html"><i class="fa fa-check"></i><b>8</b> Дирекционные и временные данные</a><ul>
+<li class="chapter" data-level="8.1" data-path="circular.html"><a href="circular.html#circular_prerequisites"><i class="fa fa-check"></i><b>8.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="8.2" data-path="circular.html"><a href="circular.html#circular_circ"><i class="fa fa-check"></i><b>8.2</b> Статистика направлений</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="circular.html"><a href="circular.html#circular_circ_theory"><i class="fa fa-check"></i><b>8.2.1</b> Теория</a></li>
+<li class="chapter" data-level="8.2.2" data-path="circular.html"><a href="circular.html#circular_circ_vis"><i class="fa fa-check"></i><b>8.2.2</b> Практика</a></li>
+<li class="chapter" data-level="8.2.3" data-path="circular.html"><a href="circular.html#circular_tests"><i class="fa fa-check"></i><b>8.2.3</b> Статистические тесты</a></li>
+<li class="chapter" data-level="8.2.4" data-path="circular.html"><a href="circular.html#circular_correlation"><i class="fa fa-check"></i><b>8.2.4</b> Корреляция и регрессия</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="circular.html"><a href="circular.html#circular_time"><i class="fa fa-check"></i><b>8.3</b> Временные ряды</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="circular.html"><a href="circular.html#circular_time_lubridate"><i class="fa fa-check"></i><b>8.3.1</b> Создание и преобразование дат и времени</a></li>
+<li class="chapter" data-level="8.3.2" data-path="circular.html"><a href="circular.html#circular_time_complete"><i class="fa fa-check"></i><b>8.3.2</b> Восстановление пропусков и проверка корректности дат</a></li>
+<li class="chapter" data-level="8.3.3" data-path="circular.html"><a href="circular.html#circular_time_interp"><i class="fa fa-check"></i><b>8.3.3</b> Интерполяция по времени</a></li>
+<li class="chapter" data-level="8.3.4" data-path="circular.html"><a href="circular.html#circular_time_tests"><i class="fa fa-check"></i><b>8.3.4</b> Статистики</a></li>
+<li class="chapter" data-level="8.3.5" data-path="circular.html"><a href="circular.html#circular_time_animation"><i class="fa fa-check"></i><b>8.3.5</b> Анимация</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="circular.html"><a href="circular.html#questions_tasks_circular"><i class="fa fa-check"></i><b>8.4</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="8.4.1" data-path="circular.html"><a href="circular.html#questions_circular"><i class="fa fa-check"></i><b>8.4.1</b> Вопросы</a></li>
+<li class="chapter" data-level="8.4.2" data-path="circular.html"><a href="circular.html#tasks_circular"><i class="fa fa-check"></i><b>8.4.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>III Пространственные данные</b></span></li>
+<li class="chapter" data-level="9" data-path="spatial-data.html"><a href="spatial-data.html"><i class="fa fa-check"></i><b>9</b> Пространственные данные</a><ul>
+<li class="chapter" data-level="9.1" data-path="circular.html"><a href="circular.html#circular_prerequisites"><i class="fa fa-check"></i><b>9.1</b> Предварительные требования</a></li>
+<li class="chapter" data-level="9.2" data-path="spatial-data.html"><a href="spatial-data.html#spatial_models"><i class="fa fa-check"></i><b>9.2</b> Модели пространственных данных</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="spatial-data.html"><a href="spatial-data.html#simple_features"><i class="fa fa-check"></i><b>9.2.1</b> Векторные данные</a></li>
+<li class="chapter" data-level="9.2.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_data"><i class="fa fa-check"></i><b>9.2.2</b> Растровые данные</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="spatial-data.html"><a href="spatial-data.html#spatref"><i class="fa fa-check"></i><b>9.3</b> Пространственная привязка</a><ul>
+<li class="chapter" data-level="9.3.1" data-path="spatial-data.html"><a href="spatial-data.html#spatref_components"><i class="fa fa-check"></i><b>9.3.1</b> Компоненты пространственной привязки</a></li>
+<li class="chapter" data-level="9.3.2" data-path="spatial-data.html"><a href="spatial-data.html#spatref_formats"><i class="fa fa-check"></i><b>9.3.2</b> Форматы описания пространственной привязки</a></li>
+<li class="chapter" data-level="9.3.3" data-path="spatial-data.html"><a href="spatial-data.html#spatref_transform"><i class="fa fa-check"></i><b>9.3.3</b> Преобразование координат</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_r"><i class="fa fa-check"></i><b>9.4</b> Векторные данные</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_packages"><i class="fa fa-check"></i><b>9.4.1</b> Базовые библиотеки</a></li>
+<li class="chapter" data-level="9.4.2" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_reading"><i class="fa fa-check"></i><b>9.4.2</b> Чтение</a></li>
+<li class="chapter" data-level="9.4.3" data-path="spatial-data.html"><a href="spatial-data.html#sf_structure"><i class="fa fa-check"></i><b>9.4.3</b> Внутренняя структура</a></li>
+<li class="chapter" data-level="9.4.4" data-path="spatial-data.html"><a href="spatial-data.html#sf_plotting"><i class="fa fa-check"></i><b>9.4.4</b> Визуализация</a></li>
+<li class="chapter" data-level="9.4.5" data-path="spatial-data.html"><a href="spatial-data.html#sf_crs"><i class="fa fa-check"></i><b>9.4.5</b> Системы координат и проекции</a></li>
+<li class="chapter" data-level="9.4.6" data-path="spatial-data.html"><a href="spatial-data.html#sf_attrs"><i class="fa fa-check"></i><b>9.4.6</b> Атрибутивные операции</a></li>
+<li class="chapter" data-level="9.4.7" data-path="spatial-data.html"><a href="spatial-data.html#sf_spat_selection"><i class="fa fa-check"></i><b>9.4.7</b> Пространственные операции</a></li>
+<li class="chapter" data-level="9.4.8" data-path="spatial-data.html"><a href="spatial-data.html#sf_creation"><i class="fa fa-check"></i><b>9.4.8</b> Создание пространственных объектов</a></li>
+<li class="chapter" data-level="9.4.9" data-path="spatial-data.html"><a href="spatial-data.html#sf_geom_attrs"><i class="fa fa-check"></i><b>9.4.9</b> Геометрические атрибуты</a></li>
+<li class="chapter" data-level="9.4.10" data-path="spatial-data.html"><a href="spatial-data.html#sf_export"><i class="fa fa-check"></i><b>9.4.10</b> Экспорт</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5" data-path="spatial-data.html"><a href="spatial-data.html#raster_data_r"><i class="fa fa-check"></i><b>9.5</b> Растровые данные</a><ul>
+<li class="chapter" data-level="9.5.1" data-path="spatial-data.html"><a href="spatial-data.html#raster_read"><i class="fa fa-check"></i><b>9.5.1</b> Чтение</a></li>
+<li class="chapter" data-level="9.5.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_viz"><i class="fa fa-check"></i><b>9.5.2</b> Визуализация</a></li>
+<li class="chapter" data-level="9.5.3" data-path="spatial-data.html"><a href="spatial-data.html#raster_proj"><i class="fa fa-check"></i><b>9.5.3</b> Системы координат и проекции</a></li>
+<li class="chapter" data-level="9.5.4" data-path="spatial-data.html"><a href="spatial-data.html#raster_values"><i class="fa fa-check"></i><b>9.5.4</b> Операции со значениями</a></li>
+<li class="chapter" data-level="9.5.5" data-path="spatial-data.html"><a href="spatial-data.html#raster_export"><i class="fa fa-check"></i><b>9.5.5</b> Экспорт</a></li>
+</ul></li>
+<li class="chapter" data-level="9.6" data-path="spatial-data.html"><a href="spatial-data.html#spatial_ggplot2"><i class="fa fa-check"></i><b>9.6</b> Визуализация средствами ggplot2</a></li>
+<li class="chapter" data-level="9.7" data-path="spatial-data.html"><a href="spatial-data.html#spatial_interactive"><i class="fa fa-check"></i><b>9.7</b> Интерактивные карты</a></li>
+<li class="chapter" data-level="9.8" data-path="spatial-data.html"><a href="spatial-data.html#questions_tasks_spatial"><i class="fa fa-check"></i><b>9.8</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="9.8.1" data-path="spatial-data.html"><a href="spatial-data.html#questions_spatial"><i class="fa fa-check"></i><b>9.8.1</b> Вопросы</a></li>
+<li class="chapter" data-level="9.8.2" data-path="spatial-data.html"><a href="spatial-data.html#tasks_spatial"><i class="fa fa-check"></i><b>9.8.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html"><i class="fa fa-check"></i><b>10</b> Тематические карты</a><ul>
+<li class="chapter" data-level="" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#предварительные-условия"><i class="fa fa-check"></i>Предварительные условия</a></li>
+<li class="chapter" data-level="10.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro"><i class="fa fa-check"></i><b>10.1</b> Введение</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro_ne"><i class="fa fa-check"></i><b>10.1.1</b> Данные Natural Earth</a></li>
+<li class="chapter" data-level="10.1.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro_wc"><i class="fa fa-check"></i><b>10.1.2</b> Данные WorldClim</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_tmap"><i class="fa fa-check"></i><b>10.2</b> Способы изображения</a><ul>
+<li class="chapter" data-level="10.2.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_vectors"><i class="fa fa-check"></i><b>10.2.1</b> Векторные данные</a></li>
+<li class="chapter" data-level="10.2.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_rasters"><i class="fa fa-check"></i><b>10.2.2</b> Растровые данные</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_color_scales"><i class="fa fa-check"></i><b>10.3</b> Цветовые шкалы</a></li>
+<li class="chapter" data-level="10.4" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class"><i class="fa fa-check"></i><b>10.4</b> Классификация</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class_methods"><i class="fa fa-check"></i><b>10.4.1</b> Методы классификации</a></li>
+<li class="chapter" data-level="10.4.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class_application"><i class="fa fa-check"></i><b>10.4.2</b> Применение на картах</a></li>
+<li class="chapter" data-level="10.4.3" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class_application"><i class="fa fa-check"></i><b>10.4.3</b> Классификация при отображении</a></li>
+<li class="chapter" data-level="10.4.4" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_na"><i class="fa fa-check"></i><b>10.4.4</b> Пропущенные данные</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_layouts"><i class="fa fa-check"></i><b>10.5</b> Компоновка</a></li>
+<li class="chapter" data-level="10.6" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_facets"><i class="fa fa-check"></i><b>10.6</b> Фасеты и серии карт</a></li>
+<li class="chapter" data-level="10.7" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_animations"><i class="fa fa-check"></i><b>10.7</b> Картографические анимации</a></li>
+<li class="chapter" data-level="10.8" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_interactive"><i class="fa fa-check"></i><b>10.8</b> Интерактивные карты</a></li>
+<li class="chapter" data-level="10.9" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#questions_tasks_tmap"><i class="fa fa-check"></i><b>10.9</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="10.9.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#questions_tmap"><i class="fa fa-check"></i><b>10.9.1</b> Вопросы</a></li>
+<li class="chapter" data-level="10.9.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#tasks_tmap"><i class="fa fa-check"></i><b>10.9.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="vector-analysis.html"><a href="vector-analysis.html"><i class="fa fa-check"></i><b>11</b> Векторный и сетевой анализ</a><ul>
+<li class="chapter" data-level="11.1" data-path="vector-analysis.html"><a href="vector-analysis.html#spatial_queries"><i class="fa fa-check"></i><b>11.1</b> Пространственные запросы</a><ul>
+<li class="chapter" data-level="11.1.1" data-path="vector-analysis.html"><a href="vector-analysis.html#context_objects"><i class="fa fa-check"></i><b>11.1.1</b> Контекстные и целевые объекты</a></li>
+<li class="chapter" data-level="11.1.2" data-path="vector-analysis.html"><a href="vector-analysis.html#zones"><i class="fa fa-check"></i><b>11.1.2</b> Зоны окружения объектов</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="vector-analysis.html"><a href="vector-analysis.html#use_case"><i class="fa fa-check"></i><b>11.2</b> Постановка задач и изучение данных</a></li>
+<li class="chapter" data-level="11.3" data-path="vector-analysis.html"><a href="vector-analysis.html#distance_analysis"><i class="fa fa-check"></i><b>11.3</b> Анализ расстояний</a></li>
+<li class="chapter" data-level="11.4" data-path="vector-analysis.html"><a href="vector-analysis.html#topology_analysis"><i class="fa fa-check"></i><b>11.4</b> Анализ взаимного положения (топологический)</a></li>
+<li class="chapter" data-level="11.5" data-path="vector-analysis.html"><a href="vector-analysis.html#absolute_zones"><i class="fa fa-check"></i><b>11.5</b> Анализ абсолютных зон окружения</a></li>
+<li class="chapter" data-level="11.6" data-path="vector-analysis.html"><a href="vector-analysis.html#conc_zones"><i class="fa fa-check"></i><b>11.6</b> Анализ конкурентных зон окружения</a></li>
+<li class="chapter" data-level="11.7" data-path="vector-analysis.html"><a href="vector-analysis.html#transport_zones"><i class="fa fa-check"></i><b>11.7</b> Анализ зон транспортной доступности</a></li>
+<li class="chapter" data-level="11.8" data-path="vector-analysis.html"><a href="vector-analysis.html#routes"><i class="fa fa-check"></i><b>11.8</b> Построение маршрутов и матриц времени движения</a></li>
+<li class="chapter" data-level="11.9" data-path="vector-analysis.html"><a href="vector-analysis.html#qtasks_vector_analysis"><i class="fa fa-check"></i><b>11.9</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="11.9.1" data-path="vector-analysis.html"><a href="vector-analysis.html#questions_vector_analysis"><i class="fa fa-check"></i><b>11.9.1</b> Вопросы</a></li>
+<li class="chapter" data-level="11.9.2" data-path="vector-analysis.html"><a href="vector-analysis.html#tasks_vector_analysis"><i class="fa fa-check"></i><b>11.9.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="raster-analysis.html"><a href="raster-analysis.html"><i class="fa fa-check"></i><b>12</b> Растровый анализ</a><ul>
+<li class="chapter" data-level="" data-path="raster-analysis.html"><a href="raster-analysis.html#предварительные-условия-1"><i class="fa fa-check"></i>Предварительные условия</a></li>
+<li class="chapter" data-level="12.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_intro"><i class="fa fa-check"></i><b>12.1</b> Введение</a></li>
+<li class="chapter" data-level="12.2" data-path="raster-analysis.html"><a href="raster-analysis.html#растровая-алгебра"><i class="fa fa-check"></i><b>12.2</b> Растровая алгебра</a><ul>
+<li class="chapter" data-level="12.2.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_local"><i class="fa fa-check"></i><b>12.2.1</b> Локальные операции</a></li>
+<li class="chapter" data-level="12.2.2" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal"><i class="fa fa-check"></i><b>12.2.2</b> Фокальные операции</a></li>
+<li class="chapter" data-level="12.2.3" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_zonal"><i class="fa fa-check"></i><b>12.2.3</b> Зональные операции</a></li>
+<li class="chapter" data-level="12.2.4" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_global"><i class="fa fa-check"></i><b>12.2.4</b> Глобальные операции</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_extract"><i class="fa fa-check"></i><b>12.3</b> Извлечение данных</a></li>
+<li class="chapter" data-level="12.4" data-path="raster-analysis.html"><a href="raster-analysis.html#questions_tasks_raster"><i class="fa fa-check"></i><b>12.4</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="12.4.1" data-path="raster-analysis.html"><a href="raster-analysis.html#questions_raster"><i class="fa fa-check"></i><b>12.4.1</b> Вопросы</a></li>
+<li class="chapter" data-level="12.4.2" data-path="raster-analysis.html"><a href="raster-analysis.html#tasks_raster"><i class="fa fa-check"></i><b>12.4.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>IV Пространственная статистика</b></span></li>
+<li class="chapter" data-level="13" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html"><i class="fa fa-check"></i><b>13</b> Моделирование геополей</a><ul>
+<li class="chapter" data-level="13.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_intro"><i class="fa fa-check"></i><b>13.1</b> Введение</a></li>
+<li class="chapter" data-level="13.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_grid"><i class="fa fa-check"></i><b>13.2</b> Построение сетки</a></li>
+<li class="chapter" data-level="13.3" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_methods"><i class="fa fa-check"></i><b>13.3</b> Интерполяционные методы</a><ul>
+<li class="chapter" data-level="13.3.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_nn"><i class="fa fa-check"></i><b>13.3.1</b> Метод ближайшего соседа (nearest neighbour)</a></li>
+<li class="chapter" data-level="13.3.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_tin"><i class="fa fa-check"></i><b>13.3.2</b> Интерполяция на основе триангуляции</a></li>
+<li class="chapter" data-level="13.3.3" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_idw"><i class="fa fa-check"></i><b>13.3.3</b> Метод обратно взвешенных расстояний (IDW)</a></li>
+<li class="chapter" data-level="13.3.4" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_rbf"><i class="fa fa-check"></i><b>13.3.4</b> Метод радиальных базисных функций (РБФ)</a></li>
+<li class="chapter" data-level="13.3.5" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_bspline"><i class="fa fa-check"></i><b>13.3.5</b> Метод иерархических базисных сплайнов (B-сплайнов)</a></li>
+</ul></li>
+<li class="chapter" data-level="13.4" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_methods"><i class="fa fa-check"></i><b>13.4</b> Аппроксимационные методы</a><ul>
+<li class="chapter" data-level="13.4.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_global"><i class="fa fa-check"></i><b>13.4.1</b> Глобальный тренд</a></li>
+<li class="chapter" data-level="13.4.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_local"><i class="fa fa-check"></i><b>13.4.2</b> Локальный тренд</a></li>
+</ul></li>
+<li class="chapter" data-level="13.5" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#areal_interpolation"><i class="fa fa-check"></i><b>13.5</b> Интерполяция по ареалам</a></li>
+<li class="chapter" data-level="13.6" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interp_review"><i class="fa fa-check"></i><b>13.6</b> Краткий обзор</a></li>
+<li class="chapter" data-level="13.7" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#questions_tasks_interp"><i class="fa fa-check"></i><b>13.7</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="13.7.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#questions_interp"><i class="fa fa-check"></i><b>13.7.1</b> Вопросы</a></li>
+<li class="chapter" data-level="13.7.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#tasks_interp"><i class="fa fa-check"></i><b>13.7.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="kriging.html"><a href="kriging.html"><i class="fa fa-check"></i><b>14</b> Геостатистика</a><ul>
+<li class="chapter" data-level="14.1" data-path="kriging.html"><a href="kriging.html#введение-1"><i class="fa fa-check"></i><b>14.1</b> Введение</a></li>
+<li class="chapter" data-level="14.2" data-path="kriging.html"><a href="kriging.html#базовые-понятия-и-элементы-геостатистики"><i class="fa fa-check"></i><b>14.2</b> Базовые понятия и элементы геостатистики</a><ul>
+<li class="chapter" data-level="14.2.1" data-path="kriging.html"><a href="kriging.html#базовые-понятия"><i class="fa fa-check"></i><b>14.2.1</b> Базовые понятия</a></li>
+<li class="chapter" data-level="14.2.2" data-path="kriging.html"><a href="kriging.html#случайный-процесс-в-пространстве-и-его-моменты"><i class="fa fa-check"></i><b>14.2.2</b> Случайный процесс в пространстве и его моменты</a></li>
+</ul></li>
+<li class="chapter" data-level="14.3" data-path="kriging.html"><a href="kriging.html#стационарность-и-эргодичность"><i class="fa fa-check"></i><b>14.3</b> Стационарность и эргодичность</a><ul>
+<li class="chapter" data-level="14.3.1" data-path="kriging.html"><a href="kriging.html#стационарность"><i class="fa fa-check"></i><b>14.3.1</b> Стационарность</a></li>
+<li class="chapter" data-level="14.3.2" data-path="kriging.html"><a href="kriging.html#эргодичность"><i class="fa fa-check"></i><b>14.3.2</b> Эргодичность</a></li>
+</ul></li>
+<li class="chapter" data-level="14.4" data-path="kriging.html"><a href="kriging.html#геостатистическое-оценивание"><i class="fa fa-check"></i><b>14.4</b> Геостатистическое оценивание</a><ul>
+<li class="chapter" data-level="14.4.1" data-path="kriging.html"><a href="kriging.html#простой-кригинг"><i class="fa fa-check"></i><b>14.4.1</b> Простой кригинг</a></li>
+<li class="chapter" data-level="14.4.2" data-path="kriging.html"><a href="kriging.html#дисперсия-простого-кригинга"><i class="fa fa-check"></i><b>14.4.2</b> Дисперсия простого кригинга</a></li>
+<li class="chapter" data-level="14.4.3" data-path="kriging.html"><a href="kriging.html#стационарность-приращений"><i class="fa fa-check"></i><b>14.4.3</b> Стационарность приращений</a></li>
+<li class="chapter" data-level="14.4.4" data-path="kriging.html"><a href="kriging.html#положительная-определенность"><i class="fa fa-check"></i><b>14.4.4</b> Положительная определенность</a></li>
+<li class="chapter" data-level="14.4.5" data-path="kriging.html"><a href="kriging.html#допустимые-линейные-комбинации"><i class="fa fa-check"></i><b>14.4.5</b> Допустимые линейные комбинации</a></li>
+<li class="chapter" data-level="14.4.6" data-path="kriging.html"><a href="kriging.html#условная-положительная-определенность"><i class="fa fa-check"></i><b>14.4.6</b> Условная положительная определенность</a></li>
+<li class="chapter" data-level="14.4.7" data-path="kriging.html"><a href="kriging.html#переход-от-ковариации-к-вариограмме"><i class="fa fa-check"></i><b>14.4.7</b> Переход от ковариации к вариограмме</a></li>
+<li class="chapter" data-level="14.4.8" data-path="kriging.html"><a href="kriging.html#обычный-кригинг"><i class="fa fa-check"></i><b>14.4.8</b> Обычный кригинг</a></li>
+<li class="chapter" data-level="14.4.9" data-path="kriging.html"><a href="kriging.html#дисперсия-обычного-кригинга"><i class="fa fa-check"></i><b>14.4.9</b> Дисперсия обычного кригинга</a></li>
+<li class="chapter" data-level="14.4.10" data-path="kriging.html"><a href="kriging.html#универсальный-кригинг"><i class="fa fa-check"></i><b>14.4.10</b> Универсальный кригинг</a></li>
+<li class="chapter" data-level="14.4.11" data-path="kriging.html"><a href="kriging.html#дисперсия-универсального-кригинга"><i class="fa fa-check"></i><b>14.4.11</b> Дисперсия универсального кригинга</a></li>
+<li class="chapter" data-level="14.4.12" data-path="kriging.html"><a href="kriging.html#кросс-валидация"><i class="fa fa-check"></i><b>14.4.12</b> Кросс-валидация</a></li>
+<li class="chapter" data-level="14.4.13" data-path="kriging.html"><a href="kriging.html#вариограмма"><i class="fa fa-check"></i><b>14.4.13</b> Вариограмма</a></li>
+<li class="chapter" data-level="14.4.14" data-path="kriging.html"><a href="kriging.html#сферическая-модель"><i class="fa fa-check"></i><b>14.4.14</b> Сферическая модель</a></li>
+<li class="chapter" data-level="14.4.15" data-path="kriging.html"><a href="kriging.html#экспоненциальная-модель"><i class="fa fa-check"></i><b>14.4.15</b> Экспоненциальная модель</a></li>
+<li class="chapter" data-level="14.4.16" data-path="kriging.html"><a href="kriging.html#гауссова-модель"><i class="fa fa-check"></i><b>14.4.16</b> Гауссова модель</a></li>
+<li class="chapter" data-level="14.4.17" data-path="kriging.html"><a href="kriging.html#степенная-модель"><i class="fa fa-check"></i><b>14.4.17</b> Степенная модель</a></li>
+<li class="chapter" data-level="14.4.18" data-path="kriging.html"><a href="kriging.html#эффект-самородка-модель-наггет"><i class="fa fa-check"></i><b>14.4.18</b> Эффект самородка (модель наггет)</a></li>
+<li class="chapter" data-level="14.4.19" data-path="kriging.html"><a href="kriging.html#диаграмма-рассеяния-с-лагом"><i class="fa fa-check"></i><b>14.4.19</b> Диаграмма рассеяния с лагом</a></li>
+<li class="chapter" data-level="14.4.20" data-path="kriging.html"><a href="kriging.html#вариограммное-облако"><i class="fa fa-check"></i><b>14.4.20</b> Вариограммное облако</a></li>
+<li class="chapter" data-level="14.4.21" data-path="kriging.html"><a href="kriging.html#эмпирическая-вариограмма"><i class="fa fa-check"></i><b>14.4.21</b> Эмпирическая вариограмма</a></li>
+<li class="chapter" data-level="14.4.22" data-path="kriging.html"><a href="kriging.html#вариокарта"><i class="fa fa-check"></i><b>14.4.22</b> Вариокарта</a></li>
+<li class="chapter" data-level="14.4.23" data-path="kriging.html"><a href="kriging.html#приближение-теоретической-модели"><i class="fa fa-check"></i><b>14.4.23</b> Приближение теоретической модели</a></li>
+<li class="chapter" data-level="14.4.24" data-path="kriging.html"><a href="kriging.html#обычный-кригинг-1"><i class="fa fa-check"></i><b>14.4.24</b> Обычный кригинг</a></li>
+<li class="chapter" data-level="14.4.25" data-path="kriging.html"><a href="kriging.html#обычный-кригинг-2"><i class="fa fa-check"></i><b>14.4.25</b> Обычный кригинг</a></li>
+<li class="chapter" data-level="14.4.26" data-path="kriging.html"><a href="kriging.html#оценка-и-дисперсия-кригинга"><i class="fa fa-check"></i><b>14.4.26</b> Оценка и дисперсия кригинга</a></li>
+<li class="chapter" data-level="14.4.27" data-path="kriging.html"><a href="kriging.html#кросс-валидация-1"><i class="fa fa-check"></i><b>14.4.27</b> Кросс-валидация</a></li>
+</ul></li>
+<li class="chapter" data-level="14.5" data-path="kriging.html"><a href="kriging.html#geostat_review"><i class="fa fa-check"></i><b>14.5</b> Краткий обзор</a></li>
+<li class="chapter" data-level="14.6" data-path="kriging.html"><a href="kriging.html#geostat_qt"><i class="fa fa-check"></i><b>14.6</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="14.6.1" data-path="kriging.html"><a href="kriging.html#geostat_q"><i class="fa fa-check"></i><b>14.6.1</b> Вопросы</a></li>
+<li class="chapter" data-level="14.6.2" data-path="kriging.html"><a href="kriging.html#geostat_t"><i class="fa fa-check"></i><b>14.6.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="autocorrelation.html"><a href="autocorrelation.html"><i class="fa fa-check"></i><b>15</b> Пространственная регрессия</a><ul>
+<li class="chapter" data-level="15.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_intro"><i class="fa fa-check"></i><b>15.1</b> Введение</a></li>
+<li class="chapter" data-level="15.2" data-path="autocorrelation.html"><a href="autocorrelation.html#линейная-регрессия"><i class="fa fa-check"></i><b>15.2</b> Линейная регрессия</a></li>
+<li class="chapter" data-level="15.3" data-path="autocorrelation.html"><a href="autocorrelation.html#пространственная-регрессия"><i class="fa fa-check"></i><b>15.3</b> Пространственная регрессия</a></li>
+<li class="chapter" data-level="15.4" data-path="autocorrelation.html"><a href="autocorrelation.html#практический-анализ"><i class="fa fa-check"></i><b>15.4</b> Практический анализ</a></li>
+<li class="chapter" data-level="15.5" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors"><i class="fa fa-check"></i><b>15.5</b> Пространственное соседство</a><ul>
+<li class="chapter" data-level="15.5.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_contguity"><i class="fa fa-check"></i><b>15.5.1</b> Соседи по смежности</a></li>
+<li class="chapter" data-level="15.5.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_graph"><i class="fa fa-check"></i><b>15.5.2</b> Соседи по графу</a></li>
+<li class="chapter" data-level="15.5.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_metrics"><i class="fa fa-check"></i><b>15.5.3</b> Соседи по метрике</a></li>
+</ul></li>
+<li class="chapter" data-level="15.6" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_weights"><i class="fa fa-check"></i><b>15.6</b> Пространственные веса</a></li>
+<li class="chapter" data-level="15.7" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_measures"><i class="fa fa-check"></i><b>15.7</b> Пространственная автокорреляция</a><ul>
+<li class="chapter" data-level="15.7.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_moran"><i class="fa fa-check"></i><b>15.7.1</b> Индекс Морана (Moran’s I)</a></li>
+<li class="chapter" data-level="15.7.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_permutation"><i class="fa fa-check"></i><b>15.7.2</b> Перестановочный тест Морана</a></li>
+<li class="chapter" data-level="15.7.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_moranscatter"><i class="fa fa-check"></i><b>15.7.3</b> Диаграмма рассеяния Морана</a></li>
+<li class="chapter" data-level="15.7.4" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_autoregression"><i class="fa fa-check"></i><b>15.7.4</b> Пространственная авторегрессия</a></li>
+</ul></li>
+<li class="chapter" data-level="15.8" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_gwr"><i class="fa fa-check"></i><b>15.8</b> Географически взвешенная регрессия (GWR)</a><ul>
+<li class="chapter" data-level="15.8.1" data-path="autocorrelation.html"><a href="autocorrelation.html#весовые-функции"><i class="fa fa-check"></i><b>15.8.1</b> Весовые функции</a></li>
+<li class="chapter" data-level="15.8.2" data-path="autocorrelation.html"><a href="autocorrelation.html#практический-анализ-1"><i class="fa fa-check"></i><b>15.8.2</b> Практический анализ</a></li>
+</ul></li>
+<li class="chapter" data-level="15.9" data-path="autocorrelation.html"><a href="autocorrelation.html#spreg_review"><i class="fa fa-check"></i><b>15.9</b> Краткий обзор</a></li>
+<li class="chapter" data-level="15.10" data-path="autocorrelation.html"><a href="autocorrelation.html#questions_tasks_spreg"><i class="fa fa-check"></i><b>15.10</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="15.10.1" data-path="autocorrelation.html"><a href="autocorrelation.html#questions_spreg"><i class="fa fa-check"></i><b>15.10.1</b> Вопросы</a></li>
+<li class="chapter" data-level="15.10.2" data-path="autocorrelation.html"><a href="autocorrelation.html#tasks_spreg"><i class="fa fa-check"></i><b>15.10.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="point-patterns.html"><a href="point-patterns.html"><i class="fa fa-check"></i><b>16</b> Точечные процессы</a><ul>
+<li class="chapter" data-level="16.1" data-path="point-patterns.html"><a href="point-patterns.html#точечный-паттерн"><i class="fa fa-check"></i><b>16.1</b> Точечный паттерн</a></li>
+<li class="chapter" data-level="16.2" data-path="point-patterns.html"><a href="point-patterns.html#точечные-процессы"><i class="fa fa-check"></i><b>16.2</b> Точечные процессы</a><ul>
+<li class="chapter" data-level="16.2.1" data-path="point-patterns.html"><a href="point-patterns.html#равномерно-случайные-точки"><i class="fa fa-check"></i><b>16.2.1</b> Равномерно случайные точки</a></li>
+<li class="chapter" data-level="16.2.2" data-path="point-patterns.html"><a href="point-patterns.html#биномиальный-точечный-процесс"><i class="fa fa-check"></i><b>16.2.2</b> Биномиальный точечный процесс</a></li>
+<li class="chapter" data-level="16.2.3" data-path="point-patterns.html"><a href="point-patterns.html#пуассоновский-процесс"><i class="fa fa-check"></i><b>16.2.3</b> Пуассоновский процесс</a></li>
+<li class="chapter" data-level="16.2.4" data-path="point-patterns.html"><a href="point-patterns.html#неоднородный-пуассоновский-процесс"><i class="fa fa-check"></i><b>16.2.4</b> Неоднородный пуассоновский процесс</a></li>
+<li class="chapter" data-level="16.2.5" data-path="point-patterns.html"><a href="point-patterns.html#процесс-кокса-cox-process"><i class="fa fa-check"></i><b>16.2.5</b> Процесс Кокса (Cox process)</a></li>
+<li class="chapter" data-level="16.2.6" data-path="point-patterns.html"><a href="point-patterns.html#кластерные-процессы"><i class="fa fa-check"></i><b>16.2.6</b> Кластерные процессы</a></li>
+<li class="chapter" data-level="16.2.7" data-path="point-patterns.html"><a href="point-patterns.html#регулярные-процессы"><i class="fa fa-check"></i><b>16.2.7</b> Регулярные процессы</a></li>
+</ul></li>
+<li class="chapter" data-level="16.3" data-path="point-patterns.html"><a href="point-patterns.html#диагностика"><i class="fa fa-check"></i><b>16.3</b> Диагностика</a><ul>
+<li class="chapter" data-level="16.3.1" data-path="point-patterns.html"><a href="point-patterns.html#анализ-интенсивности"><i class="fa fa-check"></i><b>16.3.1</b> Анализ интенсивности</a></li>
+<li class="chapter" data-level="16.3.2" data-path="point-patterns.html"><a href="point-patterns.html#анализ-зависимости"><i class="fa fa-check"></i><b>16.3.2</b> Анализ зависимости</a></li>
+</ul></li>
+<li class="chapter" data-level="16.4" data-path="point-patterns.html"><a href="point-patterns.html#моделирование"><i class="fa fa-check"></i><b>16.4</b> Моделирование</a></li>
+<li class="chapter" data-level="16.5" data-path="point-patterns.html"><a href="point-patterns.html#point_review"><i class="fa fa-check"></i><b>16.5</b> Краткий обзор</a></li>
+<li class="chapter" data-level="16.6" data-path="point-patterns.html"><a href="point-patterns.html#questions_tasks_patterns"><i class="fa fa-check"></i><b>16.6</b> Контрольные вопросы и упражнения</a><ul>
+<li class="chapter" data-level="16.6.1" data-path="point-patterns.html"><a href="point-patterns.html#questions_patterns"><i class="fa fa-check"></i><b>16.6.1</b> Вопросы</a></li>
+<li class="chapter" data-level="16.6.2" data-path="point-patterns.html"><a href="point-patterns.html#tasks_patterns"><i class="fa fa-check"></i><b>16.6.2</b> Упражнения</a></li>
+</ul></li>
+</ul></li>
+<li class="appendix"><span><b>Решение проблем</b></span></li>
+<li class="chapter" data-level="A" data-path="package-troubles.html"><a href="package-troubles.html"><i class="fa fa-check"></i><b>A</b> Установка пакетов</a><ul>
+<li class="chapter" data-level="A.1" data-path="package-troubles.html"><a href="package-troubles.html#package-troubles-standard"><i class="fa fa-check"></i><b>A.1</b> Недоступен стандартный каталог</a></li>
+<li class="chapter" data-level="A.2" data-path="package-troubles.html"><a href="package-troubles.html#package-troubles-copy"><i class="fa fa-check"></i><b>A.2</b> Устанавливается, но не копируется</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://istina.msu.ru/profile/tsamsonov/" target="blank">Тимофей Самсонов</a></li>
+<li><a href="https://doi.org/10.5281/zenodo.901911"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.901911.svg" title="DOI"></a><li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Визуализация и анализ географических данных на языке R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="autocorrelation" class="section level1">
+<h1><span class="header-section-number">Глава 15</span> Пространственная регрессия</h1>
+<p><a href="https://github.com/tsamsonov/r-geo-course/blob/master/code/15-SpatstatAutocorrelation.R">Программный код главы</a></p>
+<div id="autocorrelation_intro" class="section level2">
+<h2><span class="header-section-number">15.1</span> Введение</h2>
+<p>В данном модуле мы приступим к исследованию связей в географическом пространстве. Понятие пространственной автокорреляции является математическим отражением первого закона географии: все связано со всем, но близкорасположенные объекты связаны сильнее. Различные коэффициенты пространственной автокорреляции, такие как индекс Морана (Moran’s I) позволяют охарактеризовать силу этой связи с точки зрения математической статистики. Однако для их вычисления необходимо формализовать понятия географической близости, или географического соседства. В настоящем модуле рассматриваются различные подходы к решению данной проблемы.</p>
+<p>Пространственные случайные процессы часть характеризуются следующими свойствами:</p>
+<ul>
+<li><p><strong>Пространственная зависимость</strong> <em>(spatial dependence)</em> — наличие автокорреляции наблюдений. Выражается в невыполнении условия независимости остатков линейной регрессии. Устраняется посредством <em>пространственной регрессии (spatial regression)</em>.</p></li>
+<li><p><strong>Пространственная гетерогенность</strong> <em>(spatial heterogeneity)</em> — нестационарность процессов, порождающих наблюдаемую переменную. Выражается в неэффективности постоянных коэффициентов линейной регрессии. Устраняется постредством <em>географически взвешенной регрессии (geographically weighted regression)</em>.</p></li>
+</ul>
+<p>Общепринятого определения пространственной автокоорреляции (ПА) не существует. Одно из наиболее удачных определений гласит следующее:</p>
+<blockquote>
+<p>Для множества <span class="math inline">\(S\)</span>, состоящего из <span class="math inline">\(n\)</span> географических единиц, пространственная автокорреляция есть соотношение между переменной, наблюдаемой в каждой из <span class="math inline">\(n\)</span> единиц и мерой географической близости, определенной для всех <span class="math inline">\(n(n − 1)\)</span> пар единиц из <span class="math inline">\(S\)</span> (Hubert et al., 1981)<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a></p>
+</blockquote>
+<p>Анализ ПА, как правило, осуществляется по жестко зафиксированной сетке (lattice) учетных единиц, в качестве которых могут выступать как площади, так и точки. Но, строго говоря, пространственная статистика в конечном счете любую единицу будет интерпретировать как точку.</p>
+<p>Конечной целью исследований ПА является построение статистической модели зависимости значения показателя в каждой единице от значений в соседних единицах и (опционально) неких факторов. Наличие статистически значимой ПА говорит о влиянии процессов, обуславливающих кластеризацию значений в соседних территориальных единицах. И пока эти механизмы не установлены, модель ПА дает инструмент их статистического моделирования. Добавление известных факторов в модель может улучшить точность моделирования.</p>
+</div>
+<div id="линейная-регрессия" class="section level2">
+<h2><span class="header-section-number">15.2</span> Линейная регрессия</h2>
+<p>Пусть дан вектор <span class="math inline">\(\mathbf{y} = \{y_1, y_2, ... y_n\}\)</span> измерений зависимой переменной, а также матрица <span class="math inline">\(\mathbf{X} = \{x_{ij}\}\)</span> размером <span class="math inline">\(n \times m\)</span>, состоящая из значений <span class="math inline">\(m\)</span> независимых переменных для <span class="math inline">\(n\)</span> измерений. В этом случае модель линейной регрессии может быть записана как</p>
+<p><span class="math display">\[\mathbf{y} = \mathbf{X} \boldsymbol\beta + \boldsymbol\epsilon,\]</span></p>
+<p>где:</p>
+<ul>
+<li><p><span class="math inline">\(\boldsymbol\beta\)</span> — вектор коэффициентов регрессии;</p></li>
+<li><p><span class="math inline">\(\boldsymbol\epsilon\)</span> — вектор случайных ошибок, независимо распределенных относительно среднего значения в нуле.</p></li>
+</ul>
+<p><strong>Многомерное нормальное распределение (МНР)</strong> <span class="math inline">\(k\)</span>-мерного случайного вектора <span class="math inline">\(\mathbf{X} = (X_1, ..., X_k)^T\)</span> обозначается как:</p>
+<p><span class="math display">\[\mathbf{X}\ \sim \mathcal{N}_k(\boldsymbol\mu,\, \boldsymbol\Sigma)\]</span></p>
+<p>МНР определяется двумя параметрами:</p>
+<ul>
+<li><strong>математическое ожидание</strong> ( <span class="math inline">\(k\)</span>-мерный вектор):</li>
+</ul>
+<p><span class="math display">\[\boldsymbol\mu = \operatorname{E}[\mathbf{X}] = [ \operatorname{E}[X_1], \operatorname{E}[X_2], \ldots, \operatorname{E}[X_k]]^{\rm T}\]</span></p>
+<ul>
+<li><strong>ковариационная матрица</strong> (размером <span class="math inline">\(k \times k\)</span>):</li>
+</ul>
+<p><span class="math display">\[\boldsymbol\Sigma = \operatorname{E} [(\mathbf{X} - \boldsymbol\mu)( \mathbf{X} - \boldsymbol \mu)^{\rm T}] =  [ \operatorname{Cov}[X_i, X_j]; 1 \le i,j \le k ]\]</span>
+Вещественнозначный случайный вектор <span class="math inline">\(\mathbf{X} = (X_1, ..., X_k)^T\)</span> называется <strong>стандартным нормальным случайным вектором</strong>, если все его компоненты <span class="math inline">\(X_n\)</span> независимы друг от друга и подчиняются стандартному случаю нормального закона распределения с нулевым математическим ожиданием и единичной дисперсией для всех <span class="math inline">\(n\)</span>:</p>
+<p><span class="math display">\[X_n \sim \mathcal{N}(0, 1)\]</span></p>
+<p>В модели линейной регрессии:</p>
+<p><span class="math display">\[\boldsymbol\epsilon \sim \mathcal{N}_k(0, \sigma^2 \mathbf{I}),\]</span></p>
+<p>где <span class="math inline">\(I\)</span> — единичная матрица размером <span class="math inline">\(k \times k\)</span>.</p>
+<p>Если данные получены измерениями по пространству, остатки регрессии могут демонстрировать пространственную ассоциацию (зависимость), как правило свидетельствующую о наличии дополнительных неучтённых факторов. Это означает, что обычная модель регрессии недостаточно хорошо объясняет зависимость.</p>
+<p>В качестве примера приведем модель, в которой процент домохозяйств, находящихся во владении, моделируется как переменная зависимая от уровня безработицы [Fotheringam, Brunsdon, Charlton, 2002]:</p>
+<div class="figure"><span id="fig:unnamed-chunk-609"></span>
+<img src="slides/images/tyne_ownerocc.png" alt="Процент домохозяйств, находящихся во владении" width="596" />
+<p class="caption">
+Рис. 15.1: Процент домохозяйств, находящихся во владении
+</p>
+</div>
+<div class="figure"><span id="fig:unnamed-chunk-610"></span>
+<img src="slides/images/tyne_unempl.png" alt="Уровень безработицы" width="574" />
+<p class="caption">
+Рис. 15.2: Уровень безработицы
+</p>
+</div>
+<p>Обычная линейная регрессия показывает хорошую согласованность между этими параметрами:</p>
+<div class="figure"><span id="fig:unnamed-chunk-611"></span>
+<img src="slides/images/tyne_regr.png" alt="Зависимость процента домохозяйств во владении от уровня безработицы" width="565" />
+<p class="caption">
+Рис. 15.3: Зависимость процента домохозяйств во владении от уровня безработицы
+</p>
+</div>
+<p>Однако остатки регрессии демонстрируют явную пространственную зависимость, что говорит о том, что построенная модель неадекватно описывает исследуемую закономерность:</p>
+<div class="figure"><span id="fig:unnamed-chunk-612"></span>
+<img src="slides/images/tyne_resid.png" alt="Остатки линейной регрессии" width="586" />
+<p class="caption">
+Рис. 15.4: Остатки линейной регрессии
+</p>
+</div>
+<p>Чтобы моделировать подобную зависимость остатков, необходим более широкий класс моделей:</p>
+<p><span class="math display">\[\boldsymbol\epsilon \sim \mathcal{N}_k(0, \mathbf{C}),\]</span></p>
+<p>где <span class="math inline">\(\mathbf{C}\)</span> — любая допустимая ковариационная матрица.</p>
+<p>Данная модель решает проблему независимости остатков, однако порождает две других проблемы:</p>
+<ul>
+<li><p>Если зависимость остатков имеет пространственный характер (ассоциированы остатки в территориально близких локациях), то матрица <span class="math inline">\(\mathbf{C}\)</span> характер этой зависимости не отражает в явном виде.</p></li>
+<li><p>Вектор коэффициентов регрессии <span class="math inline">\(\boldsymbol\beta\)</span> может быть получен путем минимизации <span class="math inline">\(\mathbf{y} - \mathbf{X}\boldsymbol\beta\)</span> путем решения <span class="math inline">\(\beta = \big(\mathbf{X}^T \mathbf{CX} \big)^{-1} \mathbf{X}^T \mathbf{X y}\)</span>. Однако это требует знания ковариационной матрицы, которая обычно неизвестна. Поэтому как <span class="math inline">\(\mathbf{C}\)</span>, так и <span class="math inline">\(\boldsymbol\beta\)</span> калибруются по выборке.</p></li>
+</ul>
+</div>
+<div id="пространственная-регрессия" class="section level2">
+<h2><span class="header-section-number">15.3</span> Пространственная регрессия</h2>
+<p>Для того чтобы учесть пространственную автокорреляцию остатков, в модель линейной регрессии добавляется компонента <strong>пространственной авторегрессии</strong> <em>(spatial autoregression)</em>, которая моделирует <em>пространстенный лаг</em>:</p>
+<p><span class="math display">\[\mathbf{y} = \mathbf{X} \mathbf{\beta} + \color{red}{\rho\mathbf{Wy}} +  \mathbf{\epsilon},\]</span></p>
+<ul>
+<li><p><span class="math inline">\(\rho\)</span> — коэффициент регрессии, отражающий степень пространственной автокорреляции</p></li>
+<li><p><span class="math inline">\(\mathbf{W}\)</span> — матрица пространственных весов</p></li>
+</ul>
+<blockquote>
+<p>Полученная модель называется моделью <strong>пространственной регрессии</strong> (<em>spatial regression</em>).</p>
+</blockquote>
+<p>Для получения коэффициентов <span class="math inline">\(\boldsymbol\beta\)</span> и <span class="math inline">\(\rho\)</span> выполним ряд преобразований:</p>
+<p><span class="math display">\[\mathbf{y} = \mathbf{X} \mathbf{\beta} + \rho\mathbf{Wy} +  \mathbf{\epsilon}\\
+\mathbf{y} - \rho\mathbf{Wy} = \mathbf{X} \mathbf{\beta} + \mathbf{\epsilon}\\
+(\mathbf{I} - \rho\mathbf{W})\mathbf{y} = \mathbf{X} \mathbf{\beta} + \mathbf{\epsilon}\]</span></p>
+<p>Предполагая, что матрица <span class="math inline">\((\mathbf{I} - \rho\mathbf{W})\)</span> инвертируема, получаем систему уравнений пространственной регрессии:</p>
+<p><span class="math display">\[\color{red}{\boxed{\color{blue}{\mathbf{y} = (\mathbf{I} - \rho\mathbf{W})^{-1}\mathbf{X}\mathbf{\beta} + (\mathbf{I} - \rho\mathbf{W})^{-1}\mathbf{\epsilon}}}}\]</span></p>
+<p>Данная модель идентична обычной регрессии <span class="math inline">\(\mathbf{y} = \mathbf{X} \mathbf{\beta} + \mathbf{\epsilon}\)</span>, но в ней независимые переменные и ошибки линейно трансформированы умножением на <span class="math inline">\((\mathbf{I} - \rho\mathbf{W})^{-1}\)</span>.</p>
+<p><span class="math display">\[\mathbf{y} = (\mathbf{I} - \rho\mathbf{W})^{-1}\mathbf{X}\mathbf{\beta} + (\mathbf{I} - \rho\mathbf{W})^{-1}\mathbf{\epsilon}\]</span></p>
+<p>Трансформированная ошибка модели будет иметь ковариационную матрицу</p>
+<p><span class="math display">\[\mathbf{C} = \sigma^2 \Big[\big(\mathbf{I} - \rho \mathbf{W}\big)^{-1}\Big]^T (\mathbf{I} - \rho\mathbf{W})^{-1}\]</span></p>
+<ul>
+<li><p>Если ковариационная матрица функционально зависит от параметра <span class="math inline">\(\rho\)</span>, то она отражает пространственную структуру автокорреляции ошибок.</p></li>
+<li><p>Ковариационная матрица должна быть положительно определенной. Для полученного выражения это будет выполняться в случае если <span class="math inline">\(|\rho| \leq 1\)</span> (Griffith, 1988).</p></li>
+</ul>
+<p><span class="math display">\[\mathbf{y} = \mathbf{X} \mathbf{\beta} + \rho\mathbf{Wy} +  \mathbf{\epsilon}\]</span></p>
+<p>Для нахождения коэффициентов <span class="math inline">\(\boldsymbol\beta\)</span> и <span class="math inline">\(\rho\)</span> используется минимизация квадрата случайной компоненты, которую можно представить как <span class="math inline">\(\mathbf{\epsilon} = \mathbf{y} - \mathbf{X} \mathbf{\beta} - \rho\mathbf{Wy}\)</span>:</p>
+<p><span class="math display">\[\sum_i \Bigg(y_i - \sum_j \beta_j x_{ij} - \rho \sum_j w_{ij} y_j \Bigg)^2\]</span></p>
+<p>Задача решается в 2 этапа:</p>
+<ul>
+<li>находится оптимальное значение <span class="math inline">\(\rho\)</span>;</li>
+<li>находится оптимальное значение <span class="math inline">\(\boldsymbol\beta\)</span> путем подстановки в вышеуказанное выражение.</li>
+</ul>
+<p>Модель пространственной регрессии может быть использована для осуществления <strong>пространственной фильтрации</strong> — убирания автокорреляционной составляющей. Для этого необходимо авторегрессионную компоненту (пространственный лаг) перенести в левую часть уравнения:</p>
+<p><span class="math display">\[\mathbf{y} = \mathbf{X} \mathbf{\beta} + \rho\mathbf{Wy} + \mathbf{\epsilon}\\
+\mathbf{y}^* = \mathbf{y} - \rho\mathbf{Wy} = \mathbf{X} \mathbf{\beta} + \mathbf{\epsilon}\]</span></p>
+<p>Данная модель представляет собой стандартную (непространственную) регрессию для независимой переменной <span class="math inline">\(\mathbf{y}^*\)</span>, в которой пространственная корреляция убрана (подвергнута фильтрации).</p>
+<ul>
+<li><p>Пространственная фильтрация бывает полезна, когда наблюдается несоответствие масштаба наблюдений и масштаба процесса.</p></li>
+<li><p>Например, статистика по показателю, контролируемому на региональном уровне, собирается по муниципалитетам. В этом случае фильтрация позволяет подобрать параметры <span class="math inline">\(\mathbf{\beta}\)</span>, учитывающие наличие высокой пространственной автокорреляци.</p></li>
+</ul>
+</div>
+<div id="практический-анализ" class="section level2">
+<h2><span class="header-section-number">15.4</span> Практический анализ</h2>
+<p>Как мы уже сказали, исследование ПА начинается с анализа географического соседства. То есть, для каждой анализируемой единицы мы должны определить соседние по отношению к ней единицы. Это не так-то просто,поскольку существует множество способов определить соседство.</p>
+<p>Перед выполнением анализа подключим необходимые библиотеки и визуализируем исходные данные, в качестве которых выступают границы муниципалитетов Кировской области.</p>
+<div class="sourceCode" id="cb656"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb656-1"><a href="autocorrelation.html#cb656-1"></a><span class="kw">library</span>(sf)</span>
+<span id="cb656-2"><a href="autocorrelation.html#cb656-2"></a><span class="kw">library</span>(spdep)  <span class="co"># оценка соседства, построение матрицы весов, индексы автокорреляции</span></span>
+<span id="cb656-3"><a href="autocorrelation.html#cb656-3"></a><span class="kw">library</span>(spatialreg) <span class="co"># пространственная регрессия</span></span>
+<span id="cb656-4"><a href="autocorrelation.html#cb656-4"></a><span class="kw">library</span>(lattice)</span>
+<span id="cb656-5"><a href="autocorrelation.html#cb656-5"></a><span class="kw">library</span>(RANN)</span>
+<span id="cb656-6"><a href="autocorrelation.html#cb656-6"></a><span class="kw">library</span>(RColorBrewer)</span>
+<span id="cb656-7"><a href="autocorrelation.html#cb656-7"></a><span class="kw">library</span>(readxl)</span>
+<span id="cb656-8"><a href="autocorrelation.html#cb656-8"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb656-9"><a href="autocorrelation.html#cb656-9"></a><span class="kw">library</span>(tmap)</span>
+<span id="cb656-10"><a href="autocorrelation.html#cb656-10"></a><span class="kw">library</span>(GWmodel)</span>
+<span id="cb656-11"><a href="autocorrelation.html#cb656-11"></a></span>
+<span id="cb656-12"><a href="autocorrelation.html#cb656-12"></a><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>)</span>
+<span id="cb656-13"><a href="autocorrelation.html#cb656-13"></a></span>
+<span id="cb656-14"><a href="autocorrelation.html#cb656-14"></a>reg_sf =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&#39;data/Kirov.gpkg&#39;</span>)</span>
+<span id="cb656-15"><a href="autocorrelation.html#cb656-15"></a><span class="co">## Reading layer `Kirov&#39; from data source `/Users/tsamsonov/GitHub/r-geo-course/data/Kirov.gpkg&#39; using driver `GPKG&#39;</span></span>
+<span id="cb656-16"><a href="autocorrelation.html#cb656-16"></a><span class="co">## Simple feature collection with 40 features and 20 fields</span></span>
+<span id="cb656-17"><a href="autocorrelation.html#cb656-17"></a><span class="co">## geometry type:  POLYGON</span></span>
+<span id="cb656-18"><a href="autocorrelation.html#cb656-18"></a><span class="co">## dimension:      XY</span></span>
+<span id="cb656-19"><a href="autocorrelation.html#cb656-19"></a><span class="co">## bbox:           xmin: -216808.3 ymin: 2896149 xmax: 227259 ymax: 3455774</span></span>
+<span id="cb656-20"><a href="autocorrelation.html#cb656-20"></a><span class="co">## epsg (SRID):    NA</span></span>
+<span id="cb656-21"><a href="autocorrelation.html#cb656-21"></a><span class="co">## proj4string:    +proj=eqdc +lat_0=30 +lon_0=50 +lat_1=57.5 +lat_2=59 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs</span></span>
+<span id="cb656-22"><a href="autocorrelation.html#cb656-22"></a>reg =<span class="st"> </span><span class="kw">st_geometry</span>(reg_sf)</span>
+<span id="cb656-23"><a href="autocorrelation.html#cb656-23"></a></span>
+<span id="cb656-24"><a href="autocorrelation.html#cb656-24"></a><span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb656-25"><a href="autocorrelation.html#cb656-25"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;gray50&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-613-1.png" width="672" /></p>
+</div>
+<div id="autocorrelation_neighbors" class="section level2">
+<h2><span class="header-section-number">15.5</span> Пространственное соседство</h2>
+<p>В целом, можно выделить три большие группы методов:</p>
+<ul>
+<li>Соседи по смежности</li>
+<li>Соседи по графу</li>
+<li>Соседи по метрике</li>
+</ul>
+<p><strong>Соседство по смежности</strong> основано на топологических отношениях между объектами и применяется при анализе данных, приуроченных к площадным единицам — например, сетке административно-территориального деления. Смежными считаются объекты, границы которых имеют общие точки. При этом возможно два варианта соседства: по правилу ферзя (QUEEN) и правилу ладьи (ROOK). В первом случае соседними будут считаться все пары территориальных единиц, имеющие хотя бы одну общую точку на границе, т.е. соприкасющиеся сторонами и/или углами. Соседство по правилу ладьи является более строгим, так как разрешает только наличие общих сторон вдоль границ, а точечные касания в расчет не берутся. Отличия правил иллюстрирует рисунок ниже.</p>
+<div class="figure">
+<img src="images/QueenRook.png" alt="" />
+<p class="caption"><em>Поиск географических соседей по правилу ферзя и правилу ладьи</em></p>
+</div>
+<p><strong>Соседство по графу</strong> основано на отношениях объектов в <a href="https://ru.wikipedia.org/wiki/Триангуляция_Делоне">триангуляции Делоне</a>. В эту же категорию попадают всевозможные фильтрации триангуляции Делоне, которые удаляют из нее ребра, не удовлетворяющие заданным критериям. Более подбробно о них будет сказано ниже.</p>
+<p><strong>Соседство по метрике</strong> основано на вычислении расстояний между объектаи. Соседними по отношению к каждому объекту будут считаться либо <span class="math inline">\(K\)</span> ближайших к нему объектов (соседи по количеству), либо все объекты, удаленные на растояние не далее <span class="math inline">\(D_{max}\)</span> (соседи по расстоянию).</p>
+<p>Результатом анализа соседства является <strong>граф соседства</strong>(neighborhood graph), в котором сами объекты являются вершинами, а связи между ними — ребрами.</p>
+<p>Анализ географического соседства на языке R можно провести с помощью пакета <a href="https://cran.r-project.org/web/packages/spdep/index.html">spdep</a>.</p>
+<p>Рассмотрим суть и принципы построения графов соседства на основе различных принципов.</p>
+<div id="autocorrelation_neighbors_contguity" class="section level3">
+<h3><span class="header-section-number">15.5.1</span> Соседи по смежности</h3>
+<p>Список соседей по смежности можно получить с помощью функции <code>poly2nb()</code>.</p>
+<p>Возвращаемый объект является классом типа <code>nb</code>. Для каждой единицы в нем содержится список номеров соседних по отношению к нему единиц. По умолчанию функция находит соседей по правилу ферзя:</p>
+<div class="sourceCode" id="cb657"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb657-1"><a href="autocorrelation.html#cb657-1"></a>nb_queen =<span class="st"> </span><span class="kw">poly2nb</span>(reg) <span class="co"># Соседство по правилу ферзя</span></span>
+<span id="cb657-2"><a href="autocorrelation.html#cb657-2"></a>nb_queen  <span class="co"># посмотрим сводную информацию</span></span>
+<span id="cb657-3"><a href="autocorrelation.html#cb657-3"></a><span class="co">## Neighbour list object:</span></span>
+<span id="cb657-4"><a href="autocorrelation.html#cb657-4"></a><span class="co">## Number of regions: 40 </span></span>
+<span id="cb657-5"><a href="autocorrelation.html#cb657-5"></a><span class="co">## Number of nonzero links: 174 </span></span>
+<span id="cb657-6"><a href="autocorrelation.html#cb657-6"></a><span class="co">## Percentage nonzero weights: 10.875 </span></span>
+<span id="cb657-7"><a href="autocorrelation.html#cb657-7"></a><span class="co">## Average number of links: 4.35</span></span>
+<span id="cb657-8"><a href="autocorrelation.html#cb657-8"></a><span class="kw">class</span>(nb_queen)  <span class="co"># проверим тип объекта</span></span>
+<span id="cb657-9"><a href="autocorrelation.html#cb657-9"></a><span class="co">## [1] &quot;nb&quot;</span></span></code></pre></div>
+<p>Для объектов типа <code>nb</code> в пакете <code>spdep</code> определена своя функция <code>plot()</code>, которая позволяет визуализировать граф соседства. Функция требует на вход координаты точек, в случае площадных единиц для этого используют центроиды площадей, которые можно получить функцией <code>coordinates()</code>:</p>
+<div class="sourceCode" id="cb658"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb658-1"><a href="autocorrelation.html#cb658-1"></a>coords =<span class="st"> </span>reg <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb658-2"><a href="autocorrelation.html#cb658-2"></a><span class="st">  </span><span class="kw">st_centroid</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb658-3"><a href="autocorrelation.html#cb658-3"></a><span class="st">  </span><span class="kw">st_coordinates</span>()</span>
+<span id="cb658-4"><a href="autocorrelation.html#cb658-4"></a></span>
+<span id="cb658-5"><a href="autocorrelation.html#cb658-5"></a><span class="co"># Теперь рисуем граф:</span></span>
+<span id="cb658-6"><a href="autocorrelation.html#cb658-6"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;gray50&quot;</span>)</span>
+<span id="cb658-7"><a href="autocorrelation.html#cb658-7"></a><span class="kw">plot</span>(nb_queen, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb658-8"><a href="autocorrelation.html#cb658-8"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по смежности (правило ферзя)&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-615-1.png" width="672" /></p>
+<p>Для определения соседей по правилу ладьи необходимо вызвать функцию <code>poly2nb()</code> с аргументом <code>queen=FALSE</code>. В нашем случае, правда, это даст тот же результат, поскольку в данных отсутствуют единицы, соприкасающиеся в одной лишь точке:</p>
+<div class="sourceCode" id="cb659"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb659-1"><a href="autocorrelation.html#cb659-1"></a>nb_rook =<span class="st"> </span><span class="kw">poly2nb</span>(reg, <span class="dt">queen =</span> <span class="ot">FALSE</span>) <span class="co"># Соседство по правилу ладьи</span></span>
+<span id="cb659-2"><a href="autocorrelation.html#cb659-2"></a></span>
+<span id="cb659-3"><a href="autocorrelation.html#cb659-3"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
+<span id="cb659-4"><a href="autocorrelation.html#cb659-4"></a><span class="kw">plot</span>(nb_rook, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb659-5"><a href="autocorrelation.html#cb659-5"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по смежности (правило ладьи)&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-616-1.png" width="672" /></p>
+<p>Обратим внимание на то, что функция <code>poly2nb()</code> принимает на вход площадные объекты. Все помледующие методы определения соседства (по графу и по метрике) работают с точечными данными.</p>
+</div>
+<div id="autocorrelation_neighbors_graph" class="section level3">
+<h3><span class="header-section-number">15.5.2</span> Соседи по графу</h3>
+<p>Данная группа методов определения соседства основана на построении триангуляции Делоне для точек исходных данных. Далее эта триангуляция может быть оставлена в неизменном виде, или быть подвержена процедуре фильтрации, которая удалит из нее ребра, не удовлетворяющие заданному критерию.</p>
+<p><strong>Соседи по триангуляции Делоне</strong> без фильтрации могут быть получены с помощью функции <code>tri2nb()</code>:</p>
+<div class="sourceCode" id="cb660"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb660-1"><a href="autocorrelation.html#cb660-1"></a>nb_tin =<span class="st"> </span><span class="kw">tri2nb</span>(coords)</span>
+<span id="cb660-2"><a href="autocorrelation.html#cb660-2"></a></span>
+<span id="cb660-3"><a href="autocorrelation.html#cb660-3"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
+<span id="cb660-4"><a href="autocorrelation.html#cb660-4"></a><span class="kw">plot</span>(nb_tin, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb660-5"><a href="autocorrelation.html#cb660-5"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по триангуляции Делоне&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-617-1.png" width="672" /></p>
+<p><strong>Соседи по сфере влияния</strong> получаются путем фильтрации триангуляции Делоне. Для каждой вершины находится расстояние до ближайшего соседа <span class="math inline">\(D_{min}\)</span> — это расстояние называется радиусом <em>сферы влияния</em> вершины. Остальные ребра триангуляции, инцидентные (примыкающие к) данной вершине, сохраняются только если их длина <span class="math inline">\(D\)</span> превышает радиус ее сферы влияния не более чем вдвое: <span class="math inline">\(D \leq 2D_{min}\)</span>. Рассуждая геометрически, можно сказать, что сферы радиусом <span class="math inline">\(D_{min}\)</span>, построенные в точке и ее соседях по триангуляции, должны пересекаться. Процесс фильтрации по сфере влияния иллюстрирует рисунок ниже.</p>
+<div class="figure">
+<img src="images/SphereOfInfluence.png" alt="" />
+<p class="caption"><em>Поиск географических соседей по правилу сферы влияния</em></p>
+</div>
+<p>Поиск соседей по сфере влияния построен по аналогии с принципом <a href="https://ru.wikipedia.org/wiki/Сфера_действия_тяготения">сферы действия тяготения</a> из небесной механики.</p>
+<p>Построение соседей по правилу сферы влияния осуществляется в 3 шага:</p>
+<ul>
+<li>определение соседей по триангуляции (функция <code>tri2nb()</code>)</li>
+<li>фильтрация триангуляции по правилу сферы влияния (функция <code>soi.graph()</code>)</li>
+<li>преобразование полученного объекта в класс <code>nb</code>(функция <code>graph2nb()</code>)</li>
+</ul>
+<div class="sourceCode" id="cb661"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb661-1"><a href="autocorrelation.html#cb661-1"></a>nb_tin =<span class="st"> </span><span class="kw">soi.graph</span>(nb_tin, coords) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">graph2nb</span>()</span>
+<span id="cb661-2"><a href="autocorrelation.html#cb661-2"></a></span>
+<span id="cb661-3"><a href="autocorrelation.html#cb661-3"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
+<span id="cb661-4"><a href="autocorrelation.html#cb661-4"></a><span class="kw">plot</span>(nb_tin, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb661-5"><a href="autocorrelation.html#cb661-5"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по сфере влияния&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-618-1.png" width="672" /></p>
+<p><strong>Соседи по графу Гэбриела</strong> получаются также путем фильтрации триангуляции Делоне. В каждом треугольнике ребро сохранятся только тогда, когда построенная на нем окружность не включает третью точку треугольника (Gabriel, Sokal, 1969)<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>. Данный метод проиллюстрирован рисунком ниже.</p>
+<div class="figure">
+<img src="images/Gabriel.png" alt="" />
+<p class="caption"><em>Поиск географических соседей по графу Гэбриела</em></p>
+</div>
+<p>Поиск соседей по графу Гэбриела осуществляется в 2 шага:</p>
+<ul>
+<li>построение графа Гэбриела (функция <code>gabrielneigh()</code>)</li>
+<li>преобразование полученного объекта в класс <code>nb</code>(функция <code>graph2nb()</code>)</li>
+</ul>
+<div class="sourceCode" id="cb662"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb662-1"><a href="autocorrelation.html#cb662-1"></a>nb_gab =<span class="st"> </span><span class="kw">gabrielneigh</span>(coords) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">graph2nb</span>()</span>
+<span id="cb662-2"><a href="autocorrelation.html#cb662-2"></a> </span>
+<span id="cb662-3"><a href="autocorrelation.html#cb662-3"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
+<span id="cb662-4"><a href="autocorrelation.html#cb662-4"></a><span class="kw">plot</span>(nb_gab, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb662-5"><a href="autocorrelation.html#cb662-5"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по графу Гэбриела&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-619-1.png" width="672" /></p>
+<p><strong>Относительные соседи по графу</strong> получаются путем фильтрации триангуляции Делоне по следующему правилу: ребро <span class="math inline">\(A\)</span>, соединяющее две вершины <span class="math inline">\(p\)</span> и <span class="math inline">\(q\)</span>, будет удалено, если найдется третья вершина <span class="math inline">\(r\)</span>, такая что расстояния от нее до <span class="math inline">\(p\)</span> и <span class="math inline">\(q\)</span> (<span class="math inline">\(B\)</span> и <span class="math inline">\(C\)</span> соответственно) окажутся короче, чем <span class="math inline">\(A\)</span>, то есть: <span class="math inline">\(A &gt; B\)</span> <strong>and</strong> <span class="math inline">\(A &gt; C\)</span>. Полученный граф носит название графа относительных соседей (relative neighborhood graph). Данный метод был предложен французским информатиком Готфридом Туассеном для выявления структуры множества точек, которая бы максимально соответствовала восприятию человеком формы этого множества (Toussaint, 1980)<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>.</p>
+<p>Поиск соседей по графу относительных соседей осуществляется в 2 шага:</p>
+<ul>
+<li>построение графа относительных соседей (функция <code>relativeneigh()</code>)</li>
+<li>преобразование полученного объекта в класс <code>nb</code>(функция <code>graph2nb()</code>)</li>
+</ul>
+<div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb663-1"><a href="autocorrelation.html#cb663-1"></a>nb_rel =<span class="st"> </span><span class="kw">relativeneigh</span>(coords) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">graph2nb</span>()</span>
+<span id="cb663-2"><a href="autocorrelation.html#cb663-2"></a></span>
+<span id="cb663-3"><a href="autocorrelation.html#cb663-3"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
+<span id="cb663-4"><a href="autocorrelation.html#cb663-4"></a><span class="kw">plot</span>(nb_rel, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb663-5"><a href="autocorrelation.html#cb663-5"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Относительные соседи по графу&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-620-1.png" width="672" /></p>
+</div>
+<div id="autocorrelation_neighbors_metrics" class="section level3">
+<h3><span class="header-section-number">15.5.3</span> Соседи по метрике</h3>
+<p>Поиск соседей по метрике — наиболее простой способ определения соседства. Для его использования необходимо задать метрику (как правило, расстояние между точками), а также критерий фильтрации связей: по количеству (<span class="math inline">\(k\)</span> ближайших) или по расстоянию (не ближе чем <span class="math inline">\(d_1\)</span>, но и не далее чем <span class="math inline">\(d_2\)</span>).</p>
+<p>Поиск <strong>соседей по количеству</strong> осуществляется в 2 шага:</p>
+<ul>
+<li>построение списка соседей (функция <code>knearneigh()</code>)</li>
+<li>преобразование полученного объекта в класс <code>nb</code>(функция <code>knn2nb()</code>)</li>
+</ul>
+<p>Рассмотрим поиск по количеству на примере нескольких пороговых значений:</p>
+<div class="sourceCode" id="cb664"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb664-1"><a href="autocorrelation.html#cb664-1"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb664-2"><a href="autocorrelation.html#cb664-2"></a>    <span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb664-3"><a href="autocorrelation.html#cb664-3"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>){</span>
+<span id="cb664-4"><a href="autocorrelation.html#cb664-4"></a>  nb_knn =<span class="st"> </span><span class="kw">knearneigh</span>(coords, <span class="dt">k =</span> i) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">knn2nb</span>()</span>
+<span id="cb664-5"><a href="autocorrelation.html#cb664-5"></a>  </span>
+<span id="cb664-6"><a href="autocorrelation.html#cb664-6"></a>  <span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
+<span id="cb664-7"><a href="autocorrelation.html#cb664-7"></a>  <span class="kw">plot</span>(nb_knn, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb664-8"><a href="autocorrelation.html#cb664-8"></a>  <span class="kw">title</span>(<span class="dt">main =</span> <span class="kw">paste</span>(<span class="st">&quot;Ближайшие соседи (k = &quot;</span>, i, <span class="st">&quot;)&quot;</span>, <span class="dt">sep =</span> <span class="st">&#39;&#39;</span>))</span>
+<span id="cb664-9"><a href="autocorrelation.html#cb664-9"></a>}</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-621-1.png" width="672" /></p>
+<p>Поиск <strong>соседей по расстоянию</strong> осуществляется средствами функции <code>dnearneigh()</code>, которая принимает 3 аргумента: координаты точек, минимальное <span class="math inline">\(d_1\)</span> и максимальное <span class="math inline">\(d_2\)</span> расстояние. Минимальное расстояние имеет смысл использовать чтобы избежать анализа совпадающих по положению объектов, или когда известен пространственный период явления, превышающий <span class="math inline">\(d_1\)</span>:</p>
+<div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb665-1"><a href="autocorrelation.html#cb665-1"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb665-2"><a href="autocorrelation.html#cb665-2"></a>    <span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb665-3"><a href="autocorrelation.html#cb665-3"></a><span class="cf">for</span> (d <span class="cf">in</span> <span class="dv">5</span><span class="op">:</span><span class="dv">8</span>) {</span>
+<span id="cb665-4"><a href="autocorrelation.html#cb665-4"></a>  dnearnei =<span class="st"> </span><span class="kw">dnearneigh</span>(coords, <span class="dt">d1 =</span> <span class="dv">0</span>, <span class="dt">d2 =</span> <span class="dv">10000</span> <span class="op">*</span><span class="st"> </span>d)</span>
+<span id="cb665-5"><a href="autocorrelation.html#cb665-5"></a>  </span>
+<span id="cb665-6"><a href="autocorrelation.html#cb665-6"></a>  <span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
+<span id="cb665-7"><a href="autocorrelation.html#cb665-7"></a>  <span class="kw">plot</span>(dnearnei, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb665-8"><a href="autocorrelation.html#cb665-8"></a>  <span class="kw">title</span>(<span class="dt">main =</span> <span class="kw">paste</span>(<span class="st">&quot;Ближайшие соседи (d &lt;=&quot;</span>, <span class="dv">10000</span> <span class="op">*</span><span class="st"> </span>d, <span class="st">&quot;)&quot;</span>, <span class="dt">sep =</span> <span class="st">&#39;&#39;</span>))</span>
+<span id="cb665-9"><a href="autocorrelation.html#cb665-9"></a>}</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-622-1.png" width="672" /></p>
+<p>Итак, мы рассмотрели различные принципы выявления географического соседства. После того, как определен сам факт соседства, необходимо оценить силу пространственной связи между всеми парами соседних единиц. Эта оценка производится путем построения <strong>матрицы пространственных весов</strong>(spatial weights matrix).</p>
+</div>
+</div>
+<div id="autocorrelation_weights" class="section level2">
+<h2><span class="header-section-number">15.6</span> Пространственные веса</h2>
+<p>Пространственные веса характеризуют силу связи между единицами. Если единицы не являются соседними (по выбранному правилу), то пространственный вес их связи будет равен нулю. Во всех остальных случаях веса будут ненулевыми. Поскольку теоретически каждая единица может быть связана с любой другой единицей, распространена форма представления весов в виде матрицы <span class="math inline">\(W\)</span> размером <span class="math inline">\(N \times N\)</span>, где <span class="math inline">\(N\)</span> – число единиц. На пересечении <span class="math inline">\(i\)</span>-й строки и <span class="math inline">\(j\)</span>-го столбца матрицы располагается вес связи между <span class="math inline">\(i\)</span>-й и <span class="math inline">\(j\)</span>-й единицей.</p>
+<p>Простейший вид матрицы <span class="math inline">\(W\)</span> — бинарная. Если связь есть, то ее вес равен единице (1), если нет — нулю (0). Для построения бинарной матрицы нужно использовать функцию <code>nb2listw()</code> c параметром <code>style="B"</code>:</p>
+<div class="sourceCode" id="cb666"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb666-1"><a href="autocorrelation.html#cb666-1"></a>Wbin =<span class="st"> </span><span class="kw">nb2listw</span>(nb_queen, <span class="dt">style =</span> <span class="st">&quot;B&quot;</span>)</span>
+<span id="cb666-2"><a href="autocorrelation.html#cb666-2"></a>Wbin  <span class="co"># посмотрим, что за объект получается на выходе (listw)</span></span>
+<span id="cb666-3"><a href="autocorrelation.html#cb666-3"></a><span class="co">## Characteristics of weights list object:</span></span>
+<span id="cb666-4"><a href="autocorrelation.html#cb666-4"></a><span class="co">## Neighbour list object:</span></span>
+<span id="cb666-5"><a href="autocorrelation.html#cb666-5"></a><span class="co">## Number of regions: 40 </span></span>
+<span id="cb666-6"><a href="autocorrelation.html#cb666-6"></a><span class="co">## Number of nonzero links: 174 </span></span>
+<span id="cb666-7"><a href="autocorrelation.html#cb666-7"></a><span class="co">## Percentage nonzero weights: 10.875 </span></span>
+<span id="cb666-8"><a href="autocorrelation.html#cb666-8"></a><span class="co">## Average number of links: 4.35 </span></span>
+<span id="cb666-9"><a href="autocorrelation.html#cb666-9"></a><span class="co">## </span></span>
+<span id="cb666-10"><a href="autocorrelation.html#cb666-10"></a><span class="co">## Weights style: B </span></span>
+<span id="cb666-11"><a href="autocorrelation.html#cb666-11"></a><span class="co">## Weights constants summary:</span></span>
+<span id="cb666-12"><a href="autocorrelation.html#cb666-12"></a><span class="co">##    n   nn  S0  S1   S2</span></span>
+<span id="cb666-13"><a href="autocorrelation.html#cb666-13"></a><span class="co">## B 40 1600 174 348 3416</span></span></code></pre></div>
+<p>Оказывается, что это на самом деле не матрица. Это объект с двумя слотами. В слоте weights содержатся веса, а в слоте neighbours — идентификаторы соседей:</p>
+<div class="sourceCode" id="cb667"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb667-1"><a href="autocorrelation.html#cb667-1"></a>Wbin<span class="op">$</span>neighbours</span>
+<span id="cb667-2"><a href="autocorrelation.html#cb667-2"></a><span class="co">## Neighbour list object:</span></span>
+<span id="cb667-3"><a href="autocorrelation.html#cb667-3"></a><span class="co">## Number of regions: 40 </span></span>
+<span id="cb667-4"><a href="autocorrelation.html#cb667-4"></a><span class="co">## Number of nonzero links: 174 </span></span>
+<span id="cb667-5"><a href="autocorrelation.html#cb667-5"></a><span class="co">## Percentage nonzero weights: 10.875 </span></span>
+<span id="cb667-6"><a href="autocorrelation.html#cb667-6"></a><span class="co">## Average number of links: 4.35</span></span>
+<span id="cb667-7"><a href="autocorrelation.html#cb667-7"></a>Wbin<span class="op">$</span>weights</span>
+<span id="cb667-8"><a href="autocorrelation.html#cb667-8"></a><span class="co">## [[1]]</span></span>
+<span id="cb667-9"><a href="autocorrelation.html#cb667-9"></a><span class="co">## [1] 1 1 1 1 1</span></span>
+<span id="cb667-10"><a href="autocorrelation.html#cb667-10"></a><span class="co">## </span></span>
+<span id="cb667-11"><a href="autocorrelation.html#cb667-11"></a><span class="co">## [[2]]</span></span>
+<span id="cb667-12"><a href="autocorrelation.html#cb667-12"></a><span class="co">## [1] 1 1</span></span>
+<span id="cb667-13"><a href="autocorrelation.html#cb667-13"></a><span class="co">## </span></span>
+<span id="cb667-14"><a href="autocorrelation.html#cb667-14"></a><span class="co">## [[3]]</span></span>
+<span id="cb667-15"><a href="autocorrelation.html#cb667-15"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb667-16"><a href="autocorrelation.html#cb667-16"></a><span class="co">## </span></span>
+<span id="cb667-17"><a href="autocorrelation.html#cb667-17"></a><span class="co">## [[4]]</span></span>
+<span id="cb667-18"><a href="autocorrelation.html#cb667-18"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb667-19"><a href="autocorrelation.html#cb667-19"></a><span class="co">## </span></span>
+<span id="cb667-20"><a href="autocorrelation.html#cb667-20"></a><span class="co">## [[5]]</span></span>
+<span id="cb667-21"><a href="autocorrelation.html#cb667-21"></a><span class="co">## [1] 1 1 1 1</span></span>
+<span id="cb667-22"><a href="autocorrelation.html#cb667-22"></a><span class="co">## </span></span>
+<span id="cb667-23"><a href="autocorrelation.html#cb667-23"></a><span class="co">## [[6]]</span></span>
+<span id="cb667-24"><a href="autocorrelation.html#cb667-24"></a><span class="co">## [1] 1 1 1 1 1 1 1</span></span>
+<span id="cb667-25"><a href="autocorrelation.html#cb667-25"></a><span class="co">## </span></span>
+<span id="cb667-26"><a href="autocorrelation.html#cb667-26"></a><span class="co">## [[7]]</span></span>
+<span id="cb667-27"><a href="autocorrelation.html#cb667-27"></a><span class="co">## [1] 1</span></span>
+<span id="cb667-28"><a href="autocorrelation.html#cb667-28"></a><span class="co">## </span></span>
+<span id="cb667-29"><a href="autocorrelation.html#cb667-29"></a><span class="co">## [[8]]</span></span>
+<span id="cb667-30"><a href="autocorrelation.html#cb667-30"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb667-31"><a href="autocorrelation.html#cb667-31"></a><span class="co">## </span></span>
+<span id="cb667-32"><a href="autocorrelation.html#cb667-32"></a><span class="co">## [[9]]</span></span>
+<span id="cb667-33"><a href="autocorrelation.html#cb667-33"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb667-34"><a href="autocorrelation.html#cb667-34"></a><span class="co">## </span></span>
+<span id="cb667-35"><a href="autocorrelation.html#cb667-35"></a><span class="co">## [[10]]</span></span>
+<span id="cb667-36"><a href="autocorrelation.html#cb667-36"></a><span class="co">## [1] 1 1 1</span></span>
+<span id="cb667-37"><a href="autocorrelation.html#cb667-37"></a><span class="co">## </span></span>
+<span id="cb667-38"><a href="autocorrelation.html#cb667-38"></a><span class="co">## [[11]]</span></span>
+<span id="cb667-39"><a href="autocorrelation.html#cb667-39"></a><span class="co">## [1] 1 1 1</span></span>
+<span id="cb667-40"><a href="autocorrelation.html#cb667-40"></a><span class="co">## </span></span>
+<span id="cb667-41"><a href="autocorrelation.html#cb667-41"></a><span class="co">## [[12]]</span></span>
+<span id="cb667-42"><a href="autocorrelation.html#cb667-42"></a><span class="co">## [1] 1 1 1 1 1</span></span>
+<span id="cb667-43"><a href="autocorrelation.html#cb667-43"></a><span class="co">## </span></span>
+<span id="cb667-44"><a href="autocorrelation.html#cb667-44"></a><span class="co">## [[13]]</span></span>
+<span id="cb667-45"><a href="autocorrelation.html#cb667-45"></a><span class="co">## [1] 1 1 1 1 1</span></span>
+<span id="cb667-46"><a href="autocorrelation.html#cb667-46"></a><span class="co">## </span></span>
+<span id="cb667-47"><a href="autocorrelation.html#cb667-47"></a><span class="co">## [[14]]</span></span>
+<span id="cb667-48"><a href="autocorrelation.html#cb667-48"></a><span class="co">## [1] 1 1 1 1 1 1 1</span></span>
+<span id="cb667-49"><a href="autocorrelation.html#cb667-49"></a><span class="co">## </span></span>
+<span id="cb667-50"><a href="autocorrelation.html#cb667-50"></a><span class="co">## [[15]]</span></span>
+<span id="cb667-51"><a href="autocorrelation.html#cb667-51"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb667-52"><a href="autocorrelation.html#cb667-52"></a><span class="co">## </span></span>
+<span id="cb667-53"><a href="autocorrelation.html#cb667-53"></a><span class="co">## [[16]]</span></span>
+<span id="cb667-54"><a href="autocorrelation.html#cb667-54"></a><span class="co">## [1] 1 1 1</span></span>
+<span id="cb667-55"><a href="autocorrelation.html#cb667-55"></a><span class="co">## </span></span>
+<span id="cb667-56"><a href="autocorrelation.html#cb667-56"></a><span class="co">## [[17]]</span></span>
+<span id="cb667-57"><a href="autocorrelation.html#cb667-57"></a><span class="co">## [1] 1 1</span></span>
+<span id="cb667-58"><a href="autocorrelation.html#cb667-58"></a><span class="co">## </span></span>
+<span id="cb667-59"><a href="autocorrelation.html#cb667-59"></a><span class="co">## [[18]]</span></span>
+<span id="cb667-60"><a href="autocorrelation.html#cb667-60"></a><span class="co">## [1] 1 1 1</span></span>
+<span id="cb667-61"><a href="autocorrelation.html#cb667-61"></a><span class="co">## </span></span>
+<span id="cb667-62"><a href="autocorrelation.html#cb667-62"></a><span class="co">## [[19]]</span></span>
+<span id="cb667-63"><a href="autocorrelation.html#cb667-63"></a><span class="co">## [1] 1 1 1 1</span></span>
+<span id="cb667-64"><a href="autocorrelation.html#cb667-64"></a><span class="co">## </span></span>
+<span id="cb667-65"><a href="autocorrelation.html#cb667-65"></a><span class="co">## [[20]]</span></span>
+<span id="cb667-66"><a href="autocorrelation.html#cb667-66"></a><span class="co">## [1] 1 1 1</span></span>
+<span id="cb667-67"><a href="autocorrelation.html#cb667-67"></a><span class="co">## </span></span>
+<span id="cb667-68"><a href="autocorrelation.html#cb667-68"></a><span class="co">## [[21]]</span></span>
+<span id="cb667-69"><a href="autocorrelation.html#cb667-69"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb667-70"><a href="autocorrelation.html#cb667-70"></a><span class="co">## </span></span>
+<span id="cb667-71"><a href="autocorrelation.html#cb667-71"></a><span class="co">## [[22]]</span></span>
+<span id="cb667-72"><a href="autocorrelation.html#cb667-72"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb667-73"><a href="autocorrelation.html#cb667-73"></a><span class="co">## </span></span>
+<span id="cb667-74"><a href="autocorrelation.html#cb667-74"></a><span class="co">## [[23]]</span></span>
+<span id="cb667-75"><a href="autocorrelation.html#cb667-75"></a><span class="co">## [1] 1 1 1 1</span></span>
+<span id="cb667-76"><a href="autocorrelation.html#cb667-76"></a><span class="co">## </span></span>
+<span id="cb667-77"><a href="autocorrelation.html#cb667-77"></a><span class="co">## [[24]]</span></span>
+<span id="cb667-78"><a href="autocorrelation.html#cb667-78"></a><span class="co">## [1] 1 1 1 1</span></span>
+<span id="cb667-79"><a href="autocorrelation.html#cb667-79"></a><span class="co">## </span></span>
+<span id="cb667-80"><a href="autocorrelation.html#cb667-80"></a><span class="co">## [[25]]</span></span>
+<span id="cb667-81"><a href="autocorrelation.html#cb667-81"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb667-82"><a href="autocorrelation.html#cb667-82"></a><span class="co">## </span></span>
+<span id="cb667-83"><a href="autocorrelation.html#cb667-83"></a><span class="co">## [[26]]</span></span>
+<span id="cb667-84"><a href="autocorrelation.html#cb667-84"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb667-85"><a href="autocorrelation.html#cb667-85"></a><span class="co">## </span></span>
+<span id="cb667-86"><a href="autocorrelation.html#cb667-86"></a><span class="co">## [[27]]</span></span>
+<span id="cb667-87"><a href="autocorrelation.html#cb667-87"></a><span class="co">## [1] 1 1 1 1</span></span>
+<span id="cb667-88"><a href="autocorrelation.html#cb667-88"></a><span class="co">## </span></span>
+<span id="cb667-89"><a href="autocorrelation.html#cb667-89"></a><span class="co">## [[28]]</span></span>
+<span id="cb667-90"><a href="autocorrelation.html#cb667-90"></a><span class="co">## [1] 1 1</span></span>
+<span id="cb667-91"><a href="autocorrelation.html#cb667-91"></a><span class="co">## </span></span>
+<span id="cb667-92"><a href="autocorrelation.html#cb667-92"></a><span class="co">## [[29]]</span></span>
+<span id="cb667-93"><a href="autocorrelation.html#cb667-93"></a><span class="co">## [1] 1 1</span></span>
+<span id="cb667-94"><a href="autocorrelation.html#cb667-94"></a><span class="co">## </span></span>
+<span id="cb667-95"><a href="autocorrelation.html#cb667-95"></a><span class="co">## [[30]]</span></span>
+<span id="cb667-96"><a href="autocorrelation.html#cb667-96"></a><span class="co">## [1] 1 1 1</span></span>
+<span id="cb667-97"><a href="autocorrelation.html#cb667-97"></a><span class="co">## </span></span>
+<span id="cb667-98"><a href="autocorrelation.html#cb667-98"></a><span class="co">## [[31]]</span></span>
+<span id="cb667-99"><a href="autocorrelation.html#cb667-99"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb667-100"><a href="autocorrelation.html#cb667-100"></a><span class="co">## </span></span>
+<span id="cb667-101"><a href="autocorrelation.html#cb667-101"></a><span class="co">## [[32]]</span></span>
+<span id="cb667-102"><a href="autocorrelation.html#cb667-102"></a><span class="co">## [1] 1 1 1 1 1</span></span>
+<span id="cb667-103"><a href="autocorrelation.html#cb667-103"></a><span class="co">## </span></span>
+<span id="cb667-104"><a href="autocorrelation.html#cb667-104"></a><span class="co">## [[33]]</span></span>
+<span id="cb667-105"><a href="autocorrelation.html#cb667-105"></a><span class="co">## [1] 1 1 1 1 1</span></span>
+<span id="cb667-106"><a href="autocorrelation.html#cb667-106"></a><span class="co">## </span></span>
+<span id="cb667-107"><a href="autocorrelation.html#cb667-107"></a><span class="co">## [[34]]</span></span>
+<span id="cb667-108"><a href="autocorrelation.html#cb667-108"></a><span class="co">## [1] 1 1 1 1 1</span></span>
+<span id="cb667-109"><a href="autocorrelation.html#cb667-109"></a><span class="co">## </span></span>
+<span id="cb667-110"><a href="autocorrelation.html#cb667-110"></a><span class="co">## [[35]]</span></span>
+<span id="cb667-111"><a href="autocorrelation.html#cb667-111"></a><span class="co">## [1] 1 1 1</span></span>
+<span id="cb667-112"><a href="autocorrelation.html#cb667-112"></a><span class="co">## </span></span>
+<span id="cb667-113"><a href="autocorrelation.html#cb667-113"></a><span class="co">## [[36]]</span></span>
+<span id="cb667-114"><a href="autocorrelation.html#cb667-114"></a><span class="co">## [1] 1 1 1 1 1</span></span>
+<span id="cb667-115"><a href="autocorrelation.html#cb667-115"></a><span class="co">## </span></span>
+<span id="cb667-116"><a href="autocorrelation.html#cb667-116"></a><span class="co">## [[37]]</span></span>
+<span id="cb667-117"><a href="autocorrelation.html#cb667-117"></a><span class="co">## [1] 1 1 1 1 1</span></span>
+<span id="cb667-118"><a href="autocorrelation.html#cb667-118"></a><span class="co">## </span></span>
+<span id="cb667-119"><a href="autocorrelation.html#cb667-119"></a><span class="co">## [[38]]</span></span>
+<span id="cb667-120"><a href="autocorrelation.html#cb667-120"></a><span class="co">## [1] 1 1</span></span>
+<span id="cb667-121"><a href="autocorrelation.html#cb667-121"></a><span class="co">## </span></span>
+<span id="cb667-122"><a href="autocorrelation.html#cb667-122"></a><span class="co">## [[39]]</span></span>
+<span id="cb667-123"><a href="autocorrelation.html#cb667-123"></a><span class="co">## [1] 1 1 1 1</span></span>
+<span id="cb667-124"><a href="autocorrelation.html#cb667-124"></a><span class="co">## </span></span>
+<span id="cb667-125"><a href="autocorrelation.html#cb667-125"></a><span class="co">## [[40]]</span></span>
+<span id="cb667-126"><a href="autocorrelation.html#cb667-126"></a><span class="co">## [1] 1 1 1 1</span></span>
+<span id="cb667-127"><a href="autocorrelation.html#cb667-127"></a><span class="co">## </span></span>
+<span id="cb667-128"><a href="autocorrelation.html#cb667-128"></a><span class="co">## attr(,&quot;mode&quot;)</span></span>
+<span id="cb667-129"><a href="autocorrelation.html#cb667-129"></a><span class="co">## [1] &quot;binary&quot;</span></span>
+<span id="cb667-130"><a href="autocorrelation.html#cb667-130"></a><span class="co">## attr(,&quot;B&quot;)</span></span>
+<span id="cb667-131"><a href="autocorrelation.html#cb667-131"></a><span class="co">## [1] TRUE</span></span></code></pre></div>
+<blockquote>
+<p>Дело в том, что матрица весов всегда получается разреженной. То есть, в основном она содержит нули. Это логично, поскольку у каждой точки как правило есть лишь ограниченное число соседей. При этом общее количество точек может быть достаточно большим: чем больше точек мы анализируем, тем больше будет нулей в матрице. Получается, что хранить матрицу как матрицу неэкономично. Более рационально для каждого объекта возвращать список весов, которые соответствуют его соседям. Что и делает функция <code>nb2listw()</code>.</p>
+</blockquote>
+<p>Матрицу весов как правило визуализируют, поскольку она может содержать в себе довольно интересные паттерны. Для этого полученный список весов нужно превратить в матрицу с помощью функции <code>listw2mat()</code>. Далее использовать функцию <code>levelplot</code> из пакета <code>lattice</code>, которая раскрашивает ячейки матрицы или растрового набора данных:</p>
+<div class="sourceCode" id="cb668"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb668-1"><a href="autocorrelation.html#cb668-1"></a>M =<span class="st"> </span><span class="kw">listw2mat</span>(Wbin)</span>
+<span id="cb668-2"><a href="autocorrelation.html#cb668-2"></a><span class="kw">levelplot</span>(M, <span class="dt">main =</span> <span class="st">&quot;Матрица весов (бинарная)&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-625-1.png" width="672" /></p>
+<p>Более интересный результат дает нормированная матрица. В ней веса всех соседей нормируются на количество соседей. То есть, если у текущей точки 2 соседа, их веса будут равны 0.5. Если 3 соседа то 0.33, 4 — 0.25 и так далее. Взвешенная матрица позволяет отразить тот факт, что одна и та же территориальная единица может оказывать неодинаковое влияние на соседние единицы:</p>
+<div class="sourceCode" id="cb669"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb669-1"><a href="autocorrelation.html#cb669-1"></a>Wstand =<span class="st"> </span><span class="kw">nb2listw</span>(nb_queen, <span class="dt">style =</span> <span class="st">&quot;W&quot;</span>)</span>
+<span id="cb669-2"><a href="autocorrelation.html#cb669-2"></a>M =<span class="st"> </span><span class="kw">listw2mat</span>(Wstand)</span>
+<span id="cb669-3"><a href="autocorrelation.html#cb669-3"></a></span>
+<span id="cb669-4"><a href="autocorrelation.html#cb669-4"></a>ramp =<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;red&quot;</span>))</span>
+<span id="cb669-5"><a href="autocorrelation.html#cb669-5"></a>levels =<span class="st"> </span><span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span>  <span class="co"># шкала 1, 0.5, 0.33, 0.25 ... 0.1</span></span>
+<span id="cb669-6"><a href="autocorrelation.html#cb669-6"></a><span class="kw">levelplot</span>(M, </span>
+<span id="cb669-7"><a href="autocorrelation.html#cb669-7"></a>          <span class="dt">main=</span><span class="st">&quot;Матрица весов (нормированная)&quot;</span>, </span>
+<span id="cb669-8"><a href="autocorrelation.html#cb669-8"></a>          <span class="dt">at =</span> levels, </span>
+<span id="cb669-9"><a href="autocorrelation.html#cb669-9"></a>          <span class="dt">col.regions=</span><span class="kw">ramp</span>(<span class="dv">10</span>))</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-626-1.png" width="672" /></p>
+<blockquote>
+<p>Обратите внимание, что на этот раз цвета в матрице распределены асимметрично.</p>
+</blockquote>
+<p>Однако есть методы определения соседства, которые приведут также и к асимметричному виду самой матрицы, а не только значений. Например, при поиске соседей по количеству соседство A и B вовсе не означает соседство B и A. Проверим это на опыте:</p>
+<div class="sourceCode" id="cb670"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb670-1"><a href="autocorrelation.html#cb670-1"></a><span class="co"># Ближайшие соседи (k = 1)</span></span>
+<span id="cb670-2"><a href="autocorrelation.html#cb670-2"></a>nb_knn =<span class="st"> </span><span class="kw">knearneigh</span>(coords, <span class="dt">k =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">knn2nb</span>()</span>
+<span id="cb670-3"><a href="autocorrelation.html#cb670-3"></a></span>
+<span id="cb670-4"><a href="autocorrelation.html#cb670-4"></a>Wstand =<span class="st"> </span><span class="kw">nb2listw</span>(nb_knn, <span class="dt">style =</span> <span class="st">&quot;B&quot;</span>)</span>
+<span id="cb670-5"><a href="autocorrelation.html#cb670-5"></a>M =<span class="st"> </span><span class="kw">listw2mat</span>(Wstand)</span>
+<span id="cb670-6"><a href="autocorrelation.html#cb670-6"></a><span class="kw">levelplot</span>(M, </span>
+<span id="cb670-7"><a href="autocorrelation.html#cb670-7"></a>          <span class="dt">main =</span> <span class="st">&quot;Матрица весов (нормированная)&quot;</span>, </span>
+<span id="cb670-8"><a href="autocorrelation.html#cb670-8"></a>          <span class="dt">at =</span> levels, </span>
+<span id="cb670-9"><a href="autocorrelation.html#cb670-9"></a>          <span class="dt">col.regions =</span> <span class="kw">ramp</span>(<span class="dv">10</span>))</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-627-1.png" width="672" /></p>
+<p>Полученная матрица весов дает искомую меру потенциальной пространственной связи (близости) между всеми парами территориальных единиц. Сопоставив эту меру со значениями показателя, зафиксированными в тех же единицах, можно получить статистическую оценку пространственной автокорреляции изучаемой величины.</p>
+</div>
+<div id="autocorrelation_measures" class="section level2">
+<h2><span class="header-section-number">15.7</span> Пространственная автокорреляция</h2>
+<p>Далее мы рассмотрим вычисление меры пространственной автокорреляции — индекса Морана, который дает оценку статистической зависимости между значением показателя в каждой локации (территориальной единице) и значениями в соседних локациях. Имея предположение о наличии пространственной автокорреляции, можно построить модель пространственной авторегрессии, которая дает фоновое распределение показателя по территориальным единицам, а также случайные остатки.</p>
+<p>На этом занятии мы кратко познакомимся со статистической оценкой пространственной автокорреляции, а также построением простейших авторегрессионных моделей.</p>
+<p>Мы будем использовать месячную статистику по случаям заболеваний верхних дыхательных путей в Кировской области за 2015 год (данные Росстата по районам, модифицированы автором для большей наглядности анализа).</p>
+<p>Вам предстоит выполнить следующую последовательность действий:</p>
+<ol style="list-style-type: decimal">
+<li>Загрузить исходные данные (границы районов и таблицу со статистикой)</li>
+<li>Присоединить таблицу к пространственным данным</li>
+<li>Построить серию карт по месяцам для визуального анализа данных</li>
+<li>Вычислить матрицу пространственных весов <span class="math inline">\(W\)</span></li>
+<li>Вычислить I-индекс Морана для численной оценки пространственной автокорреляции</li>
+<li>Построить диаграмму рассеяния Морана для визуальной оценки пространственной автокорреляции</li>
+<li>Подобрать параметры модели пространственной авторегрессии</li>
+<li>Построить карты реальных, модельных (fitted) значений и остатков (lag)</li>
+</ol>
+<p>Для начала построим серию карт чтобы оценить по ним наличие или отсутствие пространственной автокорреляции по месяцам:</p>
+<div class="sourceCode" id="cb671"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb671-1"><a href="autocorrelation.html#cb671-1"></a>mun_src =<span class="st"> </span>reg_sf</span>
+<span id="cb671-2"><a href="autocorrelation.html#cb671-2"></a></span>
+<span id="cb671-3"><a href="autocorrelation.html#cb671-3"></a><span class="co"># Чтение таблицы со статистикой</span></span>
+<span id="cb671-4"><a href="autocorrelation.html#cb671-4"></a>tab =<span class="st"> </span><span class="kw">read_xlsx</span>(<span class="st">&quot;data/Kirov.xlsx&quot;</span>, <span class="dv">1</span>)</span>
+<span id="cb671-5"><a href="autocorrelation.html#cb671-5"></a></span>
+<span id="cb671-6"><a href="autocorrelation.html#cb671-6"></a><span class="co"># Соединение таблиц</span></span>
+<span id="cb671-7"><a href="autocorrelation.html#cb671-7"></a>mun =<span class="st"> </span>mun_src <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb671-8"><a href="autocorrelation.html#cb671-8"></a><span class="st">  </span><span class="kw">left_join</span>(tab, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;OBJECTID&quot;</span> =<span class="st"> &quot;N&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb671-9"><a href="autocorrelation.html#cb671-9"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="dv">22</span><span class="op">:</span><span class="dv">31</span>,</span>
+<span id="cb671-10"><a href="autocorrelation.html#cb671-10"></a>               <span class="dt">names_to =</span> <span class="st">&#39;month&#39;</span>,</span>
+<span id="cb671-11"><a href="autocorrelation.html#cb671-11"></a>               <span class="dt">values_to =</span> <span class="st">&#39;nsick&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb671-12"><a href="autocorrelation.html#cb671-12"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">month =</span> <span class="kw">ordered</span>(month, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&#39;Январь&#39;</span>, <span class="st">&#39;Февраль&#39;</span>, <span class="st">&#39;Март&#39;</span>, </span>
+<span id="cb671-13"><a href="autocorrelation.html#cb671-13"></a>                                           <span class="st">&#39;Апрель&#39;</span>, <span class="st">&#39;Май&#39;</span>, <span class="st">&#39;Июнь&#39;</span>, </span>
+<span id="cb671-14"><a href="autocorrelation.html#cb671-14"></a>                                           <span class="st">&#39;Июль&#39;</span>, <span class="st">&#39;Август&#39;</span>, <span class="st">&#39;Сентябрь&#39;</span>, </span>
+<span id="cb671-15"><a href="autocorrelation.html#cb671-15"></a>                                           <span class="st">&#39;Октябрь&#39;</span>, <span class="st">&#39;Ноябрь&#39;</span>, <span class="st">&#39;Декабрь&#39;</span>))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb671-16"><a href="autocorrelation.html#cb671-16"></a><span class="st">  </span><span class="kw">st_set_geometry</span>(<span class="st">&#39;geometry&#39;</span>)</span>
+<span id="cb671-17"><a href="autocorrelation.html#cb671-17"></a></span>
+<span id="cb671-18"><a href="autocorrelation.html#cb671-18"></a><span class="co"># Построение серии карт</span></span>
+<span id="cb671-19"><a href="autocorrelation.html#cb671-19"></a>ramp =<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;orange&quot;</span>, <span class="st">&quot;red&quot;</span>))</span>
+<span id="cb671-20"><a href="autocorrelation.html#cb671-20"></a>levels =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">10000</span>, <span class="dv">1000</span>)</span>
+<span id="cb671-21"><a href="autocorrelation.html#cb671-21"></a>nclasses =<span class="st"> </span><span class="kw">length</span>(levels) <span class="op">-</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb671-22"><a href="autocorrelation.html#cb671-22"></a></span>
+<span id="cb671-23"><a href="autocorrelation.html#cb671-23"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb671-24"><a href="autocorrelation.html#cb671-24"></a><span class="st">  </span><span class="kw">geom_sf</span>(mun, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">geometry =</span> geometry, </span>
+<span id="cb671-25"><a href="autocorrelation.html#cb671-25"></a>                             <span class="dt">fill =</span> <span class="kw">cut</span>(nsick, levels))) <span class="op">+</span></span>
+<span id="cb671-26"><a href="autocorrelation.html#cb671-26"></a><span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> <span class="kw">ramp</span>(nclasses),</span>
+<span id="cb671-27"><a href="autocorrelation.html#cb671-27"></a>                    <span class="dt">labels =</span> <span class="kw">paste</span>(levels[<span class="op">-</span>nclasses<span class="dv">-1</span>], <span class="st">&#39;-&#39;</span>, levels[<span class="op">-</span><span class="dv">1</span>]),</span>
+<span id="cb671-28"><a href="autocorrelation.html#cb671-28"></a>                    <span class="dt">guide =</span> <span class="kw">guide_legend</span>(<span class="dt">reverse =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb671-29"><a href="autocorrelation.html#cb671-29"></a>                    <span class="dt">drop =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb671-30"><a href="autocorrelation.html#cb671-30"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>month)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-628-1.png" width="768" /></p>
+<p>Данная серия карт показывает, что наиболее интересный для анализа месяц — февраль, в котором наблюдается рост заболеваемости, а также очевидно наличие пространственной автокорреляции с двумя очагами в центральных и северо-зпапдных районах области.</p>
+<p>Вычислим матрицу пространственных весов:</p>
+<div class="sourceCode" id="cb672"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb672-1"><a href="autocorrelation.html#cb672-1"></a><span class="co"># Определение соседства (правило ферзя)</span></span>
+<span id="cb672-2"><a href="autocorrelation.html#cb672-2"></a>nb_queen =<span class="st"> </span><span class="kw">poly2nb</span>(mun_src)</span>
+<span id="cb672-3"><a href="autocorrelation.html#cb672-3"></a></span>
+<span id="cb672-4"><a href="autocorrelation.html#cb672-4"></a><span class="co"># Визиуализация графа соседства</span></span>
+<span id="cb672-5"><a href="autocorrelation.html#cb672-5"></a>coords =<span class="st"> </span><span class="kw">st_centroid</span>(mun_src) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_coordinates</span>()</span>
+<span id="cb672-6"><a href="autocorrelation.html#cb672-6"></a><span class="kw">plot</span>(mun_src <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), <span class="dt">border =</span> <span class="st">&quot;darkgray&quot;</span>)</span>
+<span id="cb672-7"><a href="autocorrelation.html#cb672-7"></a><span class="kw">plot</span>(nb_queen, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb672-8"><a href="autocorrelation.html#cb672-8"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по смежности (правило ферзя)&quot;</span>)</span>
+<span id="cb672-9"><a href="autocorrelation.html#cb672-9"></a></span>
+<span id="cb672-10"><a href="autocorrelation.html#cb672-10"></a><span class="co"># Вычисление весов (нормированная матрица)</span></span>
+<span id="cb672-11"><a href="autocorrelation.html#cb672-11"></a>W =<span class="st"> </span><span class="kw">nb2listw</span>(nb_queen)</span>
+<span id="cb672-12"><a href="autocorrelation.html#cb672-12"></a></span>
+<span id="cb672-13"><a href="autocorrelation.html#cb672-13"></a><span class="co"># Визуализация матрицы весов</span></span>
+<span id="cb672-14"><a href="autocorrelation.html#cb672-14"></a>M =<span class="st"> </span><span class="kw">listw2mat</span>(W)</span>
+<span id="cb672-15"><a href="autocorrelation.html#cb672-15"></a></span>
+<span id="cb672-16"><a href="autocorrelation.html#cb672-16"></a>ramp2 =<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;red&quot;</span>))</span>
+<span id="cb672-17"><a href="autocorrelation.html#cb672-17"></a>levels2 =<span class="st"> </span><span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span> <span class="co"># шкала 1, 0.5, 0.33, 0.25 ... 0.1</span></span>
+<span id="cb672-18"><a href="autocorrelation.html#cb672-18"></a><span class="kw">levelplot</span>(M, </span>
+<span id="cb672-19"><a href="autocorrelation.html#cb672-19"></a>          <span class="dt">main =</span> <span class="st">&quot;Матрица весов (нормированная)&quot;</span>, </span>
+<span id="cb672-20"><a href="autocorrelation.html#cb672-20"></a>          <span class="dt">at =</span> levels2, </span>
+<span id="cb672-21"><a href="autocorrelation.html#cb672-21"></a>          <span class="dt">col.regions =</span> <span class="kw">ramp2</span>(<span class="dv">10</span>))</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-629-1.png" width="672" /></p>
+<div id="autocorrelation_moran" class="section level3">
+<h3><span class="header-section-number">15.7.1</span> Индекс Морана (Moran’s I)</h3>
+<p>Анализ пространственной автокорреляции осуществляется, как правило, путем вычисления индекса Морана (Moran’s I), :
+<span class="math display">\[
+I = \frac{n \sum^n_{i=1} \sum^n_{j=i} w_{ij} (y_i - \bar y)(y_j - \bar y)}{ \Big[\sum^n_{i=1} \sum^n_{j=i} w_{ij}\Big] \Big[\sum^n_{i=1} (y_i - \bar y)^2\Big]}
+\]</span>
+где <span class="math inline">\(n\)</span> — количество единиц, <span class="math inline">\(w_{ij}\)</span> — вес пространственной связи между <span class="math inline">\(i\)</span>-й и <span class="math inline">\(j\)</span>-й единицей, <span class="math inline">\(y_i\)</span> — значение в <span class="math inline">\(i\)</span>-й единице, <span class="math inline">\(\bar y\)</span> — выборочное среднее по всем единицам</p>
+<p>Обратим внимание на то, что индекс Морана по сути и форме записи похож на линейный коэффициент корреляции Пирсона, в котором перебираются все пары соответствующих друг другу значений из рядов <span class="math inline">\(X = \{x_i\}\)</span> и <span class="math inline">\(Y = \{y_i\}\)</span>:</p>
+<p><span class="math display">\[
+r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(x_i - \bar x)^2} \sqrt{\sum_{i=1}^{n}(y_i - \bar y)^2}}
+\]</span></p>
+<p>При вычислении индекса Морана происходит нечто подобное, но под соответствием понимается наличие соседства между <span class="math inline">\(i\)</span>-й и <span class="math inline">\(j\)</span>-й территориальной единицей. Степень выраженности соседства задается весом <span class="math inline">\(W_{ij}\)</span>, который можно наблюдать в числителе формулы индекса Морана. Таким образом, пары территориальных единиц, для которых <span class="math inline">\(w_{ij} = 0\)</span>, не участвуют в вычислении индекса Морана.</p>
+<p>Индекс Морана для нормально распределенных данных лежит в диапазоне от -1 до 1:</p>
+<ul>
+<li>+1 означает детерминированную прямую зависимость — группировку схожих (низких
+или высоких) значений.</li>
+<li>0 означает абсолютно случайное распределение (<em>CSR — complete spatial randomness</em>)</li>
+<li>-1 означает детерминированную обратную зависимость — идеальное перемешивание
+низких и высоких значений, напоминающее шахматную доску</li>
+</ul>
+<p>Для вычисления индекса Морана следует использовать функцию <code>moran.test()</code>, которая дополнительно оценивает статистическую значимость полученного значения:</p>
+<div class="sourceCode" id="cb673"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb673-1"><a href="autocorrelation.html#cb673-1"></a><span class="co"># Выбираем данные за февраль</span></span>
+<span id="cb673-2"><a href="autocorrelation.html#cb673-2"></a>feb =<span class="st"> </span>mun <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb673-3"><a href="autocorrelation.html#cb673-3"></a><span class="st">  </span><span class="kw">filter</span>(month <span class="op">==</span><span class="st"> &#39;Февраль&#39;</span>)</span>
+<span id="cb673-4"><a href="autocorrelation.html#cb673-4"></a></span>
+<span id="cb673-5"><a href="autocorrelation.html#cb673-5"></a><span class="co"># Вычисление индекса (тест) Морана</span></span>
+<span id="cb673-6"><a href="autocorrelation.html#cb673-6"></a><span class="kw">moran.test</span>(feb<span class="op">$</span>nsick, W)</span>
+<span id="cb673-7"><a href="autocorrelation.html#cb673-7"></a><span class="co">## </span></span>
+<span id="cb673-8"><a href="autocorrelation.html#cb673-8"></a><span class="co">##  Moran I test under randomisation</span></span>
+<span id="cb673-9"><a href="autocorrelation.html#cb673-9"></a><span class="co">## </span></span>
+<span id="cb673-10"><a href="autocorrelation.html#cb673-10"></a><span class="co">## data:  feb$nsick  </span></span>
+<span id="cb673-11"><a href="autocorrelation.html#cb673-11"></a><span class="co">## weights: W    </span></span>
+<span id="cb673-12"><a href="autocorrelation.html#cb673-12"></a><span class="co">## </span></span>
+<span id="cb673-13"><a href="autocorrelation.html#cb673-13"></a><span class="co">## Moran I statistic standard deviate = 5.0335, p-value = 0.0000002408</span></span>
+<span id="cb673-14"><a href="autocorrelation.html#cb673-14"></a><span class="co">## alternative hypothesis: greater</span></span>
+<span id="cb673-15"><a href="autocorrelation.html#cb673-15"></a><span class="co">## sample estimates:</span></span>
+<span id="cb673-16"><a href="autocorrelation.html#cb673-16"></a><span class="co">## Moran I statistic       Expectation          Variance </span></span>
+<span id="cb673-17"><a href="autocorrelation.html#cb673-17"></a><span class="co">##        0.52118132       -0.02564103        0.01180194</span></span></code></pre></div>
+<p>Результаты теста включают в себя следующие значения:</p>
+<ul>
+<li><strong>Moran I statistic</strong> — полученный индекс Морана</li>
+<li><strong>Expectation</strong> — математическое ожидание индекса при нулевой гипотезе <span class="math inline">\(E[I]\)</span></li>
+<li><strong>Variance</strong> — дисперсия ожидаемого значения при нулевой гипотезе <span class="math inline">\(D[I]\)</span></li>
+<li><strong>Moran I statistic standard deviate</strong> — <span class="math inline">\(Z\)</span>-оценка вычисленного индекса Морана</li>
+<li><strong>p-value</strong> — <span class="math inline">\(p\)</span>-значение вычисленного индекса Морана</li>
+</ul>
+<p>Здесь мы видим, что значение индекса Морана равно ~<span class="math inline">\(0.52\)</span> (<strong>Moran I statistic</strong>), то есть присутствует положительная пространственная автокорреляция. При этом вероятность того, что мы ошибаемся в наших выводах, и распределение на самом деле случайно - крайне мала и равна <span class="math inline">\(2.408 \times 10^{-7})\)</span> (<strong>p-value</strong>), то есть менее <span class="math inline">\(0.0001\%\)</span>. Можно принимать гипотезу о наличии пространственной автокорреляции.</p>
+<p>Рассмотрим чуть подробнее, откуда берутся эти и остальные значения результатов теста, и как их правильно интерпретировать.</p>
+<p>Обычно для сравнения принимают предположение о том, что исследуемая величина распределена случайно. Это так называемая “нулевая” гипотеза. После того как мы вычислили индекс Морана по фактическим данным, можно вычислить его аналитически, приняв нулевую гипотезу. В этом случае математическое ожидание индекса <span class="math inline">\(E[I] = -1/(n-1)\)</span>, где <span class="math inline">\(n\)</span> - количество территориальных единиц. Также может быть вычислена и дисперсия индекса Морана <span class="math inline">\(D[I]\)</span> (в англоязычной литературе дисперсия обозначается <span class="math inline">\(V[I]\)</span>).</p>
+<p>Эти два параметра определяют функцию распределения индекса Морана при всевозможных случайных расстановках исследуемой величины по территориальным единицам. Грубо говоря, такое распределение получится, если мы извлечем все фактические данные, будем их случайным образом перемешивать между территориями и каждый раз вычислять индекс Морана, повторяя процедуру бесконечное число раз. Полученные индексы будут распределены нормально.</p>
+<p>Значимость фактического индекса Морана можно оценить путем его сравнения с ожидаемым значением индекса <span class="math inline">\(E[I]\)</span> и его стандартным отклонением <span class="math inline">\(s = \sqrt D\)</span> Для такой оценки используется <span class="math inline">\(Z\)</span>-тест Фишера. <span class="math inline">\(Z\)</span>-значение вычисляется по формуле: <span class="math inline">\(Z = (I - E[I])/s\)</span></p>
+<p>Эта величина говорит нам о том, на какое количество стандартных отклонений фактическое значение индекса Морана удалено от ожидаемого значения. Чем сильнее оно удалено — тем менее вероятно, что фактическое распределение случайно. Какова же эта вероятность? Каждому значению <span class="math inline">\(Z\)</span>-score соответствует <span class="math inline">\(p\)</span>-значение (<em>p-value</em>). <em>P-value</em> — это вероятность появления значений, удаленных от мат. ожидания далее чем <span class="math inline">\(Z\)</span>-score.</p>
+<p>Например, при:</p>
+<ul>
+<li><span class="math inline">\(Z &lt; -1.96\)</span> или <span class="math inline">\(Z &gt; +1.96\)</span> значение <span class="math inline">\(p &lt; 0.05\)</span></li>
+<li><span class="math inline">\(Z &lt; -2.58\)</span> или <span class="math inline">\(Z &gt; +2.58\)</span> значение <span class="math inline">\(p &lt; 0.01\)</span></li>
+</ul>
+<p>Это означает, что вероятность того, что фактическое значение индекса Морана могло бы появиться на основе случайно распределенных данных с вероятностью <span class="math inline">\(5\%\)</span> и <span class="math inline">\(1\%\)</span> соответственно. Чем меньше <span class="math inline">\(p\)</span>, тем менее вероятно, что распределение случайно. Говорят, что <span class="math inline">\(p\)</span> — это вероятность сделать ошибку первого рода, т.е. отвергнуть нулевую гипотезу, в то время как она на самом деле является истинной.</p>
+</div>
+<div id="autocorrelation_permutation" class="section level3">
+<h3><span class="header-section-number">15.7.2</span> Перестановочный тест Морана</h3>
+<p>Графически вышеприведенные рассуждения можно иллюстрировать с помощью перестановочного теста (<strong>permutation test</strong>). Для этого значения исследуемой нами величины перемешиваются между территориальными единицами и далее строится гистограмма распределения. Перестановочный тест выполняется с помощью функции <code>moran.mc()</code> с параметром <code>nsim =</code>, задающим число перестановок:</p>
+<div class="sourceCode" id="cb674"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb674-1"><a href="autocorrelation.html#cb674-1"></a>(<span class="dt">sim =</span> <span class="kw">moran.mc</span>(feb<span class="op">$</span>nsick, <span class="dt">listw =</span> W, <span class="dt">nsim =</span> <span class="dv">10000</span>))</span>
+<span id="cb674-2"><a href="autocorrelation.html#cb674-2"></a><span class="co">## </span></span>
+<span id="cb674-3"><a href="autocorrelation.html#cb674-3"></a><span class="co">##  Monte-Carlo simulation of Moran I</span></span>
+<span id="cb674-4"><a href="autocorrelation.html#cb674-4"></a><span class="co">## </span></span>
+<span id="cb674-5"><a href="autocorrelation.html#cb674-5"></a><span class="co">## data:  feb$nsick </span></span>
+<span id="cb674-6"><a href="autocorrelation.html#cb674-6"></a><span class="co">## weights: W  </span></span>
+<span id="cb674-7"><a href="autocorrelation.html#cb674-7"></a><span class="co">## number of simulations + 1: 10001 </span></span>
+<span id="cb674-8"><a href="autocorrelation.html#cb674-8"></a><span class="co">## </span></span>
+<span id="cb674-9"><a href="autocorrelation.html#cb674-9"></a><span class="co">## statistic = 0.52118, observed rank = 10001, p-value = 0.00009999</span></span>
+<span id="cb674-10"><a href="autocorrelation.html#cb674-10"></a><span class="co">## alternative hypothesis: greater</span></span>
+<span id="cb674-11"><a href="autocorrelation.html#cb674-11"></a></span>
+<span id="cb674-12"><a href="autocorrelation.html#cb674-12"></a><span class="co"># Построим гистограмму по вычисленным индексам:</span></span>
+<span id="cb674-13"><a href="autocorrelation.html#cb674-13"></a><span class="kw">hist</span>(sim<span class="op">$</span>res,</span>
+<span id="cb674-14"><a href="autocorrelation.html#cb674-14"></a>     <span class="dt">freq =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb674-15"><a href="autocorrelation.html#cb674-15"></a>     <span class="dt">breaks =</span> <span class="dv">20</span>, </span>
+<span id="cb674-16"><a href="autocorrelation.html#cb674-16"></a>     <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb674-17"><a href="autocorrelation.html#cb674-17"></a>     <span class="dt">main =</span> <span class="st">&quot;Перестановочный тест Морана&quot;</span>, </span>
+<span id="cb674-18"><a href="autocorrelation.html#cb674-18"></a>     <span class="dt">xlab =</span> <span class="st">&quot;Случайный индекс Морана&quot;</span>,</span>
+<span id="cb674-19"><a href="autocorrelation.html#cb674-19"></a>     <span class="dt">ylab =</span> <span class="st">&quot;Частота появления&quot;</span>,</span>
+<span id="cb674-20"><a href="autocorrelation.html#cb674-20"></a>     <span class="dt">col =</span> <span class="st">&quot;steelblue&quot;</span>)</span>
+<span id="cb674-21"><a href="autocorrelation.html#cb674-21"></a></span>
+<span id="cb674-22"><a href="autocorrelation.html#cb674-22"></a><span class="co"># Нанесем фактическое значение</span></span>
+<span id="cb674-23"><a href="autocorrelation.html#cb674-23"></a><span class="kw">abline</span>(<span class="dt">v =</span> sim<span class="op">$</span>statistic, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-631-1.png" width="672" /></p>
+</div>
+<div id="autocorrelation_moranscatter" class="section level3">
+<h3><span class="header-section-number">15.7.3</span> Диаграмма рассеяния Морана</h3>
+<p>Наконец, еще одним графическим инструментом оценки пространственной автокорреляции является диаграмма рассеяния Морана. По оси <span class="math inline">\(X\)</span> откладывается значение в каждой территориальной единице, в по оси <span class="math inline">\(Y\)</span> — ее пространственный лаг, который представляет собой средневзвешенное значение по всем ее соседям:</p>
+<div class="sourceCode" id="cb675"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb675-1"><a href="autocorrelation.html#cb675-1"></a><span class="kw">moran.plot</span>(feb<span class="op">$</span>nsick, W)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-632-1.png" width="672" /></p>
+<p>На диаграмме рассеяния Морана линиями отмечаются средние значения по обеим осям, а наклонной линией представляется линейная регрессия этих значений, при этом тангенс угла наклона кривой равен значению индекса Морана. Поскольку в данном случае распределение явно не случайно, можно приступать к его моделированию.</p>
+</div>
+<div id="autocorrelation_autoregression" class="section level3">
+<h3><span class="header-section-number">15.7.4</span> Пространственная авторегрессия</h3>
+<p>Поиск уравнения пространственной регрессии и его авторегрессионной составляющей может быть выполнен посредством функций <code>spautolm()</code> и <code>lagsarlm()</code> из пакета <strong>spatialreg</strong>. В качестве первого параметра каждой из этих функций выступает формула, которая работает по следующему принципу:</p>
+<ul>
+<li><p><code>Y ~ 1</code> позволит найти коэффициенты <span class="math inline">\(\rho\)</span> и остатки <span class="math inline">\(\epsilon\)</span> пространственной авторегрессии вида <span class="math inline">\(\mathbf{y} = \mu + \rho\mathbf{Wy} + \mathbf{\epsilon}\)</span>, где <span class="math inline">\(\mu\)</span> — константа.</p></li>
+<li><p><code>Y ~ X</code> позволит найти коэффициенты <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\rho\)</span> и остатки <span class="math inline">\(\epsilon\)</span> пространственной регрессии вида <span class="math display">\[\mathbf{y} = \mu + \mathbf{X} \mathbf{\beta} + \rho\mathbf{Wy} +  \mathbf{\epsilon}.\]</span></p></li>
+<li><p><code>Y ~ X - 1</code> позволит найти коэффициенты <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\rho\)</span> и остатки <span class="math inline">\(\epsilon\)</span> пространственной регрессии вида <span class="math display">\[\mathbf{y} = \mathbf{X} \mathbf{\beta} + \rho\mathbf{Wy} + \mathbf{\epsilon}\]</span> без свободного члена <span class="math inline">\(\mu\)</span></p></li>
+</ul>
+<div class="sourceCode" id="cb676"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb676-1"><a href="autocorrelation.html#cb676-1"></a>model =<span class="st"> </span><span class="kw">lagsarlm</span>(nsick <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> feb, <span class="dt">listw =</span> W)</span>
+<span id="cb676-2"><a href="autocorrelation.html#cb676-2"></a>model</span>
+<span id="cb676-3"><a href="autocorrelation.html#cb676-3"></a><span class="co">## </span></span>
+<span id="cb676-4"><a href="autocorrelation.html#cb676-4"></a><span class="co">## Call:</span></span>
+<span id="cb676-5"><a href="autocorrelation.html#cb676-5"></a><span class="co">## lagsarlm(formula = nsick ~ 1, data = feb, listw = W)</span></span>
+<span id="cb676-6"><a href="autocorrelation.html#cb676-6"></a><span class="co">## Type: lag </span></span>
+<span id="cb676-7"><a href="autocorrelation.html#cb676-7"></a><span class="co">## </span></span>
+<span id="cb676-8"><a href="autocorrelation.html#cb676-8"></a><span class="co">## Coefficients:</span></span>
+<span id="cb676-9"><a href="autocorrelation.html#cb676-9"></a><span class="co">##         rho (Intercept) </span></span>
+<span id="cb676-10"><a href="autocorrelation.html#cb676-10"></a><span class="co">##    0.704957 1223.330336 </span></span>
+<span id="cb676-11"><a href="autocorrelation.html#cb676-11"></a><span class="co">## </span></span>
+<span id="cb676-12"><a href="autocorrelation.html#cb676-12"></a><span class="co">## Log likelihood: -346.2344</span></span></code></pre></div>
+<p>Расшифровываются параметры модели следующим образом:</p>
+<ul>
+<li><code>Intercept</code> = <span class="math inline">\(\mu\)</span>,</li>
+<li><code>rho</code> = <span class="math inline">\(\rho\)</span></li>
+</ul>
+<p>Извлекаем модельные значения <span class="math inline">\(Z\)</span> и записываем в таблицу</p>
+<div class="sourceCode" id="cb677"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb677-1"><a href="autocorrelation.html#cb677-1"></a><span class="co"># Извлекаем результаты пространственной авторегрессии</span></span>
+<span id="cb677-2"><a href="autocorrelation.html#cb677-2"></a>feb_spreg =<span class="st"> </span>feb <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb677-3"><a href="autocorrelation.html#cb677-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">fitted =</span> <span class="kw">fitted</span>(model),</span>
+<span id="cb677-4"><a href="autocorrelation.html#cb677-4"></a>         <span class="dt">residual =</span> <span class="kw">residuals</span>(model)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb677-5"><a href="autocorrelation.html#cb677-5"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="kw">c</span>(nsick, fitted, residual), </span>
+<span id="cb677-6"><a href="autocorrelation.html#cb677-6"></a>               <span class="dt">names_to =</span> <span class="st">&#39;type&#39;</span>,</span>
+<span id="cb677-7"><a href="autocorrelation.html#cb677-7"></a>               <span class="dt">values_to =</span> <span class="st">&#39;value&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb677-8"><a href="autocorrelation.html#cb677-8"></a><span class="st">  </span><span class="kw">st_set_geometry</span>(<span class="st">&#39;geometry&#39;</span>)</span>
+<span id="cb677-9"><a href="autocorrelation.html#cb677-9"></a></span>
+<span id="cb677-10"><a href="autocorrelation.html#cb677-10"></a><span class="co"># Построение серии карт</span></span>
+<span id="cb677-11"><a href="autocorrelation.html#cb677-11"></a>ramp =<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&#39;steelblue3&#39;</span>, <span class="st">&#39;white&#39;</span>, <span class="st">&#39;orange&#39;</span>, <span class="st">&#39;violetred&#39;</span>))</span>
+<span id="cb677-12"><a href="autocorrelation.html#cb677-12"></a>levels =<span class="st"> </span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">3000</span>, <span class="dv">10000</span>, <span class="dv">1000</span>)</span>
+<span id="cb677-13"><a href="autocorrelation.html#cb677-13"></a>nclasses =<span class="st"> </span><span class="kw">length</span>(levels) <span class="op">-</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb677-14"><a href="autocorrelation.html#cb677-14"></a></span>
+<span id="cb677-15"><a href="autocorrelation.html#cb677-15"></a><span class="co"># Сравниваем исходные данные, модельные и остатки</span></span>
+<span id="cb677-16"><a href="autocorrelation.html#cb677-16"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb677-17"><a href="autocorrelation.html#cb677-17"></a><span class="st">  </span><span class="kw">geom_sf</span>(feb_spreg, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">geometry =</span> geometry, <span class="dt">fill =</span> <span class="kw">cut</span>(value, levels))) <span class="op">+</span></span>
+<span id="cb677-18"><a href="autocorrelation.html#cb677-18"></a><span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> <span class="kw">ramp</span>(nclasses),</span>
+<span id="cb677-19"><a href="autocorrelation.html#cb677-19"></a>                    <span class="dt">labels =</span> <span class="kw">paste</span>(levels[<span class="op">-</span>nclasses<span class="dv">-1</span>], <span class="st">&#39;-&#39;</span>, levels[<span class="op">-</span><span class="dv">1</span>]),</span>
+<span id="cb677-20"><a href="autocorrelation.html#cb677-20"></a>                    <span class="dt">guide =</span> <span class="kw">guide_legend</span>(<span class="dt">reverse =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb677-21"><a href="autocorrelation.html#cb677-21"></a>                    <span class="dt">drop =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb677-22"><a href="autocorrelation.html#cb677-22"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>type)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-634-1.png" width="672" /></p>
+</div>
+</div>
+<div id="autocorrelation_gwr" class="section level2">
+<h2><span class="header-section-number">15.8</span> Географически взвешенная регрессия (GWR)</h2>
+<p>В стандартной модели линейной регрессии параметры модели предполагаются постоянными:</p>
+<p><span class="math display">\[\mathbf{y} = \mathbf{X} \boldsymbol\beta + \boldsymbol\epsilon,\]</span></p>
+<p>Для <span class="math inline">\(i\)</span>-й локации решению выглядит следующим образом:</p>
+<p><span class="math display">\[y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + ... + \beta_m x_{mi} + \epsilon_i\]</span></p>
+<p>Коэффициенты находятся методом наименьших квадратов:</p>
+<p><span class="math display">\[\mathbf{\beta}&#39; = (\mathbf{X}^T\mathbf{X})^{-1} \mathbf{X}^T \mathbf{Y}\]</span></p>
+<p>Такой подход, однако не учитывает того, что характер зависимости между переменными может меняться по пространству.</p>
+<p>В <strong>географически взвешенной регрессионной модели</strong> веса определяются для каждой локации:</p>
+<p><span class="math display">\[y_i = \beta_{0i} + \beta_{1i} x_{1i} + \beta_{2i} x_{2i} + ... + \beta_{mi} x_{mi} + \epsilon_i\]</span></p>
+<p>В этом случае область оценки параметров <span class="math inline">\(\mathbf{\beta}\)</span> ограничивается некой окрестностью точки <span class="math inline">\(i\)</span>. Математически это достигается применением весовых коэффициентов для данных независимых переменных:</p>
+<p><span class="math display">\[\mathbf{\beta}&#39;(i) = (\mathbf{X}^T \color{blue}{\mathbf{W}(i)}\mathbf{X})^{-1} \mathbf{X}^T \color{blue}{\mathbf{W}(i)} \mathbf{Y},\]</span></p>
+<p>где <span class="math inline">\(\mathbf{W}(i)\)</span> есть матрица весов для точки <span class="math inline">\(i\)</span>. Коэффициенты матрицы подбираются таким образом, что близкие локации получают более высокий вес.</p>
+<p>Матрица <span class="math inline">\(\mathbf{W}(i)\)</span> имеет размер <span class="math inline">\(n \times n\)</span>, где <span class="math inline">\(n\)</span> — число точек наблюдений:</p>
+<p><span class="math display">\[\mathbf{W}(i) = \begin{bmatrix}
+    w_{i1} &amp; 0 &amp; 0 &amp; \dots  &amp; 0 \\
+    0 &amp; w_{i2} &amp; 0 &amp; \dots  &amp; 0 \\
+    0 &amp; 0 &amp; w_{i3} &amp; \dots  &amp; 0 \\
+    \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+    0 &amp; 0 &amp; 0 &amp; \dots  &amp; w_{in}
+\end{bmatrix},\]</span></p>
+<p>где <span class="math inline">\(w_{ik}\)</span> есть вес, который имеет точка <span class="math inline">\(k\)</span> при локальной оценке параметров в точке <span class="math inline">\(i\)</span>.</p>
+<div id="весовые-функции" class="section level3">
+<h3><span class="header-section-number">15.8.1</span> Весовые функции</h3>
+<p>Весовая функция должна быть убывающей. Существует множество вариантов таких функций, но наиболее часто используются гауссоподобные варианты:</p>
+<div class="figure"><span id="fig:unnamed-chunk-635"></span>
+<img src="slides/images/gwr_wlocal.png" alt="Весовая функция" width="469" />
+<p class="caption">
+Рис. 15.5: Весовая функция
+</p>
+</div>
+<p>В случае <em>фиксированной</em> весовой функции окрестность всегда имеет фиксированный размер:</p>
+<p><span class="math display">\[w_{ij} = \operatorname{exp}\{-\frac{1}{2} (d_{ij}/h)^2\},\]</span></p>
+<p>где <span class="math inline">\(d_{ij}\)</span> есть расстояние, <span class="math inline">\(h\)</span> — полоса пропускания.</p>
+<div class="figure"><span id="fig:unnamed-chunk-636"></span>
+<img src="slides/images/wfixed.png" alt="Фиксированная весовая функция" width="492" />
+<p class="caption">
+Рис. 15.6: Фиксированная весовая функция
+</p>
+</div>
+<p>В случае <em>адаптивной</em> весовой функции окрестность ограничивается <span class="math inline">\(N\)</span> ближайшими точками. За пределами этой окрестности веса принимаются равными нулю:</p>
+<div class="figure"><span id="fig:unnamed-chunk-637"></span>
+<img src="slides/images/wadaptive.png" alt="Адаптивная весовая функция" width="531" />
+<p class="caption">
+Рис. 15.7: Адаптивная весовая функция
+</p>
+</div>
+<p><strong>Полоса пропускания</strong> <span class="math inline">\(h\)</span> обладает следующими особенностями:</p>
+<ul>
+<li>малая полоса пропускания приводит к большой дисперсии локальных оценок;</li>
+<li>большая полоса пропускания приводит к смещенности оценки;</li>
+<li>при <span class="math inline">\(h \rightarrow \infty\)</span> локальная модель приближается к <em>глобальной регрессии</em>;</li>
+<li>при <span class="math inline">\(h \rightarrow 0\)</span> локальная модель «сворачивается» вокруг данных.</li>
+</ul>
+</div>
+<div id="практический-анализ-1" class="section level3">
+<h3><span class="header-section-number">15.8.2</span> Практический анализ</h3>
+<p>В качестве примера проанализируем каким образом цена жилья зависит от количества комнат на примере данных по стоимости недвижимости в Бостоне, доступных на <a href="https://www.jefftk.com/apartment_prices/data-listing">данном сайте</a>, и выгруженных с североамериканского информационного портала недвижимости <a href="https://www.padmapper.com/apartments/boston-ma?box=-71.2297689,42.2745193,-70.9215169,42.4531515">padmapper.com</a>:</p>
+<div class="sourceCode" id="cb678"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb678-1"><a href="autocorrelation.html#cb678-1"></a>realest =<span class="st"> </span><span class="kw">read_delim</span>(<span class="kw">url</span>(<span class="st">&#39;https://www.jefftk.com/apartment_prices/apts-1542637382.txt&#39;</span>),</span>
+<span id="cb678-2"><a href="autocorrelation.html#cb678-2"></a>                 <span class="dt">delim =</span> <span class="st">&#39; &#39;</span>,</span>
+<span id="cb678-3"><a href="autocorrelation.html#cb678-3"></a>                 <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&#39;price&#39;</span>, <span class="st">&#39;rooms&#39;</span>, <span class="st">&#39;id&#39;</span>, <span class="st">&#39;lon&#39;</span>, <span class="st">&#39;lat&#39;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb678-4"><a href="autocorrelation.html#cb678-4"></a><span class="st">  </span><span class="kw">st_as_sf</span>(<span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>, <span class="st">&#39;lat&#39;</span>), <span class="dt">crs =</span> <span class="dv">4326</span>) <span class="op">%&gt;%</span></span>
+<span id="cb678-5"><a href="autocorrelation.html#cb678-5"></a><span class="st">  </span><span class="kw">st_transform</span>(<span class="dv">3395</span>)</span>
+<span id="cb678-6"><a href="autocorrelation.html#cb678-6"></a></span>
+<span id="cb678-7"><a href="autocorrelation.html#cb678-7"></a><span class="co"># tmap_mode(&#39;view&#39;)</span></span>
+<span id="cb678-8"><a href="autocorrelation.html#cb678-8"></a><span class="kw">tm_shape</span>(realest) <span class="op">+</span></span>
+<span id="cb678-9"><a href="autocorrelation.html#cb678-9"></a><span class="st">  </span><span class="kw">tm_bubbles</span>(<span class="dt">col =</span> <span class="st">&#39;price&#39;</span>,</span>
+<span id="cb678-10"><a href="autocorrelation.html#cb678-10"></a>             <span class="dt">size =</span> <span class="st">&#39;rooms&#39;</span>,</span>
+<span id="cb678-11"><a href="autocorrelation.html#cb678-11"></a>             <span class="dt">style =</span> <span class="st">&#39;fixed&#39;</span>,</span>
+<span id="cb678-12"><a href="autocorrelation.html#cb678-12"></a>             <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1000</span>, <span class="dv">2000</span>, <span class="dv">3000</span>, <span class="dv">4000</span>, <span class="dv">5000</span>, <span class="dv">10000</span>, <span class="kw">max</span>(realest<span class="op">$</span>price)),</span>
+<span id="cb678-13"><a href="autocorrelation.html#cb678-13"></a>             <span class="dt">scale =</span> <span class="fl">0.25</span>,</span>
+<span id="cb678-14"><a href="autocorrelation.html#cb678-14"></a>             <span class="dt">palette =</span> <span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&#39;steelblue4&#39;</span>, <span class="st">&#39;orange&#39;</span>, <span class="st">&#39;darkred&#39;</span>))(<span class="dv">7</span>),</span>
+<span id="cb678-15"><a href="autocorrelation.html#cb678-15"></a>             <span class="dt">alpha =</span> <span class="fl">0.8</span>) <span class="op">+</span></span>
+<span id="cb678-16"><a href="autocorrelation.html#cb678-16"></a><span class="st">  </span><span class="kw">tm_view</span>(<span class="dt">symbol.size.fixed =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-638-1.png" width="672" /></p>
+<p>Для того чтобы оценить пространственую неравномерность реакции стоимости жилья на увеличение количества комнат, построим модель географически взвешенной регрессии:</p>
+<div class="sourceCode" id="cb679"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb679-1"><a href="autocorrelation.html#cb679-1"></a>samples =<span class="st"> </span>realest <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">sample_n</span>(<span class="dv">1000</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as</span>(<span class="st">&#39;Spatial&#39;</span>)</span>
+<span id="cb679-2"><a href="autocorrelation.html#cb679-2"></a></span>
+<span id="cb679-3"><a href="autocorrelation.html#cb679-3"></a>(<span class="dt">gwr_res =</span> <span class="kw">gwr.basic</span>(price <span class="op">~</span><span class="st"> </span>rooms, <span class="dt">data =</span> samples, <span class="dt">bw =</span> <span class="dv">1000</span>, <span class="dt">kernel =</span> <span class="st">&#39;gaussian&#39;</span>))</span>
+<span id="cb679-4"><a href="autocorrelation.html#cb679-4"></a><span class="co">##    ***********************************************************************</span></span>
+<span id="cb679-5"><a href="autocorrelation.html#cb679-5"></a><span class="co">##    *                       Package   GWmodel                             *</span></span>
+<span id="cb679-6"><a href="autocorrelation.html#cb679-6"></a><span class="co">##    ***********************************************************************</span></span>
+<span id="cb679-7"><a href="autocorrelation.html#cb679-7"></a><span class="co">##    Program starts at: 2020-02-10 22:08:55 </span></span>
+<span id="cb679-8"><a href="autocorrelation.html#cb679-8"></a><span class="co">##    Call:</span></span>
+<span id="cb679-9"><a href="autocorrelation.html#cb679-9"></a><span class="co">##    gwr.basic(formula = price ~ rooms, data = samples, bw = 1000, </span></span>
+<span id="cb679-10"><a href="autocorrelation.html#cb679-10"></a><span class="co">##     kernel = &quot;gaussian&quot;)</span></span>
+<span id="cb679-11"><a href="autocorrelation.html#cb679-11"></a><span class="co">## </span></span>
+<span id="cb679-12"><a href="autocorrelation.html#cb679-12"></a><span class="co">##    Dependent (y) variable:  price</span></span>
+<span id="cb679-13"><a href="autocorrelation.html#cb679-13"></a><span class="co">##    Independent variables:  rooms</span></span>
+<span id="cb679-14"><a href="autocorrelation.html#cb679-14"></a><span class="co">##    Number of data points: 1000</span></span>
+<span id="cb679-15"><a href="autocorrelation.html#cb679-15"></a><span class="co">##    ***********************************************************************</span></span>
+<span id="cb679-16"><a href="autocorrelation.html#cb679-16"></a><span class="co">##    *                    Results of Global Regression                     *</span></span>
+<span id="cb679-17"><a href="autocorrelation.html#cb679-17"></a><span class="co">##    ***********************************************************************</span></span>
+<span id="cb679-18"><a href="autocorrelation.html#cb679-18"></a><span class="co">## </span></span>
+<span id="cb679-19"><a href="autocorrelation.html#cb679-19"></a><span class="co">##    Call:</span></span>
+<span id="cb679-20"><a href="autocorrelation.html#cb679-20"></a><span class="co">##     lm(formula = formula, data = data)</span></span>
+<span id="cb679-21"><a href="autocorrelation.html#cb679-21"></a><span class="co">## </span></span>
+<span id="cb679-22"><a href="autocorrelation.html#cb679-22"></a><span class="co">##    Residuals:</span></span>
+<span id="cb679-23"><a href="autocorrelation.html#cb679-23"></a><span class="co">##    Min     1Q Median     3Q    Max </span></span>
+<span id="cb679-24"><a href="autocorrelation.html#cb679-24"></a><span class="co">##  -3321   -851   -393    344  34635 </span></span>
+<span id="cb679-25"><a href="autocorrelation.html#cb679-25"></a><span class="co">## </span></span>
+<span id="cb679-26"><a href="autocorrelation.html#cb679-26"></a><span class="co">##    Coefficients:</span></span>
+<span id="cb679-27"><a href="autocorrelation.html#cb679-27"></a><span class="co">##                Estimate Std. Error t value            Pr(&gt;|t|)    </span></span>
+<span id="cb679-28"><a href="autocorrelation.html#cb679-28"></a><span class="co">##    (Intercept)  2442.28     102.59   23.81 &lt;0.0000000000000002 ***</span></span>
+<span id="cb679-29"><a href="autocorrelation.html#cb679-29"></a><span class="co">##    rooms         407.06      40.46   10.06 &lt;0.0000000000000002 ***</span></span>
+<span id="cb679-30"><a href="autocorrelation.html#cb679-30"></a><span class="co">## </span></span>
+<span id="cb679-31"><a href="autocorrelation.html#cb679-31"></a><span class="co">##    ---Significance stars</span></span>
+<span id="cb679-32"><a href="autocorrelation.html#cb679-32"></a><span class="co">##    Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1 </span></span>
+<span id="cb679-33"><a href="autocorrelation.html#cb679-33"></a><span class="co">##    Residual standard error: 1718 on 998 degrees of freedom</span></span>
+<span id="cb679-34"><a href="autocorrelation.html#cb679-34"></a><span class="co">##    Multiple R-squared: 0.09209</span></span>
+<span id="cb679-35"><a href="autocorrelation.html#cb679-35"></a><span class="co">##    Adjusted R-squared: 0.09118 </span></span>
+<span id="cb679-36"><a href="autocorrelation.html#cb679-36"></a><span class="co">##    F-statistic: 101.2 on 1 and 998 DF,  p-value: &lt; 0.00000000000000022 </span></span>
+<span id="cb679-37"><a href="autocorrelation.html#cb679-37"></a><span class="co">##    ***Extra Diagnostic information</span></span>
+<span id="cb679-38"><a href="autocorrelation.html#cb679-38"></a><span class="co">##    Residual sum of squares: 2944217900</span></span>
+<span id="cb679-39"><a href="autocorrelation.html#cb679-39"></a><span class="co">##    Sigma(hat): 1717.591</span></span>
+<span id="cb679-40"><a href="autocorrelation.html#cb679-40"></a><span class="co">##    AIC:  17739.23</span></span>
+<span id="cb679-41"><a href="autocorrelation.html#cb679-41"></a><span class="co">##    AICc:  17739.25</span></span>
+<span id="cb679-42"><a href="autocorrelation.html#cb679-42"></a><span class="co">##    ***********************************************************************</span></span>
+<span id="cb679-43"><a href="autocorrelation.html#cb679-43"></a><span class="co">##    *          Results of Geographically Weighted Regression              *</span></span>
+<span id="cb679-44"><a href="autocorrelation.html#cb679-44"></a><span class="co">##    ***********************************************************************</span></span>
+<span id="cb679-45"><a href="autocorrelation.html#cb679-45"></a><span class="co">## </span></span>
+<span id="cb679-46"><a href="autocorrelation.html#cb679-46"></a><span class="co">##    *********************Model calibration information*********************</span></span>
+<span id="cb679-47"><a href="autocorrelation.html#cb679-47"></a><span class="co">##    Kernel function: gaussian </span></span>
+<span id="cb679-48"><a href="autocorrelation.html#cb679-48"></a><span class="co">##    Fixed bandwidth: 1000 </span></span>
+<span id="cb679-49"><a href="autocorrelation.html#cb679-49"></a><span class="co">##    Regression points: the same locations as observations are used.</span></span>
+<span id="cb679-50"><a href="autocorrelation.html#cb679-50"></a><span class="co">##    Distance metric: Euclidean distance metric is used.</span></span>
+<span id="cb679-51"><a href="autocorrelation.html#cb679-51"></a><span class="co">## </span></span>
+<span id="cb679-52"><a href="autocorrelation.html#cb679-52"></a><span class="co">##    ****************Summary of GWR coefficient estimates:******************</span></span>
+<span id="cb679-53"><a href="autocorrelation.html#cb679-53"></a><span class="co">##                  Min.  1st Qu.   Median  3rd Qu.   Max.</span></span>
+<span id="cb679-54"><a href="autocorrelation.html#cb679-54"></a><span class="co">##    Intercept   138.75  1846.07  2051.88  2432.79 5592.7</span></span>
+<span id="cb679-55"><a href="autocorrelation.html#cb679-55"></a><span class="co">##    rooms     -1459.45   454.05   517.44   627.41 1554.1</span></span>
+<span id="cb679-56"><a href="autocorrelation.html#cb679-56"></a><span class="co">##    ************************Diagnostic information*************************</span></span>
+<span id="cb679-57"><a href="autocorrelation.html#cb679-57"></a><span class="co">##    Number of data points: 1000 </span></span>
+<span id="cb679-58"><a href="autocorrelation.html#cb679-58"></a><span class="co">##    Effective number of parameters (2trace(S) - trace(S&#39;S)): 122.7829 </span></span>
+<span id="cb679-59"><a href="autocorrelation.html#cb679-59"></a><span class="co">##    Effective degrees of freedom (n-2trace(S) + trace(S&#39;S)): 877.2171 </span></span>
+<span id="cb679-60"><a href="autocorrelation.html#cb679-60"></a><span class="co">##    AICc (GWR book, Fotheringham, et al. 2002, p. 61, eq 2.33): 17661.1 </span></span>
+<span id="cb679-61"><a href="autocorrelation.html#cb679-61"></a><span class="co">##    AIC (GWR book, Fotheringham, et al. 2002,GWR p. 96, eq. 4.22): 17545.06 </span></span>
+<span id="cb679-62"><a href="autocorrelation.html#cb679-62"></a><span class="co">##    Residual sum of squares: 2220569746 </span></span>
+<span id="cb679-63"><a href="autocorrelation.html#cb679-63"></a><span class="co">##    R-square value:  0.31524 </span></span>
+<span id="cb679-64"><a href="autocorrelation.html#cb679-64"></a><span class="co">##    Adjusted R-square value:  0.2192857 </span></span>
+<span id="cb679-65"><a href="autocorrelation.html#cb679-65"></a><span class="co">## </span></span>
+<span id="cb679-66"><a href="autocorrelation.html#cb679-66"></a><span class="co">##    ***********************************************************************</span></span>
+<span id="cb679-67"><a href="autocorrelation.html#cb679-67"></a><span class="co">##    Program stops at: 2020-02-10 22:08:55</span></span>
+<span id="cb679-68"><a href="autocorrelation.html#cb679-68"></a></span>
+<span id="cb679-69"><a href="autocorrelation.html#cb679-69"></a><span class="kw">tm_shape</span>(gwr_res<span class="op">$</span>SDF) <span class="op">+</span></span>
+<span id="cb679-70"><a href="autocorrelation.html#cb679-70"></a><span class="st">  </span><span class="kw">tm_bubbles</span>(<span class="dt">col =</span> <span class="st">&#39;rooms&#39;</span>, <span class="co"># это не количество комнат, а коэффициент регрессии</span></span>
+<span id="cb679-71"><a href="autocorrelation.html#cb679-71"></a>             <span class="dt">style =</span> <span class="st">&#39;quantile&#39;</span>,</span>
+<span id="cb679-72"><a href="autocorrelation.html#cb679-72"></a>             <span class="dt">scale =</span> <span class="fl">0.3</span>,</span>
+<span id="cb679-73"><a href="autocorrelation.html#cb679-73"></a>             <span class="dt">palette =</span> <span class="st">&#39;Reds&#39;</span>,</span>
+<span id="cb679-74"><a href="autocorrelation.html#cb679-74"></a>             <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb679-75"><a href="autocorrelation.html#cb679-75"></a><span class="st">  </span><span class="kw">tm_view</span>(<span class="dt">symbol.size.fixed =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-639-1.png" width="672" /></p>
+<p>Как видно, модель GWR наглядно показывает наличие пространственной гетерогенности (неоднороности) в распределении показателя. Четко видны районы (в основном цеентральные, но также и часть окраинных), где стоимость жилья резко возрастает при увеличении количества комнат.</p>
+</div>
+</div>
+<div id="spreg_review" class="section level2">
+<h2><span class="header-section-number">15.9</span> Краткий обзор</h2>
+<p>Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
+<iframe src="https://tsamsonov.github.io/r-geo-course/slides/15-SpatialRegression_slides.html#1" width="672" height="500px"></iframe></p>
+<blockquote>
+<p>Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.</p>
+</blockquote>
+</div>
+<div id="questions_tasks_spreg" class="section level2">
+<h2><span class="header-section-number">15.10</span> Контрольные вопросы и упражнения</h2>
+<div id="questions_spreg" class="section level3">
+<h3><span class="header-section-number">15.10.1</span> Вопросы</h3>
+<ol style="list-style-type: decimal">
+<li>Дайте определение пространственной автокорреляции.</li>
+<li>В чем выражается пространственная зависимость и пространственная гетерогенность?</li>
+<li>Сформулируйте задачу и напишите уравнение пространственной авторегрессии. Чем обусловлена необходимость в использовании такой модели?</li>
+<li>Что такое пространственный лаг?</li>
+<li>В чем заключается процедура пространственной фильтрации?</li>
+<li>Перечислете основные методы определения географического соседства.</li>
+<li>Чем отличается соседство по методу ферзя и соседство по методу ладьи?</li>
+<li>Какие методы установления соседства напрямую неприменимы к точечным данным?</li>
+<li>Что понимается под сферой влияния в соответствующем методе установления географического соседства? По аналогии с каким принципом небесной механики построен поиск соседей на основе этого принципа?</li>
+<li>Что объединяет все методы поиска соседей по графу? На основе какой структуры данных они работают?</li>
+<li>Сформулируйте принцип фильтрации ребер графа, с помощью которого получается граф Гэбриела.</li>
+<li>Что понимается под относительным соседством по графу?</li>
+<li>Назовите два основных метода определения соседства по метрике.</li>
+<li>Перечислите основные функции пакетов R, которые можно использовать для установления географического соседства.</li>
+<li>С помощью каких структур данных осуществляется моделирование соседства в R?</li>
+<li>Дайте определение пространственного веса. Что харктеризует эта величина?</li>
+<li>Назовите основные методы вычисления пространственных весов.</li>
+<li>Какая структура данных используется для хранения информации о пространственных весах? Какими свойствами она обладает?</li>
+<li>Перечислите индексы, которые могут использоваться для оценки пространственной автокорреляции.</li>
+<li>Напишите формулу для вычисления индекса Морана. Какие значения он может принимать и как их следует интерпретировать? Аналогом какого статистического коэффициента является данный индекс?</li>
+<li>Изложите алгоритм выполнения и назначение перестановочного теста Морана.</li>
+<li>Что из себя представляет диаграмма рассеяния Морана и в каких задачах они может быть востребована?</li>
+<li>Для каких целей используется локальный анализ пространственной автокорреляции (LISA)? Какой коэффициент можно использовать для квантификации локальных оценок автокорреляции? Как он связан с индексом Морана?</li>
+<li>Сформулируйте задачу и напишите уравнение географически взвешенной регрессии. Чем обусловлена необходимость в использовании такой модели?</li>
+<li>Определите назначение весовой функции в методе географически взвешенной регрессии. Каков ее основной параметр?</li>
+</ol>
+</div>
+<div id="tasks_spreg" class="section level3">
+<h3><span class="header-section-number">15.10.2</span> Упражнения</h3>
+<ol style="list-style-type: decimal">
+<li>Выполните анализ пространственной зависимости (автокорреляции) для данных Росстата по урожайности зерновых культур по муниципалитетам Ростовской, Волгоградской и Саратовской областей. Для этого загрузите <a href="https://github.com/tsamsonov/r-geo-course/blob/master/data/Yield_Shapes.gpkg">границы муниципалитетов</a> и <a href="https://github.com/tsamsonov/r-geo-course/blob/master/data/Yield_Data.xlsx">статистику</a> за 2012 и 2013 гг. В процессе выполнения анализа необходимо:
+<ul>
+<li>Визуализировать исходные данные.</li>
+<li>Отфильтровать из данных Волгоград, Ростов-на-Дону и Саратов, поскольку для них статистика отсутствует.</li>
+<li>Построить граф соседства методом ферзя и визуализировать его.</li>
+<li>Вычислить матрицу пространственных весов и визуализировать ее.</li>
+<li>Выполнить тест Морана для данных 2013 г. (далее тоже везде 2013 год).</li>
+<li>Подобрать параметры модели пространственной авторегрессии.</li>
+<li>Визуализировать результаты моделирования (исходные данные, модельные данные, остатки)</li>
+</ul></li>
+</ol>
+<table>
+<tbody>
+<tr class="odd">
+<td><em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, 2020. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a></td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="9">
+<li id="fn9"><p><em>Hubert, L. J., R. G. Golledge, and C. M. Costanza</em> (1981). <strong>Generalized Procedures for Evaluating Spatial Autocorrelation</strong>. Geographical Analysis 13, 224–32. DOI: 10.1111/j.1538-4632.1981.tb00731.x<a href="autocorrelation.html#fnref9" class="footnote-back">↩︎</a></p></li>
+<li id="fn10"><p><em>Gabriel K. R., Sokal R. R.</em> (1969), <strong>A new statistical approach to geographic variation analysis</strong>, Systematic Zoology, Society of Systematic Biologists, 18 (3): 259–270, DOI: 10.2307/2412323<a href="autocorrelation.html#fnref10" class="footnote-back">↩︎</a></p></li>
+<li id="fn11"><p><em>Toussaint G. T.</em> (1980), <strong>The relative neighborhood graph of a finite planar set</strong>, Pattern Recognition, 12 (4): 261–268, DOI: 10.1016/0031-3203(80)90066-7<a href="autocorrelation.html#fnref11" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="kriging.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="point-patterns.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook/js/app.min.js"></script>
+<script src="libs/gitbook/js/lunr.js"></script>
+<script src="libs/gitbook/js/clipboard.min.js"></script>
+<script src="libs/gitbook/js/plugin-search.js"></script>
+<script src="libs/gitbook/js/plugin-sharing.js"></script>
+<script src="libs/gitbook/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook/js/jquery.highlight.js"></script>
+<script src="libs/gitbook/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"edit": "https://github.com/tsamsonov/r-geo-course/edit/master/%s"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
