@@ -946,21 +946,19 @@ layout(p, scene = list(aspectratio = list(x = 1, y = 1, z = 0.3)))
 Рассмотрим это метод интерполяции на примере данных по графствам Северной Каролины (показатель — количество новорожденных в 1974 году). Для расчета векторной регулярной сетки используем функцию `st_make_grid()` из пакета __sf__. 
 ```{r}
 # Данные по Северной Каролине
-nc = st_read(system.file("shape/nc.shp", package="sf"))
+nc = sf::st_read(system.file("shape/nc.shp", package="sf"))
 
-cells = st_make_grid(nc, cellsize = 0.25)
+cells = sf::st_make_grid(nc, cellsize = 0.25)
 
-birth = st_interpolate_aw(nc["BIR74"], 
+birth = sf::st_interpolate_aw(nc["BIR74"], 
                        cells, 
-                       extensive = TRUE)
+                       extensive = FALSE)
 
 # исходное распределение
 tm_shape(nc) +
   tm_polygons('BIR74',
               style = 'jenks',
-              palette = 'viridis') +
-tm_shape(cells) +
-  tm_borders(col = 'white')
+              palette = 'viridis') 
 
 # пересчет на регулярную сетку
 tm_shape(birth) +
@@ -970,6 +968,21 @@ tm_shape(birth) +
 tm_shape(nc) +
   tm_borders(col = 'white')
 ```
+
+```{r}
+nc.sids <- maptools::readShapeSpatial(system.file("shapes/sids.shp", package="maptools")[1], 
+   IDvar="FIPSNO", proj4string=sp::CRS("+proj=longlat +ellps=clrk66"))
+
+births74 <- pycno::pycno(nc.sids,nc.sids$BIR74,0.05,converge=1)
+
+# Draw it
+bstars = stars::st_as_stars(births74)
+plot(bstars)
+
+# Overlay North Carolina county boundaries for reference
+plot(nc.sids,add=TRUE)
+```
+
 
 ## Краткий обзор {#interp_review}
 
