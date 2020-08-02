@@ -16,6 +16,7 @@ output:
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, collapse = TRUE, echo = FALSE, fig.align="left")
 library(tidyverse)
 library(raster)
 library(gstat)
@@ -215,6 +216,263 @@ $$\mathbf{y}^* = \mathbf{y} - \rho\mathbf{Wy} = \mathbf{X} \mathbf{\beta} + \mat
 - Пространственная фильтрация бывает полезна, когда наблюдается несоответствие масштаба наблюдений и масштаба процесса. 
 
 - Например, статистика по показателю, контролируемому на региональном уровне, собирается по муниципалитетам. В этом случае фильтрация позволяет подобрать параметры $\mathbf{\beta}$, учитывающие наличие высокой пространственной автокорреляци.
+
+---
+
+## Оценка географического соседства
+
+Примеры иллюстрируются по данным Кировской области:
+```{r, fig.width = 5}
+options(scipen = 999)
+
+reg_sf = st_read('../../data/Kirov.gpkg', quiet = TRUE)
+reg = st_geometry(reg_sf)
+
+ggplot() +
+  geom_sf(data = reg, color = "gray50") +
+  theme_bw()
+```
+
+
+---
+
+## Оценка географического соседства
+
+В целом, можно выделить три большие группы методов:
+
+* Соседи по смежности
+
+* Соседи по графу
+
+* Соседи по метрике
+
+---
+
+## Соседство по смежности
+
+```{r}
+knitr::include_graphics('../images/QueenRook.png')
+```
+__Соседство по смежности__ основано на топологических отношениях между объектами и применяется при анализе данных, приуроченных к площадным единицам.
+
+---
+
+## Соседство по смежности
+
+```{r}
+coords = reg %>% 
+  st_centroid() %>% 
+  st_coordinates()
+par(mar = c(1,1,1,1))
+# Теперь рисуем граф:
+plot(reg, border = "gray50")
+plot(nb_queen, coords, pch = 19, cex = 0.5, add = TRUE)
+```
+
+---
+
+## Соседство по графу
+
+__Соседство по графу__ основано на отношениях объектов в [триангуляции Делоне](https://ru.wikipedia.org/wiki/Триангуляция_Делоне). В эту же категорию попадают всевозможные фильтрации триангуляции Делоне, которые удаляют из нее ребра, не удовлетворяющие заданным критериям. Более подбробно о них будет сказано ниже.
+
+Частные случаи:
+
+- сфера влияния
+
+- граф Гэбриела
+
+- относительное соседство
+
+---
+
+## Соседство по триангуляции Делоне
+
+```{r}
+nb_tin = tri2nb(coords)
+par(mar = c(1,1,1,1))
+plot(reg, border = "grey70")
+plot(nb_tin, coords, pch = 19, cex = 0.5, add = TRUE)
+```
+
+---
+
+## Сфера влияния
+
+```{r, fig.cap=''}
+knitr::include_graphics('../images/SphereOfInfluence.png')
+```
+Ребра триангуляции, инцидентные (примыкающие к) данной вершине, сохраняются только если $D \leq 2D_{min}$
+
+---
+
+## Соседство по сфере влияния
+
+```{r}
+nb_tin = soi.graph(nb_tin, coords) %>% graph2nb()
+par(mar = c(1,1,1,1))
+plot(reg, border = "grey70")
+plot(nb_tin, coords, pch = 19, cex = 0.5, add = TRUE)
+```
+
+---
+
+## Граф Гэбриела
+
+```{r, fig.cap=''}
+knitr::include_graphics('../images/Gabriel.png')
+```
+
+В каждом треугольнике ребро сохранятся только тогда, когда построенная на нем окружность не включает третью точку треугольника
+
+---
+
+## Соседство по графу Гэбриела
+
+```{r}
+nb_gab = gabrielneigh(coords) %>% graph2nb()
+par(mar = c(1,1,1,1))
+plot(reg, border = "grey70")
+plot(nb_gab, coords, pch = 19, cex = 0.5, add = TRUE)
+```
+
+---
+
+## Граф относительного соседства
+
+Получается путем фильтрации триангуляции Делоне по следующему правилу: 
+
+> ребро $A$, соединяющее две вершины $p$ и $q$, будет удалено, если найдется третья вершина $r$, такая что расстояния от нее до $p$ и $q$ ( $B$ и $C$ соответственно) окажутся короче, чем $A$, то есть: $A > B$ __and__ $A > C$. 
+
+---
+
+## Относительное соседство
+
+```{r}
+nb_rel = relativeneigh(coords) %>% graph2nb()
+par(mar = c(1,1,1,1))
+plot(reg, border = "grey70")
+plot(nb_rel, coords, pch = 19, cex = 0.5, add = TRUE)
+```
+
+---
+
+## Соседи по метрике
+
+Поиск соседей по метрике — наиболее простой способ определения соседства. Для его использования необходимо задать метрику (как правило, расстояние между точками), а также критерий фильтрации связей: 
+
+- по количеству ( $k$ ближайших)
+
+- по расстоянию (не ближе чем $d_1$, но и не далее чем $d_2$).
+
+---
+
+## Соседи по количеству
+
+```{r}
+par(mfrow = c(2,2),
+    mar = c(1,1,1,1))
+for (i in 1:4){
+  nb_knn = knearneigh(coords, k = i) %>% knn2nb()
+  
+  plot(reg, border = "grey70")
+  plot(nb_knn, coords, pch = 19, cex = 0.5, add = TRUE)
+  title(main = paste("Ближайшие соседи (k = ", i, ")", sep = ''))
+}
+```
+
+---
+
+## Соседи по расстоянию
+
+```{r}
+par(mfrow = c(2,2),
+    mar = c(1,1,1,1))
+for (d in 5:8) {
+  dnearnei = dnearneigh(coords, d1 = 0, d2 = 10000 * d)
+  
+  plot(reg, border = "grey70")
+  plot(dnearnei, coords, pch = 19, cex = 0.5, add = TRUE)
+  title(main = paste("Ближайшие соседи (d <=", 10000 * d, ")", sep = ''))
+}
+```
+
+---
+
+## Пространственные веса
+
+- Пространственные веса характеризуют силу связи между единицами. 
+
+- Если единицы не являются соседними (по выбранному правилу), то пространственный вес их связи будет равен нулю. Во всех остальных случаях веса будут ненулевыми. 
+
+- Поскольку теоретически каждая единица может быть связана с любой другой единицей, распространена форма представления весов в виде матрицы $W$ размером $N \times N$, где $N$ -- число единиц. 
+
+- На пересечении $i$-й строки и $j$-го столбца матрицы располагается вес связи между $i$-й и $j$-й единицей.
+
+---
+
+## Бинарная матрица
+
+Если связь есть, то ее вес равен единице (1), если нет — нулю (0)
+```{r, fig.width=7}
+Wbin = nb2listw(nb_queen, style = "B")
+M = listw2mat(Wbin)
+par(mar = c(1,1,1,1))
+levelplot(M)
+```
+
+---
+
+## Нормированная матрица
+
+Вес $j$-й единицы по отношению к $i$-й равен $1/n_i$, где $n_i$ — количество соседей у $i$.
+```{r, fig.width=6}
+Wstand = nb2listw(nb_queen, style = "W")
+M = listw2mat(Wstand)
+
+ramp = colorRampPalette(c("white","red"))
+levels = 1 / 1:10  # шкала 1, 0.5, 0.33, 0.25 ... 0.1
+par(mar = c(1,1,1,1))
+levelplot(M, 
+          at = levels, 
+          col.regions=ramp(10))
+```
+
+---
+
+## Пространственная автокорреляция
+
+```{r, fig.width = 12, fig.height=6}
+mun_src = reg_sf
+
+# Чтение таблицы со статистикой
+tab = read_xlsx("../../data/Kirov.xlsx", 1)
+
+# Соединение таблиц
+mun = mun_src %>% 
+  left_join(tab, by = c("OBJECTID" = "N")) %>% 
+  pivot_longer(cols = 22:31,
+               names_to = 'month',
+               values_to = 'nsick') %>% 
+  mutate(month = ordered(month, levels = c('Январь', 'Февраль', 'Март', 
+                                           'Апрель', 'Май', 'Июнь', 
+                                           'Июль', 'Август', 'Сентябрь', 
+                                           'Октябрь', 'Ноябрь', 'Декабрь'))) %>% 
+  st_set_geometry('geometry')
+
+# Построение серии карт
+ramp = colorRampPalette(c("white", "orange", "red"))
+levels = seq(0, 10000, 1000)
+nclasses = length(levels) - 1
+
+ggplot() +
+  geom_sf(mun, mapping = aes(geometry = geometry, 
+                             fill = cut(nsick, levels))) +
+  scale_fill_manual(values = ramp(nclasses),
+                    labels = paste(levels[-nclasses-1], '-', levels[-1]),
+                    guide = guide_legend(reverse = TRUE),
+                    drop = FALSE) +
+  facet_wrap(~month)
+```
 
 ---
 

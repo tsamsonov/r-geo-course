@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
     <title>Пространственная и географически взвешенная регрессия</title>
     <meta charset="utf-8" />
     <meta name="author" content="Тимофей Самсонов" />
-    <meta name="date" content="2019-04-27" />
+    <meta name="date" content="2020-04-06" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" type="text/css" />
   </head>
@@ -15,7 +15,7 @@ class: center, middle, inverse, title-slide
 # Пространственная и географически взвешенная регрессия
 ## Пространственная статистика
 ### Тимофей Самсонов
-### 2019-04-27
+### 2020-04-06
 
 ---
 
@@ -215,6 +215,190 @@ class: center, middle, inverse, title-slide
 
 ---
 
+## Оценка географического соседства
+
+Примеры иллюстрируются по данным Кировской области:
+&lt;div class="figure" style="text-align: left"&gt;
+&lt;img src="15-SpatialRegression_slides_files/figure-html/unnamed-chunk-2-1.png" alt="left-aligned"  /&gt;
+&lt;p class="caption"&gt;left-aligned&lt;/p&gt;
+&lt;/div&gt;
+
+
+---
+
+## Оценка географического соседства
+
+В целом, можно выделить три большие группы методов:
+
+* Соседи по смежности
+
+* Соседи по графу
+
+* Соседи по метрике
+
+---
+
+## Соседство по смежности
+
+&lt;div class="figure" style="text-align: left"&gt;
+&lt;img src="../images/QueenRook.png" alt="left-aligned" width="2347" /&gt;
+&lt;p class="caption"&gt;left-aligned&lt;/p&gt;
+&lt;/div&gt;
+__Соседство по смежности__ основано на топологических отношениях между объектами и применяется при анализе данных, приуроченных к площадным единицам.
+
+---
+
+## Соседство по смежности
+
+&lt;div class="figure" style="text-align: left"&gt;
+&lt;img src="15-SpatialRegression_slides_files/figure-html/unnamed-chunk-4-1.png" alt="left-aligned"  /&gt;
+&lt;p class="caption"&gt;left-aligned&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Соседство по графу
+
+__Соседство по графу__ основано на отношениях объектов в [триангуляции Делоне](https://ru.wikipedia.org/wiki/Триангуляция_Делоне). В эту же категорию попадают всевозможные фильтрации триангуляции Делоне, которые удаляют из нее ребра, не удовлетворяющие заданным критериям. Более подбробно о них будет сказано ниже.
+
+Частные случаи:
+
+- сфера влияния
+
+- граф Гэбриела
+
+- относительное соседство
+
+---
+
+## Соседство по триангуляции Делоне
+
+&lt;div class="figure" style="text-align: left"&gt;
+&lt;img src="15-SpatialRegression_slides_files/figure-html/unnamed-chunk-5-1.png" alt="left-aligned"  /&gt;
+&lt;p class="caption"&gt;left-aligned&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Сфера влияния
+
+&lt;img src="../images/SphereOfInfluence.png" width="3109" style="display: block; margin: auto auto auto 0;" /&gt;
+Ребра триангуляции, инцидентные (примыкающие к) данной вершине, сохраняются только если `\(D \leq 2D_{min}\)`
+
+---
+
+## Соседство по сфере влияния
+
+&lt;div class="figure" style="text-align: left"&gt;
+&lt;img src="15-SpatialRegression_slides_files/figure-html/unnamed-chunk-7-1.png" alt="left-aligned"  /&gt;
+&lt;p class="caption"&gt;left-aligned&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Граф Гэбриела
+
+&lt;img src="../images/Gabriel.png" width="2864" style="display: block; margin: auto auto auto 0;" /&gt;
+
+В каждом треугольнике ребро сохранятся только тогда, когда построенная на нем окружность не включает третью точку треугольника
+
+---
+
+## Соседство по графу Гэбриела
+
+&lt;div class="figure" style="text-align: left"&gt;
+&lt;img src="15-SpatialRegression_slides_files/figure-html/unnamed-chunk-9-1.png" alt="left-aligned"  /&gt;
+&lt;p class="caption"&gt;left-aligned&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Граф относительного соседства
+
+Получается путем фильтрации триангуляции Делоне по следующему правилу: 
+
+&gt; ребро `\(A\)`, соединяющее две вершины `\(p\)` и `\(q\)`, будет удалено, если найдется третья вершина `\(r\)`, такая что расстояния от нее до `\(p\)` и `\(q\)` ( `\(B\)` и `\(C\)` соответственно) окажутся короче, чем `\(A\)`, то есть: `\(A &gt; B\)` __and__ `\(A &gt; C\)`. 
+
+---
+
+## Относительное соседство
+
+&lt;div class="figure" style="text-align: left"&gt;
+&lt;img src="15-SpatialRegression_slides_files/figure-html/unnamed-chunk-10-1.png" alt="left-aligned"  /&gt;
+&lt;p class="caption"&gt;left-aligned&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Соседи по метрике
+
+Поиск соседей по метрике — наиболее простой способ определения соседства. Для его использования необходимо задать метрику (как правило, расстояние между точками), а также критерий фильтрации связей: 
+
+- по количеству ( `\(k\)` ближайших)
+
+- по расстоянию (не ближе чем `\(d_1\)`, но и не далее чем `\(d_2\)`).
+
+---
+
+## Соседи по количеству
+
+&lt;div class="figure" style="text-align: left"&gt;
+&lt;img src="15-SpatialRegression_slides_files/figure-html/unnamed-chunk-11-1.png" alt="left-aligned"  /&gt;
+&lt;p class="caption"&gt;left-aligned&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Соседи по расстоянию
+
+&lt;div class="figure" style="text-align: left"&gt;
+&lt;img src="15-SpatialRegression_slides_files/figure-html/unnamed-chunk-12-1.png" alt="left-aligned"  /&gt;
+&lt;p class="caption"&gt;left-aligned&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Пространственные веса
+
+- Пространственные веса характеризуют силу связи между единицами. 
+
+- Если единицы не являются соседними (по выбранному правилу), то пространственный вес их связи будет равен нулю. Во всех остальных случаях веса будут ненулевыми. 
+
+- Поскольку теоретически каждая единица может быть связана с любой другой единицей, распространена форма представления весов в виде матрицы `\(W\)` размером `\(N \times N\)`, где `\(N\)` -- число единиц. 
+
+- На пересечении `\(i\)`-й строки и `\(j\)`-го столбца матрицы располагается вес связи между `\(i\)`-й и `\(j\)`-й единицей.
+
+---
+
+## Бинарная матрица
+
+Если связь есть, то ее вес равен единице (1), если нет — нулю (0)
+&lt;div class="figure" style="text-align: left"&gt;
+&lt;img src="15-SpatialRegression_slides_files/figure-html/unnamed-chunk-13-1.png" alt="left-aligned"  /&gt;
+&lt;p class="caption"&gt;left-aligned&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Нормированная матрица
+
+Вес `\(j\)`-й единицы по отношению к `\(i\)`-й равен `\(1/n_i\)`, где `\(n_i\)` — количество соседей у `\(i\)`.
+&lt;div class="figure" style="text-align: left"&gt;
+&lt;img src="15-SpatialRegression_slides_files/figure-html/unnamed-chunk-14-1.png" alt="left-aligned"  /&gt;
+&lt;p class="caption"&gt;left-aligned&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## Пространственная автокорреляция
+
+&lt;div class="figure" style="text-align: left"&gt;
+&lt;img src="15-SpatialRegression_slides_files/figure-html/unnamed-chunk-15-1.png" alt="left-aligned"  /&gt;
+&lt;p class="caption"&gt;left-aligned&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
 ## Географически взвешенная регрессия
 
 В стандартной модели линейной регрессии параметры модели предполагаются постоянными:
@@ -348,9 +532,35 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();</script>
-
-<script>
+})();
+(function() {
+  "use strict"
+  /* Replace <script> tags in slides area to make them executable
+   *
+   * Runs after post-processing of markdown source into slides and replaces only
+   * <script>s on the last slide of continued slides using the .has-continuation
+   * class added by xaringan. Finally, any <script>s in the slides area that
+   * aren't executed are commented out.
+   */
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container:not(.has-continuation) script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+  var scriptsNotExecuted = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container.has-continuation script'
+  );
+  if (!scriptsNotExecuted.length) return;
+  for (var i = 0; i < scriptsNotExecuted.length; i++) {
+    var comment = document.createComment(scriptsNotExecuted[i].outerHTML)
+    scriptsNotExecuted[i].parentElement.replaceChild(comment, scriptsNotExecuted[i])
+  }
+})();
 (function() {
   var links = document.getElementsByTagName('a');
   for (var i = 0; i < links.length; i++) {
@@ -359,7 +569,23 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
   }
 })();
-</script>
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
 
 <script>
 slideshow._releaseMath = function(el) {
