@@ -570,7 +570,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="advgraphics_eurostat" class="section level2">
 <h2><span class="header-section-number">6.2</span> Загрузка данных Евростата</h2>
-<p>Таблицы данных Евростата имеют уникальные коды, по которым их можно загружать, используя API (Application programming interface). В этой лекции мы будем работать с данными о крупнейших международных партнерах Евросоюза по импорту и экспорту основных видов товаров. Например, <a href="https://ec.europa.eu/eurostat/tgm/table.do?tab=table&amp;init=1&amp;language=en&amp;pcode=tet00034&amp;plugin=1">таблица данных по продуктам питания, напиткам и табаку</a> имеет код <strong>tet00034</strong>.</p>
+<p>Таблицы данных Евростата имеют уникальные коды, по которым их можно загружать, используя API (Application programming interface). В этой лекции мы будем работать с данными о крупнейших международных партнерах Евросоюза по импорту и экспорту основных видов товаров. Например, <a href="https://ec.europa.eu/eurostat/databrowser/view/tet00034/default/table?lang=en">таблица данных по продуктам питания, напиткам и табаку</a> имеет код <strong>tet00034</strong>:</p>
+<p><img src="images/eurostat.png" width="1335" /></p>
 <p>Для чтения таблиц по кодам в пакете eurostat имеется функция <code>get_eurostat()</code>. Чтобы год измерения получить в виде числа, а не объекта типа <code>Date</code>, используем второй параметр <code>time_format = num</code>. Для перехода от кодов продукции и стран к их полным наименованиям, дополнительно вызовем функцию <code>label_eurostat()</code> из того же пакета:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="advgraphics.html#cb2-1"></a><span class="kw">library</span>(eurostat)</span>
 <span id="cb2-2"><a href="advgraphics.html#cb2-2"></a></span>
@@ -585,7 +586,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-11"><a href="advgraphics.html#cb2-11"></a><span class="st">  </span><span class="kw">pivot_wider</span>(<span class="dt">names_from =</span> indic_et, <span class="dt">values_from =</span> values) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># вынесем данные по экспорту и импорту в отдельные переменные</span></span>
 <span id="cb2-12"><a href="advgraphics.html#cb2-12"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">export =</span> <span class="st">`</span><span class="dt">Exports in million of ECU/EURO</span><span class="st">`</span>, <span class="co"># дадим им краткие названия</span></span>
 <span id="cb2-13"><a href="advgraphics.html#cb2-13"></a>         <span class="dt">import =</span> <span class="st">`</span><span class="dt">Imports in million of ECU/EURO</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb2-14"><a href="advgraphics.html#cb2-14"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">partner =</span> <span class="kw">as.factor</span>(partner))</span></code></pre></div>
+<span id="cb2-14"><a href="advgraphics.html#cb2-14"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">partner =</span> <span class="kw">as.factor</span>(partner))</span>
+<span id="cb2-15"><a href="advgraphics.html#cb2-15"></a></span>
+<span id="cb2-16"><a href="advgraphics.html#cb2-16"></a>trades <span class="co"># посмотрим, что получилось</span></span>
+<span id="cb2-17"><a href="advgraphics.html#cb2-17"></a><span class="co">## # A tibble: 720 x 5</span></span>
+<span id="cb2-18"><a href="advgraphics.html#cb2-18"></a><span class="co">##    sitc06                   partner                time        export import</span></span>
+<span id="cb2-19"><a href="advgraphics.html#cb2-19"></a><span class="co">##    &lt;chr&gt;                    &lt;fct&gt;                  &lt;date&gt;       &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb2-20"><a href="advgraphics.html#cb2-20"></a><span class="co">##  1 Food, drinks and tobacco Argentina              2008-01-01    81.3  7334 </span></span>
+<span id="cb2-21"><a href="advgraphics.html#cb2-21"></a><span class="co">##  2 Food, drinks and tobacco Brazil                 2008-01-01   600.   9639.</span></span>
+<span id="cb2-22"><a href="advgraphics.html#cb2-22"></a><span class="co">##  3 Food, drinks and tobacco Canada                 2008-01-01  1950.   1458.</span></span>
+<span id="cb2-23"><a href="advgraphics.html#cb2-23"></a><span class="co">##  4 Food, drinks and tobacco Switzerland            2008-01-01  5000.   2727.</span></span>
+<span id="cb2-24"><a href="advgraphics.html#cb2-24"></a><span class="co">##  5 Food, drinks and tobacco China except Hong Kong 2008-01-01  1322.   3567.</span></span>
+<span id="cb2-25"><a href="advgraphics.html#cb2-25"></a><span class="co">##  6 Food, drinks and tobacco Japan                  2008-01-01  3964.    119.</span></span>
+<span id="cb2-26"><a href="advgraphics.html#cb2-26"></a><span class="co">##  7 Food, drinks and tobacco Norway                 2008-01-01  2416.   3012.</span></span>
+<span id="cb2-27"><a href="advgraphics.html#cb2-27"></a><span class="co">##  8 Food, drinks and tobacco Russia                 2008-01-01  7567.    855.</span></span>
+<span id="cb2-28"><a href="advgraphics.html#cb2-28"></a><span class="co">##  9 Food, drinks and tobacco Turkey                 2008-01-01  1175    3160.</span></span>
+<span id="cb2-29"><a href="advgraphics.html#cb2-29"></a><span class="co">## 10 Food, drinks and tobacco United States          2008-01-01 10021.   6030.</span></span>
+<span id="cb2-30"><a href="advgraphics.html#cb2-30"></a><span class="co">## # … with 710 more rows</span></span></code></pre></div>
 </div>
 <div id="advgraphics_nasapower" class="section level2">
 <h2><span class="header-section-number">6.3</span> Загрузка данных NASA POWER</h2>
@@ -600,7 +617,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-7"><a href="advgraphics.html#cb3-7"></a>  <span class="dt">temporal_average =</span> <span class="st">&quot;DAILY&quot;</span></span>
 <span id="cb3-8"><a href="advgraphics.html#cb3-8"></a>)</span>
 <span id="cb3-9"><a href="advgraphics.html#cb3-9"></a></span>
-<span id="cb3-10"><a href="advgraphics.html#cb3-10"></a>daily_single_ag</span>
+<span id="cb3-10"><a href="advgraphics.html#cb3-10"></a>daily_single_ag <span class="co"># посмотрим, что получилось</span></span>
 <span id="cb3-11"><a href="advgraphics.html#cb3-11"></a><span class="co">## NASA/POWER SRB/FLASHFlux/MERRA2/GEOS 5.12.4 (FP-IT) 0.5 x 0.5 Degree Daily Averaged Data  </span></span>
 <span id="cb3-12"><a href="advgraphics.html#cb3-12"></a><span class="co">##  Dates (month/day/year): 04/01/1995 through 04/30/1995  </span></span>
 <span id="cb3-13"><a href="advgraphics.html#cb3-13"></a><span class="co">##  Location: Latitude  56.84   Longitude 60.59  </span></span>
@@ -636,7 +653,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-6"><a href="advgraphics.html#cb4-6"></a>  <span class="dt">pars =</span> <span class="kw">c</span>(<span class="st">&quot;CLRSKY_SFC_SW_DWN&quot;</span>,</span>
 <span id="cb4-7"><a href="advgraphics.html#cb4-7"></a>           <span class="st">&quot;ALLSKY_SFC_SW_DWN&quot;</span>)</span>
 <span id="cb4-8"><a href="advgraphics.html#cb4-8"></a>)</span>
-<span id="cb4-9"><a href="advgraphics.html#cb4-9"></a>interannual_sse</span>
+<span id="cb4-9"><a href="advgraphics.html#cb4-9"></a>interannual_sse <span class="co"># посмотрим, что получилось</span></span>
 <span id="cb4-10"><a href="advgraphics.html#cb4-10"></a><span class="co">## NASA/POWER SRB/FLASHFlux/MERRA2/GEOS 5.12.4 (FP-IT) 0.5 x 0.5 Degree Interannual Averages/Sums  </span></span>
 <span id="cb4-11"><a href="advgraphics.html#cb4-11"></a><span class="co">##  Dates (month/day/year): 01/01/1995 through 12/31/1996  </span></span>
 <span id="cb4-12"><a href="advgraphics.html#cb4-12"></a><span class="co">##  Location: Latitude  56.84   Longitude 60.59  </span></span>
@@ -668,7 +685,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-5"><a href="advgraphics.html#cb5-5"></a>  </span>
 <span id="cb5-6"><a href="advgraphics.html#cb5-6"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total) <span class="op">+</span></span>
 <span id="cb5-7"><a href="advgraphics.html#cb5-7"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export))</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>Базовый (минимально необходимый) шаблон построения графика через <strong>ggplot</strong> выглядит следующим образом:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="advgraphics.html#cb6-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> <span class="op">&lt;</span>DATA<span class="op">&gt;</span>) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb6-2"><a href="advgraphics.html#cb6-2"></a><span class="st">  </span><span class="er">&lt;</span>GEOM_FUNCTION<span class="op">&gt;</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="op">&lt;</span>MAPPINGS<span class="op">&gt;</span>))</span></code></pre></div>
@@ -685,40 +702,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>В первом примере мы отображали данные по экспорту за разные года, однако точечный тип не очень подходит для данного типа графика, поскольку он показывает динамику изменения. А это означает, что желательно соединить точки линиями. Для этого используем геометрию <code>geom_line()</code>:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="advgraphics.html#cb7-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total) <span class="op">+</span></span>
 <span id="cb7-2"><a href="advgraphics.html#cb7-2"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export))</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>Поскольку в данном случае величина является агрегированной за год, более правильным может быть показ ее изменений в виде ступенчатого линейного графика, который получается через геометрию <code>geom_step()</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="advgraphics.html#cb8-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total) <span class="op">+</span></span>
 <span id="cb8-2"><a href="advgraphics.html#cb8-2"></a><span class="st">  </span><span class="kw">geom_step</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export))</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>Можно совместить несколько геометрий, добавив их последовательно на график:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="advgraphics.html#cb9-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total) <span class="op">+</span></span>
 <span id="cb9-2"><a href="advgraphics.html#cb9-2"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span></span>
 <span id="cb9-3"><a href="advgraphics.html#cb9-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export))</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>Если у нескольких геометрий одинаковые отображения, их можно вынести в вызов функции <code>ggplot()</code> (чтобы не дублировать):</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="advgraphics.html#cb10-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span></span>
 <span id="cb10-2"><a href="advgraphics.html#cb10-2"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
 <span id="cb10-3"><a href="advgraphics.html#cb10-3"></a><span class="st">  </span><span class="kw">geom_point</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Наглядность линейного графика можно усилить, добавив “заливку” области с использованием <code>geom_area()</code>:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="advgraphics.html#cb11-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span></span>
 <span id="cb11-2"><a href="advgraphics.html#cb11-2"></a><span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span></span>
 <span id="cb11-3"><a href="advgraphics.html#cb11-3"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
 <span id="cb11-4"><a href="advgraphics.html#cb11-4"></a><span class="st">  </span><span class="kw">geom_point</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>Для построения столбчатой диаграммы следует использовать геометрию <code>geom_col()</code>. Например, вот так выглядит структура экспорта продукции машиностроения из Евросоюза по ведущим партнерам:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="advgraphics.html#cb12-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb12-2"><a href="advgraphics.html#cb12-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb12-3"><a href="advgraphics.html#cb12-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export)) <span class="op">+</span></span>
 <span id="cb12-4"><a href="advgraphics.html#cb12-4"></a><span class="st">  </span><span class="kw">geom_col</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>Развернуть диаграмму можно, используя функцию <code>coord_flip()</code>:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="advgraphics.html#cb13-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb13-2"><a href="advgraphics.html#cb13-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb13-3"><a href="advgraphics.html#cb13-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export)) <span class="op">+</span></span>
 <span id="cb13-4"><a href="advgraphics.html#cb13-4"></a><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span></span>
 <span id="cb13-5"><a href="advgraphics.html#cb13-5"></a><span class="st">  </span><span class="kw">coord_flip</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
 <div id="advgraphics_aes" class="section level2">
 <h2><span class="header-section-number">6.6</span> Графические переменные и группировки</h2>
@@ -727,66 +744,66 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="advgraphics.html#cb14-1"></a><span class="co"># один цвет для графика (параметр за пределами aes)</span></span>
 <span id="cb14-2"><a href="advgraphics.html#cb14-2"></a><span class="kw">ggplot</span>(trades_total) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb14-3"><a href="advgraphics.html#cb14-3"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export), <span class="dt">color =</span> <span class="st">&#39;blue&#39;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="advgraphics.html#cb15-1"></a></span>
 <span id="cb15-2"><a href="advgraphics.html#cb15-2"></a>trade_russia =<span class="st"> </span>trades <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(partner <span class="op">==</span><span class="st"> &#39;Russia&#39;</span>)</span>
 <span id="cb15-3"><a href="advgraphics.html#cb15-3"></a></span>
 <span id="cb15-4"><a href="advgraphics.html#cb15-4"></a><span class="kw">ggplot</span>(trade_russia) <span class="op">+</span><span class="st"> </span><span class="co"># у каждой группы данных свой цвет (параметр внутри aes)</span></span>
 <span id="cb15-5"><a href="advgraphics.html#cb15-5"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export, <span class="dt">color =</span> sitc06))</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-14-2.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="advgraphics.html#cb16-1"></a></span>
 <span id="cb16-2"><a href="advgraphics.html#cb16-2"></a><span class="kw">ggplot</span>(trade_russia, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export, <span class="dt">color =</span> sitc06)) <span class="op">+</span><span class="st"> </span><span class="co"># а теперь и с точками</span></span>
 <span id="cb16-3"><a href="advgraphics.html#cb16-3"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
 <span id="cb16-4"><a href="advgraphics.html#cb16-4"></a><span class="st">  </span><span class="kw">geom_point</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-14-3.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-15-3.png" width="672" /></p>
 <p>Аналогичным образом работает параметр формы значка:</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="advgraphics.html#cb17-1"></a><span class="co"># один значок для графика</span></span>
 <span id="cb17-2"><a href="advgraphics.html#cb17-2"></a><span class="kw">ggplot</span>(trades_total) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb17-3"><a href="advgraphics.html#cb17-3"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export), <span class="dt">shape =</span> <span class="dv">15</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="advgraphics.html#cb18-1"></a>    </span>
 <span id="cb18-2"><a href="advgraphics.html#cb18-2"></a></span>
 <span id="cb18-3"><a href="advgraphics.html#cb18-3"></a><span class="kw">ggplot</span>(trade_russia) <span class="op">+</span><span class="st"> </span><span class="co"># у каждой группы данных свой значок</span></span>
 <span id="cb18-4"><a href="advgraphics.html#cb18-4"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export, <span class="dt">shape =</span> sitc06))</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
 <p>Для изменения размера значка или линии используйте параметр <code>size</code>:</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="advgraphics.html#cb19-1"></a><span class="co"># изменение размера значка и линии</span></span>
 <span id="cb19-2"><a href="advgraphics.html#cb19-2"></a><span class="kw">ggplot</span>(trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb19-3"><a href="advgraphics.html#cb19-3"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">5</span>) <span class="op">+</span></span>
 <span id="cb19-4"><a href="advgraphics.html#cb19-4"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="dt">size =</span> <span class="dv">2</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <p>Если вы используете зависимые от значений графические переменные и при этом хотите добавить на график еще одну геометрию (c постоянными параметрами), то вам необходимо сгруппировать объекты второй геометрии по той же переменной, по которой вы осуществляете разбиение в первой геометрии. Для этого используйте параметр <code>group</code>:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="advgraphics.html#cb20-1"></a><span class="kw">ggplot</span>(trade_russia, <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb20-2"><a href="advgraphics.html#cb20-2"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">shape =</span> sitc06)) <span class="op">+</span></span>
 <span id="cb20-3"><a href="advgraphics.html#cb20-3"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> sitc06))</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <p>Для изменения цвета столбчатых диаграмм следует использовать параметр <code>fill</code>, а цвет и толщина обводки определяются параметрами <code>color</code> и <code>size</code>:</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="advgraphics.html#cb21-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb21-2"><a href="advgraphics.html#cb21-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb21-3"><a href="advgraphics.html#cb21-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export)) <span class="op">+</span></span>
 <span id="cb21-4"><a href="advgraphics.html#cb21-4"></a><span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">fill =</span> <span class="st">&#39;plum4&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span></span>
 <span id="cb21-5"><a href="advgraphics.html#cb21-5"></a><span class="st">  </span><span class="kw">coord_flip</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <p>Цвет на столбчатых диаграммах можно использовать для отображения дополнительных переменных, например типа экспортируемой продукции. По умолчанию столбики будут образовывать стек</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="advgraphics.html#cb22-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb22-2"><a href="advgraphics.html#cb22-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb22-3"><a href="advgraphics.html#cb22-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export, <span class="dt">fill =</span> sitc06)) <span class="op">+</span></span>
 <span id="cb22-4"><a href="advgraphics.html#cb22-4"></a><span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span></span>
 <span id="cb22-5"><a href="advgraphics.html#cb22-5"></a><span class="st">  </span><span class="kw">coord_flip</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <p>Если вам важно не абсолютное количество, а процентное соотношение величин, вы можете применить вид группировки <code>position == 'fill</code>:</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="advgraphics.html#cb23-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb23-2"><a href="advgraphics.html#cb23-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb23-3"><a href="advgraphics.html#cb23-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export, <span class="dt">fill =</span> sitc06)) <span class="op">+</span></span>
 <span id="cb23-4"><a href="advgraphics.html#cb23-4"></a><span class="st">    </span><span class="kw">geom_col</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="st">&#39;fill&#39;</span>) <span class="op">+</span></span>
 <span id="cb23-5"><a href="advgraphics.html#cb23-5"></a><span class="st">    </span><span class="kw">coord_flip</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 <p>Еще один вид группировки — это группировка по соседству. Чтобы использовать ее, применить метод <code>position == 'dodge</code>:</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="advgraphics.html#cb24-1"></a>trade_russia <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb24-2"><a href="advgraphics.html#cb24-2"></a><span class="st">  </span><span class="kw">filter</span>(time <span class="op">&gt;=</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2013-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb24-3"><a href="advgraphics.html#cb24-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export, <span class="dt">fill =</span> sitc06)) <span class="op">+</span></span>
 <span id="cb24-4"><a href="advgraphics.html#cb24-4"></a><span class="st">    </span><span class="kw">geom_col</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="st">&#39;dodge&#39;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 </div>
 <div id="advgraphics_coords" class="section level2">
 <h2><span class="header-section-number">6.7</span> Системы координат</h2>
@@ -799,25 +816,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb25-5"><a href="advgraphics.html#cb25-5"></a></span>
 <span id="cb25-6"><a href="advgraphics.html#cb25-6"></a><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb25-7"><a href="advgraphics.html#cb25-7"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="advgraphics.html#cb26-1"></a></span>
 <span id="cb26-2"><a href="advgraphics.html#cb26-2"></a><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb26-3"><a href="advgraphics.html#cb26-3"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
 <span id="cb26-4"><a href="advgraphics.html#cb26-4"></a><span class="st">    </span><span class="kw">coord_flip</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-22-2.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-23-2.png" width="672" /></p>
 <p>Поскольку объемы продукции различаются <em>на порядки</em>, для различимости малых объемов целесообразно перейти к логарифмической шкале. Для этого используем <code>scale_log_x()</code> и <code>scale_log_y()</code>:</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="advgraphics.html#cb27-1"></a><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb27-2"><a href="advgraphics.html#cb27-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
 <span id="cb27-3"><a href="advgraphics.html#cb27-3"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
 <span id="cb27-4"><a href="advgraphics.html#cb27-4"></a><span class="st">  </span><span class="kw">scale_y_log10</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 <p>Преобразование в полярную систему координат используется для того чтобы получить круговую секторную диаграмму Найтингейл (<em>coxcomb chart</em>):</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="advgraphics.html#cb28-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb28-2"><a href="advgraphics.html#cb28-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb28-3"><a href="advgraphics.html#cb28-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> partner, <span class="dt">y =</span> export, <span class="dt">fill =</span> partner)) <span class="op">+</span></span>
 <span id="cb28-4"><a href="advgraphics.html#cb28-4"></a><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span></span>
 <span id="cb28-5"><a href="advgraphics.html#cb28-5"></a><span class="st">  </span><span class="kw">coord_polar</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <p>Разумеется, здесь тоже можно использовать преобразование шкалы по оси <em>Y</em> (которая теперь отвечает за радиус). Применим правило квадратного корня, добавив вызов функции <code>scale_y_sqrt()</code>:</p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="advgraphics.html#cb29-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb29-2"><a href="advgraphics.html#cb29-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
@@ -825,14 +842,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb29-4"><a href="advgraphics.html#cb29-4"></a><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span></span>
 <span id="cb29-5"><a href="advgraphics.html#cb29-5"></a><span class="st">  </span><span class="kw">coord_polar</span>() <span class="op">+</span></span>
 <span id="cb29-6"><a href="advgraphics.html#cb29-6"></a><span class="st">  </span><span class="kw">scale_y_sqrt</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
 <p>Чтобы построить классическую секторную диаграмму, необходимо, чтобы угол поворота соответствовал величине показателя (оси <em>Y</em>), а не названию категории (оси <em>X</em>). Для этого при вызове функции <code>coord_polar()</code> следует указать параметр <code>theta = 'y'</code>, а при вызове <code>geom_col()</code> оставить параметр <code>x</code> пустым:</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="advgraphics.html#cb30-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb30-2"><a href="advgraphics.html#cb30-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb30-3"><a href="advgraphics.html#cb30-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">&#39;&#39;</span>, <span class="dt">y =</span> export, <span class="dt">fill =</span> partner), <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span></span>
 <span id="cb30-4"><a href="advgraphics.html#cb30-4"></a><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span></span>
 <span id="cb30-5"><a href="advgraphics.html#cb30-5"></a><span class="st">  </span><span class="kw">coord_polar</span>(<span class="dt">theta =</span> <span class="st">&#39;y&#39;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
 </div>
 <div id="advgraphics_titles" class="section level2">
 <h2><span class="header-section-number">6.8</span> Названия осей и легенды</h2>
@@ -847,14 +864,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="advgraphics.html#cb31-1"></a><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb31-2"><a href="advgraphics.html#cb31-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
 <span id="cb31-3"><a href="advgraphics.html#cb31-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
 <p>Добавим заголовок и подзаголовок графика:</p>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="advgraphics.html#cb32-1"></a><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb32-2"><a href="advgraphics.html#cb32-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
 <span id="cb32-3"><a href="advgraphics.html#cb32-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Вид продукции&quot;</span>, <span class="dt">size =</span> <span class="st">&#39;Год&#39;</span>) <span class="op">+</span></span>
 <span id="cb32-4"><a href="advgraphics.html#cb32-4"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&#39;Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)&#39;</span>,</span>
 <span id="cb32-5"><a href="advgraphics.html#cb32-5"></a>          <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 <p>Изменим подписи осей:</p>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="advgraphics.html#cb33-1"></a><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb33-2"><a href="advgraphics.html#cb33-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
@@ -863,7 +880,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb33-5"><a href="advgraphics.html#cb33-5"></a>          <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>) <span class="op">+</span></span>
 <span id="cb33-6"><a href="advgraphics.html#cb33-6"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Экспорт&#39;</span>) <span class="op">+</span></span>
 <span id="cb33-7"><a href="advgraphics.html#cb33-7"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Импорт&#39;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
 </div>
 <div id="advgraphics_axes" class="section level2">
 <h2><span class="header-section-number">6.9</span> Разметка осей</h2>
@@ -876,38 +893,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb34-6"><a href="advgraphics.html#cb34-6"></a>          <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>) <span class="op">+</span></span>
 <span id="cb34-7"><a href="advgraphics.html#cb34-7"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Экспорт&#39;</span>) <span class="op">+</span></span>
 <span id="cb34-8"><a href="advgraphics.html#cb34-8"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Импорт&#39;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
 <p>Для управления разметкой осей необходимо использовать функции <code>scale_x_continuous()</code>, <code>scale_y_continuous()</code>, <code>scale_x_log10(...)</code>, <code>scale_y_log10(...)</code>, <code>scale_x_reverse(...)</code>, <code>scale_y_reverse(...)</code>, <code>scale_x_sqrt(...)</code>, <code>scale_y_sqrt(...)</code>, которые, с одной стороны, указывают тип оси, а с другой стороны — позволяют управлять параметрами сетки координат и подписями.</p>
 <p>Для изменения координат линий сетки и подписей необходимо использовать, соответственно, параметры <code>breaks</code> и <code>labels</code>:</p>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="advgraphics.html#cb35-1"></a><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb35-2"><a href="advgraphics.html#cb35-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
 <span id="cb35-3"><a href="advgraphics.html#cb35-3"></a><span class="st">  </span><span class="kw">scale_x_log10</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">500000</span>, <span class="dv">100000</span>)) <span class="op">+</span></span>
 <span id="cb35-4"><a href="advgraphics.html#cb35-4"></a><span class="st">  </span><span class="kw">scale_y_log10</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">500000</span>, <span class="dv">100000</span>))</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
 <p>В данном случае, как раз, будет достаточно полезным параметр <code>labels</code>, поскольку метки можно сделать более компактными, поделив их на 1000 (и не забыть потом указать, что объемы теперь указаны не в миллионах, а в миллиардах долларов):</p>
 <div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="advgraphics.html#cb36-1"></a>brks =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">500000</span>, <span class="dv">100000</span>)</span>
 <span id="cb36-2"><a href="advgraphics.html#cb36-2"></a><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb36-3"><a href="advgraphics.html#cb36-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
 <span id="cb36-4"><a href="advgraphics.html#cb36-4"></a><span class="st">  </span><span class="kw">scale_x_log10</span>(<span class="dt">breaks =</span> brks, <span class="dt">labels =</span> brks <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>) <span class="op">+</span></span>
 <span id="cb36-5"><a href="advgraphics.html#cb36-5"></a><span class="st">  </span><span class="kw">scale_y_log10</span>(<span class="dt">breaks =</span> brks, <span class="dt">labels =</span> brks <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
 <p>Для обычной шкалы используйте функции <code>scale_x_continuous()</code> и <code>scale_y_continuous()</code>:</p>
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="advgraphics.html#cb37-1"></a><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb37-2"><a href="advgraphics.html#cb37-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
 <span id="cb37-3"><a href="advgraphics.html#cb37-3"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> brks, <span class="dt">labels =</span> brks <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>) <span class="op">+</span></span>
 <span id="cb37-4"><a href="advgraphics.html#cb37-4"></a><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> brks, <span class="dt">labels =</span> brks <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
 <p>Для того чтобы принудительно указать диапазоны осей и графических переменных, следует использовать функции <code>lims(...)</code>, <code>xlim(...)</code> и <code>ylim(...)</code>. Например, мы можем приблизиться в левый нижний угол графика, задав диапазон 0-200000 по обеим осям:</p>
 <div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="advgraphics.html#cb38-1"></a><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb38-2"><a href="advgraphics.html#cb38-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
 <span id="cb38-3"><a href="advgraphics.html#cb38-3"></a><span class="st">  </span><span class="kw">xlim</span>(<span class="dv">0</span>, <span class="dv">75000</span>) <span class="op">+</span></span>
 <span id="cb38-4"><a href="advgraphics.html#cb38-4"></a><span class="st">  </span><span class="kw">ylim</span>(<span class="dv">0</span>, <span class="dv">75000</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
 <p>Функция <code>lims()</code> работает еще хитрее: она позволяет применять графические переменные только к ограниченному набору значений исходных данных. Например, таким путем я могу выделить на графике продукцию машиностроения:</p>
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="advgraphics.html#cb39-1"></a><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb39-2"><a href="advgraphics.html#cb39-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
 <span id="cb39-3"><a href="advgraphics.html#cb39-3"></a><span class="st">  </span><span class="kw">lims</span>(<span class="dt">color =</span> <span class="st">&#39;Machinery and transport equipment&#39;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
 </div>
 <div id="advgraphics_labels" class="section level2">
 <h2><span class="header-section-number">6.10</span> Подписи и аннотации</h2>
@@ -917,7 +934,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb40-3"><a href="advgraphics.html#cb40-3"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
 <span id="cb40-4"><a href="advgraphics.html#cb40-4"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
 <span id="cb40-5"><a href="advgraphics.html#cb40-5"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>))) <span class="co"># добавляем подписи</span></span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
 <p>Выравнивание подписи относительно якорной точки (снизу, сверху, справа, слева) по горизонтали и вертикали управляется параметрами <code>hjust</code> и <code>vjust</code>, а смещения по осям X (в координатах графика) — параметрами <code>nudge_x</code> и <code>nudge_y</code>:</p>
 <div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="advgraphics.html#cb41-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span></span>
 <span id="cb41-2"><a href="advgraphics.html#cb41-2"></a><span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span></span>
@@ -925,7 +942,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb41-4"><a href="advgraphics.html#cb41-4"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
 <span id="cb41-5"><a href="advgraphics.html#cb41-5"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)), </span>
 <span id="cb41-6"><a href="advgraphics.html#cb41-6"></a>            <span class="dt">vjust =</span> <span class="dv">0</span>, <span class="dt">nudge_y =</span> <span class="dv">40000</span>) <span class="co"># добавляем подписи</span></span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
 <p>Подписи с фоновой плашкой добавляются через функцию <code>geom_label()</code>, которая имеет аналогичный синтаксис:</p>
 <div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="advgraphics.html#cb42-1"></a>trades <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb42-2"><a href="advgraphics.html#cb42-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(sitc06 <span class="op">==</span><span class="st"> &#39;Machinery and transport equipment&#39;</span>, time <span class="op">==</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&#39;2017-01-01&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
@@ -933,7 +950,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb42-4"><a href="advgraphics.html#cb42-4"></a><span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">fill =</span> <span class="st">&#39;plum4&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span></span>
 <span id="cb42-5"><a href="advgraphics.html#cb42-5"></a><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span></span>
 <span id="cb42-6"><a href="advgraphics.html#cb42-6"></a><span class="st">  </span><span class="kw">geom_label</span>(<span class="kw">aes</span>(<span class="dt">y =</span> export <span class="op">/</span><span class="st"> </span><span class="dv">2</span>, <span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>))) <span class="co"># добавляем подписи</span></span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
 <p><strong>Аннотации</strong> представляют собой объекты, размещаемые на графике вручную, и используемые, как правило, для выделения объектов и областей. Для размещения аннотаций используется функция <code>annotate()</code>:</p>
 <div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="advgraphics.html#cb43-1"></a><span class="kw">ggplot</span>(<span class="dt">data =</span> trades_total, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> time, <span class="dt">y =</span> export)) <span class="op">+</span></span>
 <span id="cb43-2"><a href="advgraphics.html#cb43-2"></a><span class="st">  </span><span class="kw">geom_area</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="co"># полигон с прозрачностью 0,5</span></span>
@@ -942,13 +959,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb43-5"><a href="advgraphics.html#cb43-5"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)), </span>
 <span id="cb43-6"><a href="advgraphics.html#cb43-6"></a>            <span class="dt">vjust =</span> <span class="dv">0</span>, <span class="dt">nudge_y =</span> <span class="dv">40000</span>) <span class="op">+</span></span>
 <span id="cb43-7"><a href="advgraphics.html#cb43-7"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="kw">as.Date</span>(<span class="st">&#39;2009-01-01&#39;</span>), <span class="dt">y =</span> <span class="dv">550000</span>, <span class="dt">label =</span> <span class="st">&quot;Это провал&quot;</span>, <span class="dt">color =</span> <span class="st">&#39;red&#39;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
 <p>Аннотировать можно не только подписями, но и регионами. Например, мы можем выделить область, которая соответствует импорту/экспорту продукции химической промышленности:</p>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="advgraphics.html#cb44-1"></a><span class="kw">ggplot</span>(trades_type, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time)) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb44-2"><a href="advgraphics.html#cb44-2"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;rect&quot;</span>, <span class="dt">xmin =</span> <span class="dv">100000</span>, <span class="dt">xmax =</span> <span class="dv">250000</span>, <span class="dt">ymin =</span> <span class="dv">75000</span>, <span class="dt">ymax =</span> <span class="dv">175000</span>,  <span class="dt">alpha =</span> <span class="fl">.2</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
 <span id="cb44-3"><a href="advgraphics.html#cb44-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
 <span id="cb44-4"><a href="advgraphics.html#cb44-4"></a><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="dv">175000</span>, <span class="dt">y =</span> <span class="dv">190000</span>, <span class="dt">label =</span> <span class="st">&quot;Chemicals&quot;</span>, <span class="dt">color =</span> <span class="st">&#39;coral&#39;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
 </div>
 <div id="advgraphics_facets" class="section level2">
 <h2><span class="header-section-number">6.11</span> Фасеты</h2>
@@ -963,7 +980,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb45-8"><a href="advgraphics.html#cb45-8"></a>        <span class="dt">subtitle =</span> <span class="st">&#39;Данные по ключевым партнерам&#39;</span>) <span class="op">+</span></span>
 <span id="cb45-9"><a href="advgraphics.html#cb45-9"></a><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span></span>
 <span id="cb45-10"><a href="advgraphics.html#cb45-10"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>time)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
 </div>
 <div id="advgraphics_themes" class="section level2">
 <h2><span class="header-section-number">6.12</span> Темы</h2>
@@ -975,7 +992,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb46-5"><a href="advgraphics.html#cb46-5"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">floor</span>(export <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)), </span>
 <span id="cb46-6"><a href="advgraphics.html#cb46-6"></a>            <span class="dt">vjust =</span> <span class="dv">0</span>, <span class="dt">nudge_y =</span> <span class="dv">40000</span>) <span class="op">+</span></span>
 <span id="cb46-7"><a href="advgraphics.html#cb46-7"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-43-1.png" width="672" /></p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="advgraphics.html#cb47-1"></a></span>
 <span id="cb47-2"><a href="advgraphics.html#cb47-2"></a><span class="kw">ggplot</span>(trades_type) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb47-3"><a href="advgraphics.html#cb47-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> export, <span class="dt">y =</span> import, <span class="dt">color =</span> sitc06, <span class="dt">size =</span> time), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
@@ -985,7 +1002,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb47-7"><a href="advgraphics.html#cb47-7"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&#39;Экспорт&#39;</span>) <span class="op">+</span></span>
 <span id="cb47-8"><a href="advgraphics.html#cb47-8"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&#39;Импорт&#39;</span>) <span class="op">+</span></span>
 <span id="cb47-9"><a href="advgraphics.html#cb47-9"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-42-2.png" width="672" /></p>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-43-2.png" width="672" /></p>
 </div>
 <div id="questions_tasks_advgraphics" class="section level2">
 <h2><span class="header-section-number">6.13</span> Контрольные вопросы и упражнения</h2>
@@ -1021,9 +1038,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="tasks_advgraphics" class="section level3">
 <h3><span class="header-section-number">6.13.2</span> Упражнения</h3>
 <ol style="list-style-type: decimal">
-<li><p>Постройте линейный график хода температуры , а также столбчатую диаграмму хода суммарной солнечной радиации в Екатеринбурге на примере данных NASA POWER, загруженных в разделе <a href="advgraphics.html#advgraphics_nasapower">6.3</a>.<!-- \@ref(advgraphics_nasapower). --></p></li>
-<li><p>Таблица <em>storms</em> из пакета <strong>dplyr</strong> содержит данные трекинга тропических циклонов c 1975 по 2015 год. Извлеките из нее данные по одному выбранному циклону и постройте на их основе диаграмму рассеяния, на которой за оси <em>X</em> и <em>Y</em> отвечают давление и скорость ветра, а цвет кружка соответствует типу циклона из поля <em>status</em>.</p></li>
-<li><p>Загрузите <a href="https://ec.europa.eu/eurostat/tgm/table.do?tab=table&amp;init=1&amp;language=en&amp;pcode=tet00034&amp;plugin=1">таблицу данных по импорту/экспорту продуктов питания, напитков и табака</a> с портала Евростата (с использованием пакета <strong>eurostat</strong>). Постройте линейный график изменения <em>суммарных</em> величин импорта и экспорта по данному показателю (у вас должно получиться 2 графика на одном изображении). Используйте <em>цвет</em> для разделения графиков. Добавьте текстовые подписи величин импорта и экспорта.</p></li>
+<li><p>Постройте линейный график хода температуры , а также столбчатую диаграмму хода суммарной солнечной радиации в Екатеринбурге на примере данных NASA POWER, загруженных в разделе <a href="advgraphics.html#advgraphics_nasapower">6.3</a>.<!-- \@ref(advgraphics_nasapower). --></p>
+<blockquote>
+<p><strong>Подсказка</strong>: Для построения столбчатой диаграммы вам потребуется использовать функцию <code>geom_col()</code>, поскольку высота столбика отражает не встречаемость значения, а величину переменной. Также вам потребуется преобразовать таблицу среднемесячных величин к длинной форме, где название месяца будет отдельной переменной (тип — упорядоченный фактор).</p>
+</blockquote></li>
+<li><p>Загрузите <a href="https://ec.europa.eu/eurostat/databrowser/view/tet00034/default/table?lang=en">таблицу данных по импорту/экспорту продуктов питания, напитков и табака</a> с портала Евростата (с использованием пакета <strong>eurostat</strong>). Постройте линейный график изменения <em>суммарных</em> величин импорта и экспорта по данному показателю (у вас должно получиться 2 графика на одном изображении). Используйте <em>цвет</em> для разделения графиков. Добавьте текстовые подписи величин импорта и экспорта. Постройте также две круговых диаграммы, показывающих соотношение ведущих импортеров и экспортеров за последний имеющийся год. Сделайте сначала это отдельными графиками, а затем одним фасетным графиком (для этого потребуется привести таблицу к длинной форме).</p></li>
 </ol>
 <table>
 <tbody>
