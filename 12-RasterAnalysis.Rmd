@@ -221,13 +221,13 @@ water = st_read("data/water_polygon.gpkg") # Водные объекты
 dist_grid = stations %>% 
   st_bbox() %>% 
   st_as_stars(dx = 25, dy = 25) %>% 
-  transmute(dist = st_as_sf(., as_points = TRUE, merge = FALSE) %>% 
+  mutate(dist = st_as_sf(., as_points = TRUE, merge = FALSE) %>% 
            st_distance(stations, .) %>% 
            apply(2, min))
 
 # Визуализируем результат
 ggplot() +
-  geom_stars(data = dist_grid) +
+  geom_stars(data = dist_grid['dist']) +
   scale_fill_gradientn(colours = c('white', 'red', 'black')) +
   coord_sf(crs = st_crs(stations)) +
   geom_sf(data = water, size = 0.1) +
@@ -243,25 +243,12 @@ __Зональные операции__ связаны с агрегирован
 
 В качестве примера рассмотрим вычисление среднеклиматических параметров _WorldClim_ в пределах различных типов земельного покрова (Land Cover), которые доступны в пакете __tmap__:
 ```{r, fig.width=4, fig.height=4}
-temp_stars = raster::getData("worldclim", var = "tmean", res = 10) %>% 
+temp = raster::getData("worldclim", var = "tmean", res = 10) %>% 
   st_as_stars() / 10
-plot(temp_stars)
+plot(temp)
 
 
 data(land, package = 'tmap')
-types = land@data@attributes
-
-land_stars = land %>% 
-  st_as_stars() %>% 
-  split('band') %>% 
-  mutate(cover = factor(cover, 
-                        levels = types[[1]]$ID, 
-                        labels = types[[1]]$cover),
-         cover_cls = factor(cover,
-                        levels = types[[2]]$ID, 
-                        labels = types[[2]]$cover))
-
-# таблица типов земельного покрова и их идентификаторов в растре
 
 pal = c("#003200", "#3C9600", "#006E00", "#556E19", "#00C800", "#8CBE8C",
 		   "#467864", "#B4E664", "#9BC832", "#EBFF64", "#F06432", "#9132E6",
@@ -269,9 +256,9 @@ pal = c("#003200", "#3C9600", "#006E00", "#556E19", "#00C800", "#8CBE8C",
 		   "#FFFFFF", "#5ADCDC")
 
 ggplot() +
-  geom_stars(data = land_stars['cover']) +
+  geom_stars(data = land) +
   scale_fill_manual(values = pal, guide = guide_legend(ncol = 3), name = NULL) + 
-  coord_sf(crs = st_crs(land_stars)) +
+  coord_sf(crs = st_crs(land)) +
   theme(legend.position = 'bottom')
 ```
 
@@ -279,22 +266,23 @@ ggplot() +
 
 Предварительно необходимо убедиться, что оба растра имеют совпадающий охват (экстент) и пространственное разрешение. Обратите внимание на то, что, поскольку растр земельного покрова категориальный, для его передискретизации необходимо использовать метод ближайшего соседа (_Nearest Neighbor_), который для каждого пиксела нового растра берет значение в ближайшем к нему пикселе исходного растра:
 ```{r}
-temp_stars
-land_stars
+temp
+land
 
-(cover_stars = st_warp(land_stars['cover'], temp_stars %>% slice(band, 1), method = 'near'))
+(cover = st_warp(land['cover'], temp %>% slice(band, 1), method = 'near'))
 # используем 'near', поскольку растр категориальный
 ```
 
 Для вычисления средней температуры за каждый месяц в пределах каждой зоны земельного покрова выполним следующую последовательность действий:
 ```{r}
 months = 1:12
-cover_types = levels(cover_stars$cover)
+cover_types = levels(cover$cover)
 zonal_stats = lapply(cover_types, function(X) {
   sapply(months, function(Y) {
-    temp_month = temp_stars %>% slice(band, Y) %>% pull(1)
-    cover_stars %>% 
-      transmute(masked = ifelse(cover == X, temp_month, NA)) %>% 
+    temp_month = temp %>% slice(band, Y) %>% pull(1)
+    cover %>% 
+      mutate(masked = ifelse(cover == X, temp_month, NA)) %>% 
+      dplyr::select(masked) %>% 
       pull(masked) %>% 
       mean(na.rm = TRUE)
   })
@@ -314,32 +302,33 @@ ggplot(zonal_stats) +
 ```
 
 Перед вычислением целесообразно разделить растр землепользования на северное и южное полушарие (т.к. ход температур в них противоположный):
-```{r, eval = FALSE, fig.height=10}
-cover_north = crop(cover, extent(-180, 180, 0, 90))
-cover_south = crop(cover, extent(-180, 180, -60, 0))
+```{r, fig.height=10}
+cover_north = crop(as(cover['cover'], 'Raster'), extent(-180, 180, 0, 90))
+cover_south = crop(as(cover['cover'], 'Raster'), extent(-180, 180, -60, 0))
 
-temp_north = crop(temp, extent(-180, 180, 0, 90))
-temp_south = crop(temp, extent(-180, 180, -60, 0))
+temp_north = crop(as(temp, 'Raster'), extent(-180, 180, 0, 90))
+temp_south = crop(as(temp, 'Raster'), extent(-180, 180, -60, 0))
 
 mtemp_north_tidy = zonal(temp_north, cover_north, 'mean') %>% 
   as_tibble() %>% 
-  left_join(tbl[[1]], by = c('zone' = 'ID')) %>% 
-  gather(month, tmean, tmean1:tmean12) %>% 
-  separate(month, c('dummy', 'month'), sep = 5) %>% 
-  mutate(month = as.integer(month),
-         hemisphere = 'north') %>% 
-  dplyr::select(-COUNT, -dummy)
+  pivot_longer(-zone, 
+               names_to = 'month', 
+               values_to = 'tmean', 
+               names_prefix = 'layer.',
+               names_transform = list(month = as.integer)) %>% 
+  mutate(hemisphere = 'north')
 
 mtemp_south_tidy = zonal(temp_south, cover_south, 'mean') %>% 
   as_tibble() %>% 
-  left_join(tbl[[1]], by = c('zone' = 'ID')) %>% 
-  gather(month, tmean, tmean1:tmean12) %>% 
-  separate(month, c('dummy', 'month'), sep = 5) %>% 
-  mutate(month = as.integer(month),
-         hemisphere = 'south') %>% 
-  dplyr::select(-COUNT, -dummy)
+  pivot_longer(-zone, 
+               names_to = 'month', 
+               values_to = 'tmean', 
+               names_prefix = 'layer.',
+               names_transform = list(month = as.integer)) %>% 
+  mutate(hemisphere = 'south')
 
-mtemp_tidy2 = bind_rows(mtemp_north_tidy, mtemp_south_tidy)
+mtemp_tidy2 = bind_rows(mtemp_north_tidy, mtemp_south_tidy) %>% 
+  mutate(cover = levels(cover$cover)[zone])
 
 ggplot(mtemp_tidy2) +
   geom_line(aes(x = month, y = tmean, color = cover), size = 1) +
@@ -388,28 +377,35 @@ profile = mapedit::drawFeatures(mp)
 profile = st_read('data/profile.gpkg', quiet = TRUE)
 ```
 
-```{r, eval = FALSE}
-temprof = raster::extract(temp$tmean6, as(profile, 'Spatial'), 
+```{r}
+temprof = raster::extract(as(temp, 'Raster'), as(profile, 'Spatial'),
                           along = TRUE, cellnumbers = TRUE)
 head(temprof[[1]])
 ```
 
 Для построения линии профиля далее нам необходимо преобразовать идентификаторы ячеек растра в расстояние от начала профиля:
-```{r, eval = FALSE}
+```{r}
 tempdf = temprof[[1]] %>% 
   as_tibble() %>% 
-  bind_cols(xyFromCell(temp, .$cell) %>% as_tibble()) %>% 
+  drop_na() %>% 
+  bind_cols(st_coordinates(temp)[.$cell, ] %>% as_tibble()) %>% 
   mutate(dist = 0.001 * c(0, dplyr::select(., x, y) %>% 
                              geosphere::distGeo() %>% 
                              cumsum() %>% 
-                             head(-1)))
+                             head(-1))) %>% 
+  dplyr::select(-c(x, y, cell, band)) %>% 
+  pivot_longer(layer.1:layer.12, 
+               names_to = 'month', 
+               values_to = 'tmean', 
+               names_prefix = 'layer.',
+               names_transform = list(month = factor, ordered = TRUE, levels = 1:12))
 
 pts = profile %>% 
   st_cast('POINT') %>% 
   mutate(label = c('A', 'B'))
 
-tm_shape(temp) +
-  tm_raster('tmean6', midpoint = 0, palette = '-RdBu') +
+tm_shape(slice(temp, band, 6)) +
+  tm_raster('tmean1', midpoint = 0, palette = '-RdBu') +
 tm_shape(profile) +
   tm_lines() +
 tm_shape(pts) +
@@ -417,12 +413,14 @@ tm_shape(pts) +
   tm_text('label', remove.overlap = TRUE, auto.placement = TRUE) +
 tm_layout(legend.position = c('left', 'bottom'))
 
-ggplot(tempdf, aes(x = dist, y = tmean6)) +
-  geom_line() +
-  geom_smooth(span = 0.1) +
-  annotate('text', x = 0, y = 10, label = 'A') +
-  annotate('text', x = max(tempdf$dist), y = 10, label = 'B') +
-  ggtitle('Профиль среднемесячной температуры июня по линии A—B')
+tempdf %>% 
+  filter(month == 6) %>% 
+  ggplot(aes(x = dist, y = tmean)) +
+    geom_line() +
+    geom_smooth(span = 0.1) +
+    annotate('text', x = 0, y = 10, label = 'A') +
+    annotate('text', x = max(tempdf$dist), y = 10, label = 'B') +
+    ggtitle('Профиль среднемесячной температуры июня по линии A—B')
 ```
 
 ## Контрольные вопросы и упражнения {#questions_tasks_raster}

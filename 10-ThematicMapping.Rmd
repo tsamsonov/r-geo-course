@@ -19,7 +19,7 @@ library(mapview)
 library(classInt)
 library(gapminder)
 library(tidyverse)
-library(googlesheets)
+library(googlesheets4)
 library(rnaturalearth)
 ```
 
@@ -41,7 +41,7 @@ library(rnaturalearth)
 
 Для загрузки других слоев необходимо использовать функцию `ne_download()`, передав ей масштаб, название слоя и его категорию: 
 
-```{r}
+```{r, cache=TRUE}
 countries = ne_countries() %>% st_as_sf()
 
 coast = ne_coastline() %>% st_as_sf()
@@ -87,7 +87,7 @@ plot(lyrp$cities, add = TRUE, col = 'black', pch = 19, cex = 0.1)
 [WorldClim](http://www.worldclim.org/) --- это открытые сеточные наборы климатических характеристик с пространственным разрешением от $30''$ (около 1 км) до $10'$ (около 20 км). Данные можно выгрузить в виде файлов GeoTiff, однако эту операцию можно сделать и программным путем через пакет __raster__ --- используя функцию `getData()`. 
 
 Выполним загрузку 10-минутного растра с суммарным количеством осадков за год:
-```{r, fig.height=20}
+```{r, cache=TRUE, fig.height=20}
 prec = raster::getData("worldclim", var = "prec", res = 10)
 plot(prec, nc = 2) # это 12-канальный растр
 ```
@@ -145,10 +145,8 @@ tm_shape(lyrp$ocean)+
 ```
 
 __Количественный фон__ или __картограммы__ получаются при картографировании числового показателя применением той же функции `tm_polygons()`:
-```{r}
-('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo' %>% # продолжительность жизни
-  gs_key(lookup = FALSE) %>% # не используем авторизацию
-  gs_read(ws = 1) %>% 
+```{r, cache=TRUE}
+(read_sheet('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo') %>% # продолжительность жизни
   rename(name = 1) %>% 
   gather(year, lifexp, -name) %>% 
   filter(year == 2016) %>% 
@@ -508,7 +506,7 @@ tm_layout(frame = FALSE,
           legend.bg.color = 'white')
 ```
 
-Для отображения __координатной сетки__ вы можете использовать функцию `tm_grid()`. По умолчанию она строит координатную сетку в единицах измерения проекции. Однако если требуется градусная сетка, то ее можно определить, используя параметр `projection = "longlat"`:
+Для отображения __координатной сетки__ вы можете использовать функцию `tm_grid()`. По умолчанию она строит координатную сетку в единицах измерения проекции. Однако если требуется градусная сетка, то ее можно определить, используя параметр `projection = 4326`:
 ```{r}
 tm_shape(temp) +
   tm_raster('tmean1',
@@ -536,7 +534,7 @@ tm_grid(x = seq(-180, 180, by = 30),
         y = seq(-90, 90, by = 30), 
         lwd = 0.2,
         col = "black", 
-        projection = "longlat",
+        projection = 4326,
         labels.inside.frame = FALSE)
 ```
 
@@ -573,7 +571,7 @@ tm_grid(x = seq(-180, 180, by = 30),
         y = seq(-90, 90, by = 30), 
         lwd = 0.2,
         col = "black", 
-        projection = "longlat",
+        projection = 4326,
         labels.inside.frame = FALSE,
         labels.format = list(fun = function(X) paste0(X, '°')))
 ```
@@ -608,7 +606,7 @@ tm_grid(x = seq(-180, 180, by = 60),
         y = seq(-90, 90, by = 30), 
         lwd = 0.2,
         col = "black", 
-        projection = "longlat",
+        projection = 4326,
         labels.inside.frame = FALSE,
         labels.format = list(fun = function(X) paste0(X, '°')))
 ```
@@ -618,10 +616,9 @@ tm_grid(x = seq(-180, 180, by = 60),
 Фасетная компоновка предполагает, упорядочение элементов в матричной форме на одной странице. Как правило, картографические фасеты идентичны по содержанию, но показывают одно и то же явление при различных заданных условиях: за разные года, по разным странам и т.д. Создание фасет с помощью __tmap__ осуществляется с помощью специальной функции `tm_facets()`, которой необходимо передать название переменной, отвечающей за разделение. В свою очередь, это означает, что данные должны быть приведены к «длинной» форме (если информация за разные года содержится в разных столбцах, то нужно год записать в отдельную переменную). Здесь вам пригодится знание пакета __tidyr__.
 
 Рассмотрим создание фасет на примере данных Gapminder по средней продолжительности жизни c 1960 по 2010 г:
-```{r}
+```{r, cache=TRUE}
 ('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo' %>% # продолжительность жизни
-  gs_key(lookup = FALSE) %>% # не используем авторизацию
-  gs_read(ws = 1) %>% 
+  read_sheet() %>% 
   rename(name = 1) %>% 
   gather(year, lifexp, -name) %>% 
   filter(year %in% c(1960, 1970, 1980, 1990, 2000, 2010)) %>% 
@@ -709,7 +706,7 @@ maps = purrr::map2(names(temp), months, function(X, Y) {
           y = seq(-90, 90, by = 30), 
           lwd = 0.2,
           col = "black", 
-          projection = "longlat",
+          projection = 4326,
           labels.inside.frame = FALSE,
           labels.format = list(fun = function(Z) paste0(Z, '°')))
 })

@@ -505,7 +505,7 @@ psel.wgs = st_transform(psel, WGS84)
 
 # Получаем 5-минутную зону транспортной доступности
 # с помощью пакета osrm
-service_area = osrmIsochrone(loc = as(psel.wgs, 'Spatial'), breaks = 7)
+service_area = osrmIsochrone(psel.wgs, breaks = 3)
 
 # Преобразуем зону обратно в UTM для дальнейших операций
 service_area_utm = st_transform(st_as_sf(service_area), UTM)
@@ -557,8 +557,8 @@ destination = poi %>% filter(NAME == 'Чебуречная "Дружба"')
 destination_wgs = st_transform(destination, WGS84)
 
 # Строим маршрут
-route = osrmRoute(as(origin_wgs, 'Spatial'), 
-                  as(destination_wgs, 'Spatial'), 
+route = osrmRoute(origin_wgs, 
+                  destination_wgs, 
                   overview = "full", # запретить генерализацию линий
                   sp = TRUE) # вернуть результат в виде объекта класса Spatial
 

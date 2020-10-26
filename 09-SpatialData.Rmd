@@ -6,8 +6,8 @@
 library(datasets)
 knitr::opts_knit$set(global.par = TRUE)
 knitr::opts_chunk$set(warning=FALSE, message = FALSE, 
-                      cache = TRUE,
-                      cache.lazy = FALSE,
+                      # cache = TRUE,
+                      # cache.lazy = FALSE,
                       collapse=TRUE)
 ```
 
@@ -416,7 +416,7 @@ st_crs(countries)    # Координатная система
 Эта же функция позволяет создать новую координатную систему, путем передачи ей кода _EPSG_ или строки _PROJ.4_:
 ```{r}
 st_crs(3857) # Проекция Меркатора для карт мира
-st_crs(54030) # Проекция Робинсона для карт мира
+st_crs('+proj=robin') # Проекция Робинсона для карт мира
 
 # Проекция UTM, зона 37.
 st_crs('+proj=utm +zone=37 +datum=WGS84 +units=m')
@@ -449,7 +449,7 @@ plot(st_geometry(countries.merc),
 
 ```{r}
 # Проекция Робинсона (используем dplyr)
-countries.rob = countries %>% st_transform(54030)
+countries.rob = countries %>% st_transform('+proj=robin')
 plot(st_geometry(countries.rob), 
      col = 'lightgray',
      lwd = 0.5,
@@ -1113,7 +1113,7 @@ plot(st_geometry(countries.merc),
 
 ```{r}
 # Проекция Робинсона:
-img.merc = projectRaster(img, crs = st_crs(54030)[[2]])
+img.merc = projectRaster(img, crs = st_crs('+proj=robin')[[2]])
 plotRGB(img.merc)
 plot(st_geometry(countries.rob), 
      border = rgb(1,1,1,0.2), lwd = 0.5, add = TRUE)
@@ -1279,5 +1279,5 @@ mapview(countries, col.regions = 'white') + mapview(sf_stations, col.regions = '
 2. Таблица _storms_ из пакета __dplyr__ содержит данные трекинга тропических циклонов c 1975 по 2015 год. Выберите любой циклон и постройте для него линию трека прохождения и точки прохождения. Отобразите эти данные на интерактивной карте средствами __mapview__. Напишите программу таким образом, чтобы можно было выбирать имя циклона и программа отображала его трек на интерактивной карте.
 
 ----
-_Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, `lubridate::year(Sys.Date())`. DOI: [10.5281/zenodo.901911](https://doi.org/10.5281/zenodo.901911)
+_Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, `r lubridate::year(Sys.Date())`. DOI: [10.5281/zenodo.901911](https://doi.org/10.5281/zenodo.901911)
 ----

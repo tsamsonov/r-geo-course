@@ -373,10 +373,10 @@ $$w_i(\mathbf{p}) = d^{-2}_i / \sum_{j=1}^n d^{-2}_j$$
 
 # Интерполируем количество осадков:
 px_grid = px_grid %>% 
-  mutate(z_idw2 = gstat::idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 2.0)$var1.pred,
-         z_idw3 = gstat::idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 3.0)$var1.pred,
-         z_idw4 = gstat::idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 4.0)$var1.pred,
-         z_idw5 = gstat::idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 5.0)$var1.pred)
+  mutate(z_idw2 = gstat::idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 2.0) %>% pull(var1.pred) %>% as('vector'),
+         z_idw3 = gstat::idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 3.0) %>% pull(var1.pred) %>% as('vector'),
+         z_idw4 = gstat::idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 4.0) %>% pull(var1.pred) %>% as('vector'),
+         z_idw5 = gstat::idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 5.0) %>% pull(var1.pred) %>% as('vector'))
 
 cont_idw2 = st_contour(px_grid['z_idw2'], 
                        breaks = rain_levels, 
@@ -442,7 +442,7 @@ layout(p, scene = list(aspectratio =
 
 ```{r, message = FALSE, collapse=TRUE}
 px_grid = px_grid %>% 
-  mutate(z_idw30 = gstat::idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 30.0)$var1.pred)
+  mutate(z_idw30 = gstat::idw(rain_24 ~ 1, locations = pts, newdata = px_grid, idp = 30.0) %>% pull(var1.pred) %>% as('vector'))
 
 cont_idw30 = st_contour(px_grid['z_idw30'], 
                        breaks = rain_levels, 
@@ -707,11 +707,11 @@ layout(p, scene = list(aspectratio =
 # в наборе данных, который передается в параметр data:
 px_grid = px_grid %>% 
   mutate(z_trend1 = predict(gstat(formula = rain_24 ~ 1, data = pts, degree = 1), 
-                            newdata = px_grid)$var1.pred,
+                            newdata = px_grid) %>% pull(var1.pred) %>% as('vector'),
          z_trend2 = predict(gstat(formula = rain_24 ~ 1, data = pts, degree = 2), 
-                            newdata = px_grid)$var1.pred,
+                            newdata = px_grid) %>% pull(var1.pred) %>% as('vector'),
          z_trend3 = predict(gstat(formula = rain_24 ~ 1, data = pts, degree = 3), 
-                            newdata = px_grid)$var1.pred)
+                            newdata = px_grid) %>% pull(var1.pred) %>% as('vector'))
 # Строим горизонтали
 cont_trend1 = st_contour(px_grid['z_trend1'], 
                        breaks = rain_levels, 
@@ -796,11 +796,11 @@ layout(p, scene = list(aspectratio = list(x = 1, y = 1, z = 0.3)))
 # 0-я степень -------------------------------------------------------------
 px_grid = px_grid %>% 
   mutate(z_local0 = predict(loess(rain_24 ~ x + y, pts, degree = 0, 
-                                  span = 0.07, normalize = FALSE), coords_grid),
+                                  span = 0.07, normalize = FALSE), coords_grid) %>% as('vector'),
          z_local1 = predict(loess(rain_24 ~ x + y, pts, degree = 1, 
-                                  span = 0.07, normalize = FALSE), coords_grid),
+                                  span = 0.07, normalize = FALSE), coords_grid) %>% as('vector'),
          z_local2 = predict(loess(rain_24 ~ x + y, pts, degree = 2, 
-                                  span = 0.07, normalize = FALSE), coords_grid))
+                                  span = 0.07, normalize = FALSE), coords_grid) %>% as('vector'))
 
 
 # Визуализируем
@@ -867,11 +867,11 @@ layout(p, scene = list(aspectratio = list(x = 1, y = 1, z = 0.3)))
 ```{r, message = FALSE, results = "hide", collapse=TRUE}
 px_grid = px_grid %>% 
   mutate(z_local1_005 = predict(loess(rain_24 ~ x + y, pts, degree = 1, 
-                                  span = 0.05, normalize = FALSE), coords_grid),
-         z_local1_01 = predict(loess(rain_24 ~ x + y, pts, degree = 1, 
-                                  span = 0.1, normalize = FALSE), coords_grid),
-         z_local1_02 = predict(loess(rain_24 ~ x + y, pts, degree = 1, 
-                                  span = 0.2, normalize = FALSE), coords_grid))
+                                  span = 0.05, normalize = FALSE), coords_grid) %>% as('vector'),
+         z_local1_01  = predict(loess(rain_24 ~ x + y, pts, degree = 1, 
+                                  span = 0.1, normalize = FALSE), coords_grid) %>% as('vector'),
+         z_local1_02  = predict(loess(rain_24 ~ x + y, pts, degree = 1, 
+                                  span = 0.2, normalize = FALSE), coords_grid) %>% as('vector'))
 
 # Визуализируем
 cont_local1_005 = st_contour(px_grid['z_local1_005'], 
@@ -969,18 +969,20 @@ tm_shape(nc) +
   tm_borders(col = 'white')
 ```
 
-```{r}
-nc.sids <- maptools::readShapeSpatial(system.file("shapes/sids.shp", package="maptools")[1], 
-   IDvar="FIPSNO", proj4string=sp::CRS("+proj=longlat +ellps=clrk66"))
+```{r, eval = FALSE}
+nc.sids = maptools::readShapeSpatial(system.file("shapes/sids.shp", 
+                                                  package="maptools")[1], 
+                                      IDvar = "FIPSNO", 
+                                      proj4string = sp::CRS("+proj=longlat +ellps=clrk66"))
 
-births74 <- pycno::pycno(nc.sids,nc.sids$BIR74,0.05,converge=1)
+births74 = pycno::pycno(nc.sids, nc.sids$BIR74, 0.05, converge=1)
 
 # Draw it
 bstars = stars::st_as_stars(births74)
 plot(bstars)
 
 # Overlay North Carolina county boundaries for reference
-plot(nc.sids,add=TRUE)
+plot(nc.sids, add = TRUE)
 ```
 
 
