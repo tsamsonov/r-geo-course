@@ -33,14 +33,14 @@
   
 <link rel="prev" href="advgraphics.html"/>
 <link rel="next" href="circular.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
-<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+<script src="libs/jquery/jquery.min.js"></script>
+<link href="libs/gitbook/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-clipboard.css" rel="stylesheet" />
 
 
 
@@ -50,7 +50,19 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<script src="libs/accessible-code-block/empty-anchor.js"></script>
+<script src="libs/htmlwidgets/htmlwidgets.js"></script>
+<link href="libs/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding/datatables.js"></script>
+<link href="libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk/js/crosstalk.min.js"></script>
+<script src="libs/plotly-binding/plotly.js"></script>
+<script src="libs/typedarray/typedarray.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main/plotly-latest.min.js"></script>
 
 
 <style type="text/css">
@@ -561,11 +573,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="stat_analysis_prerequisites" class="section level2">
 <h2><span class="header-section-number">7.1</span> Предварительные требования</h2>
 <p>Для работы по теме текущей лекции вам понадобятся пакеты из <strong>tidyverse</strong>. Помимо этого, мы будем работать с данными через интерфейс <em>Google Sheets</em> напрямую с использованием пакетов <a href="https://googledrive.tidyverse.org/"><strong>googledrive</strong></a> и <a href="https://googlesheets4.tidyverse.org/"><strong>googlesheets4</strong></a>. Также в лекции используется пакет <strong>ggrepel</strong>, позволяющий устранять конфликты подписей на графиках <strong>ggplot</strong>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="stat-analysis.html#cb1-1"></a><span class="kw">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="stat-analysis.html#cb1-2"></a><span class="kw">library</span>(googledrive)</span>
-<span id="cb1-3"><a href="stat-analysis.html#cb1-3"></a><span class="kw">library</span>(googlesheets4)</span>
-<span id="cb1-4"><a href="stat-analysis.html#cb1-4"></a><span class="kw">library</span>(ggrepel)</span>
-<span id="cb1-5"><a href="stat-analysis.html#cb1-5"></a><span class="kw">library</span>(readxl)</span></code></pre></div>
+<div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb332-1"><a href="stat-analysis.html#cb332-1"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb332-2"><a href="stat-analysis.html#cb332-2"></a><span class="kw">library</span>(googledrive)</span>
+<span id="cb332-3"><a href="stat-analysis.html#cb332-3"></a><span class="kw">library</span>(googlesheets4)</span>
+<span id="cb332-4"><a href="stat-analysis.html#cb332-4"></a><span class="kw">library</span>(ggrepel)</span>
+<span id="cb332-5"><a href="stat-analysis.html#cb332-5"></a><span class="kw">library</span>(readxl)</span></code></pre></div>
 </div>
 <div id="stat_analysis_intro" class="section level2">
 <h2><span class="header-section-number">7.2</span> Введение</h2>
@@ -608,364 +620,364 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">7.3.1</span> Оценка распределения</h3>
 <p>Для оценки распределения случайной величины можно использовать графические и статистические способы. Выявление типа распределения важно, поскольку статистические методы не универсальны, и во многих случаях предполагают, что изучаемая переменная подчиняется определенному закону распределения (как правило, нормальному).</p>
 <p>В качестве примера возьмем данные по ВВП на душу населения, они содержатся в таблице gapminder с ниже приведенным кодом</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="stat-analysis.html#cb2-1"></a>gdpdf =<span class="st"> </span><span class="kw">read_sheet</span>(<span class="st">&#39;1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg&#39;</span>)<span class="co"># выгружаем данные по ВВП на душу населения и сохраняем в переменную gdpdf</span></span>
-<span id="cb2-2"><a href="stat-analysis.html#cb2-2"></a>gdpdf</span>
-<span id="cb2-3"><a href="stat-analysis.html#cb2-3"></a><span class="co">## # A tibble: 260 x 256</span></span>
-<span id="cb2-4"><a href="stat-analysis.html#cb2-4"></a><span class="co">##    `GDP per capita… `1764` `1765` `1766` `1767` `1768` `1769` `1770` `1771`</span></span>
-<span id="cb2-5"><a href="stat-analysis.html#cb2-5"></a><span class="co">##    &lt;chr&gt;             &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span id="cb2-6"><a href="stat-analysis.html#cb2-6"></a><span class="co">##  1 Abkhazia             NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-7"><a href="stat-analysis.html#cb2-7"></a><span class="co">##  2 Afghanistan          NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-8"><a href="stat-analysis.html#cb2-8"></a><span class="co">##  3 Akrotiri and Dh…     NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-9"><a href="stat-analysis.html#cb2-9"></a><span class="co">##  4 Albania              NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-10"><a href="stat-analysis.html#cb2-10"></a><span class="co">##  5 Algeria              NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-11"><a href="stat-analysis.html#cb2-11"></a><span class="co">##  6 American Samoa       NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-12"><a href="stat-analysis.html#cb2-12"></a><span class="co">##  7 Andorra              NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-13"><a href="stat-analysis.html#cb2-13"></a><span class="co">##  8 Angola               NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-14"><a href="stat-analysis.html#cb2-14"></a><span class="co">##  9 Anguilla             NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-15"><a href="stat-analysis.html#cb2-15"></a><span class="co">## 10 Antigua and Bar…     NA     NA     NA     NA     NA     NA     NA     NA</span></span>
-<span id="cb2-16"><a href="stat-analysis.html#cb2-16"></a><span class="co">## # … with 250 more rows, and 247 more variables: `1772` &lt;dbl&gt;, `1773` &lt;dbl&gt;,</span></span>
-<span id="cb2-17"><a href="stat-analysis.html#cb2-17"></a><span class="co">## #   `1774` &lt;dbl&gt;, `1775` &lt;dbl&gt;, `1776` &lt;dbl&gt;, `1777` &lt;dbl&gt;, `1778` &lt;dbl&gt;,</span></span>
-<span id="cb2-18"><a href="stat-analysis.html#cb2-18"></a><span class="co">## #   `1779` &lt;dbl&gt;, `1780` &lt;dbl&gt;, `1781` &lt;dbl&gt;, `1782` &lt;dbl&gt;, `1783` &lt;dbl&gt;,</span></span>
-<span id="cb2-19"><a href="stat-analysis.html#cb2-19"></a><span class="co">## #   `1784` &lt;dbl&gt;, `1785` &lt;dbl&gt;, `1786` &lt;dbl&gt;, `1787` &lt;dbl&gt;, `1788` &lt;dbl&gt;,</span></span>
-<span id="cb2-20"><a href="stat-analysis.html#cb2-20"></a><span class="co">## #   `1789` &lt;dbl&gt;, `1790` &lt;dbl&gt;, `1791` &lt;dbl&gt;, `1792` &lt;dbl&gt;, `1793` &lt;dbl&gt;,</span></span>
-<span id="cb2-21"><a href="stat-analysis.html#cb2-21"></a><span class="co">## #   `1794` &lt;dbl&gt;, `1795` &lt;dbl&gt;, `1796` &lt;dbl&gt;, `1797` &lt;dbl&gt;, `1798` &lt;dbl&gt;,</span></span>
-<span id="cb2-22"><a href="stat-analysis.html#cb2-22"></a><span class="co">## #   `1799` &lt;dbl&gt;, `1800` &lt;dbl&gt;, `1801` &lt;dbl&gt;, `1802` &lt;dbl&gt;, `1803` &lt;dbl&gt;,</span></span>
-<span id="cb2-23"><a href="stat-analysis.html#cb2-23"></a><span class="co">## #   `1804` &lt;dbl&gt;, `1805` &lt;dbl&gt;, `1806` &lt;dbl&gt;, `1807` &lt;dbl&gt;, `1808` &lt;dbl&gt;,</span></span>
-<span id="cb2-24"><a href="stat-analysis.html#cb2-24"></a><span class="co">## #   `1809` &lt;dbl&gt;, `1810` &lt;dbl&gt;, `1811` &lt;dbl&gt;, `1812` &lt;dbl&gt;, `1813` &lt;dbl&gt;,</span></span>
-<span id="cb2-25"><a href="stat-analysis.html#cb2-25"></a><span class="co">## #   `1814` &lt;dbl&gt;, `1815` &lt;dbl&gt;, `1816` &lt;dbl&gt;, `1817` &lt;dbl&gt;, `1818` &lt;dbl&gt;,</span></span>
-<span id="cb2-26"><a href="stat-analysis.html#cb2-26"></a><span class="co">## #   `1819` &lt;dbl&gt;, `1820` &lt;dbl&gt;, `1821` &lt;dbl&gt;, `1822` &lt;dbl&gt;, `1823` &lt;dbl&gt;,</span></span>
-<span id="cb2-27"><a href="stat-analysis.html#cb2-27"></a><span class="co">## #   `1824` &lt;dbl&gt;, `1825` &lt;dbl&gt;, `1826` &lt;dbl&gt;, `1827` &lt;dbl&gt;, `1828` &lt;dbl&gt;,</span></span>
-<span id="cb2-28"><a href="stat-analysis.html#cb2-28"></a><span class="co">## #   `1829` &lt;dbl&gt;, `1830` &lt;dbl&gt;, `1831` &lt;dbl&gt;, `1832` &lt;dbl&gt;, `1833` &lt;dbl&gt;,</span></span>
-<span id="cb2-29"><a href="stat-analysis.html#cb2-29"></a><span class="co">## #   `1834` &lt;dbl&gt;, `1835` &lt;dbl&gt;, `1836` &lt;dbl&gt;, `1837` &lt;dbl&gt;, `1838` &lt;dbl&gt;,</span></span>
-<span id="cb2-30"><a href="stat-analysis.html#cb2-30"></a><span class="co">## #   `1839` &lt;dbl&gt;, `1840` &lt;dbl&gt;, `1841` &lt;dbl&gt;, `1842` &lt;dbl&gt;, `1843` &lt;dbl&gt;,</span></span>
-<span id="cb2-31"><a href="stat-analysis.html#cb2-31"></a><span class="co">## #   `1844` &lt;dbl&gt;, `1845` &lt;dbl&gt;, `1846` &lt;dbl&gt;, `1847` &lt;dbl&gt;, `1848` &lt;dbl&gt;,</span></span>
-<span id="cb2-32"><a href="stat-analysis.html#cb2-32"></a><span class="co">## #   `1849` &lt;dbl&gt;, `1850` &lt;dbl&gt;, `1851` &lt;dbl&gt;, `1852` &lt;dbl&gt;, `1853` &lt;dbl&gt;,</span></span>
-<span id="cb2-33"><a href="stat-analysis.html#cb2-33"></a><span class="co">## #   `1854` &lt;dbl&gt;, `1855` &lt;dbl&gt;, `1856` &lt;dbl&gt;, `1857` &lt;dbl&gt;, `1858` &lt;dbl&gt;,</span></span>
-<span id="cb2-34"><a href="stat-analysis.html#cb2-34"></a><span class="co">## #   `1859` &lt;dbl&gt;, `1860` &lt;dbl&gt;, `1861` &lt;dbl&gt;, `1862` &lt;dbl&gt;, `1863` &lt;dbl&gt;,</span></span>
-<span id="cb2-35"><a href="stat-analysis.html#cb2-35"></a><span class="co">## #   `1864` &lt;dbl&gt;, `1865` &lt;dbl&gt;, `1866` &lt;dbl&gt;, `1867` &lt;dbl&gt;, `1868` &lt;dbl&gt;,</span></span>
-<span id="cb2-36"><a href="stat-analysis.html#cb2-36"></a><span class="co">## #   `1869` &lt;dbl&gt;, `1870` &lt;dbl&gt;, `1871` &lt;dbl&gt;, …</span></span></code></pre></div>
+<div class="sourceCode" id="cb333"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb333-1"><a href="stat-analysis.html#cb333-1"></a>gdpdf =<span class="st"> </span><span class="kw">read_sheet</span>(<span class="st">&#39;1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg&#39;</span>)<span class="co"># выгружаем данные по ВВП на душу населения и сохраняем в переменную gdpdf</span></span>
+<span id="cb333-2"><a href="stat-analysis.html#cb333-2"></a>gdpdf</span>
+<span id="cb333-3"><a href="stat-analysis.html#cb333-3"></a><span class="co">## # A tibble: 260 x 256</span></span>
+<span id="cb333-4"><a href="stat-analysis.html#cb333-4"></a><span class="co">##    `GDP per capita… `1764` `1765` `1766` `1767` `1768` `1769` `1770` `1771`</span></span>
+<span id="cb333-5"><a href="stat-analysis.html#cb333-5"></a><span class="co">##    &lt;chr&gt;             &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb333-6"><a href="stat-analysis.html#cb333-6"></a><span class="co">##  1 Abkhazia             NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb333-7"><a href="stat-analysis.html#cb333-7"></a><span class="co">##  2 Afghanistan          NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb333-8"><a href="stat-analysis.html#cb333-8"></a><span class="co">##  3 Akrotiri and Dh…     NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb333-9"><a href="stat-analysis.html#cb333-9"></a><span class="co">##  4 Albania              NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb333-10"><a href="stat-analysis.html#cb333-10"></a><span class="co">##  5 Algeria              NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb333-11"><a href="stat-analysis.html#cb333-11"></a><span class="co">##  6 American Samoa       NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb333-12"><a href="stat-analysis.html#cb333-12"></a><span class="co">##  7 Andorra              NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb333-13"><a href="stat-analysis.html#cb333-13"></a><span class="co">##  8 Angola               NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb333-14"><a href="stat-analysis.html#cb333-14"></a><span class="co">##  9 Anguilla             NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb333-15"><a href="stat-analysis.html#cb333-15"></a><span class="co">## 10 Antigua and Bar…     NA     NA     NA     NA     NA     NA     NA     NA</span></span>
+<span id="cb333-16"><a href="stat-analysis.html#cb333-16"></a><span class="co">## # … with 250 more rows, and 247 more variables: `1772` &lt;dbl&gt;, `1773` &lt;dbl&gt;,</span></span>
+<span id="cb333-17"><a href="stat-analysis.html#cb333-17"></a><span class="co">## #   `1774` &lt;dbl&gt;, `1775` &lt;dbl&gt;, `1776` &lt;dbl&gt;, `1777` &lt;dbl&gt;, `1778` &lt;dbl&gt;,</span></span>
+<span id="cb333-18"><a href="stat-analysis.html#cb333-18"></a><span class="co">## #   `1779` &lt;dbl&gt;, `1780` &lt;dbl&gt;, `1781` &lt;dbl&gt;, `1782` &lt;dbl&gt;, `1783` &lt;dbl&gt;,</span></span>
+<span id="cb333-19"><a href="stat-analysis.html#cb333-19"></a><span class="co">## #   `1784` &lt;dbl&gt;, `1785` &lt;dbl&gt;, `1786` &lt;dbl&gt;, `1787` &lt;dbl&gt;, `1788` &lt;dbl&gt;,</span></span>
+<span id="cb333-20"><a href="stat-analysis.html#cb333-20"></a><span class="co">## #   `1789` &lt;dbl&gt;, `1790` &lt;dbl&gt;, `1791` &lt;dbl&gt;, `1792` &lt;dbl&gt;, `1793` &lt;dbl&gt;,</span></span>
+<span id="cb333-21"><a href="stat-analysis.html#cb333-21"></a><span class="co">## #   `1794` &lt;dbl&gt;, `1795` &lt;dbl&gt;, `1796` &lt;dbl&gt;, `1797` &lt;dbl&gt;, `1798` &lt;dbl&gt;,</span></span>
+<span id="cb333-22"><a href="stat-analysis.html#cb333-22"></a><span class="co">## #   `1799` &lt;dbl&gt;, `1800` &lt;dbl&gt;, `1801` &lt;dbl&gt;, `1802` &lt;dbl&gt;, `1803` &lt;dbl&gt;,</span></span>
+<span id="cb333-23"><a href="stat-analysis.html#cb333-23"></a><span class="co">## #   `1804` &lt;dbl&gt;, `1805` &lt;dbl&gt;, `1806` &lt;dbl&gt;, `1807` &lt;dbl&gt;, `1808` &lt;dbl&gt;,</span></span>
+<span id="cb333-24"><a href="stat-analysis.html#cb333-24"></a><span class="co">## #   `1809` &lt;dbl&gt;, `1810` &lt;dbl&gt;, `1811` &lt;dbl&gt;, `1812` &lt;dbl&gt;, `1813` &lt;dbl&gt;,</span></span>
+<span id="cb333-25"><a href="stat-analysis.html#cb333-25"></a><span class="co">## #   `1814` &lt;dbl&gt;, `1815` &lt;dbl&gt;, `1816` &lt;dbl&gt;, `1817` &lt;dbl&gt;, `1818` &lt;dbl&gt;,</span></span>
+<span id="cb333-26"><a href="stat-analysis.html#cb333-26"></a><span class="co">## #   `1819` &lt;dbl&gt;, `1820` &lt;dbl&gt;, `1821` &lt;dbl&gt;, `1822` &lt;dbl&gt;, `1823` &lt;dbl&gt;,</span></span>
+<span id="cb333-27"><a href="stat-analysis.html#cb333-27"></a><span class="co">## #   `1824` &lt;dbl&gt;, `1825` &lt;dbl&gt;, `1826` &lt;dbl&gt;, `1827` &lt;dbl&gt;, `1828` &lt;dbl&gt;,</span></span>
+<span id="cb333-28"><a href="stat-analysis.html#cb333-28"></a><span class="co">## #   `1829` &lt;dbl&gt;, `1830` &lt;dbl&gt;, `1831` &lt;dbl&gt;, `1832` &lt;dbl&gt;, `1833` &lt;dbl&gt;,</span></span>
+<span id="cb333-29"><a href="stat-analysis.html#cb333-29"></a><span class="co">## #   `1834` &lt;dbl&gt;, `1835` &lt;dbl&gt;, `1836` &lt;dbl&gt;, `1837` &lt;dbl&gt;, `1838` &lt;dbl&gt;,</span></span>
+<span id="cb333-30"><a href="stat-analysis.html#cb333-30"></a><span class="co">## #   `1839` &lt;dbl&gt;, `1840` &lt;dbl&gt;, `1841` &lt;dbl&gt;, `1842` &lt;dbl&gt;, `1843` &lt;dbl&gt;,</span></span>
+<span id="cb333-31"><a href="stat-analysis.html#cb333-31"></a><span class="co">## #   `1844` &lt;dbl&gt;, `1845` &lt;dbl&gt;, `1846` &lt;dbl&gt;, `1847` &lt;dbl&gt;, `1848` &lt;dbl&gt;,</span></span>
+<span id="cb333-32"><a href="stat-analysis.html#cb333-32"></a><span class="co">## #   `1849` &lt;dbl&gt;, `1850` &lt;dbl&gt;, `1851` &lt;dbl&gt;, `1852` &lt;dbl&gt;, `1853` &lt;dbl&gt;,</span></span>
+<span id="cb333-33"><a href="stat-analysis.html#cb333-33"></a><span class="co">## #   `1854` &lt;dbl&gt;, `1855` &lt;dbl&gt;, `1856` &lt;dbl&gt;, `1857` &lt;dbl&gt;, `1858` &lt;dbl&gt;,</span></span>
+<span id="cb333-34"><a href="stat-analysis.html#cb333-34"></a><span class="co">## #   `1859` &lt;dbl&gt;, `1860` &lt;dbl&gt;, `1861` &lt;dbl&gt;, `1862` &lt;dbl&gt;, `1863` &lt;dbl&gt;,</span></span>
+<span id="cb333-35"><a href="stat-analysis.html#cb333-35"></a><span class="co">## #   `1864` &lt;dbl&gt;, `1865` &lt;dbl&gt;, `1866` &lt;dbl&gt;, `1867` &lt;dbl&gt;, `1868` &lt;dbl&gt;,</span></span>
+<span id="cb333-36"><a href="stat-analysis.html#cb333-36"></a><span class="co">## #   `1869` &lt;dbl&gt;, `1870` &lt;dbl&gt;, `1871` &lt;dbl&gt;, …</span></span></code></pre></div>
 <p>Для дальнейшей работы целесообразно привести данные к аккуратному виду, избавившись от множества столбцов с годом измерения. Сразу получим данные за 2015 год для анализа:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="stat-analysis.html#cb3-1"></a>gdpdf_tidy =<span class="st"> </span>gdpdf <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb3-2"><a href="stat-analysis.html#cb3-2"></a><span class="st">   </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1764</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2018</span><span class="st">`</span>, </span>
-<span id="cb3-3"><a href="stat-analysis.html#cb3-3"></a>                <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, </span>
-<span id="cb3-4"><a href="stat-analysis.html#cb3-4"></a>                <span class="dt">values_to =</span> <span class="st">&#39;gdp&#39;</span>,</span>
-<span id="cb3-5"><a href="stat-analysis.html#cb3-5"></a>                <span class="dt">names_transform =</span> <span class="kw">list</span>(<span class="dt">year =</span> as.integer)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb3-6"><a href="stat-analysis.html#cb3-6"></a><span class="st">   </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
-<span id="cb3-7"><a href="stat-analysis.html#cb3-7"></a></span>
-<span id="cb3-8"><a href="stat-analysis.html#cb3-8"></a>gdpdf15 =<span class="st"> </span><span class="kw">filter</span>(gdpdf_tidy, year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>)</span>
-<span id="cb3-9"><a href="stat-analysis.html#cb3-9"></a></span>
-<span id="cb3-10"><a href="stat-analysis.html#cb3-10"></a>gdpdf15</span>
-<span id="cb3-11"><a href="stat-analysis.html#cb3-11"></a><span class="co">## # A tibble: 260 x 3</span></span>
-<span id="cb3-12"><a href="stat-analysis.html#cb3-12"></a><span class="co">##    Country                year    gdp</span></span>
-<span id="cb3-13"><a href="stat-analysis.html#cb3-13"></a><span class="co">##    &lt;chr&gt;                 &lt;int&gt;  &lt;dbl&gt;</span></span>
-<span id="cb3-14"><a href="stat-analysis.html#cb3-14"></a><span class="co">##  1 Abkhazia               2015    NA </span></span>
-<span id="cb3-15"><a href="stat-analysis.html#cb3-15"></a><span class="co">##  2 Afghanistan            2015  1418.</span></span>
-<span id="cb3-16"><a href="stat-analysis.html#cb3-16"></a><span class="co">##  3 Akrotiri and Dhekelia  2015    NA </span></span>
-<span id="cb3-17"><a href="stat-analysis.html#cb3-17"></a><span class="co">##  4 Albania                2015  7343.</span></span>
-<span id="cb3-18"><a href="stat-analysis.html#cb3-18"></a><span class="co">##  5 Algeria                2015  6797.</span></span>
-<span id="cb3-19"><a href="stat-analysis.html#cb3-19"></a><span class="co">##  6 American Samoa         2015    NA </span></span>
-<span id="cb3-20"><a href="stat-analysis.html#cb3-20"></a><span class="co">##  7 Andorra                2015    NA </span></span>
-<span id="cb3-21"><a href="stat-analysis.html#cb3-21"></a><span class="co">##  8 Angola                 2015  6512.</span></span>
-<span id="cb3-22"><a href="stat-analysis.html#cb3-22"></a><span class="co">##  9 Anguilla               2015    NA </span></span>
-<span id="cb3-23"><a href="stat-analysis.html#cb3-23"></a><span class="co">## 10 Antigua and Barbuda    2015 14884.</span></span>
-<span id="cb3-24"><a href="stat-analysis.html#cb3-24"></a><span class="co">## # … with 250 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb334-1"><a href="stat-analysis.html#cb334-1"></a>gdpdf_tidy =<span class="st"> </span>gdpdf <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb334-2"><a href="stat-analysis.html#cb334-2"></a><span class="st">   </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1764</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2018</span><span class="st">`</span>, </span>
+<span id="cb334-3"><a href="stat-analysis.html#cb334-3"></a>                <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, </span>
+<span id="cb334-4"><a href="stat-analysis.html#cb334-4"></a>                <span class="dt">values_to =</span> <span class="st">&#39;gdp&#39;</span>,</span>
+<span id="cb334-5"><a href="stat-analysis.html#cb334-5"></a>                <span class="dt">names_transform =</span> <span class="kw">list</span>(<span class="dt">year =</span> as.integer)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb334-6"><a href="stat-analysis.html#cb334-6"></a><span class="st">   </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
+<span id="cb334-7"><a href="stat-analysis.html#cb334-7"></a></span>
+<span id="cb334-8"><a href="stat-analysis.html#cb334-8"></a>gdpdf15 =<span class="st"> </span><span class="kw">filter</span>(gdpdf_tidy, year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>)</span>
+<span id="cb334-9"><a href="stat-analysis.html#cb334-9"></a></span>
+<span id="cb334-10"><a href="stat-analysis.html#cb334-10"></a>gdpdf15</span>
+<span id="cb334-11"><a href="stat-analysis.html#cb334-11"></a><span class="co">## # A tibble: 260 x 3</span></span>
+<span id="cb334-12"><a href="stat-analysis.html#cb334-12"></a><span class="co">##    Country                year    gdp</span></span>
+<span id="cb334-13"><a href="stat-analysis.html#cb334-13"></a><span class="co">##    &lt;chr&gt;                 &lt;int&gt;  &lt;dbl&gt;</span></span>
+<span id="cb334-14"><a href="stat-analysis.html#cb334-14"></a><span class="co">##  1 Abkhazia               2015    NA </span></span>
+<span id="cb334-15"><a href="stat-analysis.html#cb334-15"></a><span class="co">##  2 Afghanistan            2015  1418.</span></span>
+<span id="cb334-16"><a href="stat-analysis.html#cb334-16"></a><span class="co">##  3 Akrotiri and Dhekelia  2015    NA </span></span>
+<span id="cb334-17"><a href="stat-analysis.html#cb334-17"></a><span class="co">##  4 Albania                2015  7343.</span></span>
+<span id="cb334-18"><a href="stat-analysis.html#cb334-18"></a><span class="co">##  5 Algeria                2015  6797.</span></span>
+<span id="cb334-19"><a href="stat-analysis.html#cb334-19"></a><span class="co">##  6 American Samoa         2015    NA </span></span>
+<span id="cb334-20"><a href="stat-analysis.html#cb334-20"></a><span class="co">##  7 Andorra                2015    NA </span></span>
+<span id="cb334-21"><a href="stat-analysis.html#cb334-21"></a><span class="co">##  8 Angola                 2015  6512.</span></span>
+<span id="cb334-22"><a href="stat-analysis.html#cb334-22"></a><span class="co">##  9 Anguilla               2015    NA </span></span>
+<span id="cb334-23"><a href="stat-analysis.html#cb334-23"></a><span class="co">## 10 Antigua and Barbuda    2015 14884.</span></span>
+<span id="cb334-24"><a href="stat-analysis.html#cb334-24"></a><span class="co">## # … with 250 more rows</span></span></code></pre></div>
 <p>Для визуальной проверки вида распределения можно использовать геометрию <code>geom_histogram()</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="stat-analysis.html#cb4-1"></a><span class="kw">ggplot</span>(gdpdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb4-2"><a href="stat-analysis.html#cb4-2"></a><span class="st">  </span><span class="kw">geom_histogram</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<div class="sourceCode" id="cb335"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb335-1"><a href="stat-analysis.html#cb335-1"></a><span class="kw">ggplot</span>(gdpdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb335-2"><a href="stat-analysis.html#cb335-2"></a><span class="st">  </span><span class="kw">geom_histogram</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-315-1.png" width="672" /></p>
 <p>Изменить ширину кармана можно, используя параметр <code>binwidth</code>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="stat-analysis.html#cb5-1"></a><span class="kw">ggplot</span>(gdpdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb5-2"><a href="stat-analysis.html#cb5-2"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">5000</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb336-1"><a href="stat-analysis.html#cb336-1"></a><span class="kw">ggplot</span>(gdpdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb336-2"><a href="stat-analysis.html#cb336-2"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">5000</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-316-1.png" width="672" /></p>
 <p>Аналогично рассмотрим показатель ожидаемой продолжительности жизни:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="stat-analysis.html#cb6-1"></a>lifedf =<span class="st"> </span><span class="kw">read_sheet</span>(<span class="st">&#39;1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo&#39;</span>) <span class="co"># выгружаем данные по ВВП на душу населения и сохраняем в переменную lifedf</span></span>
-<span id="cb6-2"><a href="stat-analysis.html#cb6-2"></a>lifedf</span>
-<span id="cb6-3"><a href="stat-analysis.html#cb6-3"></a><span class="co">## # A tibble: 260 x 218</span></span>
-<span id="cb6-4"><a href="stat-analysis.html#cb6-4"></a><span class="co">##    `Life expectanc… `1800` `1801` `1802` `1803` `1804` `1805` `1806` `1807`</span></span>
-<span id="cb6-5"><a href="stat-analysis.html#cb6-5"></a><span class="co">##    &lt;chr&gt;             &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span id="cb6-6"><a href="stat-analysis.html#cb6-6"></a><span class="co">##  1 Abkhazia           NA     NA     NA     NA     NA     NA     NA     NA  </span></span>
-<span id="cb6-7"><a href="stat-analysis.html#cb6-7"></a><span class="co">##  2 Afghanistan        28.2   28.2   28.2   28.2   28.2   28.2   28.2   28.1</span></span>
-<span id="cb6-8"><a href="stat-analysis.html#cb6-8"></a><span class="co">##  3 Akrotiri and Dh…   NA     NA     NA     NA     NA     NA     NA     NA  </span></span>
-<span id="cb6-9"><a href="stat-analysis.html#cb6-9"></a><span class="co">##  4 Albania            35.4   35.4   35.4   35.4   35.4   35.4   35.4   35.4</span></span>
-<span id="cb6-10"><a href="stat-analysis.html#cb6-10"></a><span class="co">##  5 Algeria            28.8   28.8   28.8   28.8   28.8   28.8   28.8   28.8</span></span>
-<span id="cb6-11"><a href="stat-analysis.html#cb6-11"></a><span class="co">##  6 American Samoa     NA     NA     NA     NA     NA     NA     NA     NA  </span></span>
-<span id="cb6-12"><a href="stat-analysis.html#cb6-12"></a><span class="co">##  7 Andorra            NA     NA     NA     NA     NA     NA     NA     NA  </span></span>
-<span id="cb6-13"><a href="stat-analysis.html#cb6-13"></a><span class="co">##  8 Angola             27.0   27.0   27.0   27.0   27.0   27.0   27.0   27.0</span></span>
-<span id="cb6-14"><a href="stat-analysis.html#cb6-14"></a><span class="co">##  9 Anguilla           NA     NA     NA     NA     NA     NA     NA     NA  </span></span>
-<span id="cb6-15"><a href="stat-analysis.html#cb6-15"></a><span class="co">## 10 Antigua and Bar…   33.5   33.5   33.5   33.5   33.5   33.5   33.5   33.5</span></span>
-<span id="cb6-16"><a href="stat-analysis.html#cb6-16"></a><span class="co">## # … with 250 more rows, and 209 more variables: `1808` &lt;dbl&gt;, `1809` &lt;dbl&gt;,</span></span>
-<span id="cb6-17"><a href="stat-analysis.html#cb6-17"></a><span class="co">## #   `1810` &lt;dbl&gt;, `1811` &lt;dbl&gt;, `1812` &lt;dbl&gt;, `1813` &lt;dbl&gt;, `1814` &lt;dbl&gt;,</span></span>
-<span id="cb6-18"><a href="stat-analysis.html#cb6-18"></a><span class="co">## #   `1815` &lt;dbl&gt;, `1816` &lt;dbl&gt;, `1817` &lt;dbl&gt;, `1818` &lt;dbl&gt;, `1819` &lt;dbl&gt;,</span></span>
-<span id="cb6-19"><a href="stat-analysis.html#cb6-19"></a><span class="co">## #   `1820` &lt;dbl&gt;, `1821` &lt;dbl&gt;, `1822` &lt;dbl&gt;, `1823` &lt;dbl&gt;, `1824` &lt;dbl&gt;,</span></span>
-<span id="cb6-20"><a href="stat-analysis.html#cb6-20"></a><span class="co">## #   `1825` &lt;dbl&gt;, `1826` &lt;dbl&gt;, `1827` &lt;dbl&gt;, `1828` &lt;dbl&gt;, `1829` &lt;dbl&gt;,</span></span>
-<span id="cb6-21"><a href="stat-analysis.html#cb6-21"></a><span class="co">## #   `1830` &lt;dbl&gt;, `1831` &lt;dbl&gt;, `1832` &lt;dbl&gt;, `1833` &lt;dbl&gt;, `1834` &lt;dbl&gt;,</span></span>
-<span id="cb6-22"><a href="stat-analysis.html#cb6-22"></a><span class="co">## #   `1835` &lt;dbl&gt;, `1836` &lt;dbl&gt;, `1837` &lt;dbl&gt;, `1838` &lt;dbl&gt;, `1839` &lt;dbl&gt;,</span></span>
-<span id="cb6-23"><a href="stat-analysis.html#cb6-23"></a><span class="co">## #   `1840` &lt;dbl&gt;, `1841` &lt;dbl&gt;, `1842` &lt;dbl&gt;, `1843` &lt;dbl&gt;, `1844` &lt;dbl&gt;,</span></span>
-<span id="cb6-24"><a href="stat-analysis.html#cb6-24"></a><span class="co">## #   `1845` &lt;dbl&gt;, `1846` &lt;dbl&gt;, `1847` &lt;dbl&gt;, `1848` &lt;dbl&gt;, `1849` &lt;dbl&gt;,</span></span>
-<span id="cb6-25"><a href="stat-analysis.html#cb6-25"></a><span class="co">## #   `1850` &lt;dbl&gt;, `1851` &lt;dbl&gt;, `1852` &lt;dbl&gt;, `1853` &lt;dbl&gt;, `1854` &lt;dbl&gt;,</span></span>
-<span id="cb6-26"><a href="stat-analysis.html#cb6-26"></a><span class="co">## #   `1855` &lt;dbl&gt;, `1856` &lt;dbl&gt;, `1857` &lt;dbl&gt;, `1858` &lt;dbl&gt;, `1859` &lt;dbl&gt;,</span></span>
-<span id="cb6-27"><a href="stat-analysis.html#cb6-27"></a><span class="co">## #   `1860` &lt;dbl&gt;, `1861` &lt;dbl&gt;, `1862` &lt;dbl&gt;, `1863` &lt;dbl&gt;, `1864` &lt;dbl&gt;,</span></span>
-<span id="cb6-28"><a href="stat-analysis.html#cb6-28"></a><span class="co">## #   `1865` &lt;dbl&gt;, `1866` &lt;dbl&gt;, `1867` &lt;dbl&gt;, `1868` &lt;dbl&gt;, `1869` &lt;dbl&gt;,</span></span>
-<span id="cb6-29"><a href="stat-analysis.html#cb6-29"></a><span class="co">## #   `1870` &lt;dbl&gt;, `1871` &lt;dbl&gt;, `1872` &lt;dbl&gt;, `1873` &lt;dbl&gt;, `1874` &lt;dbl&gt;,</span></span>
-<span id="cb6-30"><a href="stat-analysis.html#cb6-30"></a><span class="co">## #   `1875` &lt;dbl&gt;, `1876` &lt;dbl&gt;, `1877` &lt;dbl&gt;, `1878` &lt;dbl&gt;, `1879` &lt;dbl&gt;,</span></span>
-<span id="cb6-31"><a href="stat-analysis.html#cb6-31"></a><span class="co">## #   `1880` &lt;dbl&gt;, `1881` &lt;dbl&gt;, `1882` &lt;dbl&gt;, `1883` &lt;dbl&gt;, `1884` &lt;dbl&gt;,</span></span>
-<span id="cb6-32"><a href="stat-analysis.html#cb6-32"></a><span class="co">## #   `1885` &lt;dbl&gt;, `1886` &lt;dbl&gt;, `1887` &lt;dbl&gt;, `1888` &lt;dbl&gt;, `1889` &lt;dbl&gt;,</span></span>
-<span id="cb6-33"><a href="stat-analysis.html#cb6-33"></a><span class="co">## #   `1890` &lt;dbl&gt;, `1891` &lt;dbl&gt;, `1892` &lt;dbl&gt;, `1893` &lt;dbl&gt;, `1894` &lt;dbl&gt;,</span></span>
-<span id="cb6-34"><a href="stat-analysis.html#cb6-34"></a><span class="co">## #   `1895` &lt;dbl&gt;, `1896` &lt;dbl&gt;, `1897` &lt;dbl&gt;, `1898` &lt;dbl&gt;, `1899` &lt;dbl&gt;,</span></span>
-<span id="cb6-35"><a href="stat-analysis.html#cb6-35"></a><span class="co">## #   `1900` &lt;dbl&gt;, `1901` &lt;dbl&gt;, `1902` &lt;dbl&gt;, `1903` &lt;dbl&gt;, `1904` &lt;dbl&gt;,</span></span>
-<span id="cb6-36"><a href="stat-analysis.html#cb6-36"></a><span class="co">## #   `1905` &lt;dbl&gt;, `1906` &lt;dbl&gt;, `1907` &lt;dbl&gt;, …</span></span></code></pre></div>
+<div class="sourceCode" id="cb337"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb337-1"><a href="stat-analysis.html#cb337-1"></a>lifedf =<span class="st"> </span><span class="kw">read_sheet</span>(<span class="st">&#39;1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo&#39;</span>) <span class="co"># выгружаем данные по ВВП на душу населения и сохраняем в переменную lifedf</span></span>
+<span id="cb337-2"><a href="stat-analysis.html#cb337-2"></a>lifedf</span>
+<span id="cb337-3"><a href="stat-analysis.html#cb337-3"></a><span class="co">## # A tibble: 260 x 218</span></span>
+<span id="cb337-4"><a href="stat-analysis.html#cb337-4"></a><span class="co">##    `Life expectanc… `1800` `1801` `1802` `1803` `1804` `1805` `1806` `1807`</span></span>
+<span id="cb337-5"><a href="stat-analysis.html#cb337-5"></a><span class="co">##    &lt;chr&gt;             &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb337-6"><a href="stat-analysis.html#cb337-6"></a><span class="co">##  1 Abkhazia           NA     NA     NA     NA     NA     NA     NA     NA  </span></span>
+<span id="cb337-7"><a href="stat-analysis.html#cb337-7"></a><span class="co">##  2 Afghanistan        28.2   28.2   28.2   28.2   28.2   28.2   28.2   28.1</span></span>
+<span id="cb337-8"><a href="stat-analysis.html#cb337-8"></a><span class="co">##  3 Akrotiri and Dh…   NA     NA     NA     NA     NA     NA     NA     NA  </span></span>
+<span id="cb337-9"><a href="stat-analysis.html#cb337-9"></a><span class="co">##  4 Albania            35.4   35.4   35.4   35.4   35.4   35.4   35.4   35.4</span></span>
+<span id="cb337-10"><a href="stat-analysis.html#cb337-10"></a><span class="co">##  5 Algeria            28.8   28.8   28.8   28.8   28.8   28.8   28.8   28.8</span></span>
+<span id="cb337-11"><a href="stat-analysis.html#cb337-11"></a><span class="co">##  6 American Samoa     NA     NA     NA     NA     NA     NA     NA     NA  </span></span>
+<span id="cb337-12"><a href="stat-analysis.html#cb337-12"></a><span class="co">##  7 Andorra            NA     NA     NA     NA     NA     NA     NA     NA  </span></span>
+<span id="cb337-13"><a href="stat-analysis.html#cb337-13"></a><span class="co">##  8 Angola             27.0   27.0   27.0   27.0   27.0   27.0   27.0   27.0</span></span>
+<span id="cb337-14"><a href="stat-analysis.html#cb337-14"></a><span class="co">##  9 Anguilla           NA     NA     NA     NA     NA     NA     NA     NA  </span></span>
+<span id="cb337-15"><a href="stat-analysis.html#cb337-15"></a><span class="co">## 10 Antigua and Bar…   33.5   33.5   33.5   33.5   33.5   33.5   33.5   33.5</span></span>
+<span id="cb337-16"><a href="stat-analysis.html#cb337-16"></a><span class="co">## # … with 250 more rows, and 209 more variables: `1808` &lt;dbl&gt;, `1809` &lt;dbl&gt;,</span></span>
+<span id="cb337-17"><a href="stat-analysis.html#cb337-17"></a><span class="co">## #   `1810` &lt;dbl&gt;, `1811` &lt;dbl&gt;, `1812` &lt;dbl&gt;, `1813` &lt;dbl&gt;, `1814` &lt;dbl&gt;,</span></span>
+<span id="cb337-18"><a href="stat-analysis.html#cb337-18"></a><span class="co">## #   `1815` &lt;dbl&gt;, `1816` &lt;dbl&gt;, `1817` &lt;dbl&gt;, `1818` &lt;dbl&gt;, `1819` &lt;dbl&gt;,</span></span>
+<span id="cb337-19"><a href="stat-analysis.html#cb337-19"></a><span class="co">## #   `1820` &lt;dbl&gt;, `1821` &lt;dbl&gt;, `1822` &lt;dbl&gt;, `1823` &lt;dbl&gt;, `1824` &lt;dbl&gt;,</span></span>
+<span id="cb337-20"><a href="stat-analysis.html#cb337-20"></a><span class="co">## #   `1825` &lt;dbl&gt;, `1826` &lt;dbl&gt;, `1827` &lt;dbl&gt;, `1828` &lt;dbl&gt;, `1829` &lt;dbl&gt;,</span></span>
+<span id="cb337-21"><a href="stat-analysis.html#cb337-21"></a><span class="co">## #   `1830` &lt;dbl&gt;, `1831` &lt;dbl&gt;, `1832` &lt;dbl&gt;, `1833` &lt;dbl&gt;, `1834` &lt;dbl&gt;,</span></span>
+<span id="cb337-22"><a href="stat-analysis.html#cb337-22"></a><span class="co">## #   `1835` &lt;dbl&gt;, `1836` &lt;dbl&gt;, `1837` &lt;dbl&gt;, `1838` &lt;dbl&gt;, `1839` &lt;dbl&gt;,</span></span>
+<span id="cb337-23"><a href="stat-analysis.html#cb337-23"></a><span class="co">## #   `1840` &lt;dbl&gt;, `1841` &lt;dbl&gt;, `1842` &lt;dbl&gt;, `1843` &lt;dbl&gt;, `1844` &lt;dbl&gt;,</span></span>
+<span id="cb337-24"><a href="stat-analysis.html#cb337-24"></a><span class="co">## #   `1845` &lt;dbl&gt;, `1846` &lt;dbl&gt;, `1847` &lt;dbl&gt;, `1848` &lt;dbl&gt;, `1849` &lt;dbl&gt;,</span></span>
+<span id="cb337-25"><a href="stat-analysis.html#cb337-25"></a><span class="co">## #   `1850` &lt;dbl&gt;, `1851` &lt;dbl&gt;, `1852` &lt;dbl&gt;, `1853` &lt;dbl&gt;, `1854` &lt;dbl&gt;,</span></span>
+<span id="cb337-26"><a href="stat-analysis.html#cb337-26"></a><span class="co">## #   `1855` &lt;dbl&gt;, `1856` &lt;dbl&gt;, `1857` &lt;dbl&gt;, `1858` &lt;dbl&gt;, `1859` &lt;dbl&gt;,</span></span>
+<span id="cb337-27"><a href="stat-analysis.html#cb337-27"></a><span class="co">## #   `1860` &lt;dbl&gt;, `1861` &lt;dbl&gt;, `1862` &lt;dbl&gt;, `1863` &lt;dbl&gt;, `1864` &lt;dbl&gt;,</span></span>
+<span id="cb337-28"><a href="stat-analysis.html#cb337-28"></a><span class="co">## #   `1865` &lt;dbl&gt;, `1866` &lt;dbl&gt;, `1867` &lt;dbl&gt;, `1868` &lt;dbl&gt;, `1869` &lt;dbl&gt;,</span></span>
+<span id="cb337-29"><a href="stat-analysis.html#cb337-29"></a><span class="co">## #   `1870` &lt;dbl&gt;, `1871` &lt;dbl&gt;, `1872` &lt;dbl&gt;, `1873` &lt;dbl&gt;, `1874` &lt;dbl&gt;,</span></span>
+<span id="cb337-30"><a href="stat-analysis.html#cb337-30"></a><span class="co">## #   `1875` &lt;dbl&gt;, `1876` &lt;dbl&gt;, `1877` &lt;dbl&gt;, `1878` &lt;dbl&gt;, `1879` &lt;dbl&gt;,</span></span>
+<span id="cb337-31"><a href="stat-analysis.html#cb337-31"></a><span class="co">## #   `1880` &lt;dbl&gt;, `1881` &lt;dbl&gt;, `1882` &lt;dbl&gt;, `1883` &lt;dbl&gt;, `1884` &lt;dbl&gt;,</span></span>
+<span id="cb337-32"><a href="stat-analysis.html#cb337-32"></a><span class="co">## #   `1885` &lt;dbl&gt;, `1886` &lt;dbl&gt;, `1887` &lt;dbl&gt;, `1888` &lt;dbl&gt;, `1889` &lt;dbl&gt;,</span></span>
+<span id="cb337-33"><a href="stat-analysis.html#cb337-33"></a><span class="co">## #   `1890` &lt;dbl&gt;, `1891` &lt;dbl&gt;, `1892` &lt;dbl&gt;, `1893` &lt;dbl&gt;, `1894` &lt;dbl&gt;,</span></span>
+<span id="cb337-34"><a href="stat-analysis.html#cb337-34"></a><span class="co">## #   `1895` &lt;dbl&gt;, `1896` &lt;dbl&gt;, `1897` &lt;dbl&gt;, `1898` &lt;dbl&gt;, `1899` &lt;dbl&gt;,</span></span>
+<span id="cb337-35"><a href="stat-analysis.html#cb337-35"></a><span class="co">## #   `1900` &lt;dbl&gt;, `1901` &lt;dbl&gt;, `1902` &lt;dbl&gt;, `1903` &lt;dbl&gt;, `1904` &lt;dbl&gt;,</span></span>
+<span id="cb337-36"><a href="stat-analysis.html#cb337-36"></a><span class="co">## #   `1905` &lt;dbl&gt;, `1906` &lt;dbl&gt;, `1907` &lt;dbl&gt;, …</span></span></code></pre></div>
 <p>Преобразуем в аккуратный вид и строим гистограмму распределения:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="stat-analysis.html#cb7-1"></a>lifedf_tidy =<span class="st"> </span>lifedf <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb7-2"><a href="stat-analysis.html#cb7-2"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2016</span><span class="st">`</span>, </span>
-<span id="cb7-3"><a href="stat-analysis.html#cb7-3"></a>               <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, </span>
-<span id="cb7-4"><a href="stat-analysis.html#cb7-4"></a>               <span class="dt">values_to =</span> <span class="st">&#39;lifexp&#39;</span>,</span>
-<span id="cb7-5"><a href="stat-analysis.html#cb7-5"></a>               <span class="dt">names_transform =</span> <span class="kw">list</span>(<span class="dt">year =</span> as.integer)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb7-6"><a href="stat-analysis.html#cb7-6"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
-<span id="cb7-7"><a href="stat-analysis.html#cb7-7"></a></span>
-<span id="cb7-8"><a href="stat-analysis.html#cb7-8"></a>lifedf15 =<span class="st"> </span><span class="kw">filter</span>(lifedf_tidy, year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>)</span>
-<span id="cb7-9"><a href="stat-analysis.html#cb7-9"></a></span>
-<span id="cb7-10"><a href="stat-analysis.html#cb7-10"></a><span class="kw">ggplot</span>(lifedf15, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb7-11"><a href="stat-analysis.html#cb7-11"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">2</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb338-1"><a href="stat-analysis.html#cb338-1"></a>lifedf_tidy =<span class="st"> </span>lifedf <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb338-2"><a href="stat-analysis.html#cb338-2"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2016</span><span class="st">`</span>, </span>
+<span id="cb338-3"><a href="stat-analysis.html#cb338-3"></a>               <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, </span>
+<span id="cb338-4"><a href="stat-analysis.html#cb338-4"></a>               <span class="dt">values_to =</span> <span class="st">&#39;lifexp&#39;</span>,</span>
+<span id="cb338-5"><a href="stat-analysis.html#cb338-5"></a>               <span class="dt">names_transform =</span> <span class="kw">list</span>(<span class="dt">year =</span> as.integer)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb338-6"><a href="stat-analysis.html#cb338-6"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
+<span id="cb338-7"><a href="stat-analysis.html#cb338-7"></a></span>
+<span id="cb338-8"><a href="stat-analysis.html#cb338-8"></a>lifedf15 =<span class="st"> </span><span class="kw">filter</span>(lifedf_tidy, year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>)</span>
+<span id="cb338-9"><a href="stat-analysis.html#cb338-9"></a></span>
+<span id="cb338-10"><a href="stat-analysis.html#cb338-10"></a><span class="kw">ggplot</span>(lifedf15, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb338-11"><a href="stat-analysis.html#cb338-11"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">2</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-318-1.png" width="672" /></p>
 <p>Для графической оценки распределения удобно использовать не только гистограмму, но также метод <strong>ядерного сглаживания</strong> (<em>kernel density</em>), который позволяет строить аппроксимацию функции плотности вероятности. Условно говоря, ядро является функцией, которая позволяет распространить потенциал каждого элемента выборки на его ближайшую окрестность. Чем больше элементов выборки сконцентрировано вблизи данной точки, тем сильнее будет их совокупно наведенный потенциал в данной точке, и тем, соответственно, выше оценка плотности распределения, которая получается суперпозицией этих потенциалов. Математически операция ядерной оценки плотности в точке <span class="math inline">\(x\)</span> определяется как:
 <span class="math display">\[
 \hat f_h (x) = \frac{1}{nh}\sum_{i=1}^{n}K\Big(\frac{x - x_i}{h}\Big)
 \]</span>
 где <span class="math inline">\(K\)</span> — ядерная функция, <span class="math inline">\(h &gt; 0\)</span> — сглаживающий параметр, <span class="math inline">\(x_i\)</span> — элементы выборки, <span class="math inline">\(n\)</span> — размер выборки. Ядерная функция должна удовлетворять двум критериям: <span class="math inline">\(K(x) \geq 0\)</span>, <span class="math inline">\(\int_{-\infty}^{+\infty} K(x) dx = 1\)</span>. Отсюда ясно, что любая модель функции плотности распределения может быть использована в качестве ядра: равномерное, нормальное и т.д. Как правило, ядерная функция носит бесконечно убывающий характер: чем дальше мы находимся от точки, тем меньше ее вклад в плотность распределения.</p>
 <p>В <strong>ggplot</strong> за аппроксимацию плотности распределения методом ядерного сглаживания отвечает геометрия <code>geom_density()</code>:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="stat-analysis.html#cb8-1"></a><span class="kw">ggplot</span>(gdpdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb8-2"><a href="stat-analysis.html#cb8-2"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="stat-analysis.html#cb9-1"></a></span>
-<span id="cb9-2"><a href="stat-analysis.html#cb9-2"></a><span class="kw">ggplot</span>(lifedf15, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb9-3"><a href="stat-analysis.html#cb9-3"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+<div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb339-1"><a href="stat-analysis.html#cb339-1"></a><span class="kw">ggplot</span>(gdpdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb339-2"><a href="stat-analysis.html#cb339-2"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-319-1.png" width="672" /></p>
+<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="stat-analysis.html#cb340-1"></a></span>
+<span id="cb340-2"><a href="stat-analysis.html#cb340-2"></a><span class="kw">ggplot</span>(lifedf15, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb340-3"><a href="stat-analysis.html#cb340-3"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-319-2.png" width="672" /></p>
 <p>Вы можете комбинировать гистограммы и оценку плотности распределения, но для этого гистограмма по оси <em>Y</em> должна отражать не фактическое количество элементов в каждом классе, а <em>долю</em> или плотность вероятности (<code>y = stat(density)</code>):</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="stat-analysis.html#cb10-1"></a><span class="kw">ggplot</span>(gdpdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb10-2"><a href="stat-analysis.html#cb10-2"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y =</span> <span class="kw">stat</span>(density)), <span class="dt">fill =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
-<span id="cb10-3"><a href="stat-analysis.html#cb10-3"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="stat-analysis.html#cb11-1"></a></span>
-<span id="cb11-2"><a href="stat-analysis.html#cb11-2"></a><span class="kw">ggplot</span>(lifedf15, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb11-3"><a href="stat-analysis.html#cb11-3"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y =</span> <span class="kw">stat</span>(density)), <span class="dt">fill =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
-<span id="cb11-4"><a href="stat-analysis.html#cb11-4"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb341-1"><a href="stat-analysis.html#cb341-1"></a><span class="kw">ggplot</span>(gdpdf15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb341-2"><a href="stat-analysis.html#cb341-2"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y =</span> <span class="kw">stat</span>(density)), <span class="dt">fill =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb341-3"><a href="stat-analysis.html#cb341-3"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-320-1.png" width="672" /></p>
+<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="stat-analysis.html#cb342-1"></a></span>
+<span id="cb342-2"><a href="stat-analysis.html#cb342-2"></a><span class="kw">ggplot</span>(lifedf15, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb342-3"><a href="stat-analysis.html#cb342-3"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y =</span> <span class="kw">stat</span>(density)), <span class="dt">fill =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb342-4"><a href="stat-analysis.html#cb342-4"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-320-2.png" width="672" /></p>
 <p>При построении гистограмм и оценке плотности распределения мы допустили ошибку: приняли, что все измерения являются равнозначными. Однако в данном случае это не так. Население Люксембурга и Пакистана отличается на два порядка — это означает, что Пакистан должен иметь соответственно больший вес при построении гистограммы. Для учета этой характеристики подгрузим из <strong>Gapminder</strong> данные по численности населения и присоединим их к нашим таблицам по ВВП и продолжительности жизни:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="stat-analysis.html#cb12-1"></a>popdf_tidy =<span class="st"> </span></span>
-<span id="cb12-2"><a href="stat-analysis.html#cb12-2"></a><span class="st">  </span><span class="kw">read_sheet</span>(<span class="st">&#39;1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># численность населения</span></span>
-<span id="cb12-3"><a href="stat-analysis.html#cb12-3"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2015</span><span class="st">`</span>, </span>
-<span id="cb12-4"><a href="stat-analysis.html#cb12-4"></a>               <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, </span>
-<span id="cb12-5"><a href="stat-analysis.html#cb12-5"></a>               <span class="dt">values_to =</span> <span class="st">&#39;pop&#39;</span>,</span>
-<span id="cb12-6"><a href="stat-analysis.html#cb12-6"></a>               <span class="dt">names_transform =</span> <span class="kw">list</span>(<span class="dt">year =</span> as.integer)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb12-7"><a href="stat-analysis.html#cb12-7"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
-<span id="cb12-8"><a href="stat-analysis.html#cb12-8"></a></span>
-<span id="cb12-9"><a href="stat-analysis.html#cb12-9"></a>(<span class="dt">tab =</span> gdpdf_tidy <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb12-10"><a href="stat-analysis.html#cb12-10"></a><span class="st">    </span><span class="kw">inner_join</span>(lifedf_tidy) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb12-11"><a href="stat-analysis.html#cb12-11"></a><span class="st">    </span><span class="kw">inner_join</span>(popdf_tidy))</span>
-<span id="cb12-12"><a href="stat-analysis.html#cb12-12"></a><span class="co">## # A tibble: 19,359 x 5</span></span>
-<span id="cb12-13"><a href="stat-analysis.html#cb12-13"></a><span class="co">##    Country   year   gdp lifexp   pop</span></span>
-<span id="cb12-14"><a href="stat-analysis.html#cb12-14"></a><span class="co">##    &lt;chr&gt;    &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span id="cb12-15"><a href="stat-analysis.html#cb12-15"></a><span class="co">##  1 Abkhazia  1800    NA     NA    NA</span></span>
-<span id="cb12-16"><a href="stat-analysis.html#cb12-16"></a><span class="co">##  2 Abkhazia  1810    NA     NA    NA</span></span>
-<span id="cb12-17"><a href="stat-analysis.html#cb12-17"></a><span class="co">##  3 Abkhazia  1820    NA     NA    NA</span></span>
-<span id="cb12-18"><a href="stat-analysis.html#cb12-18"></a><span class="co">##  4 Abkhazia  1830    NA     NA    NA</span></span>
-<span id="cb12-19"><a href="stat-analysis.html#cb12-19"></a><span class="co">##  5 Abkhazia  1840    NA     NA    NA</span></span>
-<span id="cb12-20"><a href="stat-analysis.html#cb12-20"></a><span class="co">##  6 Abkhazia  1850    NA     NA    NA</span></span>
-<span id="cb12-21"><a href="stat-analysis.html#cb12-21"></a><span class="co">##  7 Abkhazia  1860    NA     NA    NA</span></span>
-<span id="cb12-22"><a href="stat-analysis.html#cb12-22"></a><span class="co">##  8 Abkhazia  1870    NA     NA    NA</span></span>
-<span id="cb12-23"><a href="stat-analysis.html#cb12-23"></a><span class="co">##  9 Abkhazia  1880    NA     NA    NA</span></span>
-<span id="cb12-24"><a href="stat-analysis.html#cb12-24"></a><span class="co">## 10 Abkhazia  1890    NA     NA    NA</span></span>
-<span id="cb12-25"><a href="stat-analysis.html#cb12-25"></a><span class="co">## # … with 19,349 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb343-1"><a href="stat-analysis.html#cb343-1"></a>popdf_tidy =<span class="st"> </span></span>
+<span id="cb343-2"><a href="stat-analysis.html#cb343-2"></a><span class="st">  </span><span class="kw">read_sheet</span>(<span class="st">&#39;1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># численность населения</span></span>
+<span id="cb343-3"><a href="stat-analysis.html#cb343-3"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="st">`</span><span class="dt">1800</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2015</span><span class="st">`</span>, </span>
+<span id="cb343-4"><a href="stat-analysis.html#cb343-4"></a>               <span class="dt">names_to =</span> <span class="st">&#39;year&#39;</span>, </span>
+<span id="cb343-5"><a href="stat-analysis.html#cb343-5"></a>               <span class="dt">values_to =</span> <span class="st">&#39;pop&#39;</span>,</span>
+<span id="cb343-6"><a href="stat-analysis.html#cb343-6"></a>               <span class="dt">names_transform =</span> <span class="kw">list</span>(<span class="dt">year =</span> as.integer)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb343-7"><a href="stat-analysis.html#cb343-7"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Country =</span> <span class="dv">1</span>)</span>
+<span id="cb343-8"><a href="stat-analysis.html#cb343-8"></a></span>
+<span id="cb343-9"><a href="stat-analysis.html#cb343-9"></a>(<span class="dt">tab =</span> gdpdf_tidy <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb343-10"><a href="stat-analysis.html#cb343-10"></a><span class="st">    </span><span class="kw">inner_join</span>(lifedf_tidy) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb343-11"><a href="stat-analysis.html#cb343-11"></a><span class="st">    </span><span class="kw">inner_join</span>(popdf_tidy))</span>
+<span id="cb343-12"><a href="stat-analysis.html#cb343-12"></a><span class="co">## # A tibble: 19,359 x 5</span></span>
+<span id="cb343-13"><a href="stat-analysis.html#cb343-13"></a><span class="co">##    Country   year   gdp lifexp   pop</span></span>
+<span id="cb343-14"><a href="stat-analysis.html#cb343-14"></a><span class="co">##    &lt;chr&gt;    &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb343-15"><a href="stat-analysis.html#cb343-15"></a><span class="co">##  1 Abkhazia  1800    NA     NA    NA</span></span>
+<span id="cb343-16"><a href="stat-analysis.html#cb343-16"></a><span class="co">##  2 Abkhazia  1810    NA     NA    NA</span></span>
+<span id="cb343-17"><a href="stat-analysis.html#cb343-17"></a><span class="co">##  3 Abkhazia  1820    NA     NA    NA</span></span>
+<span id="cb343-18"><a href="stat-analysis.html#cb343-18"></a><span class="co">##  4 Abkhazia  1830    NA     NA    NA</span></span>
+<span id="cb343-19"><a href="stat-analysis.html#cb343-19"></a><span class="co">##  5 Abkhazia  1840    NA     NA    NA</span></span>
+<span id="cb343-20"><a href="stat-analysis.html#cb343-20"></a><span class="co">##  6 Abkhazia  1850    NA     NA    NA</span></span>
+<span id="cb343-21"><a href="stat-analysis.html#cb343-21"></a><span class="co">##  7 Abkhazia  1860    NA     NA    NA</span></span>
+<span id="cb343-22"><a href="stat-analysis.html#cb343-22"></a><span class="co">##  8 Abkhazia  1870    NA     NA    NA</span></span>
+<span id="cb343-23"><a href="stat-analysis.html#cb343-23"></a><span class="co">##  9 Abkhazia  1880    NA     NA    NA</span></span>
+<span id="cb343-24"><a href="stat-analysis.html#cb343-24"></a><span class="co">## 10 Abkhazia  1890    NA     NA    NA</span></span>
+<span id="cb343-25"><a href="stat-analysis.html#cb343-25"></a><span class="co">## # … with 19,349 more rows</span></span></code></pre></div>
 <p>Теперь мы можем произвести взвешенную оценку плотности распределения:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="stat-analysis.html#cb13-1"></a>tab15 =<span class="st"> </span>tab <span class="op">%&gt;%</span><span class="st">  </span></span>
-<span id="cb13-2"><a href="stat-analysis.html#cb13-2"></a><span class="st">  </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb13-3"><a href="stat-analysis.html#cb13-3"></a><span class="st">  </span><span class="kw">drop_na</span>() <span class="co"># все веса должны быть непустыми!</span></span>
-<span id="cb13-4"><a href="stat-analysis.html#cb13-4"></a></span>
-<span id="cb13-5"><a href="stat-analysis.html#cb13-5"></a><span class="kw">ggplot</span>(tab15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp, <span class="dt">y =</span> <span class="kw">stat</span>(density), <span class="dt">weight =</span> pop<span class="op">/</span><span class="kw">sum</span>(pop))) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb13-6"><a href="stat-analysis.html#cb13-6"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">5000</span>, <span class="dt">fill =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
-<span id="cb13-7"><a href="stat-analysis.html#cb13-7"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="stat-analysis.html#cb14-1"></a></span>
-<span id="cb14-2"><a href="stat-analysis.html#cb14-2"></a><span class="kw">ggplot</span>(tab15, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp, <span class="dt">y =</span> <span class="kw">stat</span>(density), <span class="dt">weight =</span> pop<span class="op">/</span><span class="kw">sum</span>(pop))) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb14-3"><a href="stat-analysis.html#cb14-3"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="fl">2.5</span>, <span class="dt">fill =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
-<span id="cb14-4"><a href="stat-analysis.html#cb14-4"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
+<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb344-1"><a href="stat-analysis.html#cb344-1"></a>tab15 =<span class="st"> </span>tab <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb344-2"><a href="stat-analysis.html#cb344-2"></a><span class="st">  </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb344-3"><a href="stat-analysis.html#cb344-3"></a><span class="st">  </span><span class="kw">drop_na</span>() <span class="co"># все веса должны быть непустыми!</span></span>
+<span id="cb344-4"><a href="stat-analysis.html#cb344-4"></a></span>
+<span id="cb344-5"><a href="stat-analysis.html#cb344-5"></a><span class="kw">ggplot</span>(tab15, <span class="kw">aes</span>(<span class="dt">x =</span> gdp, <span class="dt">y =</span> <span class="kw">stat</span>(density), <span class="dt">weight =</span> pop<span class="op">/</span><span class="kw">sum</span>(pop))) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb344-6"><a href="stat-analysis.html#cb344-6"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">5000</span>, <span class="dt">fill =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb344-7"><a href="stat-analysis.html#cb344-7"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;steelblue&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-322-1.png" width="672" /></p>
+<div class="sourceCode" id="cb345"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb345-1"><a href="stat-analysis.html#cb345-1"></a></span>
+<span id="cb345-2"><a href="stat-analysis.html#cb345-2"></a><span class="kw">ggplot</span>(tab15, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp, <span class="dt">y =</span> <span class="kw">stat</span>(density), <span class="dt">weight =</span> pop<span class="op">/</span><span class="kw">sum</span>(pop))) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb345-3"><a href="stat-analysis.html#cb345-3"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="fl">2.5</span>, <span class="dt">fill =</span> <span class="st">&#39;grey&#39;</span>, <span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb345-4"><a href="stat-analysis.html#cb345-4"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">fill =</span> <span class="st">&#39;olivedrab&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-322-2.png" width="672" /></p>
 <p>Графики плотности распределения удобны тем, что их, в отличие от гистограмм, удобно комбинировать на одном изображении, используя цвет для разделения по еще одной переменной. Например, мы можем оценить, как изменились мировые диспропорции в продолжительности жизни и доходов населения за последние 50 лет (обратите внимание на параметр <code>fill = year</code> в эстетике:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="stat-analysis.html#cb15-1"></a>tab85 =<span class="st"> </span>tab <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb15-2"><a href="stat-analysis.html#cb15-2"></a><span class="st">  </span><span class="kw">filter</span>(year <span class="op">%in%</span><span class="st">  </span><span class="kw">c</span>(<span class="dv">1965</span>, <span class="dv">2015</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb15-3"><a href="stat-analysis.html#cb15-3"></a><span class="st">  </span><span class="kw">drop_na</span>()</span>
-<span id="cb15-4"><a href="stat-analysis.html#cb15-4"></a></span>
-<span id="cb15-5"><a href="stat-analysis.html#cb15-5"></a><span class="kw">ggplot</span>(tab85, <span class="kw">aes</span>(<span class="dt">x =</span> gdp, <span class="dt">fill =</span> <span class="kw">factor</span>(year), <span class="dt">weight =</span> pop<span class="op">/</span><span class="kw">sum</span>(pop))) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb15-6"><a href="stat-analysis.html#cb15-6"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="stat-analysis.html#cb16-1"></a></span>
-<span id="cb16-2"><a href="stat-analysis.html#cb16-2"></a><span class="kw">ggplot</span>(tab85, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp, <span class="dt">fill =</span> <span class="kw">factor</span>(year), <span class="dt">weight =</span> pop<span class="op">/</span><span class="kw">sum</span>(pop))) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb16-3"><a href="stat-analysis.html#cb16-3"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
+<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb346-1"><a href="stat-analysis.html#cb346-1"></a>tab85 =<span class="st"> </span>tab <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb346-2"><a href="stat-analysis.html#cb346-2"></a><span class="st">  </span><span class="kw">filter</span>(year <span class="op">%in%</span><span class="st">  </span><span class="kw">c</span>(<span class="dv">1965</span>, <span class="dv">2015</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb346-3"><a href="stat-analysis.html#cb346-3"></a><span class="st">  </span><span class="kw">drop_na</span>()</span>
+<span id="cb346-4"><a href="stat-analysis.html#cb346-4"></a></span>
+<span id="cb346-5"><a href="stat-analysis.html#cb346-5"></a><span class="kw">ggplot</span>(tab85, <span class="kw">aes</span>(<span class="dt">x =</span> gdp, <span class="dt">fill =</span> <span class="kw">factor</span>(year), <span class="dt">weight =</span> pop<span class="op">/</span><span class="kw">sum</span>(pop))) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb346-6"><a href="stat-analysis.html#cb346-6"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-323-1.png" width="672" /></p>
+<div class="sourceCode" id="cb347"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb347-1"><a href="stat-analysis.html#cb347-1"></a></span>
+<span id="cb347-2"><a href="stat-analysis.html#cb347-2"></a><span class="kw">ggplot</span>(tab85, <span class="kw">aes</span>(<span class="dt">x =</span> lifexp, <span class="dt">fill =</span> <span class="kw">factor</span>(year), <span class="dt">weight =</span> pop<span class="op">/</span><span class="kw">sum</span>(pop))) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb347-3"><a href="stat-analysis.html#cb347-3"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-323-2.png" width="672" /></p>
 </div>
 <div id="stat_analysis_one_summary" class="section level3">
 <h3><span class="header-section-number">7.3.2</span> Описательные статистики</h3>
 <p>Описательные статистики — это числовые характеристики, описывающие особенности статистического распределения изучаемой величины. К таким характеристикам относят выборочное среднее, медиану, минимум, максимум и ряд других величин. Можно вычислять эти характеристики для всей выборки, но для включения географического контекста мы стратифицируем ее по макрорегионам, которые используются в базе данных <strong>Gapminder</strong>. Подгрузим эту информацию (данные находятся <a href="https://www.gapminder.org/data/geo/">здесь</a>):</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="stat-analysis.html#cb17-1"></a>countries =<span class="st"> </span><span class="kw">read_sheet</span>(<span class="st">&#39;1qHalit8sXC0R8oVXibc2wa2gY7bkwGzOybEMTWp-08o&#39;</span>, <span class="dv">2</span>) <span class="op">%&gt;%</span></span>
-<span id="cb17-2"><a href="stat-analysis.html#cb17-2"></a><span class="st">  </span><span class="kw">select</span>(<span class="dt">Country =</span> name, <span class="dt">Region =</span> eight_regions) <span class="op">%&gt;%</span></span>
-<span id="cb17-3"><a href="stat-analysis.html#cb17-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Country =</span> <span class="kw">factor</span>(Country, <span class="dt">levels =</span> Country[<span class="kw">order</span>(.<span class="op">$</span>Region)]))</span>
-<span id="cb17-4"><a href="stat-analysis.html#cb17-4"></a></span>
-<span id="cb17-5"><a href="stat-analysis.html#cb17-5"></a><span class="co"># &#39;1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8&#39; %&gt;% # численность населения</span></span>
-<span id="cb17-6"><a href="stat-analysis.html#cb17-6"></a><span class="co">#   as_id() %&gt;% # преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
-<span id="cb17-7"><a href="stat-analysis.html#cb17-7"></a><span class="co">#   drive_get() %&gt;% </span></span>
-<span id="cb17-8"><a href="stat-analysis.html#cb17-8"></a><span class="co">#   read_sheet(sheet = 2) -&gt; countries</span></span>
-<span id="cb17-9"><a href="stat-analysis.html#cb17-9"></a></span>
-<span id="cb17-10"><a href="stat-analysis.html#cb17-10"></a><span class="kw">ggplot</span>(countries, <span class="kw">aes</span>(<span class="dt">x =</span> Country, <span class="dt">y =</span> <span class="dv">1</span>, <span class="dt">fill =</span> Region)) <span class="op">+</span></span>
-<span id="cb17-11"><a href="stat-analysis.html#cb17-11"></a><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span></span>
-<span id="cb17-12"><a href="stat-analysis.html#cb17-12"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">y =</span> <span class="fl">0.5</span>, <span class="dt">label =</span> Country), <span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span></span>
-<span id="cb17-13"><a href="stat-analysis.html#cb17-13"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>Region, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>, <span class="dt">ncol =</span> <span class="dv">4</span>) <span class="op">+</span></span>
-<span id="cb17-14"><a href="stat-analysis.html#cb17-14"></a><span class="st">  </span><span class="kw">theme_bw</span>()<span class="op">+</span></span>
-<span id="cb17-15"><a href="stat-analysis.html#cb17-15"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">panel.grid =</span> <span class="kw">element_blank</span>(),</span>
-<span id="cb17-16"><a href="stat-analysis.html#cb17-16"></a>        <span class="dt">axis.title.y =</span> <span class="kw">element_blank</span>(),</span>
-<span id="cb17-17"><a href="stat-analysis.html#cb17-17"></a>        <span class="dt">axis.text.y =</span> <span class="kw">element_blank</span>(),</span>
-<span id="cb17-18"><a href="stat-analysis.html#cb17-18"></a>        <span class="dt">axis.ticks.y =</span> <span class="kw">element_blank</span>(),</span>
-<span id="cb17-19"><a href="stat-analysis.html#cb17-19"></a>        <span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>(),</span>
-<span id="cb17-20"><a href="stat-analysis.html#cb17-20"></a>        <span class="dt">axis.text.x =</span> <span class="kw">element_blank</span>(),</span>
-<span id="cb17-21"><a href="stat-analysis.html#cb17-21"></a>        <span class="dt">axis.ticks.x =</span> <span class="kw">element_blank</span>()) <span class="op">+</span></span>
-<span id="cb17-22"><a href="stat-analysis.html#cb17-22"></a><span class="st">  </span><span class="kw">guides</span>(<span class="dt">fill=</span><span class="ot">FALSE</span>) <span class="op">+</span></span>
-<span id="cb17-23"><a href="stat-analysis.html#cb17-23"></a><span class="st">  </span><span class="kw">coord_flip</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<div class="sourceCode" id="cb348"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb348-1"><a href="stat-analysis.html#cb348-1"></a>countries =<span class="st"> </span><span class="kw">read_sheet</span>(<span class="st">&#39;1qHalit8sXC0R8oVXibc2wa2gY7bkwGzOybEMTWp-08o&#39;</span>, <span class="dv">2</span>) <span class="op">%&gt;%</span></span>
+<span id="cb348-2"><a href="stat-analysis.html#cb348-2"></a><span class="st">  </span><span class="kw">select</span>(<span class="dt">Country =</span> name, <span class="dt">Region =</span> eight_regions) <span class="op">%&gt;%</span></span>
+<span id="cb348-3"><a href="stat-analysis.html#cb348-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Country =</span> <span class="kw">factor</span>(Country, <span class="dt">levels =</span> Country[<span class="kw">order</span>(.<span class="op">$</span>Region)]))</span>
+<span id="cb348-4"><a href="stat-analysis.html#cb348-4"></a></span>
+<span id="cb348-5"><a href="stat-analysis.html#cb348-5"></a><span class="co"># &#39;1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8&#39; %&gt;% # численность населения</span></span>
+<span id="cb348-6"><a href="stat-analysis.html#cb348-6"></a><span class="co">#   as_id() %&gt;% # преобразуем идентификатор в класс drive_id чтобы отличать его от пути</span></span>
+<span id="cb348-7"><a href="stat-analysis.html#cb348-7"></a><span class="co">#   drive_get() %&gt;% </span></span>
+<span id="cb348-8"><a href="stat-analysis.html#cb348-8"></a><span class="co">#   read_sheet(sheet = 2) -&gt; countries</span></span>
+<span id="cb348-9"><a href="stat-analysis.html#cb348-9"></a></span>
+<span id="cb348-10"><a href="stat-analysis.html#cb348-10"></a><span class="kw">ggplot</span>(countries, <span class="kw">aes</span>(<span class="dt">x =</span> Country, <span class="dt">y =</span> <span class="dv">1</span>, <span class="dt">fill =</span> Region)) <span class="op">+</span></span>
+<span id="cb348-11"><a href="stat-analysis.html#cb348-11"></a><span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span></span>
+<span id="cb348-12"><a href="stat-analysis.html#cb348-12"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">y =</span> <span class="fl">0.5</span>, <span class="dt">label =</span> Country), <span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span></span>
+<span id="cb348-13"><a href="stat-analysis.html#cb348-13"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>Region, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>, <span class="dt">ncol =</span> <span class="dv">4</span>) <span class="op">+</span></span>
+<span id="cb348-14"><a href="stat-analysis.html#cb348-14"></a><span class="st">  </span><span class="kw">theme_bw</span>()<span class="op">+</span></span>
+<span id="cb348-15"><a href="stat-analysis.html#cb348-15"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">panel.grid =</span> <span class="kw">element_blank</span>(),</span>
+<span id="cb348-16"><a href="stat-analysis.html#cb348-16"></a>        <span class="dt">axis.title.y =</span> <span class="kw">element_blank</span>(),</span>
+<span id="cb348-17"><a href="stat-analysis.html#cb348-17"></a>        <span class="dt">axis.text.y =</span> <span class="kw">element_blank</span>(),</span>
+<span id="cb348-18"><a href="stat-analysis.html#cb348-18"></a>        <span class="dt">axis.ticks.y =</span> <span class="kw">element_blank</span>(),</span>
+<span id="cb348-19"><a href="stat-analysis.html#cb348-19"></a>        <span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>(),</span>
+<span id="cb348-20"><a href="stat-analysis.html#cb348-20"></a>        <span class="dt">axis.text.x =</span> <span class="kw">element_blank</span>(),</span>
+<span id="cb348-21"><a href="stat-analysis.html#cb348-21"></a>        <span class="dt">axis.ticks.x =</span> <span class="kw">element_blank</span>()) <span class="op">+</span></span>
+<span id="cb348-22"><a href="stat-analysis.html#cb348-22"></a><span class="st">  </span><span class="kw">guides</span>(<span class="dt">fill=</span><span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb348-23"><a href="stat-analysis.html#cb348-23"></a><span class="st">  </span><span class="kw">coord_flip</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-324-1.png" width="672" /></p>
 <p>Присоединим эти данные к исходной таблице:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="stat-analysis.html#cb18-1"></a>(<span class="dt">tabreg =</span> tab <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb18-2"><a href="stat-analysis.html#cb18-2"></a><span class="st">  </span><span class="kw">left_join</span>(countries) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb18-3"><a href="stat-analysis.html#cb18-3"></a><span class="st">  </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb18-4"><a href="stat-analysis.html#cb18-4"></a><span class="st">  </span><span class="kw">drop_na</span>())</span>
-<span id="cb18-5"><a href="stat-analysis.html#cb18-5"></a><span class="co">## # A tibble: 172 x 6</span></span>
-<span id="cb18-6"><a href="stat-analysis.html#cb18-6"></a><span class="co">##    Country              year    gdp lifexp      pop Region            </span></span>
-<span id="cb18-7"><a href="stat-analysis.html#cb18-7"></a><span class="co">##    &lt;chr&gt;               &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;             </span></span>
-<span id="cb18-8"><a href="stat-analysis.html#cb18-8"></a><span class="co">##  1 Afghanistan          2015  1418.   53.8 32526562 asia_west         </span></span>
-<span id="cb18-9"><a href="stat-analysis.html#cb18-9"></a><span class="co">##  2 Albania              2015  7343.   78    2896679 europe_east       </span></span>
-<span id="cb18-10"><a href="stat-analysis.html#cb18-10"></a><span class="co">##  3 Algeria              2015  6797.   76.4 39666519 africa_north      </span></span>
-<span id="cb18-11"><a href="stat-analysis.html#cb18-11"></a><span class="co">##  4 Angola               2015  6512.   59.6 25021974 africa_sub_saharan</span></span>
-<span id="cb18-12"><a href="stat-analysis.html#cb18-12"></a><span class="co">##  5 Antigua and Barbuda  2015 14884.   76.4    91818 america_north     </span></span>
-<span id="cb18-13"><a href="stat-analysis.html#cb18-13"></a><span class="co">##  6 Argentina            2015 16640.   76.5 43416755 america_south     </span></span>
-<span id="cb18-14"><a href="stat-analysis.html#cb18-14"></a><span class="co">##  7 Armenia              2015  5561.   74.7  3017712 europe_east       </span></span>
-<span id="cb18-15"><a href="stat-analysis.html#cb18-15"></a><span class="co">##  8 Australia            2015 38085.   82.3 23968973 east_asia_pacific </span></span>
-<span id="cb18-16"><a href="stat-analysis.html#cb18-16"></a><span class="co">##  9 Austria              2015 37811.   81.3  8544586 europe_west       </span></span>
-<span id="cb18-17"><a href="stat-analysis.html#cb18-17"></a><span class="co">## 10 Azerbaijan           2015 10475.   72.9  9753968 europe_east       </span></span>
-<span id="cb18-18"><a href="stat-analysis.html#cb18-18"></a><span class="co">## # … with 162 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb349-1"><a href="stat-analysis.html#cb349-1"></a>(<span class="dt">tabreg =</span> tab <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb349-2"><a href="stat-analysis.html#cb349-2"></a><span class="st">  </span><span class="kw">left_join</span>(countries) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb349-3"><a href="stat-analysis.html#cb349-3"></a><span class="st">  </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2015</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb349-4"><a href="stat-analysis.html#cb349-4"></a><span class="st">  </span><span class="kw">drop_na</span>())</span>
+<span id="cb349-5"><a href="stat-analysis.html#cb349-5"></a><span class="co">## # A tibble: 172 x 6</span></span>
+<span id="cb349-6"><a href="stat-analysis.html#cb349-6"></a><span class="co">##    Country              year    gdp lifexp      pop Region            </span></span>
+<span id="cb349-7"><a href="stat-analysis.html#cb349-7"></a><span class="co">##    &lt;chr&gt;               &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;             </span></span>
+<span id="cb349-8"><a href="stat-analysis.html#cb349-8"></a><span class="co">##  1 Afghanistan          2015  1418.   53.8 32526562 asia_west         </span></span>
+<span id="cb349-9"><a href="stat-analysis.html#cb349-9"></a><span class="co">##  2 Albania              2015  7343.   78    2896679 europe_east       </span></span>
+<span id="cb349-10"><a href="stat-analysis.html#cb349-10"></a><span class="co">##  3 Algeria              2015  6797.   76.4 39666519 africa_north      </span></span>
+<span id="cb349-11"><a href="stat-analysis.html#cb349-11"></a><span class="co">##  4 Angola               2015  6512.   59.6 25021974 africa_sub_saharan</span></span>
+<span id="cb349-12"><a href="stat-analysis.html#cb349-12"></a><span class="co">##  5 Antigua and Barbuda  2015 14884.   76.4    91818 america_north     </span></span>
+<span id="cb349-13"><a href="stat-analysis.html#cb349-13"></a><span class="co">##  6 Argentina            2015 16640.   76.5 43416755 america_south     </span></span>
+<span id="cb349-14"><a href="stat-analysis.html#cb349-14"></a><span class="co">##  7 Armenia              2015  5561.   74.7  3017712 europe_east       </span></span>
+<span id="cb349-15"><a href="stat-analysis.html#cb349-15"></a><span class="co">##  8 Australia            2015 38085.   82.3 23968973 east_asia_pacific </span></span>
+<span id="cb349-16"><a href="stat-analysis.html#cb349-16"></a><span class="co">##  9 Austria              2015 37811.   81.3  8544586 europe_west       </span></span>
+<span id="cb349-17"><a href="stat-analysis.html#cb349-17"></a><span class="co">## 10 Azerbaijan           2015 10475.   72.9  9753968 europe_east       </span></span>
+<span id="cb349-18"><a href="stat-analysis.html#cb349-18"></a><span class="co">## # … with 162 more rows</span></span></code></pre></div>
 <p>Мы уже знакомы с функциями <code>min()</code>, <code>max()</code>, <code>median()</code>, <code>mean()</code>, <code>sd()</code>, которые дают значения соответствующих описательных статистик для векторов данных. Как представить их все одновременно? Для визуализации отличий в статистических параметрах исследуемой выборки удобно использовать тип графика, который называется <a href="https://ru.wikipedia.org/wiki/%D0%AF%D1%89%D0%B8%D0%BA_%D1%81_%D1%83%D1%81%D0%B0%D0%BC%D0%B8"><strong>boxplot</strong></a> (а по русски — диаграмма размаха, улей, или ящик с усами). В <strong>ggplot</strong> за него отвечает геометрия <code>geom_boxplot()</code>:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="stat-analysis.html#cb19-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(<span class="dt">x =</span> Region, <span class="dt">y =</span> gdp)) <span class="op">+</span></span>
-<span id="cb19-2"><a href="stat-analysis.html#cb19-2"></a><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">coord_flip</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="stat-analysis.html#cb20-1"></a></span>
-<span id="cb20-2"><a href="stat-analysis.html#cb20-2"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(<span class="dt">x =</span> Region, <span class="dt">y =</span> lifexp)) <span class="op">+</span></span>
-<span id="cb20-3"><a href="stat-analysis.html#cb20-3"></a><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">coord_flip</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
+<div class="sourceCode" id="cb350"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb350-1"><a href="stat-analysis.html#cb350-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(<span class="dt">x =</span> Region, <span class="dt">y =</span> gdp)) <span class="op">+</span></span>
+<span id="cb350-2"><a href="stat-analysis.html#cb350-2"></a><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">coord_flip</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-326-1.png" width="672" /></p>
+<div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb351-1"><a href="stat-analysis.html#cb351-1"></a></span>
+<span id="cb351-2"><a href="stat-analysis.html#cb351-2"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(<span class="dt">x =</span> Region, <span class="dt">y =</span> lifexp)) <span class="op">+</span></span>
+<span id="cb351-3"><a href="stat-analysis.html#cb351-3"></a><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">coord_flip</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-326-2.png" width="672" /></p>
 <p>Данные графики наглядно показывают, что регионы отличаются по ряду статистических параметров исследуемой переменной: среднему значению, размаху вариации (разбросу значений), среднеквадратическому отклонению Эти статистики можно получить и в табличном виде:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="stat-analysis.html#cb21-1"></a>(tabreg <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-2"><a href="stat-analysis.html#cb21-2"></a><span class="st">  </span><span class="kw">group_by</span>(Region) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-3"><a href="stat-analysis.html#cb21-3"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">gdp_mean =</span> <span class="kw">mean</span>(gdp),</span>
-<span id="cb21-4"><a href="stat-analysis.html#cb21-4"></a>            <span class="dt">gdp_sd =</span> <span class="kw">sd</span>(gdp),</span>
-<span id="cb21-5"><a href="stat-analysis.html#cb21-5"></a>            <span class="dt">lifexp_mean =</span> <span class="kw">mean</span>(lifexp),</span>
-<span id="cb21-6"><a href="stat-analysis.html#cb21-6"></a>            <span class="dt">lifexp_sd =</span> <span class="kw">sd</span>(lifexp)))</span>
-<span id="cb21-7"><a href="stat-analysis.html#cb21-7"></a><span class="co">## # A tibble: 8 x 5</span></span>
-<span id="cb21-8"><a href="stat-analysis.html#cb21-8"></a><span class="co">##   Region             gdp_mean gdp_sd lifexp_mean lifexp_sd</span></span>
-<span id="cb21-9"><a href="stat-analysis.html#cb21-9"></a><span class="co">##   &lt;chr&gt;                 &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;</span></span>
-<span id="cb21-10"><a href="stat-analysis.html#cb21-10"></a><span class="co">## 1 africa_north          6897.  3386.        73        4.97</span></span>
-<span id="cb21-11"><a href="stat-analysis.html#cb21-11"></a><span class="co">## 2 africa_sub_saharan    3583.  4553.        62.3      5.31</span></span>
-<span id="cb21-12"><a href="stat-analysis.html#cb21-12"></a><span class="co">## 3 america_north        13835. 11451.        74.9      4.00</span></span>
-<span id="cb21-13"><a href="stat-analysis.html#cb21-13"></a><span class="co">## 4 america_south        10350.  4277.        75.1      3.50</span></span>
-<span id="cb21-14"><a href="stat-analysis.html#cb21-14"></a><span class="co">## 5 asia_west            16374. 20957.        73.7      6.51</span></span>
-<span id="cb21-15"><a href="stat-analysis.html#cb21-15"></a><span class="co">## 6 east_asia_pacific    14062. 16634.        72.4      6.68</span></span>
-<span id="cb21-16"><a href="stat-analysis.html#cb21-16"></a><span class="co">## 7 europe_east          13634.  7030.        75.9      2.86</span></span>
-<span id="cb21-17"><a href="stat-analysis.html#cb21-17"></a><span class="co">## 8 europe_west          33571. 11104.        81.5      1.24</span></span></code></pre></div>
+<div class="sourceCode" id="cb352"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb352-1"><a href="stat-analysis.html#cb352-1"></a>(tabreg <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb352-2"><a href="stat-analysis.html#cb352-2"></a><span class="st">  </span><span class="kw">group_by</span>(Region) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb352-3"><a href="stat-analysis.html#cb352-3"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">gdp_mean =</span> <span class="kw">mean</span>(gdp),</span>
+<span id="cb352-4"><a href="stat-analysis.html#cb352-4"></a>            <span class="dt">gdp_sd =</span> <span class="kw">sd</span>(gdp),</span>
+<span id="cb352-5"><a href="stat-analysis.html#cb352-5"></a>            <span class="dt">lifexp_mean =</span> <span class="kw">mean</span>(lifexp),</span>
+<span id="cb352-6"><a href="stat-analysis.html#cb352-6"></a>            <span class="dt">lifexp_sd =</span> <span class="kw">sd</span>(lifexp)))</span>
+<span id="cb352-7"><a href="stat-analysis.html#cb352-7"></a><span class="co">## # A tibble: 8 x 5</span></span>
+<span id="cb352-8"><a href="stat-analysis.html#cb352-8"></a><span class="co">##   Region             gdp_mean gdp_sd lifexp_mean lifexp_sd</span></span>
+<span id="cb352-9"><a href="stat-analysis.html#cb352-9"></a><span class="co">##   &lt;chr&gt;                 &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb352-10"><a href="stat-analysis.html#cb352-10"></a><span class="co">## 1 africa_north          6897.  3386.        73        4.97</span></span>
+<span id="cb352-11"><a href="stat-analysis.html#cb352-11"></a><span class="co">## 2 africa_sub_saharan    3583.  4553.        62.3      5.31</span></span>
+<span id="cb352-12"><a href="stat-analysis.html#cb352-12"></a><span class="co">## 3 america_north        13835. 11451.        74.9      4.00</span></span>
+<span id="cb352-13"><a href="stat-analysis.html#cb352-13"></a><span class="co">## 4 america_south        10350.  4277.        75.1      3.50</span></span>
+<span id="cb352-14"><a href="stat-analysis.html#cb352-14"></a><span class="co">## 5 asia_west            16374. 20957.        73.7      6.51</span></span>
+<span id="cb352-15"><a href="stat-analysis.html#cb352-15"></a><span class="co">## 6 east_asia_pacific    14062. 16634.        72.4      6.68</span></span>
+<span id="cb352-16"><a href="stat-analysis.html#cb352-16"></a><span class="co">## 7 europe_east          13634.  7030.        75.9      2.86</span></span>
+<span id="cb352-17"><a href="stat-analysis.html#cb352-17"></a><span class="co">## 8 europe_west          33571. 11104.        81.5      1.24</span></span></code></pre></div>
 </div>
 <div id="stat_analysis_one_tests" class="section level3">
 <h3><span class="header-section-number">7.3.3</span> Статистические тесты</h3>
 <p>Прежде чем манипулировать вычисленными статистиками (говорить, что в Западной Европе ВВП на душу населения в 10 раз выше, чем в Южной Африке), необходимо убедиться, что их отличия являются статистически значимыми. На статистическую значимость влияет не только абсолютная разность средних, но также характер распределения и объем выборки — выборки малого объема не могут дать высокой статистической значимости.</p>
 <p>Для сравнения средних значений и дисперсий двух статистических выборок обычно используют <a href="https://ru.wikipedia.org/wiki/T-%D0%9A%D1%80%D0%B8%D1%82%D0%B5%D1%80%D0%B8%D0%B9_%D0%A1%D1%82%D1%8C%D1%8E%D0%B4%D0%B5%D0%BD%D1%82%D0%B0"><strong>тест Стьюдента</strong></a> и <a href="https://ru.wikipedia.org/wiki/F-%D1%82%D0%B5%D1%81%D1%82"><strong>тест Фишера</strong></a> соответственно.</p>
 <p>Проведем тесты для сравнения средних по Европе и Южной Африке используя функцию <code>t.test()</code> (на самом деле это <a href="https://en.wikipedia.org/wiki/Welch%27s_t-test">тест Уэлча</a>, являющийся модификацией теста Стьюдента):</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="stat-analysis.html#cb22-1"></a><span class="kw">t.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;africa_sub_saharan&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp),</span>
-<span id="cb22-2"><a href="stat-analysis.html#cb22-2"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_west&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp))</span>
-<span id="cb22-3"><a href="stat-analysis.html#cb22-3"></a><span class="co">## </span></span>
-<span id="cb22-4"><a href="stat-analysis.html#cb22-4"></a><span class="co">##  Welch Two Sample t-test</span></span>
-<span id="cb22-5"><a href="stat-analysis.html#cb22-5"></a><span class="co">## </span></span>
-<span id="cb22-6"><a href="stat-analysis.html#cb22-6"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;africa_sub_saharan&quot;) %&gt;% pull(gdp) and tabreg %&gt;% filter(Region == &quot;europe_west&quot;) %&gt;% pull(gdp)</span></span>
-<span id="cb22-7"><a href="stat-analysis.html#cb22-7"></a><span class="co">## t = -11.384, df = 20.547, p-value = 2.487e-10</span></span>
-<span id="cb22-8"><a href="stat-analysis.html#cb22-8"></a><span class="co">## alternative hypothesis: true difference in means is not equal to 0</span></span>
-<span id="cb22-9"><a href="stat-analysis.html#cb22-9"></a><span class="co">## 95 percent confidence interval:</span></span>
-<span id="cb22-10"><a href="stat-analysis.html#cb22-10"></a><span class="co">##  -35473.63 -24502.15</span></span>
-<span id="cb22-11"><a href="stat-analysis.html#cb22-11"></a><span class="co">## sample estimates:</span></span>
-<span id="cb22-12"><a href="stat-analysis.html#cb22-12"></a><span class="co">## mean of x mean of y </span></span>
-<span id="cb22-13"><a href="stat-analysis.html#cb22-13"></a><span class="co">##  3583.326 33571.214</span></span>
-<span id="cb22-14"><a href="stat-analysis.html#cb22-14"></a></span>
-<span id="cb22-15"><a href="stat-analysis.html#cb22-15"></a><span class="kw">t.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;africa_sub_saharan&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp),</span>
-<span id="cb22-16"><a href="stat-analysis.html#cb22-16"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_west&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp))</span>
-<span id="cb22-17"><a href="stat-analysis.html#cb22-17"></a><span class="co">## </span></span>
-<span id="cb22-18"><a href="stat-analysis.html#cb22-18"></a><span class="co">##  Welch Two Sample t-test</span></span>
-<span id="cb22-19"><a href="stat-analysis.html#cb22-19"></a><span class="co">## </span></span>
-<span id="cb22-20"><a href="stat-analysis.html#cb22-20"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;africa_sub_saharan&quot;) %&gt;% pull(lifexp) and tabreg %&gt;% filter(Region == &quot;europe_west&quot;) %&gt;% pull(lifexp)</span></span>
-<span id="cb22-21"><a href="stat-analysis.html#cb22-21"></a><span class="co">## t = -23.037, df = 55.262, p-value &lt; 2.2e-16</span></span>
-<span id="cb22-22"><a href="stat-analysis.html#cb22-22"></a><span class="co">## alternative hypothesis: true difference in means is not equal to 0</span></span>
-<span id="cb22-23"><a href="stat-analysis.html#cb22-23"></a><span class="co">## 95 percent confidence interval:</span></span>
-<span id="cb22-24"><a href="stat-analysis.html#cb22-24"></a><span class="co">##  -20.87392 -17.53317</span></span>
-<span id="cb22-25"><a href="stat-analysis.html#cb22-25"></a><span class="co">## sample estimates:</span></span>
-<span id="cb22-26"><a href="stat-analysis.html#cb22-26"></a><span class="co">## mean of x mean of y </span></span>
-<span id="cb22-27"><a href="stat-analysis.html#cb22-27"></a><span class="co">##  62.25435  81.45789</span></span></code></pre></div>
+<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb353-1"><a href="stat-analysis.html#cb353-1"></a><span class="kw">t.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;africa_sub_saharan&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp),</span>
+<span id="cb353-2"><a href="stat-analysis.html#cb353-2"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_west&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp))</span>
+<span id="cb353-3"><a href="stat-analysis.html#cb353-3"></a><span class="co">## </span></span>
+<span id="cb353-4"><a href="stat-analysis.html#cb353-4"></a><span class="co">##  Welch Two Sample t-test</span></span>
+<span id="cb353-5"><a href="stat-analysis.html#cb353-5"></a><span class="co">## </span></span>
+<span id="cb353-6"><a href="stat-analysis.html#cb353-6"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;africa_sub_saharan&quot;) %&gt;% pull(gdp) and tabreg %&gt;% filter(Region == &quot;europe_west&quot;) %&gt;% pull(gdp)</span></span>
+<span id="cb353-7"><a href="stat-analysis.html#cb353-7"></a><span class="co">## t = -11.384, df = 20.547, p-value = 0.0000000002487</span></span>
+<span id="cb353-8"><a href="stat-analysis.html#cb353-8"></a><span class="co">## alternative hypothesis: true difference in means is not equal to 0</span></span>
+<span id="cb353-9"><a href="stat-analysis.html#cb353-9"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb353-10"><a href="stat-analysis.html#cb353-10"></a><span class="co">##  -35473.63 -24502.15</span></span>
+<span id="cb353-11"><a href="stat-analysis.html#cb353-11"></a><span class="co">## sample estimates:</span></span>
+<span id="cb353-12"><a href="stat-analysis.html#cb353-12"></a><span class="co">## mean of x mean of y </span></span>
+<span id="cb353-13"><a href="stat-analysis.html#cb353-13"></a><span class="co">##  3583.326 33571.214</span></span>
+<span id="cb353-14"><a href="stat-analysis.html#cb353-14"></a></span>
+<span id="cb353-15"><a href="stat-analysis.html#cb353-15"></a><span class="kw">t.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;africa_sub_saharan&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp),</span>
+<span id="cb353-16"><a href="stat-analysis.html#cb353-16"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_west&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp))</span>
+<span id="cb353-17"><a href="stat-analysis.html#cb353-17"></a><span class="co">## </span></span>
+<span id="cb353-18"><a href="stat-analysis.html#cb353-18"></a><span class="co">##  Welch Two Sample t-test</span></span>
+<span id="cb353-19"><a href="stat-analysis.html#cb353-19"></a><span class="co">## </span></span>
+<span id="cb353-20"><a href="stat-analysis.html#cb353-20"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;africa_sub_saharan&quot;) %&gt;% pull(lifexp) and tabreg %&gt;% filter(Region == &quot;europe_west&quot;) %&gt;% pull(lifexp)</span></span>
+<span id="cb353-21"><a href="stat-analysis.html#cb353-21"></a><span class="co">## t = -23.037, df = 55.262, p-value &lt; 0.00000000000000022</span></span>
+<span id="cb353-22"><a href="stat-analysis.html#cb353-22"></a><span class="co">## alternative hypothesis: true difference in means is not equal to 0</span></span>
+<span id="cb353-23"><a href="stat-analysis.html#cb353-23"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb353-24"><a href="stat-analysis.html#cb353-24"></a><span class="co">##  -20.87392 -17.53317</span></span>
+<span id="cb353-25"><a href="stat-analysis.html#cb353-25"></a><span class="co">## sample estimates:</span></span>
+<span id="cb353-26"><a href="stat-analysis.html#cb353-26"></a><span class="co">## mean of x mean of y </span></span>
+<span id="cb353-27"><a href="stat-analysis.html#cb353-27"></a><span class="co">##  62.25435  81.45789</span></span></code></pre></div>
 <p><a href="https://ru.wikipedia.org/wiki/P-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D0%B5"><strong>p-значения</strong></a> для данных тестов очень малы, что позволяет нам принять (не отвергать) гипотезу о неравенстве средних для Западной Европы и Южной Африки.</p>
 <p>Проверим, так ли значимы отличия в средних для Северной и Южной Америки:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="stat-analysis.html#cb23-1"></a><span class="kw">t.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;america_north&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp),</span>
-<span id="cb23-2"><a href="stat-analysis.html#cb23-2"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;america_south&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp))</span>
-<span id="cb23-3"><a href="stat-analysis.html#cb23-3"></a><span class="co">## </span></span>
-<span id="cb23-4"><a href="stat-analysis.html#cb23-4"></a><span class="co">##  Welch Two Sample t-test</span></span>
-<span id="cb23-5"><a href="stat-analysis.html#cb23-5"></a><span class="co">## </span></span>
-<span id="cb23-6"><a href="stat-analysis.html#cb23-6"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;america_north&quot;) %&gt;% pull(gdp) and tabreg %&gt;% filter(Region == &quot;america_south&quot;) %&gt;% pull(gdp)</span></span>
-<span id="cb23-7"><a href="stat-analysis.html#cb23-7"></a><span class="co">## t = 1.1742, df = 23.283, p-value = 0.2522</span></span>
-<span id="cb23-8"><a href="stat-analysis.html#cb23-8"></a><span class="co">## alternative hypothesis: true difference in means is not equal to 0</span></span>
-<span id="cb23-9"><a href="stat-analysis.html#cb23-9"></a><span class="co">## 95 percent confidence interval:</span></span>
-<span id="cb23-10"><a href="stat-analysis.html#cb23-10"></a><span class="co">##  -2650.736  9620.806</span></span>
-<span id="cb23-11"><a href="stat-analysis.html#cb23-11"></a><span class="co">## sample estimates:</span></span>
-<span id="cb23-12"><a href="stat-analysis.html#cb23-12"></a><span class="co">## mean of x mean of y </span></span>
-<span id="cb23-13"><a href="stat-analysis.html#cb23-13"></a><span class="co">##  13834.72  10349.69</span></span>
-<span id="cb23-14"><a href="stat-analysis.html#cb23-14"></a></span>
-<span id="cb23-15"><a href="stat-analysis.html#cb23-15"></a><span class="kw">t.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;america_north&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp),</span>
-<span id="cb23-16"><a href="stat-analysis.html#cb23-16"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;america_south&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp))</span>
-<span id="cb23-17"><a href="stat-analysis.html#cb23-17"></a><span class="co">## </span></span>
-<span id="cb23-18"><a href="stat-analysis.html#cb23-18"></a><span class="co">##  Welch Two Sample t-test</span></span>
-<span id="cb23-19"><a href="stat-analysis.html#cb23-19"></a><span class="co">## </span></span>
-<span id="cb23-20"><a href="stat-analysis.html#cb23-20"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;america_north&quot;) %&gt;% pull(lifexp) and tabreg %&gt;% filter(Region == &quot;america_south&quot;) %&gt;% pull(lifexp)</span></span>
-<span id="cb23-21"><a href="stat-analysis.html#cb23-21"></a><span class="co">## t = -0.20306, df = 25.802, p-value = 0.8407</span></span>
-<span id="cb23-22"><a href="stat-analysis.html#cb23-22"></a><span class="co">## alternative hypothesis: true difference in means is not equal to 0</span></span>
-<span id="cb23-23"><a href="stat-analysis.html#cb23-23"></a><span class="co">## 95 percent confidence interval:</span></span>
-<span id="cb23-24"><a href="stat-analysis.html#cb23-24"></a><span class="co">##  -3.121651  2.560540</span></span>
-<span id="cb23-25"><a href="stat-analysis.html#cb23-25"></a><span class="co">## sample estimates:</span></span>
-<span id="cb23-26"><a href="stat-analysis.html#cb23-26"></a><span class="co">## mean of x mean of y </span></span>
-<span id="cb23-27"><a href="stat-analysis.html#cb23-27"></a><span class="co">##  74.86111  75.14167</span></span></code></pre></div>
+<div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb354-1"><a href="stat-analysis.html#cb354-1"></a><span class="kw">t.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;america_north&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp),</span>
+<span id="cb354-2"><a href="stat-analysis.html#cb354-2"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;america_south&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp))</span>
+<span id="cb354-3"><a href="stat-analysis.html#cb354-3"></a><span class="co">## </span></span>
+<span id="cb354-4"><a href="stat-analysis.html#cb354-4"></a><span class="co">##  Welch Two Sample t-test</span></span>
+<span id="cb354-5"><a href="stat-analysis.html#cb354-5"></a><span class="co">## </span></span>
+<span id="cb354-6"><a href="stat-analysis.html#cb354-6"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;america_north&quot;) %&gt;% pull(gdp) and tabreg %&gt;% filter(Region == &quot;america_south&quot;) %&gt;% pull(gdp)</span></span>
+<span id="cb354-7"><a href="stat-analysis.html#cb354-7"></a><span class="co">## t = 1.1742, df = 23.283, p-value = 0.2522</span></span>
+<span id="cb354-8"><a href="stat-analysis.html#cb354-8"></a><span class="co">## alternative hypothesis: true difference in means is not equal to 0</span></span>
+<span id="cb354-9"><a href="stat-analysis.html#cb354-9"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb354-10"><a href="stat-analysis.html#cb354-10"></a><span class="co">##  -2650.736  9620.806</span></span>
+<span id="cb354-11"><a href="stat-analysis.html#cb354-11"></a><span class="co">## sample estimates:</span></span>
+<span id="cb354-12"><a href="stat-analysis.html#cb354-12"></a><span class="co">## mean of x mean of y </span></span>
+<span id="cb354-13"><a href="stat-analysis.html#cb354-13"></a><span class="co">##  13834.72  10349.69</span></span>
+<span id="cb354-14"><a href="stat-analysis.html#cb354-14"></a></span>
+<span id="cb354-15"><a href="stat-analysis.html#cb354-15"></a><span class="kw">t.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;america_north&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp),</span>
+<span id="cb354-16"><a href="stat-analysis.html#cb354-16"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;america_south&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp))</span>
+<span id="cb354-17"><a href="stat-analysis.html#cb354-17"></a><span class="co">## </span></span>
+<span id="cb354-18"><a href="stat-analysis.html#cb354-18"></a><span class="co">##  Welch Two Sample t-test</span></span>
+<span id="cb354-19"><a href="stat-analysis.html#cb354-19"></a><span class="co">## </span></span>
+<span id="cb354-20"><a href="stat-analysis.html#cb354-20"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;america_north&quot;) %&gt;% pull(lifexp) and tabreg %&gt;% filter(Region == &quot;america_south&quot;) %&gt;% pull(lifexp)</span></span>
+<span id="cb354-21"><a href="stat-analysis.html#cb354-21"></a><span class="co">## t = -0.20306, df = 25.802, p-value = 0.8407</span></span>
+<span id="cb354-22"><a href="stat-analysis.html#cb354-22"></a><span class="co">## alternative hypothesis: true difference in means is not equal to 0</span></span>
+<span id="cb354-23"><a href="stat-analysis.html#cb354-23"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb354-24"><a href="stat-analysis.html#cb354-24"></a><span class="co">##  -3.121651  2.560540</span></span>
+<span id="cb354-25"><a href="stat-analysis.html#cb354-25"></a><span class="co">## sample estimates:</span></span>
+<span id="cb354-26"><a href="stat-analysis.html#cb354-26"></a><span class="co">## mean of x mean of y </span></span>
+<span id="cb354-27"><a href="stat-analysis.html#cb354-27"></a><span class="co">##  74.86111  75.14167</span></span></code></pre></div>
 <p>В данном случае, несмотря на то, что вычисленные значения средних отличаются, тест показывает очень высокие <strong>p-значения</strong> (0.25 и 0.84 соответственно), что не позволяет нам говорить о том, что эти отличия статистически значимы. Соответственно, делать на их основе какие-либо научные выводы нельзя.</p>
 <p>Аналогичным образом можно проверить статистическую значимость отличий в дисперсии (вариации значений) для разных регионов. Для этого используем функцию <code>var.test()</code> применительно к регионам Западной и Восточной Европы:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="stat-analysis.html#cb24-1"></a><span class="kw">var.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_east&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp),</span>
-<span id="cb24-2"><a href="stat-analysis.html#cb24-2"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_west&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp))</span>
-<span id="cb24-3"><a href="stat-analysis.html#cb24-3"></a><span class="co">## </span></span>
-<span id="cb24-4"><a href="stat-analysis.html#cb24-4"></a><span class="co">##  F test to compare two variances</span></span>
-<span id="cb24-5"><a href="stat-analysis.html#cb24-5"></a><span class="co">## </span></span>
-<span id="cb24-6"><a href="stat-analysis.html#cb24-6"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;europe_east&quot;) %&gt;% pull(gdp) and tabreg %&gt;% filter(Region == &quot;europe_west&quot;) %&gt;% pull(gdp)</span></span>
-<span id="cb24-7"><a href="stat-analysis.html#cb24-7"></a><span class="co">## F = 0.40087, num df = 22, denom df = 18, p-value = 0.0434</span></span>
-<span id="cb24-8"><a href="stat-analysis.html#cb24-8"></a><span class="co">## alternative hypothesis: true ratio of variances is not equal to 1</span></span>
-<span id="cb24-9"><a href="stat-analysis.html#cb24-9"></a><span class="co">## 95 percent confidence interval:</span></span>
-<span id="cb24-10"><a href="stat-analysis.html#cb24-10"></a><span class="co">##  0.1585416 0.9726112</span></span>
-<span id="cb24-11"><a href="stat-analysis.html#cb24-11"></a><span class="co">## sample estimates:</span></span>
-<span id="cb24-12"><a href="stat-analysis.html#cb24-12"></a><span class="co">## ratio of variances </span></span>
-<span id="cb24-13"><a href="stat-analysis.html#cb24-13"></a><span class="co">##          0.4008741</span></span>
-<span id="cb24-14"><a href="stat-analysis.html#cb24-14"></a></span>
-<span id="cb24-15"><a href="stat-analysis.html#cb24-15"></a><span class="kw">var.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_east&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp),</span>
-<span id="cb24-16"><a href="stat-analysis.html#cb24-16"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_west&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp))</span>
-<span id="cb24-17"><a href="stat-analysis.html#cb24-17"></a><span class="co">## </span></span>
-<span id="cb24-18"><a href="stat-analysis.html#cb24-18"></a><span class="co">##  F test to compare two variances</span></span>
-<span id="cb24-19"><a href="stat-analysis.html#cb24-19"></a><span class="co">## </span></span>
-<span id="cb24-20"><a href="stat-analysis.html#cb24-20"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;europe_east&quot;) %&gt;% pull(lifexp) and tabreg %&gt;% filter(Region == &quot;europe_west&quot;) %&gt;% pull(lifexp)</span></span>
-<span id="cb24-21"><a href="stat-analysis.html#cb24-21"></a><span class="co">## F = 5.3246, num df = 22, denom df = 18, p-value = 0.0006859</span></span>
-<span id="cb24-22"><a href="stat-analysis.html#cb24-22"></a><span class="co">## alternative hypothesis: true ratio of variances is not equal to 1</span></span>
-<span id="cb24-23"><a href="stat-analysis.html#cb24-23"></a><span class="co">## 95 percent confidence interval:</span></span>
-<span id="cb24-24"><a href="stat-analysis.html#cb24-24"></a><span class="co">##   2.105831 12.918723</span></span>
-<span id="cb24-25"><a href="stat-analysis.html#cb24-25"></a><span class="co">## sample estimates:</span></span>
-<span id="cb24-26"><a href="stat-analysis.html#cb24-26"></a><span class="co">## ratio of variances </span></span>
-<span id="cb24-27"><a href="stat-analysis.html#cb24-27"></a><span class="co">##           5.324617</span></span></code></pre></div>
+<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb355-1"><a href="stat-analysis.html#cb355-1"></a><span class="kw">var.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_east&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp),</span>
+<span id="cb355-2"><a href="stat-analysis.html#cb355-2"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_west&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(gdp))</span>
+<span id="cb355-3"><a href="stat-analysis.html#cb355-3"></a><span class="co">## </span></span>
+<span id="cb355-4"><a href="stat-analysis.html#cb355-4"></a><span class="co">##  F test to compare two variances</span></span>
+<span id="cb355-5"><a href="stat-analysis.html#cb355-5"></a><span class="co">## </span></span>
+<span id="cb355-6"><a href="stat-analysis.html#cb355-6"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;europe_east&quot;) %&gt;% pull(gdp) and tabreg %&gt;% filter(Region == &quot;europe_west&quot;) %&gt;% pull(gdp)</span></span>
+<span id="cb355-7"><a href="stat-analysis.html#cb355-7"></a><span class="co">## F = 0.40087, num df = 22, denom df = 18, p-value = 0.0434</span></span>
+<span id="cb355-8"><a href="stat-analysis.html#cb355-8"></a><span class="co">## alternative hypothesis: true ratio of variances is not equal to 1</span></span>
+<span id="cb355-9"><a href="stat-analysis.html#cb355-9"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb355-10"><a href="stat-analysis.html#cb355-10"></a><span class="co">##  0.1585416 0.9726112</span></span>
+<span id="cb355-11"><a href="stat-analysis.html#cb355-11"></a><span class="co">## sample estimates:</span></span>
+<span id="cb355-12"><a href="stat-analysis.html#cb355-12"></a><span class="co">## ratio of variances </span></span>
+<span id="cb355-13"><a href="stat-analysis.html#cb355-13"></a><span class="co">##          0.4008741</span></span>
+<span id="cb355-14"><a href="stat-analysis.html#cb355-14"></a></span>
+<span id="cb355-15"><a href="stat-analysis.html#cb355-15"></a><span class="kw">var.test</span>(tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_east&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp),</span>
+<span id="cb355-16"><a href="stat-analysis.html#cb355-16"></a>       tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &#39;europe_west&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(lifexp))</span>
+<span id="cb355-17"><a href="stat-analysis.html#cb355-17"></a><span class="co">## </span></span>
+<span id="cb355-18"><a href="stat-analysis.html#cb355-18"></a><span class="co">##  F test to compare two variances</span></span>
+<span id="cb355-19"><a href="stat-analysis.html#cb355-19"></a><span class="co">## </span></span>
+<span id="cb355-20"><a href="stat-analysis.html#cb355-20"></a><span class="co">## data:  tabreg %&gt;% filter(Region == &quot;europe_east&quot;) %&gt;% pull(lifexp) and tabreg %&gt;% filter(Region == &quot;europe_west&quot;) %&gt;% pull(lifexp)</span></span>
+<span id="cb355-21"><a href="stat-analysis.html#cb355-21"></a><span class="co">## F = 5.3246, num df = 22, denom df = 18, p-value = 0.0006859</span></span>
+<span id="cb355-22"><a href="stat-analysis.html#cb355-22"></a><span class="co">## alternative hypothesis: true ratio of variances is not equal to 1</span></span>
+<span id="cb355-23"><a href="stat-analysis.html#cb355-23"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb355-24"><a href="stat-analysis.html#cb355-24"></a><span class="co">##   2.105831 12.918723</span></span>
+<span id="cb355-25"><a href="stat-analysis.html#cb355-25"></a><span class="co">## sample estimates:</span></span>
+<span id="cb355-26"><a href="stat-analysis.html#cb355-26"></a><span class="co">## ratio of variances </span></span>
+<span id="cb355-27"><a href="stat-analysis.html#cb355-27"></a><span class="co">##           5.324617</span></span></code></pre></div>
 <p>Данный тест показывает, что отличия в вариации значений ВВП на душу населения для Западной и Восточной Европы носят пограничный характер (p = 0.04), и принимать их можно только если стоит относительно высокое пороговое значение p = 0.05. В то же время, вариация продолжительности жизни для Западной Европы существенной меньше, чем для Восточной и при данной выборке это отличие обладает высокой статистической значимостью (p = 0.0007). Соответственно, его можно принимать с уверенностью.</p>
 </div>
 </div>
@@ -977,95 +989,95 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="stat_analysis_two_distr_scatter" class="section level4">
 <h4><span class="header-section-number">7.4.1.1</span> Диаграмма рассеяния</h4>
 <p>Первичный анализ производится путем оценки совместного распределения переменных на плоскости (для двух переменных) путем построения диаграммы рассеяния. С этим графиком мы уже хорошо знакомы:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="stat-analysis.html#cb25-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
-<span id="cb25-2"><a href="stat-analysis.html#cb25-2"></a><span class="st">  </span><span class="kw">geom_point</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<div class="sourceCode" id="cb356"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb356-1"><a href="stat-analysis.html#cb356-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb356-2"><a href="stat-analysis.html#cb356-2"></a><span class="st">  </span><span class="kw">geom_point</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-331-1.png" width="672" /></p>
 <p>Очевидно, что в данном случае мы имеем с нелинейной зависимостью. Чтобы упростить задачу по дальнейшему анализу, можно попробовать перейти к логарифмической шкале по оси <em>X</em>:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="stat-analysis.html#cb26-1"></a><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>)</span>
-<span id="cb26-2"><a href="stat-analysis.html#cb26-2"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
-<span id="cb26-3"><a href="stat-analysis.html#cb26-3"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
-<span id="cb26-4"><a href="stat-analysis.html#cb26-4"></a><span class="st">  </span><span class="kw">scale_x_log10</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb357-1"><a href="stat-analysis.html#cb357-1"></a><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>)</span>
+<span id="cb357-2"><a href="stat-analysis.html#cb357-2"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb357-3"><a href="stat-analysis.html#cb357-3"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
+<span id="cb357-4"><a href="stat-analysis.html#cb357-4"></a><span class="st">  </span><span class="kw">scale_x_log10</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-332-1.png" width="672" /></p>
 <p>На диаграмме рассеяния важно показать не только местоположение точек, но также их весовую значимость, которая в данном случае определяется численностью населения в стране. Введем соответствующую графическую переменную — размер точки:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="stat-analysis.html#cb27-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp, <span class="dt">size =</span> pop)) <span class="op">+</span></span>
-<span id="cb27-2"><a href="stat-analysis.html#cb27-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb27-3"><a href="stat-analysis.html#cb27-3"></a><span class="st">  </span><span class="kw">scale_x_log10</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb358-1"><a href="stat-analysis.html#cb358-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp, <span class="dt">size =</span> pop)) <span class="op">+</span></span>
+<span id="cb358-2"><a href="stat-analysis.html#cb358-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb358-3"><a href="stat-analysis.html#cb358-3"></a><span class="st">  </span><span class="kw">scale_x_log10</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-333-1.png" width="672" /></p>
 <p>Еще сильнее повысить информативность диаграммы рассеяния можно, используя цвет точек для обозначения региона принадлежности. Это позволит понять связь между введенной нами <em>географической стратификацией</em> и распределением элементов выборки на диаграмме рассеяния:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="stat-analysis.html#cb28-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp, <span class="dt">size =</span> pop, <span class="dt">color =</span> Region)) <span class="op">+</span></span>
-<span id="cb28-2"><a href="stat-analysis.html#cb28-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb28-3"><a href="stat-analysis.html#cb28-3"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
-<span id="cb28-4"><a href="stat-analysis.html#cb28-4"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<div class="sourceCode" id="cb359"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb359-1"><a href="stat-analysis.html#cb359-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp, <span class="dt">size =</span> pop, <span class="dt">color =</span> Region)) <span class="op">+</span></span>
+<span id="cb359-2"><a href="stat-analysis.html#cb359-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb359-3"><a href="stat-analysis.html#cb359-3"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb359-4"><a href="stat-analysis.html#cb359-4"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-334-1.png" width="672" /></p>
 <p>Использование цвета наглядно показывает, что африканские страны занимают нижнюю левую часть диаграммы рассеяния с малой величиной ВВП и низкой продолжительностью жизни.</p>
 <p>Целесообразно также добавить подписи крупнейших стран мира с населением более 100 млн чел, а также страны, занимающие экстремальные позиции по обеим осям, чтобы понять положение ключевых игроков на диаграмме:</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="stat-analysis.html#cb29-1"></a></span>
-<span id="cb29-2"><a href="stat-analysis.html#cb29-2"></a>tablab =<span class="st"> </span>tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># табличка для подписей</span></span>
-<span id="cb29-3"><a href="stat-analysis.html#cb29-3"></a><span class="st">  </span><span class="kw">filter</span>(</span>
-<span id="cb29-4"><a href="stat-analysis.html#cb29-4"></a>    pop <span class="op">&gt;</span><span class="st"> </span><span class="fl">1e8</span> <span class="op">|</span><span class="st"> </span></span>
-<span id="cb29-5"><a href="stat-analysis.html#cb29-5"></a><span class="st">    </span>gdp <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(gdp) <span class="op">|</span><span class="st"> </span></span>
-<span id="cb29-6"><a href="stat-analysis.html#cb29-6"></a><span class="st">    </span>gdp <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(gdp) <span class="op">|</span><span class="st"> </span></span>
-<span id="cb29-7"><a href="stat-analysis.html#cb29-7"></a><span class="st">    </span>lifexp <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(lifexp) <span class="op">|</span><span class="st"> </span></span>
-<span id="cb29-8"><a href="stat-analysis.html#cb29-8"></a><span class="st">    </span>lifexp <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(lifexp)</span>
-<span id="cb29-9"><a href="stat-analysis.html#cb29-9"></a>  )</span>
-<span id="cb29-10"><a href="stat-analysis.html#cb29-10"></a></span>
-<span id="cb29-11"><a href="stat-analysis.html#cb29-11"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp, <span class="dt">color =</span> Region)) <span class="op">+</span></span>
-<span id="cb29-12"><a href="stat-analysis.html#cb29-12"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> pop), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb29-13"><a href="stat-analysis.html#cb29-13"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">data =</span> tablab, </span>
-<span id="cb29-14"><a href="stat-analysis.html#cb29-14"></a>            <span class="kw">aes</span>(<span class="dt">label =</span> Country),</span>
-<span id="cb29-15"><a href="stat-analysis.html#cb29-15"></a>            <span class="dt">check_overlap =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb29-16"><a href="stat-analysis.html#cb29-16"></a>            <span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span><span class="st"> </span><span class="co"># убрать текст из легенды</span></span>
-<span id="cb29-17"><a href="stat-analysis.html#cb29-17"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
-<span id="cb29-18"><a href="stat-analysis.html#cb29-18"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb360-1"><a href="stat-analysis.html#cb360-1"></a></span>
+<span id="cb360-2"><a href="stat-analysis.html#cb360-2"></a>tablab =<span class="st"> </span>tabreg <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># табличка для подписей</span></span>
+<span id="cb360-3"><a href="stat-analysis.html#cb360-3"></a><span class="st">  </span><span class="kw">filter</span>(</span>
+<span id="cb360-4"><a href="stat-analysis.html#cb360-4"></a>    pop <span class="op">&gt;</span><span class="st"> </span><span class="fl">1e8</span> <span class="op">|</span><span class="st"> </span></span>
+<span id="cb360-5"><a href="stat-analysis.html#cb360-5"></a><span class="st">    </span>gdp <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(gdp) <span class="op">|</span><span class="st"> </span></span>
+<span id="cb360-6"><a href="stat-analysis.html#cb360-6"></a><span class="st">    </span>gdp <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(gdp) <span class="op">|</span><span class="st"> </span></span>
+<span id="cb360-7"><a href="stat-analysis.html#cb360-7"></a><span class="st">    </span>lifexp <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(lifexp) <span class="op">|</span><span class="st"> </span></span>
+<span id="cb360-8"><a href="stat-analysis.html#cb360-8"></a><span class="st">    </span>lifexp <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(lifexp)</span>
+<span id="cb360-9"><a href="stat-analysis.html#cb360-9"></a>  )</span>
+<span id="cb360-10"><a href="stat-analysis.html#cb360-10"></a></span>
+<span id="cb360-11"><a href="stat-analysis.html#cb360-11"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp, <span class="dt">color =</span> Region)) <span class="op">+</span></span>
+<span id="cb360-12"><a href="stat-analysis.html#cb360-12"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> pop), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb360-13"><a href="stat-analysis.html#cb360-13"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">data =</span> tablab, </span>
+<span id="cb360-14"><a href="stat-analysis.html#cb360-14"></a>            <span class="kw">aes</span>(<span class="dt">label =</span> Country),</span>
+<span id="cb360-15"><a href="stat-analysis.html#cb360-15"></a>            <span class="dt">check_overlap =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb360-16"><a href="stat-analysis.html#cb360-16"></a>            <span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span><span class="st"> </span><span class="co"># убрать текст из легенды</span></span>
+<span id="cb360-17"><a href="stat-analysis.html#cb360-17"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb360-18"><a href="stat-analysis.html#cb360-18"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-335-1.png" width="672" /></p>
 <p>Устранение перекрытий подписей можно осуществить, используя геометрию <code>geom_text_repel()</code> из пакета <strong>ggrepel</strong> вместо стандартной <code>geom_text()</code></p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="stat-analysis.html#cb30-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp,  <span class="dt">color =</span> Region)) <span class="op">+</span></span>
-<span id="cb30-2"><a href="stat-analysis.html#cb30-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> pop), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb30-3"><a href="stat-analysis.html#cb30-3"></a><span class="st">  </span><span class="kw">geom_text_repel</span>(<span class="dt">data =</span> tablab, </span>
-<span id="cb30-4"><a href="stat-analysis.html#cb30-4"></a>                  <span class="kw">aes</span>(<span class="dt">label =</span> Country),</span>
-<span id="cb30-5"><a href="stat-analysis.html#cb30-5"></a>                  <span class="dt">box.padding =</span> <span class="fl">0.7</span>,  <span class="co"># зазор вокруг подписи</span></span>
-<span id="cb30-6"><a href="stat-analysis.html#cb30-6"></a>                  <span class="dt">segment.size =</span> <span class="fl">0.2</span>, <span class="co"># толщина линии выноски</span></span>
-<span id="cb30-7"><a href="stat-analysis.html#cb30-7"></a>                  <span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span><span class="st"> </span><span class="co"># убрать текст из легенды</span></span>
-<span id="cb30-8"><a href="stat-analysis.html#cb30-8"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
-<span id="cb30-9"><a href="stat-analysis.html#cb30-9"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">label =</span> <span class="kw">element_blank</span>()) <span class="op">+</span></span>
-<span id="cb30-10"><a href="stat-analysis.html#cb30-10"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<div class="sourceCode" id="cb361"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb361-1"><a href="stat-analysis.html#cb361-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp,  <span class="dt">color =</span> Region)) <span class="op">+</span></span>
+<span id="cb361-2"><a href="stat-analysis.html#cb361-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> pop), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb361-3"><a href="stat-analysis.html#cb361-3"></a><span class="st">  </span><span class="kw">geom_text_repel</span>(<span class="dt">data =</span> tablab, </span>
+<span id="cb361-4"><a href="stat-analysis.html#cb361-4"></a>                  <span class="kw">aes</span>(<span class="dt">label =</span> Country),</span>
+<span id="cb361-5"><a href="stat-analysis.html#cb361-5"></a>                  <span class="dt">box.padding =</span> <span class="fl">0.7</span>,  <span class="co"># зазор вокруг подписи</span></span>
+<span id="cb361-6"><a href="stat-analysis.html#cb361-6"></a>                  <span class="dt">segment.size =</span> <span class="fl">0.2</span>, <span class="co"># толщина линии выноски</span></span>
+<span id="cb361-7"><a href="stat-analysis.html#cb361-7"></a>                  <span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span><span class="st"> </span><span class="co"># убрать текст из легенды</span></span>
+<span id="cb361-8"><a href="stat-analysis.html#cb361-8"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb361-9"><a href="stat-analysis.html#cb361-9"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">label =</span> <span class="kw">element_blank</span>()) <span class="op">+</span></span>
+<span id="cb361-10"><a href="stat-analysis.html#cb361-10"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-336-1.png" width="672" /></p>
 </div>
 <div id="stat_analysis_two_distr_density" class="section level4">
 <h4><span class="header-section-number">7.4.1.2</span> Плотность распределения</h4>
 <p>Плотность совместного распределения двух случайных величин представляет собой уже не кривую, а поверхность, которую можно построить с использованием геометрии <code>geom_density_2d()</code>. По умолчанию эта геометрия визуализируется в форме изолиний:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="stat-analysis.html#cb31-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
-<span id="cb31-2"><a href="stat-analysis.html#cb31-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb31-3"><a href="stat-analysis.html#cb31-3"></a><span class="st">  </span><span class="kw">geom_density_2d</span>()<span class="op">+</span></span>
-<span id="cb31-4"><a href="stat-analysis.html#cb31-4"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
-<span id="cb31-5"><a href="stat-analysis.html#cb31-5"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb362-1"><a href="stat-analysis.html#cb362-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb362-2"><a href="stat-analysis.html#cb362-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb362-3"><a href="stat-analysis.html#cb362-3"></a><span class="st">  </span><span class="kw">geom_density_2d</span>()<span class="op">+</span></span>
+<span id="cb362-4"><a href="stat-analysis.html#cb362-4"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb362-5"><a href="stat-analysis.html#cb362-5"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-337-1.png" width="672" /></p>
 <p>Усилить наглядность представления можно, добавив вспомогательную растровую поверхность плотности распределения (по которой, собственно, и строятся изолинии). Обратите внимание, что для растра используется функция <code>stat_density()</code>:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="stat-analysis.html#cb32-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
-<span id="cb32-2"><a href="stat-analysis.html#cb32-2"></a><span class="st">  </span><span class="kw">stat_density_2d</span>(<span class="dt">geom =</span> <span class="st">&quot;raster&quot;</span>, <span class="kw">aes</span>(<span class="dt">fill =</span> <span class="kw">stat</span>(density)), <span class="dt">contour =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
-<span id="cb32-3"><a href="stat-analysis.html#cb32-3"></a><span class="st">  </span><span class="kw">geom_density_2d</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span></span>
-<span id="cb32-4"><a href="stat-analysis.html#cb32-4"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb32-5"><a href="stat-analysis.html#cb32-5"></a><span class="st">  </span><span class="kw">scale_fill_gradient</span>(<span class="dt">low =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">high =</span> <span class="st">&quot;red&quot;</span>) <span class="op">+</span></span>
-<span id="cb32-6"><a href="stat-analysis.html#cb32-6"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
-<span id="cb32-7"><a href="stat-analysis.html#cb32-7"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb363-1"><a href="stat-analysis.html#cb363-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb363-2"><a href="stat-analysis.html#cb363-2"></a><span class="st">  </span><span class="kw">stat_density_2d</span>(<span class="dt">geom =</span> <span class="st">&quot;raster&quot;</span>, <span class="kw">aes</span>(<span class="dt">fill =</span> <span class="kw">stat</span>(density)), <span class="dt">contour =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb363-3"><a href="stat-analysis.html#cb363-3"></a><span class="st">  </span><span class="kw">geom_density_2d</span>(<span class="dt">color =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>) <span class="op">+</span></span>
+<span id="cb363-4"><a href="stat-analysis.html#cb363-4"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb363-5"><a href="stat-analysis.html#cb363-5"></a><span class="st">  </span><span class="kw">scale_fill_gradient</span>(<span class="dt">low =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">high =</span> <span class="st">&quot;red&quot;</span>) <span class="op">+</span></span>
+<span id="cb363-6"><a href="stat-analysis.html#cb363-6"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb363-7"><a href="stat-analysis.html#cb363-7"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-338-1.png" width="672" /></p>
 <p>График двумерной плотности распределения показывает, что <em>мода</em> распределения, т.е. наиболее часто встречающийся случай, примерно соответствует странам с продолжительностью жизни 75 лет и ВВП на душу населения $10000.</p>
 <p>В некоторых случаях удобнее оказывается не аппроксимация непрерывной поверхности плотности распределения, а подсчет количества измерений по ячейкам регулярной сетки — квадратным или гексагональным. Такой подход бывает особенно полезен, когда точек измерений очень много и из-за их количества оказывается проблематично разглядеть области их концентрации. Агрегирование данных по ячейкам осуществляется путем применения геометрий <code>geom_bin2d()</code> и <code>geom_hex()</code>:</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="stat-analysis.html#cb33-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
-<span id="cb33-2"><a href="stat-analysis.html#cb33-2"></a><span class="st">  </span><span class="kw">geom_bin2d</span>(<span class="dt">bins =</span> <span class="dv">10</span>)<span class="op">+</span></span>
-<span id="cb33-3"><a href="stat-analysis.html#cb33-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb33-4"><a href="stat-analysis.html#cb33-4"></a><span class="st">  </span><span class="kw">scale_fill_gradient</span>(<span class="dt">low =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">high =</span> <span class="st">&quot;red&quot;</span>) <span class="op">+</span></span>
-<span id="cb33-5"><a href="stat-analysis.html#cb33-5"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
-<span id="cb33-6"><a href="stat-analysis.html#cb33-6"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="stat-analysis.html#cb34-1"></a></span>
-<span id="cb34-2"><a href="stat-analysis.html#cb34-2"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
-<span id="cb34-3"><a href="stat-analysis.html#cb34-3"></a><span class="st">  </span><span class="kw">geom_hex</span>(<span class="dt">bins =</span> <span class="dv">10</span>) <span class="op">+</span></span>
-<span id="cb34-4"><a href="stat-analysis.html#cb34-4"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb34-5"><a href="stat-analysis.html#cb34-5"></a><span class="st">  </span><span class="kw">scale_fill_gradient</span>(<span class="dt">low =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">high =</span> <span class="st">&quot;red&quot;</span>) <span class="op">+</span></span>
-<span id="cb34-6"><a href="stat-analysis.html#cb34-6"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
-<span id="cb34-7"><a href="stat-analysis.html#cb34-7"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-28-2.png" width="672" /></p>
+<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb364-1"><a href="stat-analysis.html#cb364-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb364-2"><a href="stat-analysis.html#cb364-2"></a><span class="st">  </span><span class="kw">geom_bin2d</span>(<span class="dt">bins =</span> <span class="dv">10</span>)<span class="op">+</span></span>
+<span id="cb364-3"><a href="stat-analysis.html#cb364-3"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb364-4"><a href="stat-analysis.html#cb364-4"></a><span class="st">  </span><span class="kw">scale_fill_gradient</span>(<span class="dt">low =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">high =</span> <span class="st">&quot;red&quot;</span>) <span class="op">+</span></span>
+<span id="cb364-5"><a href="stat-analysis.html#cb364-5"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb364-6"><a href="stat-analysis.html#cb364-6"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-339-1.png" width="672" /></p>
+<div class="sourceCode" id="cb365"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb365-1"><a href="stat-analysis.html#cb365-1"></a></span>
+<span id="cb365-2"><a href="stat-analysis.html#cb365-2"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb365-3"><a href="stat-analysis.html#cb365-3"></a><span class="st">  </span><span class="kw">geom_hex</span>(<span class="dt">bins =</span> <span class="dv">10</span>) <span class="op">+</span></span>
+<span id="cb365-4"><a href="stat-analysis.html#cb365-4"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb365-5"><a href="stat-analysis.html#cb365-5"></a><span class="st">  </span><span class="kw">scale_fill_gradient</span>(<span class="dt">low =</span> <span class="st">&quot;white&quot;</span>, <span class="dt">high =</span> <span class="st">&quot;red&quot;</span>) <span class="op">+</span></span>
+<span id="cb365-6"><a href="stat-analysis.html#cb365-6"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb365-7"><a href="stat-analysis.html#cb365-7"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-339-2.png" width="672" /></p>
 </div>
 </div>
 <div id="stat_analysis_two_distr_correg" class="section level3">
@@ -1080,32 +1092,32 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 где <span class="math inline">\(\bar x\)</span> и <span class="math inline">\(\bar y\)</span> соответствуют выборочным средним для <span class="math inline">\(X\)</span> и <span class="math inline">\(Y\)</span>.</p>
 <p>Важно помнить, что коэффициент корреляции Пирсона характеризует силу <em>линейной</em> связи между двумя величинами. Поэтому, если наблюдаемая нами картина взаимосвязи носит нелинейный характер, необходимо предварительно линеаризовать ее, то есть выполнить преобразование над переменными, приводящее к получению линейной зависимости. В нашем в случае изучения ВВП на душу населения и продолжительности жизни мы видели, что линеаризация возможна путем логарифмирования показателя ВВП.</p>
 <p>Для вычисления коэффициента корреляции Пирсона в <strong>R</strong> с оценкой уровня значимости используется функция <code>cor.test()</code>:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="stat-analysis.html#cb35-1"></a><span class="kw">cor.test</span>(tabreg<span class="op">$</span>gdp, tabreg<span class="op">$</span>lifexp)</span>
-<span id="cb35-2"><a href="stat-analysis.html#cb35-2"></a><span class="co">## </span></span>
-<span id="cb35-3"><a href="stat-analysis.html#cb35-3"></a><span class="co">##  Pearson&#39;s product-moment correlation</span></span>
-<span id="cb35-4"><a href="stat-analysis.html#cb35-4"></a><span class="co">## </span></span>
-<span id="cb35-5"><a href="stat-analysis.html#cb35-5"></a><span class="co">## data:  tabreg$gdp and tabreg$lifexp</span></span>
-<span id="cb35-6"><a href="stat-analysis.html#cb35-6"></a><span class="co">## t = 11.376, df = 170, p-value &lt; 0.00000000000000022</span></span>
-<span id="cb35-7"><a href="stat-analysis.html#cb35-7"></a><span class="co">## alternative hypothesis: true correlation is not equal to 0</span></span>
-<span id="cb35-8"><a href="stat-analysis.html#cb35-8"></a><span class="co">## 95 percent confidence interval:</span></span>
-<span id="cb35-9"><a href="stat-analysis.html#cb35-9"></a><span class="co">##  0.5632175 0.7347928</span></span>
-<span id="cb35-10"><a href="stat-analysis.html#cb35-10"></a><span class="co">## sample estimates:</span></span>
-<span id="cb35-11"><a href="stat-analysis.html#cb35-11"></a><span class="co">##       cor </span></span>
-<span id="cb35-12"><a href="stat-analysis.html#cb35-12"></a><span class="co">## 0.6574446</span></span></code></pre></div>
+<div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb366-1"><a href="stat-analysis.html#cb366-1"></a><span class="kw">cor.test</span>(tabreg<span class="op">$</span>gdp, tabreg<span class="op">$</span>lifexp)</span>
+<span id="cb366-2"><a href="stat-analysis.html#cb366-2"></a><span class="co">## </span></span>
+<span id="cb366-3"><a href="stat-analysis.html#cb366-3"></a><span class="co">##  Pearson&#39;s product-moment correlation</span></span>
+<span id="cb366-4"><a href="stat-analysis.html#cb366-4"></a><span class="co">## </span></span>
+<span id="cb366-5"><a href="stat-analysis.html#cb366-5"></a><span class="co">## data:  tabreg$gdp and tabreg$lifexp</span></span>
+<span id="cb366-6"><a href="stat-analysis.html#cb366-6"></a><span class="co">## t = 11.376, df = 170, p-value &lt; 0.00000000000000022</span></span>
+<span id="cb366-7"><a href="stat-analysis.html#cb366-7"></a><span class="co">## alternative hypothesis: true correlation is not equal to 0</span></span>
+<span id="cb366-8"><a href="stat-analysis.html#cb366-8"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb366-9"><a href="stat-analysis.html#cb366-9"></a><span class="co">##  0.5632175 0.7347928</span></span>
+<span id="cb366-10"><a href="stat-analysis.html#cb366-10"></a><span class="co">## sample estimates:</span></span>
+<span id="cb366-11"><a href="stat-analysis.html#cb366-11"></a><span class="co">##       cor </span></span>
+<span id="cb366-12"><a href="stat-analysis.html#cb366-12"></a><span class="co">## 0.6574446</span></span></code></pre></div>
 <p>Результат теста в данном случае показывает, что коэффициент корреляции с вероятностью 0,95 находится в интервале от 0,56 до 0,73, и его математическое ожидание равно 0,66.</p>
 <p>Проверим, можно ли уточнить эту оценку, выполнив логарифмирование показателя ВВП:</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="stat-analysis.html#cb36-1"></a><span class="kw">cor.test</span>(<span class="kw">log</span>(tabreg<span class="op">$</span>gdp), tabreg<span class="op">$</span>lifexp)</span>
-<span id="cb36-2"><a href="stat-analysis.html#cb36-2"></a><span class="co">## </span></span>
-<span id="cb36-3"><a href="stat-analysis.html#cb36-3"></a><span class="co">##  Pearson&#39;s product-moment correlation</span></span>
-<span id="cb36-4"><a href="stat-analysis.html#cb36-4"></a><span class="co">## </span></span>
-<span id="cb36-5"><a href="stat-analysis.html#cb36-5"></a><span class="co">## data:  log(tabreg$gdp) and tabreg$lifexp</span></span>
-<span id="cb36-6"><a href="stat-analysis.html#cb36-6"></a><span class="co">## t = 17.327, df = 170, p-value &lt; 0.00000000000000022</span></span>
-<span id="cb36-7"><a href="stat-analysis.html#cb36-7"></a><span class="co">## alternative hypothesis: true correlation is not equal to 0</span></span>
-<span id="cb36-8"><a href="stat-analysis.html#cb36-8"></a><span class="co">## 95 percent confidence interval:</span></span>
-<span id="cb36-9"><a href="stat-analysis.html#cb36-9"></a><span class="co">##  0.7375973 0.8473619</span></span>
-<span id="cb36-10"><a href="stat-analysis.html#cb36-10"></a><span class="co">## sample estimates:</span></span>
-<span id="cb36-11"><a href="stat-analysis.html#cb36-11"></a><span class="co">##       cor </span></span>
-<span id="cb36-12"><a href="stat-analysis.html#cb36-12"></a><span class="co">## 0.7990415</span></span></code></pre></div>
+<div class="sourceCode" id="cb367"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb367-1"><a href="stat-analysis.html#cb367-1"></a><span class="kw">cor.test</span>(<span class="kw">log</span>(tabreg<span class="op">$</span>gdp), tabreg<span class="op">$</span>lifexp)</span>
+<span id="cb367-2"><a href="stat-analysis.html#cb367-2"></a><span class="co">## </span></span>
+<span id="cb367-3"><a href="stat-analysis.html#cb367-3"></a><span class="co">##  Pearson&#39;s product-moment correlation</span></span>
+<span id="cb367-4"><a href="stat-analysis.html#cb367-4"></a><span class="co">## </span></span>
+<span id="cb367-5"><a href="stat-analysis.html#cb367-5"></a><span class="co">## data:  log(tabreg$gdp) and tabreg$lifexp</span></span>
+<span id="cb367-6"><a href="stat-analysis.html#cb367-6"></a><span class="co">## t = 17.327, df = 170, p-value &lt; 0.00000000000000022</span></span>
+<span id="cb367-7"><a href="stat-analysis.html#cb367-7"></a><span class="co">## alternative hypothesis: true correlation is not equal to 0</span></span>
+<span id="cb367-8"><a href="stat-analysis.html#cb367-8"></a><span class="co">## 95 percent confidence interval:</span></span>
+<span id="cb367-9"><a href="stat-analysis.html#cb367-9"></a><span class="co">##  0.7375973 0.8473619</span></span>
+<span id="cb367-10"><a href="stat-analysis.html#cb367-10"></a><span class="co">## sample estimates:</span></span>
+<span id="cb367-11"><a href="stat-analysis.html#cb367-11"></a><span class="co">##       cor </span></span>
+<span id="cb367-12"><a href="stat-analysis.html#cb367-12"></a><span class="co">## 0.7990415</span></span></code></pre></div>
 <p>Видим, что логарифмирование показателя позволяет повысить значение коэффициента корреляции до 0,8. При этом доверительный интервал, заключающий в себя эту величину с вероятностью 0,95 существенно сузился: с 0,17 до 0,11. Очевидно, мы получили более корректную оценку взаимосвязи.</p>
 </div>
 <div id="stat_analysis_two_distr_correg_reg" class="section level4">
@@ -1130,48 +1142,48 @@ y(x) = β_0+β_1x+...+ β_mx^m.
 <p>Вместо переменных в формуле вы можете использовать функции от переменных. Например <code>log(f) ~ log(x) + sqrt(y)</code> означает модель <span class="math inline">\(\log f = β_0 + β_1 \log x + β_2 \sqrt y\)</span>. Если необходимо выполнить алгебраические преобразования переменных или задать конкретное значение свободного члена, то их необходимо заключить в специальную функцию <code>I()</code>: <code>f ~ log(x) + I(y ^ 2) + I(0)</code> будет означать модель вида <span class="math inline">\(f = β_1 \log x + β_2 y^2\)</span>.</p>
 <p>Для краткой записи полиномиальной зависимости можно использовать вспомогательную функцию <code>poly()</code>, которая в качестве второго аргумента принимает степень многочлена. Т.е. <code>f ~ poly(x, 3)</code> означает модель вида <span class="math inline">\(f = β_0 + β_1x + β_2x^2 + β_3x^3\)</span>.</p>
 <p>Оценка параметров линейных моделей осуществляется с помощью функции <code>lm()</code>. В нашем случае модель носит простой характер:</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="stat-analysis.html#cb37-1"></a>model =<span class="st"> </span><span class="kw">lm</span>(lifexp <span class="op">~</span><span class="st"> </span><span class="kw">log</span>(gdp), <span class="dt">data =</span> tabreg)</span>
-<span id="cb37-2"><a href="stat-analysis.html#cb37-2"></a><span class="kw">coef</span>(model)</span>
-<span id="cb37-3"><a href="stat-analysis.html#cb37-3"></a><span class="co">## (Intercept)    log(gdp) </span></span>
-<span id="cb37-4"><a href="stat-analysis.html#cb37-4"></a><span class="co">##   25.129347    5.261476</span></span></code></pre></div>
+<div class="sourceCode" id="cb368"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb368-1"><a href="stat-analysis.html#cb368-1"></a>model =<span class="st"> </span><span class="kw">lm</span>(lifexp <span class="op">~</span><span class="st"> </span><span class="kw">log</span>(gdp), <span class="dt">data =</span> tabreg)</span>
+<span id="cb368-2"><a href="stat-analysis.html#cb368-2"></a><span class="kw">coef</span>(model)</span>
+<span id="cb368-3"><a href="stat-analysis.html#cb368-3"></a><span class="co">## (Intercept)    log(gdp) </span></span>
+<span id="cb368-4"><a href="stat-analysis.html#cb368-4"></a><span class="co">##   25.129347    5.261476</span></span></code></pre></div>
 <p>Полученные данные говорят нам о том, что уравнение имеет вид <span class="math inline">\(lifexp = 25.13 + 5.26 \log(gdp)\)</span>. Чтобы получить подробную сводку о качестве модели, мы можем вызвать <code>summary()</code>:</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="stat-analysis.html#cb38-1"></a><span class="kw">summary</span>(model)</span>
-<span id="cb38-2"><a href="stat-analysis.html#cb38-2"></a><span class="co">## </span></span>
-<span id="cb38-3"><a href="stat-analysis.html#cb38-3"></a><span class="co">## Call:</span></span>
-<span id="cb38-4"><a href="stat-analysis.html#cb38-4"></a><span class="co">## lm(formula = lifexp ~ log(gdp), data = tabreg)</span></span>
-<span id="cb38-5"><a href="stat-analysis.html#cb38-5"></a><span class="co">## </span></span>
-<span id="cb38-6"><a href="stat-analysis.html#cb38-6"></a><span class="co">## Residuals:</span></span>
-<span id="cb38-7"><a href="stat-analysis.html#cb38-7"></a><span class="co">##      Min       1Q   Median       3Q      Max </span></span>
-<span id="cb38-8"><a href="stat-analysis.html#cb38-8"></a><span class="co">## -18.4327  -1.9398   0.6394   3.1638  10.1937 </span></span>
-<span id="cb38-9"><a href="stat-analysis.html#cb38-9"></a><span class="co">## </span></span>
-<span id="cb38-10"><a href="stat-analysis.html#cb38-10"></a><span class="co">## Coefficients:</span></span>
-<span id="cb38-11"><a href="stat-analysis.html#cb38-11"></a><span class="co">##             Estimate Std. Error t value            Pr(&gt;|t|)    </span></span>
-<span id="cb38-12"><a href="stat-analysis.html#cb38-12"></a><span class="co">## (Intercept)  25.1293     2.7178   9.246 &lt;0.0000000000000002 ***</span></span>
-<span id="cb38-13"><a href="stat-analysis.html#cb38-13"></a><span class="co">## log(gdp)      5.2615     0.3037  17.327 &lt;0.0000000000000002 ***</span></span>
-<span id="cb38-14"><a href="stat-analysis.html#cb38-14"></a><span class="co">## ---</span></span>
-<span id="cb38-15"><a href="stat-analysis.html#cb38-15"></a><span class="co">## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
-<span id="cb38-16"><a href="stat-analysis.html#cb38-16"></a><span class="co">## </span></span>
-<span id="cb38-17"><a href="stat-analysis.html#cb38-17"></a><span class="co">## Residual standard error: 4.785 on 170 degrees of freedom</span></span>
-<span id="cb38-18"><a href="stat-analysis.html#cb38-18"></a><span class="co">## Multiple R-squared:  0.6385, Adjusted R-squared:  0.6363 </span></span>
-<span id="cb38-19"><a href="stat-analysis.html#cb38-19"></a><span class="co">## F-statistic: 300.2 on 1 and 170 DF,  p-value: &lt; 0.00000000000000022</span></span></code></pre></div>
+<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb369-1"><a href="stat-analysis.html#cb369-1"></a><span class="kw">summary</span>(model)</span>
+<span id="cb369-2"><a href="stat-analysis.html#cb369-2"></a><span class="co">## </span></span>
+<span id="cb369-3"><a href="stat-analysis.html#cb369-3"></a><span class="co">## Call:</span></span>
+<span id="cb369-4"><a href="stat-analysis.html#cb369-4"></a><span class="co">## lm(formula = lifexp ~ log(gdp), data = tabreg)</span></span>
+<span id="cb369-5"><a href="stat-analysis.html#cb369-5"></a><span class="co">## </span></span>
+<span id="cb369-6"><a href="stat-analysis.html#cb369-6"></a><span class="co">## Residuals:</span></span>
+<span id="cb369-7"><a href="stat-analysis.html#cb369-7"></a><span class="co">##      Min       1Q   Median       3Q      Max </span></span>
+<span id="cb369-8"><a href="stat-analysis.html#cb369-8"></a><span class="co">## -18.4327  -1.9398   0.6394   3.1638  10.1937 </span></span>
+<span id="cb369-9"><a href="stat-analysis.html#cb369-9"></a><span class="co">## </span></span>
+<span id="cb369-10"><a href="stat-analysis.html#cb369-10"></a><span class="co">## Coefficients:</span></span>
+<span id="cb369-11"><a href="stat-analysis.html#cb369-11"></a><span class="co">##             Estimate Std. Error t value            Pr(&gt;|t|)    </span></span>
+<span id="cb369-12"><a href="stat-analysis.html#cb369-12"></a><span class="co">## (Intercept)  25.1293     2.7178   9.246 &lt;0.0000000000000002 ***</span></span>
+<span id="cb369-13"><a href="stat-analysis.html#cb369-13"></a><span class="co">## log(gdp)      5.2615     0.3037  17.327 &lt;0.0000000000000002 ***</span></span>
+<span id="cb369-14"><a href="stat-analysis.html#cb369-14"></a><span class="co">## ---</span></span>
+<span id="cb369-15"><a href="stat-analysis.html#cb369-15"></a><span class="co">## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb369-16"><a href="stat-analysis.html#cb369-16"></a><span class="co">## </span></span>
+<span id="cb369-17"><a href="stat-analysis.html#cb369-17"></a><span class="co">## Residual standard error: 4.785 on 170 degrees of freedom</span></span>
+<span id="cb369-18"><a href="stat-analysis.html#cb369-18"></a><span class="co">## Multiple R-squared:  0.6385, Adjusted R-squared:  0.6363 </span></span>
+<span id="cb369-19"><a href="stat-analysis.html#cb369-19"></a><span class="co">## F-statistic: 300.2 on 1 and 170 DF,  p-value: &lt; 0.00000000000000022</span></span></code></pre></div>
 <p>Результаты оценки говорят о том, что регрессия построена удовлетворительно. <a href="https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D1%8D%D1%84%D1%84%D0%B8%D1%86%D0%B8%D0%B5%D0%BD%D1%82_%D0%B4%D0%B5%D1%82%D0%B5%D1%80%D0%BC%D0%B8%D0%BD%D0%B0%D1%86%D0%B8%D0%B8">Коэффициент детерминации</a> (квадрат коэффициента корреляции) равен 0,64.</p>
 <p>Для визуализации модели можно извлечь из нее значения используя функцию <code>fitted()</code>:</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="stat-analysis.html#cb39-1"></a>df =<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">lifexp =</span> <span class="kw">fitted</span>(model),</span>
-<span id="cb39-2"><a href="stat-analysis.html#cb39-2"></a>            <span class="dt">gdp =</span> tabreg<span class="op">$</span>gdp)</span>
-<span id="cb39-3"><a href="stat-analysis.html#cb39-3"></a>              </span>
-<span id="cb39-4"><a href="stat-analysis.html#cb39-4"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
-<span id="cb39-5"><a href="stat-analysis.html#cb39-5"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb39-6"><a href="stat-analysis.html#cb39-6"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">data =</span> df, <span class="kw">aes</span>(gdp, lifexp), <span class="dt">color =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></span>
-<span id="cb39-7"><a href="stat-analysis.html#cb39-7"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+<div class="sourceCode" id="cb370"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb370-1"><a href="stat-analysis.html#cb370-1"></a>df =<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">lifexp =</span> <span class="kw">fitted</span>(model),</span>
+<span id="cb370-2"><a href="stat-analysis.html#cb370-2"></a>            <span class="dt">gdp =</span> tabreg<span class="op">$</span>gdp)</span>
+<span id="cb370-3"><a href="stat-analysis.html#cb370-3"></a>              </span>
+<span id="cb370-4"><a href="stat-analysis.html#cb370-4"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb370-5"><a href="stat-analysis.html#cb370-5"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb370-6"><a href="stat-analysis.html#cb370-6"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">data =</span> df, <span class="kw">aes</span>(gdp, lifexp), <span class="dt">color =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb370-7"><a href="stat-analysis.html#cb370-7"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-344-1.png" width="672" /></p>
 <p>Если вам нужно только построить линию регрессии, но не находить ее коэффициенты, то вы можете пропустить этап оценки параметров модели и вывести график линейной регрессии средствами <strong>ggplot</strong>, используя геометрию <code>geom_smooth()</code> с параметром <code>method = lm</code>:</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="stat-analysis.html#cb40-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
-<span id="cb40-2"><a href="stat-analysis.html#cb40-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb40-3"><a href="stat-analysis.html#cb40-3"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&#39;lm&#39;</span>,</span>
-<span id="cb40-4"><a href="stat-analysis.html#cb40-4"></a>              <span class="dt">color =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></span>
-<span id="cb40-5"><a href="stat-analysis.html#cb40-5"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
-<span id="cb40-6"><a href="stat-analysis.html#cb40-6"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb371-1"><a href="stat-analysis.html#cb371-1"></a><span class="kw">ggplot</span>(tabreg, <span class="kw">aes</span>(gdp, lifexp)) <span class="op">+</span></span>
+<span id="cb371-2"><a href="stat-analysis.html#cb371-2"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb371-3"><a href="stat-analysis.html#cb371-3"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&#39;lm&#39;</span>,</span>
+<span id="cb371-4"><a href="stat-analysis.html#cb371-4"></a>              <span class="dt">color =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb371-5"><a href="stat-analysis.html#cb371-5"></a><span class="st">  </span><span class="kw">scale_x_log10</span>() <span class="op">+</span></span>
+<span id="cb371-6"><a href="stat-analysis.html#cb371-6"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-345-1.png" width="672" /></p>
 </div>
 </div>
 </div>
@@ -1238,15 +1250,15 @@ y(x) = β_0+β_1x+...+ β_mx^m.
 <a href="circular.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
-<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
-<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
-<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script src="libs/gitbook/js/app.min.js"></script>
+<script src="libs/gitbook/js/lunr.js"></script>
+<script src="libs/gitbook/js/clipboard.min.js"></script>
+<script src="libs/gitbook/js/plugin-search.js"></script>
+<script src="libs/gitbook/js/plugin-sharing.js"></script>
+<script src="libs/gitbook/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook/js/jquery.highlight.js"></script>
+<script src="libs/gitbook/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({

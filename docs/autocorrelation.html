@@ -51,6 +51,18 @@
 
 
 <script src="libs/accessible-code-block/empty-anchor.js"></script>
+<script src="libs/htmlwidgets/htmlwidgets.js"></script>
+<link href="libs/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding/datatables.js"></script>
+<link href="libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk/js/crosstalk.min.js"></script>
+<script src="libs/plotly-binding/plotly.js"></script>
+<script src="libs/typedarray/typedarray.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main/plotly-latest.min.js"></script>
 
 
 <style type="text/css">
@@ -569,7 +581,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <p>Общепринятого определения пространственной автокоорреляции (ПА) не существует. Одно из наиболее удачных определений гласит следующее:</p>
 <blockquote>
-<p>Для множества <span class="math inline">\(S\)</span>, состоящего из <span class="math inline">\(n\)</span> географических единиц, пространственная автокорреляция есть соотношение между переменной, наблюдаемой в каждой из <span class="math inline">\(n\)</span> единиц и мерой географической близости, определенной для всех <span class="math inline">\(n(n − 1)\)</span> пар единиц из <span class="math inline">\(S\)</span> (Hubert et al., 1981)<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>Для множества <span class="math inline">\(S\)</span>, состоящего из <span class="math inline">\(n\)</span> географических единиц, пространственная автокорреляция есть соотношение между переменной, наблюдаемой в каждой из <span class="math inline">\(n\)</span> единиц и мерой географической близости, определенной для всех <span class="math inline">\(n(n − 1)\)</span> пар единиц из <span class="math inline">\(S\)</span> (Hubert et al., 1981)<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a></p>
 </blockquote>
 <p>Анализ ПА, как правило, осуществляется по жестко зафиксированной сетке (lattice) учетных единиц, в качестве которых могут выступать как площади, так и точки. Но, строго говоря, пространственная статистика в конечном счете любую единицу будет интерпретировать как точку.</p>
 <p>Конечной целью исследований ПА является построение статистической модели зависимости значения показателя в каждой единице от значений в соседних единицах и (опционально) неких факторов. Наличие статистически значимой ПА говорит о влиянии процессов, обуславливающих кластеризацию значений в соседних территориальных единицах. И пока эти механизмы не установлены, модель ПА дает инструмент их статистического моделирования. Добавление известных факторов в модель может улучшить точность моделирования.</p>
@@ -601,27 +613,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>где <span class="math inline">\(I\)</span> — единичная матрица размером <span class="math inline">\(k \times k\)</span>.</p>
 <p>Если данные получены измерениями по пространству, остатки регрессии могут демонстрировать пространственную ассоциацию (зависимость), как правило свидетельствующую о наличии дополнительных неучтённых факторов. Это означает, что обычная модель регрессии недостаточно хорошо объясняет зависимость.</p>
 <p>В качестве примера приведем модель, в которой процент домохозяйств, находящихся во владении, моделируется как переменная зависимая от уровня безработицы [Fotheringam, Brunsdon, Charlton, 2002]:</p>
-<div class="figure"><span id="fig:unnamed-chunk-1"></span>
+<div class="figure"><span id="fig:unnamed-chunk-622"></span>
 <img src="slides/images/tyne_ownerocc.png" alt="Процент домохозяйств, находящихся во владении" width="596" />
 <p class="caption">
 Рис. 15.1: Процент домохозяйств, находящихся во владении
 </p>
 </div>
-<div class="figure"><span id="fig:unnamed-chunk-2"></span>
+<div class="figure"><span id="fig:unnamed-chunk-623"></span>
 <img src="slides/images/tyne_unempl.png" alt="Уровень безработицы" width="574" />
 <p class="caption">
 Рис. 15.2: Уровень безработицы
 </p>
 </div>
 <p>Обычная линейная регрессия показывает хорошую согласованность между этими параметрами:</p>
-<div class="figure"><span id="fig:unnamed-chunk-3"></span>
+<div class="figure"><span id="fig:unnamed-chunk-624"></span>
 <img src="slides/images/tyne_regr.png" alt="Зависимость процента домохозяйств во владении от уровня безработицы" width="565" />
 <p class="caption">
 Рис. 15.3: Зависимость процента домохозяйств во владении от уровня безработицы
 </p>
 </div>
 <p>Однако остатки регрессии демонстрируют явную пространственную зависимость, что говорит о том, что построенная модель неадекватно описывает исследуемую закономерность:</p>
-<div class="figure"><span id="fig:unnamed-chunk-4"></span>
+<div class="figure"><span id="fig:unnamed-chunk-625"></span>
 <img src="slides/images/tyne_resid.png" alt="Остатки линейной регрессии" width="586" />
 <p class="caption">
 Рис. 15.4: Остатки линейной регрессии
@@ -682,31 +694,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">15.4</span> Практический анализ</h2>
 <p>Как мы уже сказали, исследование ПА начинается с анализа географического соседства. То есть, для каждой анализируемой единицы мы должны определить соседние по отношению к ней единицы. Это не так-то просто,поскольку существует множество способов определить соседство.</p>
 <p>Перед выполнением анализа подключим необходимые библиотеки и визуализируем исходные данные, в качестве которых выступают границы муниципалитетов Кировской области.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="autocorrelation.html#cb1-1"></a><span class="kw">library</span>(sf)</span>
-<span id="cb1-2"><a href="autocorrelation.html#cb1-2"></a><span class="kw">library</span>(spdep)  <span class="co"># оценка соседства, построение матрицы весов, индексы автокорреляции</span></span>
-<span id="cb1-3"><a href="autocorrelation.html#cb1-3"></a><span class="kw">library</span>(spatialreg) <span class="co"># пространственная регрессия</span></span>
-<span id="cb1-4"><a href="autocorrelation.html#cb1-4"></a><span class="kw">library</span>(lattice)</span>
-<span id="cb1-5"><a href="autocorrelation.html#cb1-5"></a><span class="kw">library</span>(RANN)</span>
-<span id="cb1-6"><a href="autocorrelation.html#cb1-6"></a><span class="kw">library</span>(RColorBrewer)</span>
-<span id="cb1-7"><a href="autocorrelation.html#cb1-7"></a><span class="kw">library</span>(readxl)</span>
-<span id="cb1-8"><a href="autocorrelation.html#cb1-8"></a><span class="kw">library</span>(tidyverse)</span>
-<span id="cb1-9"><a href="autocorrelation.html#cb1-9"></a><span class="kw">library</span>(tmap)</span>
-<span id="cb1-10"><a href="autocorrelation.html#cb1-10"></a><span class="kw">library</span>(GWmodel)</span>
-<span id="cb1-11"><a href="autocorrelation.html#cb1-11"></a></span>
-<span id="cb1-12"><a href="autocorrelation.html#cb1-12"></a><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>)</span>
-<span id="cb1-13"><a href="autocorrelation.html#cb1-13"></a></span>
-<span id="cb1-14"><a href="autocorrelation.html#cb1-14"></a>reg_sf =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&#39;data/Kirov.gpkg&#39;</span>)</span>
-<span id="cb1-15"><a href="autocorrelation.html#cb1-15"></a><span class="co">## Reading layer `Kirov&#39; from data source `/Users/tsamsonov/GitHub/r-geo-course/data/Kirov.gpkg&#39; using driver `GPKG&#39;</span></span>
-<span id="cb1-16"><a href="autocorrelation.html#cb1-16"></a><span class="co">## Simple feature collection with 40 features and 20 fields</span></span>
-<span id="cb1-17"><a href="autocorrelation.html#cb1-17"></a><span class="co">## geometry type:  POLYGON</span></span>
-<span id="cb1-18"><a href="autocorrelation.html#cb1-18"></a><span class="co">## dimension:      XY</span></span>
-<span id="cb1-19"><a href="autocorrelation.html#cb1-19"></a><span class="co">## bbox:           xmin: -216808.3 ymin: 2896149 xmax: 227259 ymax: 3455774</span></span>
-<span id="cb1-20"><a href="autocorrelation.html#cb1-20"></a><span class="co">## projected CRS:  unnamed</span></span>
-<span id="cb1-21"><a href="autocorrelation.html#cb1-21"></a>reg =<span class="st"> </span><span class="kw">st_geometry</span>(reg_sf)</span>
-<span id="cb1-22"><a href="autocorrelation.html#cb1-22"></a></span>
-<span id="cb1-23"><a href="autocorrelation.html#cb1-23"></a><span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
-<span id="cb1-24"><a href="autocorrelation.html#cb1-24"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;gray50&quot;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb663-1"><a href="autocorrelation.html#cb663-1"></a><span class="kw">library</span>(sf)</span>
+<span id="cb663-2"><a href="autocorrelation.html#cb663-2"></a><span class="kw">library</span>(spdep)  <span class="co"># оценка соседства, построение матрицы весов, индексы автокорреляции</span></span>
+<span id="cb663-3"><a href="autocorrelation.html#cb663-3"></a><span class="kw">library</span>(spatialreg) <span class="co"># пространственная регрессия</span></span>
+<span id="cb663-4"><a href="autocorrelation.html#cb663-4"></a><span class="kw">library</span>(lattice)</span>
+<span id="cb663-5"><a href="autocorrelation.html#cb663-5"></a><span class="kw">library</span>(RANN)</span>
+<span id="cb663-6"><a href="autocorrelation.html#cb663-6"></a><span class="kw">library</span>(RColorBrewer)</span>
+<span id="cb663-7"><a href="autocorrelation.html#cb663-7"></a><span class="kw">library</span>(readxl)</span>
+<span id="cb663-8"><a href="autocorrelation.html#cb663-8"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb663-9"><a href="autocorrelation.html#cb663-9"></a><span class="kw">library</span>(tmap)</span>
+<span id="cb663-10"><a href="autocorrelation.html#cb663-10"></a><span class="kw">library</span>(GWmodel)</span>
+<span id="cb663-11"><a href="autocorrelation.html#cb663-11"></a></span>
+<span id="cb663-12"><a href="autocorrelation.html#cb663-12"></a><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>)</span>
+<span id="cb663-13"><a href="autocorrelation.html#cb663-13"></a></span>
+<span id="cb663-14"><a href="autocorrelation.html#cb663-14"></a>reg_sf =<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&#39;data/Kirov.gpkg&#39;</span>)</span>
+<span id="cb663-15"><a href="autocorrelation.html#cb663-15"></a><span class="co">## Reading layer `Kirov&#39; from data source `/Users/tsamsonov/GitHub/r-geo-course/data/Kirov.gpkg&#39; using driver `GPKG&#39;</span></span>
+<span id="cb663-16"><a href="autocorrelation.html#cb663-16"></a><span class="co">## Simple feature collection with 40 features and 20 fields</span></span>
+<span id="cb663-17"><a href="autocorrelation.html#cb663-17"></a><span class="co">## geometry type:  POLYGON</span></span>
+<span id="cb663-18"><a href="autocorrelation.html#cb663-18"></a><span class="co">## dimension:      XY</span></span>
+<span id="cb663-19"><a href="autocorrelation.html#cb663-19"></a><span class="co">## bbox:           xmin: -216808.3 ymin: 2896149 xmax: 227259 ymax: 3455774</span></span>
+<span id="cb663-20"><a href="autocorrelation.html#cb663-20"></a><span class="co">## projected CRS:  unnamed</span></span>
+<span id="cb663-21"><a href="autocorrelation.html#cb663-21"></a>reg =<span class="st"> </span><span class="kw">st_geometry</span>(reg_sf)</span>
+<span id="cb663-22"><a href="autocorrelation.html#cb663-22"></a></span>
+<span id="cb663-23"><a href="autocorrelation.html#cb663-23"></a><span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb663-24"><a href="autocorrelation.html#cb663-24"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;gray50&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-626-1.png" width="672" /></p>
 </div>
 <div id="autocorrelation_neighbors" class="section level2">
 <h2><span class="header-section-number">15.5</span> Пространственное соседство</h2>
@@ -730,44 +742,44 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">15.5.1</span> Соседи по смежности</h3>
 <p>Список соседей по смежности можно получить с помощью функции <code>poly2nb()</code>.</p>
 <p>Возвращаемый объект является классом типа <code>nb</code>. Для каждой единицы в нем содержится список номеров соседних по отношению к нему единиц. По умолчанию функция находит соседей по правилу ферзя:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="autocorrelation.html#cb2-1"></a>nb_queen =<span class="st"> </span><span class="kw">poly2nb</span>(reg) <span class="co"># Соседство по правилу ферзя</span></span>
-<span id="cb2-2"><a href="autocorrelation.html#cb2-2"></a>nb_queen  <span class="co"># посмотрим сводную информацию</span></span>
-<span id="cb2-3"><a href="autocorrelation.html#cb2-3"></a><span class="co">## Neighbour list object:</span></span>
-<span id="cb2-4"><a href="autocorrelation.html#cb2-4"></a><span class="co">## Number of regions: 40 </span></span>
-<span id="cb2-5"><a href="autocorrelation.html#cb2-5"></a><span class="co">## Number of nonzero links: 174 </span></span>
-<span id="cb2-6"><a href="autocorrelation.html#cb2-6"></a><span class="co">## Percentage nonzero weights: 10.875 </span></span>
-<span id="cb2-7"><a href="autocorrelation.html#cb2-7"></a><span class="co">## Average number of links: 4.35</span></span>
-<span id="cb2-8"><a href="autocorrelation.html#cb2-8"></a><span class="kw">class</span>(nb_queen)  <span class="co"># проверим тип объекта</span></span>
-<span id="cb2-9"><a href="autocorrelation.html#cb2-9"></a><span class="co">## [1] &quot;nb&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb664"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb664-1"><a href="autocorrelation.html#cb664-1"></a>nb_queen =<span class="st"> </span><span class="kw">poly2nb</span>(reg) <span class="co"># Соседство по правилу ферзя</span></span>
+<span id="cb664-2"><a href="autocorrelation.html#cb664-2"></a>nb_queen  <span class="co"># посмотрим сводную информацию</span></span>
+<span id="cb664-3"><a href="autocorrelation.html#cb664-3"></a><span class="co">## Neighbour list object:</span></span>
+<span id="cb664-4"><a href="autocorrelation.html#cb664-4"></a><span class="co">## Number of regions: 40 </span></span>
+<span id="cb664-5"><a href="autocorrelation.html#cb664-5"></a><span class="co">## Number of nonzero links: 174 </span></span>
+<span id="cb664-6"><a href="autocorrelation.html#cb664-6"></a><span class="co">## Percentage nonzero weights: 10.875 </span></span>
+<span id="cb664-7"><a href="autocorrelation.html#cb664-7"></a><span class="co">## Average number of links: 4.35</span></span>
+<span id="cb664-8"><a href="autocorrelation.html#cb664-8"></a><span class="kw">class</span>(nb_queen)  <span class="co"># проверим тип объекта</span></span>
+<span id="cb664-9"><a href="autocorrelation.html#cb664-9"></a><span class="co">## [1] &quot;nb&quot;</span></span></code></pre></div>
 <p>Для объектов типа <code>nb</code> в пакете <code>spdep</code> определена своя функция <code>plot()</code>, которая позволяет визуализировать граф соседства. Функция требует на вход координаты точек, в случае площадных единиц для этого используют центроиды площадей, которые можно получить функцией <code>coordinates()</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="autocorrelation.html#cb3-1"></a>coords =<span class="st"> </span>reg <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb3-2"><a href="autocorrelation.html#cb3-2"></a><span class="st">  </span><span class="kw">st_centroid</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb3-3"><a href="autocorrelation.html#cb3-3"></a><span class="st">  </span><span class="kw">st_coordinates</span>()</span>
-<span id="cb3-4"><a href="autocorrelation.html#cb3-4"></a></span>
-<span id="cb3-5"><a href="autocorrelation.html#cb3-5"></a><span class="co"># Теперь рисуем граф:</span></span>
-<span id="cb3-6"><a href="autocorrelation.html#cb3-6"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;gray50&quot;</span>)</span>
-<span id="cb3-7"><a href="autocorrelation.html#cb3-7"></a><span class="kw">plot</span>(nb_queen, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb3-8"><a href="autocorrelation.html#cb3-8"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по смежности (правило ферзя)&quot;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb665-1"><a href="autocorrelation.html#cb665-1"></a>coords =<span class="st"> </span>reg <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb665-2"><a href="autocorrelation.html#cb665-2"></a><span class="st">  </span><span class="kw">st_centroid</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb665-3"><a href="autocorrelation.html#cb665-3"></a><span class="st">  </span><span class="kw">st_coordinates</span>()</span>
+<span id="cb665-4"><a href="autocorrelation.html#cb665-4"></a></span>
+<span id="cb665-5"><a href="autocorrelation.html#cb665-5"></a><span class="co"># Теперь рисуем граф:</span></span>
+<span id="cb665-6"><a href="autocorrelation.html#cb665-6"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;gray50&quot;</span>)</span>
+<span id="cb665-7"><a href="autocorrelation.html#cb665-7"></a><span class="kw">plot</span>(nb_queen, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb665-8"><a href="autocorrelation.html#cb665-8"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по смежности (правило ферзя)&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-628-1.png" width="672" /></p>
 <p>Для определения соседей по правилу ладьи необходимо вызвать функцию <code>poly2nb()</code> с аргументом <code>queen=FALSE</code>. В нашем случае, правда, это даст тот же результат, поскольку в данных отсутствуют единицы, соприкасающиеся в одной лишь точке:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="autocorrelation.html#cb4-1"></a>nb_rook =<span class="st"> </span><span class="kw">poly2nb</span>(reg, <span class="dt">queen =</span> <span class="ot">FALSE</span>) <span class="co"># Соседство по правилу ладьи</span></span>
-<span id="cb4-2"><a href="autocorrelation.html#cb4-2"></a></span>
-<span id="cb4-3"><a href="autocorrelation.html#cb4-3"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
-<span id="cb4-4"><a href="autocorrelation.html#cb4-4"></a><span class="kw">plot</span>(nb_rook, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb4-5"><a href="autocorrelation.html#cb4-5"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по смежности (правило ладьи)&quot;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<div class="sourceCode" id="cb666"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb666-1"><a href="autocorrelation.html#cb666-1"></a>nb_rook =<span class="st"> </span><span class="kw">poly2nb</span>(reg, <span class="dt">queen =</span> <span class="ot">FALSE</span>) <span class="co"># Соседство по правилу ладьи</span></span>
+<span id="cb666-2"><a href="autocorrelation.html#cb666-2"></a></span>
+<span id="cb666-3"><a href="autocorrelation.html#cb666-3"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
+<span id="cb666-4"><a href="autocorrelation.html#cb666-4"></a><span class="kw">plot</span>(nb_rook, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb666-5"><a href="autocorrelation.html#cb666-5"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по смежности (правило ладьи)&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-629-1.png" width="672" /></p>
 <p>Обратим внимание на то, что функция <code>poly2nb()</code> принимает на вход площадные объекты. Все помледующие методы определения соседства (по графу и по метрике) работают с точечными данными.</p>
 </div>
 <div id="autocorrelation_neighbors_graph" class="section level3">
 <h3><span class="header-section-number">15.5.2</span> Соседи по графу</h3>
 <p>Данная группа методов определения соседства основана на построении триангуляции Делоне для точек исходных данных. Далее эта триангуляция может быть оставлена в неизменном виде, или быть подвержена процедуре фильтрации, которая удалит из нее ребра, не удовлетворяющие заданному критерию.</p>
 <p><strong>Соседи по триангуляции Делоне</strong> без фильтрации могут быть получены с помощью функции <code>tri2nb()</code>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="autocorrelation.html#cb5-1"></a>nb_tin =<span class="st"> </span><span class="kw">tri2nb</span>(coords)</span>
-<span id="cb5-2"><a href="autocorrelation.html#cb5-2"></a></span>
-<span id="cb5-3"><a href="autocorrelation.html#cb5-3"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
-<span id="cb5-4"><a href="autocorrelation.html#cb5-4"></a><span class="kw">plot</span>(nb_tin, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb5-5"><a href="autocorrelation.html#cb5-5"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по триангуляции Делоне&quot;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<div class="sourceCode" id="cb667"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb667-1"><a href="autocorrelation.html#cb667-1"></a>nb_tin =<span class="st"> </span><span class="kw">tri2nb</span>(coords)</span>
+<span id="cb667-2"><a href="autocorrelation.html#cb667-2"></a></span>
+<span id="cb667-3"><a href="autocorrelation.html#cb667-3"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
+<span id="cb667-4"><a href="autocorrelation.html#cb667-4"></a><span class="kw">plot</span>(nb_tin, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb667-5"><a href="autocorrelation.html#cb667-5"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по триангуляции Делоне&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-630-1.png" width="672" /></p>
 <p><strong>Соседи по сфере влияния</strong> получаются путем фильтрации триангуляции Делоне. Для каждой вершины находится расстояние до ближайшего соседа <span class="math inline">\(D_{min}\)</span> — это расстояние называется радиусом <em>сферы влияния</em> вершины. Остальные ребра триангуляции, инцидентные (примыкающие к) данной вершине, сохраняются только если их длина <span class="math inline">\(D\)</span> превышает радиус ее сферы влияния не более чем вдвое: <span class="math inline">\(D \leq 2D_{min}\)</span>. Рассуждая геометрически, можно сказать, что сферы радиусом <span class="math inline">\(D_{min}\)</span>, построенные в точке и ее соседях по триангуляции, должны пересекаться. Процесс фильтрации по сфере влияния иллюстрирует рисунок ниже.</p>
 <div class="figure">
 <img src="images/SphereOfInfluence.png" alt="" />
@@ -780,13 +792,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>фильтрация триангуляции по правилу сферы влияния (функция <code>soi.graph()</code>)</li>
 <li>преобразование полученного объекта в класс <code>nb</code>(функция <code>graph2nb()</code>)</li>
 </ul>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="autocorrelation.html#cb6-1"></a>nb_tin =<span class="st"> </span><span class="kw">soi.graph</span>(nb_tin, coords) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">graph2nb</span>()</span>
-<span id="cb6-2"><a href="autocorrelation.html#cb6-2"></a></span>
-<span id="cb6-3"><a href="autocorrelation.html#cb6-3"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
-<span id="cb6-4"><a href="autocorrelation.html#cb6-4"></a><span class="kw">plot</span>(nb_tin, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb6-5"><a href="autocorrelation.html#cb6-5"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по сфере влияния&quot;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<p><strong>Соседи по графу Гэбриела</strong> получаются также путем фильтрации триангуляции Делоне. В каждом треугольнике ребро сохранятся только тогда, когда построенная на нем окружность не включает третью точку треугольника (Gabriel, Sokal, 1969)<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. Данный метод проиллюстрирован рисунком ниже.</p>
+<div class="sourceCode" id="cb668"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb668-1"><a href="autocorrelation.html#cb668-1"></a>nb_tin =<span class="st"> </span><span class="kw">soi.graph</span>(nb_tin, coords) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">graph2nb</span>()</span>
+<span id="cb668-2"><a href="autocorrelation.html#cb668-2"></a></span>
+<span id="cb668-3"><a href="autocorrelation.html#cb668-3"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
+<span id="cb668-4"><a href="autocorrelation.html#cb668-4"></a><span class="kw">plot</span>(nb_tin, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb668-5"><a href="autocorrelation.html#cb668-5"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по сфере влияния&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-631-1.png" width="672" /></p>
+<p><strong>Соседи по графу Гэбриела</strong> получаются также путем фильтрации триангуляции Делоне. В каждом треугольнике ребро сохранятся только тогда, когда построенная на нем окружность не включает третью точку треугольника (Gabriel, Sokal, 1969)<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>. Данный метод проиллюстрирован рисунком ниже.</p>
 <div class="figure">
 <img src="images/Gabriel.png" alt="" />
 <p class="caption"><em>Поиск географических соседей по графу Гэбриела</em></p>
@@ -796,24 +808,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>построение графа Гэбриела (функция <code>gabrielneigh()</code>)</li>
 <li>преобразование полученного объекта в класс <code>nb</code>(функция <code>graph2nb()</code>)</li>
 </ul>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="autocorrelation.html#cb7-1"></a>nb_gab =<span class="st"> </span><span class="kw">gabrielneigh</span>(coords) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">graph2nb</span>()</span>
-<span id="cb7-2"><a href="autocorrelation.html#cb7-2"></a> </span>
-<span id="cb7-3"><a href="autocorrelation.html#cb7-3"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
-<span id="cb7-4"><a href="autocorrelation.html#cb7-4"></a><span class="kw">plot</span>(nb_gab, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb7-5"><a href="autocorrelation.html#cb7-5"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по графу Гэбриела&quot;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<p><strong>Относительные соседи по графу</strong> получаются путем фильтрации триангуляции Делоне по следующему правилу: ребро <span class="math inline">\(A\)</span>, соединяющее две вершины <span class="math inline">\(p\)</span> и <span class="math inline">\(q\)</span>, будет удалено, если найдется третья вершина <span class="math inline">\(r\)</span>, такая что расстояния от нее до <span class="math inline">\(p\)</span> и <span class="math inline">\(q\)</span> (<span class="math inline">\(B\)</span> и <span class="math inline">\(C\)</span> соответственно) окажутся короче, чем <span class="math inline">\(A\)</span>, то есть: <span class="math inline">\(A &gt; B\)</span> <strong>and</strong> <span class="math inline">\(A &gt; C\)</span>. Полученный граф носит название графа относительных соседей (relative neighborhood graph). Данный метод был предложен французским информатиком Готфридом Туассеном для выявления структуры множества точек, которая бы максимально соответствовала восприятию человеком формы этого множества (Toussaint, 1980)<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</p>
+<div class="sourceCode" id="cb669"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb669-1"><a href="autocorrelation.html#cb669-1"></a>nb_gab =<span class="st"> </span><span class="kw">gabrielneigh</span>(coords) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">graph2nb</span>()</span>
+<span id="cb669-2"><a href="autocorrelation.html#cb669-2"></a> </span>
+<span id="cb669-3"><a href="autocorrelation.html#cb669-3"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
+<span id="cb669-4"><a href="autocorrelation.html#cb669-4"></a><span class="kw">plot</span>(nb_gab, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb669-5"><a href="autocorrelation.html#cb669-5"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по графу Гэбриела&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-632-1.png" width="672" /></p>
+<p><strong>Относительные соседи по графу</strong> получаются путем фильтрации триангуляции Делоне по следующему правилу: ребро <span class="math inline">\(A\)</span>, соединяющее две вершины <span class="math inline">\(p\)</span> и <span class="math inline">\(q\)</span>, будет удалено, если найдется третья вершина <span class="math inline">\(r\)</span>, такая что расстояния от нее до <span class="math inline">\(p\)</span> и <span class="math inline">\(q\)</span> (<span class="math inline">\(B\)</span> и <span class="math inline">\(C\)</span> соответственно) окажутся короче, чем <span class="math inline">\(A\)</span>, то есть: <span class="math inline">\(A &gt; B\)</span> <strong>and</strong> <span class="math inline">\(A &gt; C\)</span>. Полученный граф носит название графа относительных соседей (relative neighborhood graph). Данный метод был предложен французским информатиком Готфридом Туассеном для выявления структуры множества точек, которая бы максимально соответствовала восприятию человеком формы этого множества (Toussaint, 1980)<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>.</p>
 <p>Поиск соседей по графу относительных соседей осуществляется в 2 шага:</p>
 <ul>
 <li>построение графа относительных соседей (функция <code>relativeneigh()</code>)</li>
 <li>преобразование полученного объекта в класс <code>nb</code>(функция <code>graph2nb()</code>)</li>
 </ul>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="autocorrelation.html#cb8-1"></a>nb_rel =<span class="st"> </span><span class="kw">relativeneigh</span>(coords) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">graph2nb</span>()</span>
-<span id="cb8-2"><a href="autocorrelation.html#cb8-2"></a></span>
-<span id="cb8-3"><a href="autocorrelation.html#cb8-3"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
-<span id="cb8-4"><a href="autocorrelation.html#cb8-4"></a><span class="kw">plot</span>(nb_rel, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb8-5"><a href="autocorrelation.html#cb8-5"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Относительные соседи по графу&quot;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<div class="sourceCode" id="cb670"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb670-1"><a href="autocorrelation.html#cb670-1"></a>nb_rel =<span class="st"> </span><span class="kw">relativeneigh</span>(coords) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">graph2nb</span>()</span>
+<span id="cb670-2"><a href="autocorrelation.html#cb670-2"></a></span>
+<span id="cb670-3"><a href="autocorrelation.html#cb670-3"></a><span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
+<span id="cb670-4"><a href="autocorrelation.html#cb670-4"></a><span class="kw">plot</span>(nb_rel, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb670-5"><a href="autocorrelation.html#cb670-5"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Относительные соседи по графу&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-633-1.png" width="672" /></p>
 </div>
 <div id="autocorrelation_neighbors_metrics" class="section level3">
 <h3><span class="header-section-number">15.5.3</span> Соседи по метрике</h3>
@@ -824,27 +836,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>преобразование полученного объекта в класс <code>nb</code>(функция <code>knn2nb()</code>)</li>
 </ul>
 <p>Рассмотрим поиск по количеству на примере нескольких пороговых значений:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="autocorrelation.html#cb9-1"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>),</span>
-<span id="cb9-2"><a href="autocorrelation.html#cb9-2"></a>    <span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))</span>
-<span id="cb9-3"><a href="autocorrelation.html#cb9-3"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>){</span>
-<span id="cb9-4"><a href="autocorrelation.html#cb9-4"></a>  nb_knn =<span class="st"> </span><span class="kw">knearneigh</span>(coords, <span class="dt">k =</span> i) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">knn2nb</span>()</span>
-<span id="cb9-5"><a href="autocorrelation.html#cb9-5"></a>  </span>
-<span id="cb9-6"><a href="autocorrelation.html#cb9-6"></a>  <span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
-<span id="cb9-7"><a href="autocorrelation.html#cb9-7"></a>  <span class="kw">plot</span>(nb_knn, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb9-8"><a href="autocorrelation.html#cb9-8"></a>  <span class="kw">title</span>(<span class="dt">main =</span> <span class="kw">paste</span>(<span class="st">&quot;Ближайшие соседи (k = &quot;</span>, i, <span class="st">&quot;)&quot;</span>, <span class="dt">sep =</span> <span class="st">&#39;&#39;</span>))</span>
-<span id="cb9-9"><a href="autocorrelation.html#cb9-9"></a>}</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<div class="sourceCode" id="cb671"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb671-1"><a href="autocorrelation.html#cb671-1"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb671-2"><a href="autocorrelation.html#cb671-2"></a>    <span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb671-3"><a href="autocorrelation.html#cb671-3"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>){</span>
+<span id="cb671-4"><a href="autocorrelation.html#cb671-4"></a>  nb_knn =<span class="st"> </span><span class="kw">knearneigh</span>(coords, <span class="dt">k =</span> i) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">knn2nb</span>()</span>
+<span id="cb671-5"><a href="autocorrelation.html#cb671-5"></a>  </span>
+<span id="cb671-6"><a href="autocorrelation.html#cb671-6"></a>  <span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
+<span id="cb671-7"><a href="autocorrelation.html#cb671-7"></a>  <span class="kw">plot</span>(nb_knn, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb671-8"><a href="autocorrelation.html#cb671-8"></a>  <span class="kw">title</span>(<span class="dt">main =</span> <span class="kw">paste</span>(<span class="st">&quot;Ближайшие соседи (k = &quot;</span>, i, <span class="st">&quot;)&quot;</span>, <span class="dt">sep =</span> <span class="st">&#39;&#39;</span>))</span>
+<span id="cb671-9"><a href="autocorrelation.html#cb671-9"></a>}</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-634-1.png" width="672" /></p>
 <p>Поиск <strong>соседей по расстоянию</strong> осуществляется средствами функции <code>dnearneigh()</code>, которая принимает 3 аргумента: координаты точек, минимальное <span class="math inline">\(d_1\)</span> и максимальное <span class="math inline">\(d_2\)</span> расстояние. Минимальное расстояние имеет смысл использовать чтобы избежать анализа совпадающих по положению объектов, или когда известен пространственный период явления, превышающий <span class="math inline">\(d_1\)</span>:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="autocorrelation.html#cb10-1"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>),</span>
-<span id="cb10-2"><a href="autocorrelation.html#cb10-2"></a>    <span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))</span>
-<span id="cb10-3"><a href="autocorrelation.html#cb10-3"></a><span class="cf">for</span> (d <span class="cf">in</span> <span class="dv">5</span><span class="op">:</span><span class="dv">8</span>) {</span>
-<span id="cb10-4"><a href="autocorrelation.html#cb10-4"></a>  dnearnei =<span class="st"> </span><span class="kw">dnearneigh</span>(coords, <span class="dt">d1 =</span> <span class="dv">0</span>, <span class="dt">d2 =</span> <span class="dv">10000</span> <span class="op">*</span><span class="st"> </span>d)</span>
-<span id="cb10-5"><a href="autocorrelation.html#cb10-5"></a>  </span>
-<span id="cb10-6"><a href="autocorrelation.html#cb10-6"></a>  <span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
-<span id="cb10-7"><a href="autocorrelation.html#cb10-7"></a>  <span class="kw">plot</span>(dnearnei, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb10-8"><a href="autocorrelation.html#cb10-8"></a>  <span class="kw">title</span>(<span class="dt">main =</span> <span class="kw">paste</span>(<span class="st">&quot;Ближайшие соседи (d &lt;=&quot;</span>, <span class="dv">10000</span> <span class="op">*</span><span class="st"> </span>d, <span class="st">&quot;)&quot;</span>, <span class="dt">sep =</span> <span class="st">&#39;&#39;</span>))</span>
-<span id="cb10-9"><a href="autocorrelation.html#cb10-9"></a>}</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<div class="sourceCode" id="cb672"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb672-1"><a href="autocorrelation.html#cb672-1"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb672-2"><a href="autocorrelation.html#cb672-2"></a>    <span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb672-3"><a href="autocorrelation.html#cb672-3"></a><span class="cf">for</span> (d <span class="cf">in</span> <span class="dv">5</span><span class="op">:</span><span class="dv">8</span>) {</span>
+<span id="cb672-4"><a href="autocorrelation.html#cb672-4"></a>  dnearnei =<span class="st"> </span><span class="kw">dnearneigh</span>(coords, <span class="dt">d1 =</span> <span class="dv">0</span>, <span class="dt">d2 =</span> <span class="dv">10000</span> <span class="op">*</span><span class="st"> </span>d)</span>
+<span id="cb672-5"><a href="autocorrelation.html#cb672-5"></a>  </span>
+<span id="cb672-6"><a href="autocorrelation.html#cb672-6"></a>  <span class="kw">plot</span>(reg, <span class="dt">border =</span> <span class="st">&quot;grey70&quot;</span>)</span>
+<span id="cb672-7"><a href="autocorrelation.html#cb672-7"></a>  <span class="kw">plot</span>(dnearnei, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb672-8"><a href="autocorrelation.html#cb672-8"></a>  <span class="kw">title</span>(<span class="dt">main =</span> <span class="kw">paste</span>(<span class="st">&quot;Ближайшие соседи (d &lt;=&quot;</span>, <span class="dv">10000</span> <span class="op">*</span><span class="st"> </span>d, <span class="st">&quot;)&quot;</span>, <span class="dt">sep =</span> <span class="st">&#39;&#39;</span>))</span>
+<span id="cb672-9"><a href="autocorrelation.html#cb672-9"></a>}</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-635-1.png" width="672" /></p>
 <p>Итак, мы рассмотрели различные принципы выявления географического соседства. После того, как определен сам факт соседства, необходимо оценить силу пространственной связи между всеми парами соседних единиц. Эта оценка производится путем построения <strong>матрицы пространственных весов</strong>(spatial weights matrix).</p>
 </div>
 </div>
@@ -852,183 +864,183 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">15.6</span> Пространственные веса</h2>
 <p>Пространственные веса характеризуют силу связи между единицами. Если единицы не являются соседними (по выбранному правилу), то пространственный вес их связи будет равен нулю. Во всех остальных случаях веса будут ненулевыми. Поскольку теоретически каждая единица может быть связана с любой другой единицей, распространена форма представления весов в виде матрицы <span class="math inline">\(W\)</span> размером <span class="math inline">\(N \times N\)</span>, где <span class="math inline">\(N\)</span> – число единиц. На пересечении <span class="math inline">\(i\)</span>-й строки и <span class="math inline">\(j\)</span>-го столбца матрицы располагается вес связи между <span class="math inline">\(i\)</span>-й и <span class="math inline">\(j\)</span>-й единицей.</p>
 <p>Простейший вид матрицы <span class="math inline">\(W\)</span> — бинарная. Если связь есть, то ее вес равен единице (1), если нет — нулю (0). Для построения бинарной матрицы нужно использовать функцию <code>nb2listw()</code> c параметром <code>style="B"</code>:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="autocorrelation.html#cb11-1"></a>Wbin =<span class="st"> </span><span class="kw">nb2listw</span>(nb_queen, <span class="dt">style =</span> <span class="st">&quot;B&quot;</span>)</span>
-<span id="cb11-2"><a href="autocorrelation.html#cb11-2"></a>Wbin  <span class="co"># посмотрим, что за объект получается на выходе (listw)</span></span>
-<span id="cb11-3"><a href="autocorrelation.html#cb11-3"></a><span class="co">## Characteristics of weights list object:</span></span>
-<span id="cb11-4"><a href="autocorrelation.html#cb11-4"></a><span class="co">## Neighbour list object:</span></span>
-<span id="cb11-5"><a href="autocorrelation.html#cb11-5"></a><span class="co">## Number of regions: 40 </span></span>
-<span id="cb11-6"><a href="autocorrelation.html#cb11-6"></a><span class="co">## Number of nonzero links: 174 </span></span>
-<span id="cb11-7"><a href="autocorrelation.html#cb11-7"></a><span class="co">## Percentage nonzero weights: 10.875 </span></span>
-<span id="cb11-8"><a href="autocorrelation.html#cb11-8"></a><span class="co">## Average number of links: 4.35 </span></span>
-<span id="cb11-9"><a href="autocorrelation.html#cb11-9"></a><span class="co">## </span></span>
-<span id="cb11-10"><a href="autocorrelation.html#cb11-10"></a><span class="co">## Weights style: B </span></span>
-<span id="cb11-11"><a href="autocorrelation.html#cb11-11"></a><span class="co">## Weights constants summary:</span></span>
-<span id="cb11-12"><a href="autocorrelation.html#cb11-12"></a><span class="co">##    n   nn  S0  S1   S2</span></span>
-<span id="cb11-13"><a href="autocorrelation.html#cb11-13"></a><span class="co">## B 40 1600 174 348 3416</span></span></code></pre></div>
+<div class="sourceCode" id="cb673"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb673-1"><a href="autocorrelation.html#cb673-1"></a>Wbin =<span class="st"> </span><span class="kw">nb2listw</span>(nb_queen, <span class="dt">style =</span> <span class="st">&quot;B&quot;</span>)</span>
+<span id="cb673-2"><a href="autocorrelation.html#cb673-2"></a>Wbin  <span class="co"># посмотрим, что за объект получается на выходе (listw)</span></span>
+<span id="cb673-3"><a href="autocorrelation.html#cb673-3"></a><span class="co">## Characteristics of weights list object:</span></span>
+<span id="cb673-4"><a href="autocorrelation.html#cb673-4"></a><span class="co">## Neighbour list object:</span></span>
+<span id="cb673-5"><a href="autocorrelation.html#cb673-5"></a><span class="co">## Number of regions: 40 </span></span>
+<span id="cb673-6"><a href="autocorrelation.html#cb673-6"></a><span class="co">## Number of nonzero links: 174 </span></span>
+<span id="cb673-7"><a href="autocorrelation.html#cb673-7"></a><span class="co">## Percentage nonzero weights: 10.875 </span></span>
+<span id="cb673-8"><a href="autocorrelation.html#cb673-8"></a><span class="co">## Average number of links: 4.35 </span></span>
+<span id="cb673-9"><a href="autocorrelation.html#cb673-9"></a><span class="co">## </span></span>
+<span id="cb673-10"><a href="autocorrelation.html#cb673-10"></a><span class="co">## Weights style: B </span></span>
+<span id="cb673-11"><a href="autocorrelation.html#cb673-11"></a><span class="co">## Weights constants summary:</span></span>
+<span id="cb673-12"><a href="autocorrelation.html#cb673-12"></a><span class="co">##    n   nn  S0  S1   S2</span></span>
+<span id="cb673-13"><a href="autocorrelation.html#cb673-13"></a><span class="co">## B 40 1600 174 348 3416</span></span></code></pre></div>
 <p>Оказывается, что это на самом деле не матрица. Это объект с двумя слотами. В слоте weights содержатся веса, а в слоте neighbours — идентификаторы соседей:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="autocorrelation.html#cb12-1"></a>Wbin<span class="op">$</span>neighbours</span>
-<span id="cb12-2"><a href="autocorrelation.html#cb12-2"></a><span class="co">## Neighbour list object:</span></span>
-<span id="cb12-3"><a href="autocorrelation.html#cb12-3"></a><span class="co">## Number of regions: 40 </span></span>
-<span id="cb12-4"><a href="autocorrelation.html#cb12-4"></a><span class="co">## Number of nonzero links: 174 </span></span>
-<span id="cb12-5"><a href="autocorrelation.html#cb12-5"></a><span class="co">## Percentage nonzero weights: 10.875 </span></span>
-<span id="cb12-6"><a href="autocorrelation.html#cb12-6"></a><span class="co">## Average number of links: 4.35</span></span>
-<span id="cb12-7"><a href="autocorrelation.html#cb12-7"></a>Wbin<span class="op">$</span>weights</span>
-<span id="cb12-8"><a href="autocorrelation.html#cb12-8"></a><span class="co">## [[1]]</span></span>
-<span id="cb12-9"><a href="autocorrelation.html#cb12-9"></a><span class="co">## [1] 1 1 1 1 1</span></span>
-<span id="cb12-10"><a href="autocorrelation.html#cb12-10"></a><span class="co">## </span></span>
-<span id="cb12-11"><a href="autocorrelation.html#cb12-11"></a><span class="co">## [[2]]</span></span>
-<span id="cb12-12"><a href="autocorrelation.html#cb12-12"></a><span class="co">## [1] 1 1</span></span>
-<span id="cb12-13"><a href="autocorrelation.html#cb12-13"></a><span class="co">## </span></span>
-<span id="cb12-14"><a href="autocorrelation.html#cb12-14"></a><span class="co">## [[3]]</span></span>
-<span id="cb12-15"><a href="autocorrelation.html#cb12-15"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
-<span id="cb12-16"><a href="autocorrelation.html#cb12-16"></a><span class="co">## </span></span>
-<span id="cb12-17"><a href="autocorrelation.html#cb12-17"></a><span class="co">## [[4]]</span></span>
-<span id="cb12-18"><a href="autocorrelation.html#cb12-18"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
-<span id="cb12-19"><a href="autocorrelation.html#cb12-19"></a><span class="co">## </span></span>
-<span id="cb12-20"><a href="autocorrelation.html#cb12-20"></a><span class="co">## [[5]]</span></span>
-<span id="cb12-21"><a href="autocorrelation.html#cb12-21"></a><span class="co">## [1] 1 1 1 1</span></span>
-<span id="cb12-22"><a href="autocorrelation.html#cb12-22"></a><span class="co">## </span></span>
-<span id="cb12-23"><a href="autocorrelation.html#cb12-23"></a><span class="co">## [[6]]</span></span>
-<span id="cb12-24"><a href="autocorrelation.html#cb12-24"></a><span class="co">## [1] 1 1 1 1 1 1 1</span></span>
-<span id="cb12-25"><a href="autocorrelation.html#cb12-25"></a><span class="co">## </span></span>
-<span id="cb12-26"><a href="autocorrelation.html#cb12-26"></a><span class="co">## [[7]]</span></span>
-<span id="cb12-27"><a href="autocorrelation.html#cb12-27"></a><span class="co">## [1] 1</span></span>
-<span id="cb12-28"><a href="autocorrelation.html#cb12-28"></a><span class="co">## </span></span>
-<span id="cb12-29"><a href="autocorrelation.html#cb12-29"></a><span class="co">## [[8]]</span></span>
-<span id="cb12-30"><a href="autocorrelation.html#cb12-30"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
-<span id="cb12-31"><a href="autocorrelation.html#cb12-31"></a><span class="co">## </span></span>
-<span id="cb12-32"><a href="autocorrelation.html#cb12-32"></a><span class="co">## [[9]]</span></span>
-<span id="cb12-33"><a href="autocorrelation.html#cb12-33"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
-<span id="cb12-34"><a href="autocorrelation.html#cb12-34"></a><span class="co">## </span></span>
-<span id="cb12-35"><a href="autocorrelation.html#cb12-35"></a><span class="co">## [[10]]</span></span>
-<span id="cb12-36"><a href="autocorrelation.html#cb12-36"></a><span class="co">## [1] 1 1 1</span></span>
-<span id="cb12-37"><a href="autocorrelation.html#cb12-37"></a><span class="co">## </span></span>
-<span id="cb12-38"><a href="autocorrelation.html#cb12-38"></a><span class="co">## [[11]]</span></span>
-<span id="cb12-39"><a href="autocorrelation.html#cb12-39"></a><span class="co">## [1] 1 1 1</span></span>
-<span id="cb12-40"><a href="autocorrelation.html#cb12-40"></a><span class="co">## </span></span>
-<span id="cb12-41"><a href="autocorrelation.html#cb12-41"></a><span class="co">## [[12]]</span></span>
-<span id="cb12-42"><a href="autocorrelation.html#cb12-42"></a><span class="co">## [1] 1 1 1 1 1</span></span>
-<span id="cb12-43"><a href="autocorrelation.html#cb12-43"></a><span class="co">## </span></span>
-<span id="cb12-44"><a href="autocorrelation.html#cb12-44"></a><span class="co">## [[13]]</span></span>
-<span id="cb12-45"><a href="autocorrelation.html#cb12-45"></a><span class="co">## [1] 1 1 1 1 1</span></span>
-<span id="cb12-46"><a href="autocorrelation.html#cb12-46"></a><span class="co">## </span></span>
-<span id="cb12-47"><a href="autocorrelation.html#cb12-47"></a><span class="co">## [[14]]</span></span>
-<span id="cb12-48"><a href="autocorrelation.html#cb12-48"></a><span class="co">## [1] 1 1 1 1 1 1 1</span></span>
-<span id="cb12-49"><a href="autocorrelation.html#cb12-49"></a><span class="co">## </span></span>
-<span id="cb12-50"><a href="autocorrelation.html#cb12-50"></a><span class="co">## [[15]]</span></span>
-<span id="cb12-51"><a href="autocorrelation.html#cb12-51"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
-<span id="cb12-52"><a href="autocorrelation.html#cb12-52"></a><span class="co">## </span></span>
-<span id="cb12-53"><a href="autocorrelation.html#cb12-53"></a><span class="co">## [[16]]</span></span>
-<span id="cb12-54"><a href="autocorrelation.html#cb12-54"></a><span class="co">## [1] 1 1 1</span></span>
-<span id="cb12-55"><a href="autocorrelation.html#cb12-55"></a><span class="co">## </span></span>
-<span id="cb12-56"><a href="autocorrelation.html#cb12-56"></a><span class="co">## [[17]]</span></span>
-<span id="cb12-57"><a href="autocorrelation.html#cb12-57"></a><span class="co">## [1] 1 1</span></span>
-<span id="cb12-58"><a href="autocorrelation.html#cb12-58"></a><span class="co">## </span></span>
-<span id="cb12-59"><a href="autocorrelation.html#cb12-59"></a><span class="co">## [[18]]</span></span>
-<span id="cb12-60"><a href="autocorrelation.html#cb12-60"></a><span class="co">## [1] 1 1 1</span></span>
-<span id="cb12-61"><a href="autocorrelation.html#cb12-61"></a><span class="co">## </span></span>
-<span id="cb12-62"><a href="autocorrelation.html#cb12-62"></a><span class="co">## [[19]]</span></span>
-<span id="cb12-63"><a href="autocorrelation.html#cb12-63"></a><span class="co">## [1] 1 1 1 1</span></span>
-<span id="cb12-64"><a href="autocorrelation.html#cb12-64"></a><span class="co">## </span></span>
-<span id="cb12-65"><a href="autocorrelation.html#cb12-65"></a><span class="co">## [[20]]</span></span>
-<span id="cb12-66"><a href="autocorrelation.html#cb12-66"></a><span class="co">## [1] 1 1 1</span></span>
-<span id="cb12-67"><a href="autocorrelation.html#cb12-67"></a><span class="co">## </span></span>
-<span id="cb12-68"><a href="autocorrelation.html#cb12-68"></a><span class="co">## [[21]]</span></span>
-<span id="cb12-69"><a href="autocorrelation.html#cb12-69"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
-<span id="cb12-70"><a href="autocorrelation.html#cb12-70"></a><span class="co">## </span></span>
-<span id="cb12-71"><a href="autocorrelation.html#cb12-71"></a><span class="co">## [[22]]</span></span>
-<span id="cb12-72"><a href="autocorrelation.html#cb12-72"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
-<span id="cb12-73"><a href="autocorrelation.html#cb12-73"></a><span class="co">## </span></span>
-<span id="cb12-74"><a href="autocorrelation.html#cb12-74"></a><span class="co">## [[23]]</span></span>
-<span id="cb12-75"><a href="autocorrelation.html#cb12-75"></a><span class="co">## [1] 1 1 1 1</span></span>
-<span id="cb12-76"><a href="autocorrelation.html#cb12-76"></a><span class="co">## </span></span>
-<span id="cb12-77"><a href="autocorrelation.html#cb12-77"></a><span class="co">## [[24]]</span></span>
-<span id="cb12-78"><a href="autocorrelation.html#cb12-78"></a><span class="co">## [1] 1 1 1 1</span></span>
-<span id="cb12-79"><a href="autocorrelation.html#cb12-79"></a><span class="co">## </span></span>
-<span id="cb12-80"><a href="autocorrelation.html#cb12-80"></a><span class="co">## [[25]]</span></span>
-<span id="cb12-81"><a href="autocorrelation.html#cb12-81"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
-<span id="cb12-82"><a href="autocorrelation.html#cb12-82"></a><span class="co">## </span></span>
-<span id="cb12-83"><a href="autocorrelation.html#cb12-83"></a><span class="co">## [[26]]</span></span>
-<span id="cb12-84"><a href="autocorrelation.html#cb12-84"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
-<span id="cb12-85"><a href="autocorrelation.html#cb12-85"></a><span class="co">## </span></span>
-<span id="cb12-86"><a href="autocorrelation.html#cb12-86"></a><span class="co">## [[27]]</span></span>
-<span id="cb12-87"><a href="autocorrelation.html#cb12-87"></a><span class="co">## [1] 1 1 1 1</span></span>
-<span id="cb12-88"><a href="autocorrelation.html#cb12-88"></a><span class="co">## </span></span>
-<span id="cb12-89"><a href="autocorrelation.html#cb12-89"></a><span class="co">## [[28]]</span></span>
-<span id="cb12-90"><a href="autocorrelation.html#cb12-90"></a><span class="co">## [1] 1 1</span></span>
-<span id="cb12-91"><a href="autocorrelation.html#cb12-91"></a><span class="co">## </span></span>
-<span id="cb12-92"><a href="autocorrelation.html#cb12-92"></a><span class="co">## [[29]]</span></span>
-<span id="cb12-93"><a href="autocorrelation.html#cb12-93"></a><span class="co">## [1] 1 1</span></span>
-<span id="cb12-94"><a href="autocorrelation.html#cb12-94"></a><span class="co">## </span></span>
-<span id="cb12-95"><a href="autocorrelation.html#cb12-95"></a><span class="co">## [[30]]</span></span>
-<span id="cb12-96"><a href="autocorrelation.html#cb12-96"></a><span class="co">## [1] 1 1 1</span></span>
-<span id="cb12-97"><a href="autocorrelation.html#cb12-97"></a><span class="co">## </span></span>
-<span id="cb12-98"><a href="autocorrelation.html#cb12-98"></a><span class="co">## [[31]]</span></span>
-<span id="cb12-99"><a href="autocorrelation.html#cb12-99"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
-<span id="cb12-100"><a href="autocorrelation.html#cb12-100"></a><span class="co">## </span></span>
-<span id="cb12-101"><a href="autocorrelation.html#cb12-101"></a><span class="co">## [[32]]</span></span>
-<span id="cb12-102"><a href="autocorrelation.html#cb12-102"></a><span class="co">## [1] 1 1 1 1 1</span></span>
-<span id="cb12-103"><a href="autocorrelation.html#cb12-103"></a><span class="co">## </span></span>
-<span id="cb12-104"><a href="autocorrelation.html#cb12-104"></a><span class="co">## [[33]]</span></span>
-<span id="cb12-105"><a href="autocorrelation.html#cb12-105"></a><span class="co">## [1] 1 1 1 1 1</span></span>
-<span id="cb12-106"><a href="autocorrelation.html#cb12-106"></a><span class="co">## </span></span>
-<span id="cb12-107"><a href="autocorrelation.html#cb12-107"></a><span class="co">## [[34]]</span></span>
-<span id="cb12-108"><a href="autocorrelation.html#cb12-108"></a><span class="co">## [1] 1 1 1 1 1</span></span>
-<span id="cb12-109"><a href="autocorrelation.html#cb12-109"></a><span class="co">## </span></span>
-<span id="cb12-110"><a href="autocorrelation.html#cb12-110"></a><span class="co">## [[35]]</span></span>
-<span id="cb12-111"><a href="autocorrelation.html#cb12-111"></a><span class="co">## [1] 1 1 1</span></span>
-<span id="cb12-112"><a href="autocorrelation.html#cb12-112"></a><span class="co">## </span></span>
-<span id="cb12-113"><a href="autocorrelation.html#cb12-113"></a><span class="co">## [[36]]</span></span>
-<span id="cb12-114"><a href="autocorrelation.html#cb12-114"></a><span class="co">## [1] 1 1 1 1 1</span></span>
-<span id="cb12-115"><a href="autocorrelation.html#cb12-115"></a><span class="co">## </span></span>
-<span id="cb12-116"><a href="autocorrelation.html#cb12-116"></a><span class="co">## [[37]]</span></span>
-<span id="cb12-117"><a href="autocorrelation.html#cb12-117"></a><span class="co">## [1] 1 1 1 1 1</span></span>
-<span id="cb12-118"><a href="autocorrelation.html#cb12-118"></a><span class="co">## </span></span>
-<span id="cb12-119"><a href="autocorrelation.html#cb12-119"></a><span class="co">## [[38]]</span></span>
-<span id="cb12-120"><a href="autocorrelation.html#cb12-120"></a><span class="co">## [1] 1 1</span></span>
-<span id="cb12-121"><a href="autocorrelation.html#cb12-121"></a><span class="co">## </span></span>
-<span id="cb12-122"><a href="autocorrelation.html#cb12-122"></a><span class="co">## [[39]]</span></span>
-<span id="cb12-123"><a href="autocorrelation.html#cb12-123"></a><span class="co">## [1] 1 1 1 1</span></span>
-<span id="cb12-124"><a href="autocorrelation.html#cb12-124"></a><span class="co">## </span></span>
-<span id="cb12-125"><a href="autocorrelation.html#cb12-125"></a><span class="co">## [[40]]</span></span>
-<span id="cb12-126"><a href="autocorrelation.html#cb12-126"></a><span class="co">## [1] 1 1 1 1</span></span>
-<span id="cb12-127"><a href="autocorrelation.html#cb12-127"></a><span class="co">## </span></span>
-<span id="cb12-128"><a href="autocorrelation.html#cb12-128"></a><span class="co">## attr(,&quot;mode&quot;)</span></span>
-<span id="cb12-129"><a href="autocorrelation.html#cb12-129"></a><span class="co">## [1] &quot;binary&quot;</span></span>
-<span id="cb12-130"><a href="autocorrelation.html#cb12-130"></a><span class="co">## attr(,&quot;B&quot;)</span></span>
-<span id="cb12-131"><a href="autocorrelation.html#cb12-131"></a><span class="co">## [1] TRUE</span></span></code></pre></div>
+<div class="sourceCode" id="cb674"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb674-1"><a href="autocorrelation.html#cb674-1"></a>Wbin<span class="op">$</span>neighbours</span>
+<span id="cb674-2"><a href="autocorrelation.html#cb674-2"></a><span class="co">## Neighbour list object:</span></span>
+<span id="cb674-3"><a href="autocorrelation.html#cb674-3"></a><span class="co">## Number of regions: 40 </span></span>
+<span id="cb674-4"><a href="autocorrelation.html#cb674-4"></a><span class="co">## Number of nonzero links: 174 </span></span>
+<span id="cb674-5"><a href="autocorrelation.html#cb674-5"></a><span class="co">## Percentage nonzero weights: 10.875 </span></span>
+<span id="cb674-6"><a href="autocorrelation.html#cb674-6"></a><span class="co">## Average number of links: 4.35</span></span>
+<span id="cb674-7"><a href="autocorrelation.html#cb674-7"></a>Wbin<span class="op">$</span>weights</span>
+<span id="cb674-8"><a href="autocorrelation.html#cb674-8"></a><span class="co">## [[1]]</span></span>
+<span id="cb674-9"><a href="autocorrelation.html#cb674-9"></a><span class="co">## [1] 1 1 1 1 1</span></span>
+<span id="cb674-10"><a href="autocorrelation.html#cb674-10"></a><span class="co">## </span></span>
+<span id="cb674-11"><a href="autocorrelation.html#cb674-11"></a><span class="co">## [[2]]</span></span>
+<span id="cb674-12"><a href="autocorrelation.html#cb674-12"></a><span class="co">## [1] 1 1</span></span>
+<span id="cb674-13"><a href="autocorrelation.html#cb674-13"></a><span class="co">## </span></span>
+<span id="cb674-14"><a href="autocorrelation.html#cb674-14"></a><span class="co">## [[3]]</span></span>
+<span id="cb674-15"><a href="autocorrelation.html#cb674-15"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb674-16"><a href="autocorrelation.html#cb674-16"></a><span class="co">## </span></span>
+<span id="cb674-17"><a href="autocorrelation.html#cb674-17"></a><span class="co">## [[4]]</span></span>
+<span id="cb674-18"><a href="autocorrelation.html#cb674-18"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb674-19"><a href="autocorrelation.html#cb674-19"></a><span class="co">## </span></span>
+<span id="cb674-20"><a href="autocorrelation.html#cb674-20"></a><span class="co">## [[5]]</span></span>
+<span id="cb674-21"><a href="autocorrelation.html#cb674-21"></a><span class="co">## [1] 1 1 1 1</span></span>
+<span id="cb674-22"><a href="autocorrelation.html#cb674-22"></a><span class="co">## </span></span>
+<span id="cb674-23"><a href="autocorrelation.html#cb674-23"></a><span class="co">## [[6]]</span></span>
+<span id="cb674-24"><a href="autocorrelation.html#cb674-24"></a><span class="co">## [1] 1 1 1 1 1 1 1</span></span>
+<span id="cb674-25"><a href="autocorrelation.html#cb674-25"></a><span class="co">## </span></span>
+<span id="cb674-26"><a href="autocorrelation.html#cb674-26"></a><span class="co">## [[7]]</span></span>
+<span id="cb674-27"><a href="autocorrelation.html#cb674-27"></a><span class="co">## [1] 1</span></span>
+<span id="cb674-28"><a href="autocorrelation.html#cb674-28"></a><span class="co">## </span></span>
+<span id="cb674-29"><a href="autocorrelation.html#cb674-29"></a><span class="co">## [[8]]</span></span>
+<span id="cb674-30"><a href="autocorrelation.html#cb674-30"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb674-31"><a href="autocorrelation.html#cb674-31"></a><span class="co">## </span></span>
+<span id="cb674-32"><a href="autocorrelation.html#cb674-32"></a><span class="co">## [[9]]</span></span>
+<span id="cb674-33"><a href="autocorrelation.html#cb674-33"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb674-34"><a href="autocorrelation.html#cb674-34"></a><span class="co">## </span></span>
+<span id="cb674-35"><a href="autocorrelation.html#cb674-35"></a><span class="co">## [[10]]</span></span>
+<span id="cb674-36"><a href="autocorrelation.html#cb674-36"></a><span class="co">## [1] 1 1 1</span></span>
+<span id="cb674-37"><a href="autocorrelation.html#cb674-37"></a><span class="co">## </span></span>
+<span id="cb674-38"><a href="autocorrelation.html#cb674-38"></a><span class="co">## [[11]]</span></span>
+<span id="cb674-39"><a href="autocorrelation.html#cb674-39"></a><span class="co">## [1] 1 1 1</span></span>
+<span id="cb674-40"><a href="autocorrelation.html#cb674-40"></a><span class="co">## </span></span>
+<span id="cb674-41"><a href="autocorrelation.html#cb674-41"></a><span class="co">## [[12]]</span></span>
+<span id="cb674-42"><a href="autocorrelation.html#cb674-42"></a><span class="co">## [1] 1 1 1 1 1</span></span>
+<span id="cb674-43"><a href="autocorrelation.html#cb674-43"></a><span class="co">## </span></span>
+<span id="cb674-44"><a href="autocorrelation.html#cb674-44"></a><span class="co">## [[13]]</span></span>
+<span id="cb674-45"><a href="autocorrelation.html#cb674-45"></a><span class="co">## [1] 1 1 1 1 1</span></span>
+<span id="cb674-46"><a href="autocorrelation.html#cb674-46"></a><span class="co">## </span></span>
+<span id="cb674-47"><a href="autocorrelation.html#cb674-47"></a><span class="co">## [[14]]</span></span>
+<span id="cb674-48"><a href="autocorrelation.html#cb674-48"></a><span class="co">## [1] 1 1 1 1 1 1 1</span></span>
+<span id="cb674-49"><a href="autocorrelation.html#cb674-49"></a><span class="co">## </span></span>
+<span id="cb674-50"><a href="autocorrelation.html#cb674-50"></a><span class="co">## [[15]]</span></span>
+<span id="cb674-51"><a href="autocorrelation.html#cb674-51"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb674-52"><a href="autocorrelation.html#cb674-52"></a><span class="co">## </span></span>
+<span id="cb674-53"><a href="autocorrelation.html#cb674-53"></a><span class="co">## [[16]]</span></span>
+<span id="cb674-54"><a href="autocorrelation.html#cb674-54"></a><span class="co">## [1] 1 1 1</span></span>
+<span id="cb674-55"><a href="autocorrelation.html#cb674-55"></a><span class="co">## </span></span>
+<span id="cb674-56"><a href="autocorrelation.html#cb674-56"></a><span class="co">## [[17]]</span></span>
+<span id="cb674-57"><a href="autocorrelation.html#cb674-57"></a><span class="co">## [1] 1 1</span></span>
+<span id="cb674-58"><a href="autocorrelation.html#cb674-58"></a><span class="co">## </span></span>
+<span id="cb674-59"><a href="autocorrelation.html#cb674-59"></a><span class="co">## [[18]]</span></span>
+<span id="cb674-60"><a href="autocorrelation.html#cb674-60"></a><span class="co">## [1] 1 1 1</span></span>
+<span id="cb674-61"><a href="autocorrelation.html#cb674-61"></a><span class="co">## </span></span>
+<span id="cb674-62"><a href="autocorrelation.html#cb674-62"></a><span class="co">## [[19]]</span></span>
+<span id="cb674-63"><a href="autocorrelation.html#cb674-63"></a><span class="co">## [1] 1 1 1 1</span></span>
+<span id="cb674-64"><a href="autocorrelation.html#cb674-64"></a><span class="co">## </span></span>
+<span id="cb674-65"><a href="autocorrelation.html#cb674-65"></a><span class="co">## [[20]]</span></span>
+<span id="cb674-66"><a href="autocorrelation.html#cb674-66"></a><span class="co">## [1] 1 1 1</span></span>
+<span id="cb674-67"><a href="autocorrelation.html#cb674-67"></a><span class="co">## </span></span>
+<span id="cb674-68"><a href="autocorrelation.html#cb674-68"></a><span class="co">## [[21]]</span></span>
+<span id="cb674-69"><a href="autocorrelation.html#cb674-69"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb674-70"><a href="autocorrelation.html#cb674-70"></a><span class="co">## </span></span>
+<span id="cb674-71"><a href="autocorrelation.html#cb674-71"></a><span class="co">## [[22]]</span></span>
+<span id="cb674-72"><a href="autocorrelation.html#cb674-72"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb674-73"><a href="autocorrelation.html#cb674-73"></a><span class="co">## </span></span>
+<span id="cb674-74"><a href="autocorrelation.html#cb674-74"></a><span class="co">## [[23]]</span></span>
+<span id="cb674-75"><a href="autocorrelation.html#cb674-75"></a><span class="co">## [1] 1 1 1 1</span></span>
+<span id="cb674-76"><a href="autocorrelation.html#cb674-76"></a><span class="co">## </span></span>
+<span id="cb674-77"><a href="autocorrelation.html#cb674-77"></a><span class="co">## [[24]]</span></span>
+<span id="cb674-78"><a href="autocorrelation.html#cb674-78"></a><span class="co">## [1] 1 1 1 1</span></span>
+<span id="cb674-79"><a href="autocorrelation.html#cb674-79"></a><span class="co">## </span></span>
+<span id="cb674-80"><a href="autocorrelation.html#cb674-80"></a><span class="co">## [[25]]</span></span>
+<span id="cb674-81"><a href="autocorrelation.html#cb674-81"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb674-82"><a href="autocorrelation.html#cb674-82"></a><span class="co">## </span></span>
+<span id="cb674-83"><a href="autocorrelation.html#cb674-83"></a><span class="co">## [[26]]</span></span>
+<span id="cb674-84"><a href="autocorrelation.html#cb674-84"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb674-85"><a href="autocorrelation.html#cb674-85"></a><span class="co">## </span></span>
+<span id="cb674-86"><a href="autocorrelation.html#cb674-86"></a><span class="co">## [[27]]</span></span>
+<span id="cb674-87"><a href="autocorrelation.html#cb674-87"></a><span class="co">## [1] 1 1 1 1</span></span>
+<span id="cb674-88"><a href="autocorrelation.html#cb674-88"></a><span class="co">## </span></span>
+<span id="cb674-89"><a href="autocorrelation.html#cb674-89"></a><span class="co">## [[28]]</span></span>
+<span id="cb674-90"><a href="autocorrelation.html#cb674-90"></a><span class="co">## [1] 1 1</span></span>
+<span id="cb674-91"><a href="autocorrelation.html#cb674-91"></a><span class="co">## </span></span>
+<span id="cb674-92"><a href="autocorrelation.html#cb674-92"></a><span class="co">## [[29]]</span></span>
+<span id="cb674-93"><a href="autocorrelation.html#cb674-93"></a><span class="co">## [1] 1 1</span></span>
+<span id="cb674-94"><a href="autocorrelation.html#cb674-94"></a><span class="co">## </span></span>
+<span id="cb674-95"><a href="autocorrelation.html#cb674-95"></a><span class="co">## [[30]]</span></span>
+<span id="cb674-96"><a href="autocorrelation.html#cb674-96"></a><span class="co">## [1] 1 1 1</span></span>
+<span id="cb674-97"><a href="autocorrelation.html#cb674-97"></a><span class="co">## </span></span>
+<span id="cb674-98"><a href="autocorrelation.html#cb674-98"></a><span class="co">## [[31]]</span></span>
+<span id="cb674-99"><a href="autocorrelation.html#cb674-99"></a><span class="co">## [1] 1 1 1 1 1 1</span></span>
+<span id="cb674-100"><a href="autocorrelation.html#cb674-100"></a><span class="co">## </span></span>
+<span id="cb674-101"><a href="autocorrelation.html#cb674-101"></a><span class="co">## [[32]]</span></span>
+<span id="cb674-102"><a href="autocorrelation.html#cb674-102"></a><span class="co">## [1] 1 1 1 1 1</span></span>
+<span id="cb674-103"><a href="autocorrelation.html#cb674-103"></a><span class="co">## </span></span>
+<span id="cb674-104"><a href="autocorrelation.html#cb674-104"></a><span class="co">## [[33]]</span></span>
+<span id="cb674-105"><a href="autocorrelation.html#cb674-105"></a><span class="co">## [1] 1 1 1 1 1</span></span>
+<span id="cb674-106"><a href="autocorrelation.html#cb674-106"></a><span class="co">## </span></span>
+<span id="cb674-107"><a href="autocorrelation.html#cb674-107"></a><span class="co">## [[34]]</span></span>
+<span id="cb674-108"><a href="autocorrelation.html#cb674-108"></a><span class="co">## [1] 1 1 1 1 1</span></span>
+<span id="cb674-109"><a href="autocorrelation.html#cb674-109"></a><span class="co">## </span></span>
+<span id="cb674-110"><a href="autocorrelation.html#cb674-110"></a><span class="co">## [[35]]</span></span>
+<span id="cb674-111"><a href="autocorrelation.html#cb674-111"></a><span class="co">## [1] 1 1 1</span></span>
+<span id="cb674-112"><a href="autocorrelation.html#cb674-112"></a><span class="co">## </span></span>
+<span id="cb674-113"><a href="autocorrelation.html#cb674-113"></a><span class="co">## [[36]]</span></span>
+<span id="cb674-114"><a href="autocorrelation.html#cb674-114"></a><span class="co">## [1] 1 1 1 1 1</span></span>
+<span id="cb674-115"><a href="autocorrelation.html#cb674-115"></a><span class="co">## </span></span>
+<span id="cb674-116"><a href="autocorrelation.html#cb674-116"></a><span class="co">## [[37]]</span></span>
+<span id="cb674-117"><a href="autocorrelation.html#cb674-117"></a><span class="co">## [1] 1 1 1 1 1</span></span>
+<span id="cb674-118"><a href="autocorrelation.html#cb674-118"></a><span class="co">## </span></span>
+<span id="cb674-119"><a href="autocorrelation.html#cb674-119"></a><span class="co">## [[38]]</span></span>
+<span id="cb674-120"><a href="autocorrelation.html#cb674-120"></a><span class="co">## [1] 1 1</span></span>
+<span id="cb674-121"><a href="autocorrelation.html#cb674-121"></a><span class="co">## </span></span>
+<span id="cb674-122"><a href="autocorrelation.html#cb674-122"></a><span class="co">## [[39]]</span></span>
+<span id="cb674-123"><a href="autocorrelation.html#cb674-123"></a><span class="co">## [1] 1 1 1 1</span></span>
+<span id="cb674-124"><a href="autocorrelation.html#cb674-124"></a><span class="co">## </span></span>
+<span id="cb674-125"><a href="autocorrelation.html#cb674-125"></a><span class="co">## [[40]]</span></span>
+<span id="cb674-126"><a href="autocorrelation.html#cb674-126"></a><span class="co">## [1] 1 1 1 1</span></span>
+<span id="cb674-127"><a href="autocorrelation.html#cb674-127"></a><span class="co">## </span></span>
+<span id="cb674-128"><a href="autocorrelation.html#cb674-128"></a><span class="co">## attr(,&quot;mode&quot;)</span></span>
+<span id="cb674-129"><a href="autocorrelation.html#cb674-129"></a><span class="co">## [1] &quot;binary&quot;</span></span>
+<span id="cb674-130"><a href="autocorrelation.html#cb674-130"></a><span class="co">## attr(,&quot;B&quot;)</span></span>
+<span id="cb674-131"><a href="autocorrelation.html#cb674-131"></a><span class="co">## [1] TRUE</span></span></code></pre></div>
 <blockquote>
 <p>Дело в том, что матрица весов всегда получается разреженной. То есть, в основном она содержит нули. Это логично, поскольку у каждой точки как правило есть лишь ограниченное число соседей. При этом общее количество точек может быть достаточно большим: чем больше точек мы анализируем, тем больше будет нулей в матрице. Получается, что хранить матрицу как матрицу неэкономично. Более рационально для каждого объекта возвращать список весов, которые соответствуют его соседям. Что и делает функция <code>nb2listw()</code>.</p>
 </blockquote>
 <p>Матрицу весов как правило визуализируют, поскольку она может содержать в себе довольно интересные паттерны. Для этого полученный список весов нужно превратить в матрицу с помощью функции <code>listw2mat()</code>. Далее использовать функцию <code>levelplot</code> из пакета <code>lattice</code>, которая раскрашивает ячейки матрицы или растрового набора данных:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="autocorrelation.html#cb13-1"></a>M =<span class="st"> </span><span class="kw">listw2mat</span>(Wbin)</span>
-<span id="cb13-2"><a href="autocorrelation.html#cb13-2"></a><span class="kw">levelplot</span>(M, <span class="dt">main =</span> <span class="st">&quot;Матрица весов (бинарная)&quot;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<div class="sourceCode" id="cb675"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb675-1"><a href="autocorrelation.html#cb675-1"></a>M =<span class="st"> </span><span class="kw">listw2mat</span>(Wbin)</span>
+<span id="cb675-2"><a href="autocorrelation.html#cb675-2"></a><span class="kw">levelplot</span>(M, <span class="dt">main =</span> <span class="st">&quot;Матрица весов (бинарная)&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-638-1.png" width="672" /></p>
 <p>Более интересный результат дает нормированная матрица. В ней веса всех соседей нормируются на количество соседей. То есть, если у текущей точки 2 соседа, их веса будут равны 0.5. Если 3 соседа то 0.33, 4 — 0.25 и так далее. Взвешенная матрица позволяет отразить тот факт, что одна и та же территориальная единица может оказывать неодинаковое влияние на соседние единицы:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="autocorrelation.html#cb14-1"></a>Wstand =<span class="st"> </span><span class="kw">nb2listw</span>(nb_queen, <span class="dt">style =</span> <span class="st">&quot;W&quot;</span>)</span>
-<span id="cb14-2"><a href="autocorrelation.html#cb14-2"></a>M =<span class="st"> </span><span class="kw">listw2mat</span>(Wstand)</span>
-<span id="cb14-3"><a href="autocorrelation.html#cb14-3"></a></span>
-<span id="cb14-4"><a href="autocorrelation.html#cb14-4"></a>ramp =<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;red&quot;</span>))</span>
-<span id="cb14-5"><a href="autocorrelation.html#cb14-5"></a>levels =<span class="st"> </span><span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span>  <span class="co"># шкала 1, 0.5, 0.33, 0.25 ... 0.1</span></span>
-<span id="cb14-6"><a href="autocorrelation.html#cb14-6"></a><span class="kw">levelplot</span>(M, </span>
-<span id="cb14-7"><a href="autocorrelation.html#cb14-7"></a>          <span class="dt">main=</span><span class="st">&quot;Матрица весов (нормированная)&quot;</span>, </span>
-<span id="cb14-8"><a href="autocorrelation.html#cb14-8"></a>          <span class="dt">at =</span> levels, </span>
-<span id="cb14-9"><a href="autocorrelation.html#cb14-9"></a>          <span class="dt">col.regions=</span><span class="kw">ramp</span>(<span class="dv">10</span>))</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<div class="sourceCode" id="cb676"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb676-1"><a href="autocorrelation.html#cb676-1"></a>Wstand =<span class="st"> </span><span class="kw">nb2listw</span>(nb_queen, <span class="dt">style =</span> <span class="st">&quot;W&quot;</span>)</span>
+<span id="cb676-2"><a href="autocorrelation.html#cb676-2"></a>M =<span class="st"> </span><span class="kw">listw2mat</span>(Wstand)</span>
+<span id="cb676-3"><a href="autocorrelation.html#cb676-3"></a></span>
+<span id="cb676-4"><a href="autocorrelation.html#cb676-4"></a>ramp =<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;red&quot;</span>))</span>
+<span id="cb676-5"><a href="autocorrelation.html#cb676-5"></a>levels =<span class="st"> </span><span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span>  <span class="co"># шкала 1, 0.5, 0.33, 0.25 ... 0.1</span></span>
+<span id="cb676-6"><a href="autocorrelation.html#cb676-6"></a><span class="kw">levelplot</span>(M, </span>
+<span id="cb676-7"><a href="autocorrelation.html#cb676-7"></a>          <span class="dt">main=</span><span class="st">&quot;Матрица весов (нормированная)&quot;</span>, </span>
+<span id="cb676-8"><a href="autocorrelation.html#cb676-8"></a>          <span class="dt">at =</span> levels, </span>
+<span id="cb676-9"><a href="autocorrelation.html#cb676-9"></a>          <span class="dt">col.regions=</span><span class="kw">ramp</span>(<span class="dv">10</span>))</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-639-1.png" width="672" /></p>
 <blockquote>
 <p>Обратите внимание, что на этот раз цвета в матрице распределены асимметрично.</p>
 </blockquote>
 <p>Однако есть методы определения соседства, которые приведут также и к асимметричному виду самой матрицы, а не только значений. Например, при поиске соседей по количеству соседство A и B вовсе не означает соседство B и A. Проверим это на опыте:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="autocorrelation.html#cb15-1"></a><span class="co"># Ближайшие соседи (k = 1)</span></span>
-<span id="cb15-2"><a href="autocorrelation.html#cb15-2"></a>nb_knn =<span class="st"> </span><span class="kw">knearneigh</span>(coords, <span class="dt">k =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">knn2nb</span>()</span>
-<span id="cb15-3"><a href="autocorrelation.html#cb15-3"></a></span>
-<span id="cb15-4"><a href="autocorrelation.html#cb15-4"></a>Wstand =<span class="st"> </span><span class="kw">nb2listw</span>(nb_knn, <span class="dt">style =</span> <span class="st">&quot;B&quot;</span>)</span>
-<span id="cb15-5"><a href="autocorrelation.html#cb15-5"></a>M =<span class="st"> </span><span class="kw">listw2mat</span>(Wstand)</span>
-<span id="cb15-6"><a href="autocorrelation.html#cb15-6"></a><span class="kw">levelplot</span>(M, </span>
-<span id="cb15-7"><a href="autocorrelation.html#cb15-7"></a>          <span class="dt">main =</span> <span class="st">&quot;Матрица весов (нормированная)&quot;</span>, </span>
-<span id="cb15-8"><a href="autocorrelation.html#cb15-8"></a>          <span class="dt">at =</span> levels, </span>
-<span id="cb15-9"><a href="autocorrelation.html#cb15-9"></a>          <span class="dt">col.regions =</span> <span class="kw">ramp</span>(<span class="dv">10</span>))</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<div class="sourceCode" id="cb677"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb677-1"><a href="autocorrelation.html#cb677-1"></a><span class="co"># Ближайшие соседи (k = 1)</span></span>
+<span id="cb677-2"><a href="autocorrelation.html#cb677-2"></a>nb_knn =<span class="st"> </span><span class="kw">knearneigh</span>(coords, <span class="dt">k =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">knn2nb</span>()</span>
+<span id="cb677-3"><a href="autocorrelation.html#cb677-3"></a></span>
+<span id="cb677-4"><a href="autocorrelation.html#cb677-4"></a>Wstand =<span class="st"> </span><span class="kw">nb2listw</span>(nb_knn, <span class="dt">style =</span> <span class="st">&quot;B&quot;</span>)</span>
+<span id="cb677-5"><a href="autocorrelation.html#cb677-5"></a>M =<span class="st"> </span><span class="kw">listw2mat</span>(Wstand)</span>
+<span id="cb677-6"><a href="autocorrelation.html#cb677-6"></a><span class="kw">levelplot</span>(M, </span>
+<span id="cb677-7"><a href="autocorrelation.html#cb677-7"></a>          <span class="dt">main =</span> <span class="st">&quot;Матрица весов (нормированная)&quot;</span>, </span>
+<span id="cb677-8"><a href="autocorrelation.html#cb677-8"></a>          <span class="dt">at =</span> levels, </span>
+<span id="cb677-9"><a href="autocorrelation.html#cb677-9"></a>          <span class="dt">col.regions =</span> <span class="kw">ramp</span>(<span class="dv">10</span>))</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-640-1.png" width="672" /></p>
 <p>Полученная матрица весов дает искомую меру потенциальной пространственной связи (близости) между всеми парами территориальных единиц. Сопоставив эту меру со значениями показателя, зафиксированными в тех же единицах, можно получить статистическую оценку пространственной автокорреляции изучаемой величины.</p>
 </div>
 <div id="autocorrelation_measures" class="section level2">
@@ -1048,62 +1060,61 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Построить карты реальных, модельных (fitted) значений и остатков (lag)</li>
 </ol>
 <p>Для начала построим серию карт чтобы оценить по ним наличие или отсутствие пространственной автокорреляции по месяцам:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="autocorrelation.html#cb16-1"></a>mun_src =<span class="st"> </span>reg_sf</span>
-<span id="cb16-2"><a href="autocorrelation.html#cb16-2"></a></span>
-<span id="cb16-3"><a href="autocorrelation.html#cb16-3"></a><span class="co"># Чтение таблицы со статистикой</span></span>
-<span id="cb16-4"><a href="autocorrelation.html#cb16-4"></a>tab =<span class="st"> </span><span class="kw">read_xlsx</span>(<span class="st">&quot;data/Kirov.xlsx&quot;</span>, <span class="dv">1</span>)</span>
-<span id="cb16-5"><a href="autocorrelation.html#cb16-5"></a></span>
-<span id="cb16-6"><a href="autocorrelation.html#cb16-6"></a><span class="co"># Соединение таблиц</span></span>
-<span id="cb16-7"><a href="autocorrelation.html#cb16-7"></a>mun =<span class="st"> </span>mun_src <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb16-8"><a href="autocorrelation.html#cb16-8"></a><span class="st">  </span><span class="kw">left_join</span>(tab, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;OBJECTID&quot;</span> =<span class="st"> &quot;N&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb16-9"><a href="autocorrelation.html#cb16-9"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="dv">22</span><span class="op">:</span><span class="dv">31</span>,</span>
-<span id="cb16-10"><a href="autocorrelation.html#cb16-10"></a>               <span class="dt">names_to =</span> <span class="st">&#39;month&#39;</span>,</span>
-<span id="cb16-11"><a href="autocorrelation.html#cb16-11"></a>               <span class="dt">values_to =</span> <span class="st">&#39;nsick&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb16-12"><a href="autocorrelation.html#cb16-12"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">month =</span> <span class="kw">ordered</span>(month, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&#39;Январь&#39;</span>, <span class="st">&#39;Февраль&#39;</span>, <span class="st">&#39;Март&#39;</span>, </span>
-<span id="cb16-13"><a href="autocorrelation.html#cb16-13"></a>                                           <span class="st">&#39;Апрель&#39;</span>, <span class="st">&#39;Май&#39;</span>, <span class="st">&#39;Июнь&#39;</span>, </span>
-<span id="cb16-14"><a href="autocorrelation.html#cb16-14"></a>                                           <span class="st">&#39;Июль&#39;</span>, <span class="st">&#39;Август&#39;</span>, <span class="st">&#39;Сентябрь&#39;</span>, </span>
-<span id="cb16-15"><a href="autocorrelation.html#cb16-15"></a>                                           <span class="st">&#39;Октябрь&#39;</span>, <span class="st">&#39;Ноябрь&#39;</span>, <span class="st">&#39;Декабрь&#39;</span>))) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb16-16"><a href="autocorrelation.html#cb16-16"></a><span class="st">  </span><span class="kw">st_set_geometry</span>(<span class="st">&#39;geometry&#39;</span>)</span>
-<span id="cb16-17"><a href="autocorrelation.html#cb16-17"></a></span>
-<span id="cb16-18"><a href="autocorrelation.html#cb16-18"></a><span class="co"># Построение серии карт</span></span>
-<span id="cb16-19"><a href="autocorrelation.html#cb16-19"></a>ramp =<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;orange&quot;</span>, <span class="st">&quot;red&quot;</span>))</span>
-<span id="cb16-20"><a href="autocorrelation.html#cb16-20"></a>levels =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">10000</span>, <span class="dv">1000</span>)</span>
-<span id="cb16-21"><a href="autocorrelation.html#cb16-21"></a>nclasses =<span class="st"> </span><span class="kw">length</span>(levels) <span class="op">-</span><span class="st"> </span><span class="dv">1</span></span>
-<span id="cb16-22"><a href="autocorrelation.html#cb16-22"></a></span>
-<span id="cb16-23"><a href="autocorrelation.html#cb16-23"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
-<span id="cb16-24"><a href="autocorrelation.html#cb16-24"></a><span class="st">  </span><span class="kw">geom_sf</span>(mun, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">geometry =</span> geometry, </span>
-<span id="cb16-25"><a href="autocorrelation.html#cb16-25"></a>                             <span class="dt">fill =</span> <span class="kw">cut</span>(nsick, levels))) <span class="op">+</span></span>
-<span id="cb16-26"><a href="autocorrelation.html#cb16-26"></a><span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> <span class="kw">ramp</span>(nclasses),</span>
-<span id="cb16-27"><a href="autocorrelation.html#cb16-27"></a>                    <span class="dt">labels =</span> <span class="kw">paste</span>(levels[<span class="op">-</span>nclasses<span class="dv">-1</span>], <span class="st">&#39;-&#39;</span>, levels[<span class="op">-</span><span class="dv">1</span>]),</span>
-<span id="cb16-28"><a href="autocorrelation.html#cb16-28"></a>                    <span class="dt">guide =</span> <span class="kw">guide_legend</span>(<span class="dt">reverse =</span> <span class="ot">TRUE</span>),</span>
-<span id="cb16-29"><a href="autocorrelation.html#cb16-29"></a>                    <span class="dt">drop =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
-<span id="cb16-30"><a href="autocorrelation.html#cb16-30"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>month)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-20-1.png" width="768" /></p>
+<div class="sourceCode" id="cb678"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb678-1"><a href="autocorrelation.html#cb678-1"></a>mun_src =<span class="st"> </span>reg_sf</span>
+<span id="cb678-2"><a href="autocorrelation.html#cb678-2"></a></span>
+<span id="cb678-3"><a href="autocorrelation.html#cb678-3"></a><span class="co"># Чтение таблицы со статистикой</span></span>
+<span id="cb678-4"><a href="autocorrelation.html#cb678-4"></a>tab =<span class="st"> </span><span class="kw">read_xlsx</span>(<span class="st">&quot;data/Kirov.xlsx&quot;</span>, <span class="dv">1</span>)</span>
+<span id="cb678-5"><a href="autocorrelation.html#cb678-5"></a></span>
+<span id="cb678-6"><a href="autocorrelation.html#cb678-6"></a><span class="co"># Соединение таблиц</span></span>
+<span id="cb678-7"><a href="autocorrelation.html#cb678-7"></a>mun =<span class="st"> </span>mun_src <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb678-8"><a href="autocorrelation.html#cb678-8"></a><span class="st">  </span><span class="kw">left_join</span>(tab, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;OBJECTID&quot;</span> =<span class="st"> &quot;N&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb678-9"><a href="autocorrelation.html#cb678-9"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="dv">22</span><span class="op">:</span><span class="dv">31</span>,</span>
+<span id="cb678-10"><a href="autocorrelation.html#cb678-10"></a>               <span class="dt">names_to =</span> <span class="st">&#39;month&#39;</span>,</span>
+<span id="cb678-11"><a href="autocorrelation.html#cb678-11"></a>               <span class="dt">values_to =</span> <span class="st">&#39;nsick&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb678-12"><a href="autocorrelation.html#cb678-12"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">month =</span> <span class="kw">ordered</span>(month, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&#39;Январь&#39;</span>, <span class="st">&#39;Февраль&#39;</span>, <span class="st">&#39;Март&#39;</span>, </span>
+<span id="cb678-13"><a href="autocorrelation.html#cb678-13"></a>                                           <span class="st">&#39;Апрель&#39;</span>, <span class="st">&#39;Май&#39;</span>, <span class="st">&#39;Июнь&#39;</span>, </span>
+<span id="cb678-14"><a href="autocorrelation.html#cb678-14"></a>                                           <span class="st">&#39;Июль&#39;</span>, <span class="st">&#39;Август&#39;</span>, <span class="st">&#39;Сентябрь&#39;</span>, </span>
+<span id="cb678-15"><a href="autocorrelation.html#cb678-15"></a>                                           <span class="st">&#39;Октябрь&#39;</span>, <span class="st">&#39;Ноябрь&#39;</span>, <span class="st">&#39;Декабрь&#39;</span>))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb678-16"><a href="autocorrelation.html#cb678-16"></a><span class="st">  </span><span class="kw">st_set_geometry</span>(<span class="st">&#39;geometry&#39;</span>)</span>
+<span id="cb678-17"><a href="autocorrelation.html#cb678-17"></a></span>
+<span id="cb678-18"><a href="autocorrelation.html#cb678-18"></a><span class="co"># Построение серии карт</span></span>
+<span id="cb678-19"><a href="autocorrelation.html#cb678-19"></a>ramp =<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;orange&quot;</span>, <span class="st">&quot;red&quot;</span>))</span>
+<span id="cb678-20"><a href="autocorrelation.html#cb678-20"></a>levels =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">10000</span>, <span class="dv">1000</span>)</span>
+<span id="cb678-21"><a href="autocorrelation.html#cb678-21"></a>nclasses =<span class="st"> </span><span class="kw">length</span>(levels) <span class="op">-</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb678-22"><a href="autocorrelation.html#cb678-22"></a></span>
+<span id="cb678-23"><a href="autocorrelation.html#cb678-23"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb678-24"><a href="autocorrelation.html#cb678-24"></a><span class="st">  </span><span class="kw">geom_sf</span>(mun, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">geometry =</span> geometry, </span>
+<span id="cb678-25"><a href="autocorrelation.html#cb678-25"></a>                             <span class="dt">fill =</span> <span class="kw">cut</span>(nsick, levels))) <span class="op">+</span></span>
+<span id="cb678-26"><a href="autocorrelation.html#cb678-26"></a><span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> <span class="kw">ramp</span>(nclasses),</span>
+<span id="cb678-27"><a href="autocorrelation.html#cb678-27"></a>                    <span class="dt">labels =</span> <span class="kw">paste</span>(levels[<span class="op">-</span>nclasses<span class="dv">-1</span>], <span class="st">&#39;-&#39;</span>, levels[<span class="op">-</span><span class="dv">1</span>]),</span>
+<span id="cb678-28"><a href="autocorrelation.html#cb678-28"></a>                    <span class="dt">guide =</span> <span class="kw">guide_legend</span>(<span class="dt">reverse =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb678-29"><a href="autocorrelation.html#cb678-29"></a>                    <span class="dt">drop =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb678-30"><a href="autocorrelation.html#cb678-30"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>month)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-641-1.png" width="768" /></p>
 <p>Данная серия карт показывает, что наиболее интересный для анализа месяц — февраль, в котором наблюдается рост заболеваемости, а также очевидно наличие пространственной автокорреляции с двумя очагами в центральных и северо-зпапдных районах области.</p>
 <p>Вычислим матрицу пространственных весов:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="autocorrelation.html#cb17-1"></a><span class="co"># Определение соседства (правило ферзя)</span></span>
-<span id="cb17-2"><a href="autocorrelation.html#cb17-2"></a>nb_queen =<span class="st"> </span><span class="kw">poly2nb</span>(mun_src)</span>
-<span id="cb17-3"><a href="autocorrelation.html#cb17-3"></a></span>
-<span id="cb17-4"><a href="autocorrelation.html#cb17-4"></a><span class="co"># Визиуализация графа соседства</span></span>
-<span id="cb17-5"><a href="autocorrelation.html#cb17-5"></a>coords =<span class="st"> </span><span class="kw">st_centroid</span>(mun_src) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_coordinates</span>()</span>
-<span id="cb17-6"><a href="autocorrelation.html#cb17-6"></a><span class="kw">plot</span>(mun_src <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), <span class="dt">border =</span> <span class="st">&quot;darkgray&quot;</span>)</span>
-<span id="cb17-7"><a href="autocorrelation.html#cb17-7"></a><span class="kw">plot</span>(nb_queen, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb17-8"><a href="autocorrelation.html#cb17-8"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по смежности (правило ферзя)&quot;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="autocorrelation.html#cb18-1"></a></span>
-<span id="cb18-2"><a href="autocorrelation.html#cb18-2"></a><span class="co"># Вычисление весов (нормированная матрица)</span></span>
-<span id="cb18-3"><a href="autocorrelation.html#cb18-3"></a>W =<span class="st"> </span><span class="kw">nb2listw</span>(nb_queen)</span>
-<span id="cb18-4"><a href="autocorrelation.html#cb18-4"></a></span>
-<span id="cb18-5"><a href="autocorrelation.html#cb18-5"></a><span class="co"># Визуализация матрицы весов</span></span>
-<span id="cb18-6"><a href="autocorrelation.html#cb18-6"></a>M =<span class="st"> </span><span class="kw">listw2mat</span>(W)</span>
-<span id="cb18-7"><a href="autocorrelation.html#cb18-7"></a></span>
-<span id="cb18-8"><a href="autocorrelation.html#cb18-8"></a>ramp2 =<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;red&quot;</span>))</span>
-<span id="cb18-9"><a href="autocorrelation.html#cb18-9"></a>levels2 =<span class="st"> </span><span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span> <span class="co"># шкала 1, 0.5, 0.33, 0.25 ... 0.1</span></span>
-<span id="cb18-10"><a href="autocorrelation.html#cb18-10"></a><span class="kw">levelplot</span>(M, </span>
-<span id="cb18-11"><a href="autocorrelation.html#cb18-11"></a>          <span class="dt">main =</span> <span class="st">&quot;Матрица весов (нормированная)&quot;</span>, </span>
-<span id="cb18-12"><a href="autocorrelation.html#cb18-12"></a>          <span class="dt">at =</span> levels2, </span>
-<span id="cb18-13"><a href="autocorrelation.html#cb18-13"></a>          <span class="dt">col.regions =</span> <span class="kw">ramp2</span>(<span class="dv">10</span>))</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-21-2.png" width="672" /></p>
+<div class="sourceCode" id="cb679"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb679-1"><a href="autocorrelation.html#cb679-1"></a><span class="co"># Определение соседства (правило ферзя)</span></span>
+<span id="cb679-2"><a href="autocorrelation.html#cb679-2"></a>nb_queen =<span class="st"> </span><span class="kw">poly2nb</span>(mun_src)</span>
+<span id="cb679-3"><a href="autocorrelation.html#cb679-3"></a></span>
+<span id="cb679-4"><a href="autocorrelation.html#cb679-4"></a><span class="co"># Визиуализация графа соседства</span></span>
+<span id="cb679-5"><a href="autocorrelation.html#cb679-5"></a>coords =<span class="st"> </span><span class="kw">st_centroid</span>(mun_src) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_coordinates</span>()</span>
+<span id="cb679-6"><a href="autocorrelation.html#cb679-6"></a><span class="kw">plot</span>(mun_src <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_geometry</span>(), <span class="dt">border =</span> <span class="st">&quot;darkgray&quot;</span>)</span>
+<span id="cb679-7"><a href="autocorrelation.html#cb679-7"></a><span class="kw">plot</span>(nb_queen, coords, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">cex =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb679-8"><a href="autocorrelation.html#cb679-8"></a><span class="kw">title</span>(<span class="dt">main =</span> <span class="st">&quot;Соседи по смежности (правило ферзя)&quot;</span>)</span>
+<span id="cb679-9"><a href="autocorrelation.html#cb679-9"></a></span>
+<span id="cb679-10"><a href="autocorrelation.html#cb679-10"></a><span class="co"># Вычисление весов (нормированная матрица)</span></span>
+<span id="cb679-11"><a href="autocorrelation.html#cb679-11"></a>W =<span class="st"> </span><span class="kw">nb2listw</span>(nb_queen)</span>
+<span id="cb679-12"><a href="autocorrelation.html#cb679-12"></a></span>
+<span id="cb679-13"><a href="autocorrelation.html#cb679-13"></a><span class="co"># Визуализация матрицы весов</span></span>
+<span id="cb679-14"><a href="autocorrelation.html#cb679-14"></a>M =<span class="st"> </span><span class="kw">listw2mat</span>(W)</span>
+<span id="cb679-15"><a href="autocorrelation.html#cb679-15"></a></span>
+<span id="cb679-16"><a href="autocorrelation.html#cb679-16"></a>ramp2 =<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;red&quot;</span>))</span>
+<span id="cb679-17"><a href="autocorrelation.html#cb679-17"></a>levels2 =<span class="st"> </span><span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span> <span class="co"># шкала 1, 0.5, 0.33, 0.25 ... 0.1</span></span>
+<span id="cb679-18"><a href="autocorrelation.html#cb679-18"></a><span class="kw">levelplot</span>(M, </span>
+<span id="cb679-19"><a href="autocorrelation.html#cb679-19"></a>          <span class="dt">main =</span> <span class="st">&quot;Матрица весов (нормированная)&quot;</span>, </span>
+<span id="cb679-20"><a href="autocorrelation.html#cb679-20"></a>          <span class="dt">at =</span> levels2, </span>
+<span id="cb679-21"><a href="autocorrelation.html#cb679-21"></a>          <span class="dt">col.regions =</span> <span class="kw">ramp2</span>(<span class="dv">10</span>))</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-642-1.png" width="672" /></p>
 <div id="autocorrelation_moran" class="section level3">
 <h3><span class="header-section-number">15.7.1</span> Индекс Морана (Moran’s I)</h3>
 <p>Анализ пространственной автокорреляции осуществляется, как правило, путем вычисления индекса Морана (Moran’s I), :
@@ -1125,23 +1136,23 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 низких и высоких значений, напоминающее шахматную доску</li>
 </ul>
 <p>Для вычисления индекса Морана следует использовать функцию <code>moran.test()</code>, которая дополнительно оценивает статистическую значимость полученного значения:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="autocorrelation.html#cb19-1"></a><span class="co"># Выбираем данные за февраль</span></span>
-<span id="cb19-2"><a href="autocorrelation.html#cb19-2"></a>feb =<span class="st"> </span>mun <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb19-3"><a href="autocorrelation.html#cb19-3"></a><span class="st">  </span><span class="kw">filter</span>(month <span class="op">==</span><span class="st"> &#39;Февраль&#39;</span>)</span>
-<span id="cb19-4"><a href="autocorrelation.html#cb19-4"></a></span>
-<span id="cb19-5"><a href="autocorrelation.html#cb19-5"></a><span class="co"># Вычисление индекса (тест) Морана</span></span>
-<span id="cb19-6"><a href="autocorrelation.html#cb19-6"></a><span class="kw">moran.test</span>(feb<span class="op">$</span>nsick, W)</span>
-<span id="cb19-7"><a href="autocorrelation.html#cb19-7"></a><span class="co">## </span></span>
-<span id="cb19-8"><a href="autocorrelation.html#cb19-8"></a><span class="co">##  Moran I test under randomisation</span></span>
-<span id="cb19-9"><a href="autocorrelation.html#cb19-9"></a><span class="co">## </span></span>
-<span id="cb19-10"><a href="autocorrelation.html#cb19-10"></a><span class="co">## data:  feb$nsick  </span></span>
-<span id="cb19-11"><a href="autocorrelation.html#cb19-11"></a><span class="co">## weights: W    </span></span>
-<span id="cb19-12"><a href="autocorrelation.html#cb19-12"></a><span class="co">## </span></span>
-<span id="cb19-13"><a href="autocorrelation.html#cb19-13"></a><span class="co">## Moran I statistic standard deviate = 5.0335, p-value = 0.0000002408</span></span>
-<span id="cb19-14"><a href="autocorrelation.html#cb19-14"></a><span class="co">## alternative hypothesis: greater</span></span>
-<span id="cb19-15"><a href="autocorrelation.html#cb19-15"></a><span class="co">## sample estimates:</span></span>
-<span id="cb19-16"><a href="autocorrelation.html#cb19-16"></a><span class="co">## Moran I statistic       Expectation          Variance </span></span>
-<span id="cb19-17"><a href="autocorrelation.html#cb19-17"></a><span class="co">##        0.52118132       -0.02564103        0.01180194</span></span></code></pre></div>
+<div class="sourceCode" id="cb680"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb680-1"><a href="autocorrelation.html#cb680-1"></a><span class="co"># Выбираем данные за февраль</span></span>
+<span id="cb680-2"><a href="autocorrelation.html#cb680-2"></a>feb =<span class="st"> </span>mun <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb680-3"><a href="autocorrelation.html#cb680-3"></a><span class="st">  </span><span class="kw">filter</span>(month <span class="op">==</span><span class="st"> &#39;Февраль&#39;</span>)</span>
+<span id="cb680-4"><a href="autocorrelation.html#cb680-4"></a></span>
+<span id="cb680-5"><a href="autocorrelation.html#cb680-5"></a><span class="co"># Вычисление индекса (тест) Морана</span></span>
+<span id="cb680-6"><a href="autocorrelation.html#cb680-6"></a><span class="kw">moran.test</span>(feb<span class="op">$</span>nsick, W)</span>
+<span id="cb680-7"><a href="autocorrelation.html#cb680-7"></a><span class="co">## </span></span>
+<span id="cb680-8"><a href="autocorrelation.html#cb680-8"></a><span class="co">##  Moran I test under randomisation</span></span>
+<span id="cb680-9"><a href="autocorrelation.html#cb680-9"></a><span class="co">## </span></span>
+<span id="cb680-10"><a href="autocorrelation.html#cb680-10"></a><span class="co">## data:  feb$nsick  </span></span>
+<span id="cb680-11"><a href="autocorrelation.html#cb680-11"></a><span class="co">## weights: W    </span></span>
+<span id="cb680-12"><a href="autocorrelation.html#cb680-12"></a><span class="co">## </span></span>
+<span id="cb680-13"><a href="autocorrelation.html#cb680-13"></a><span class="co">## Moran I statistic standard deviate = 5.0335, p-value = 0.0000002408</span></span>
+<span id="cb680-14"><a href="autocorrelation.html#cb680-14"></a><span class="co">## alternative hypothesis: greater</span></span>
+<span id="cb680-15"><a href="autocorrelation.html#cb680-15"></a><span class="co">## sample estimates:</span></span>
+<span id="cb680-16"><a href="autocorrelation.html#cb680-16"></a><span class="co">## Moran I statistic       Expectation          Variance </span></span>
+<span id="cb680-17"><a href="autocorrelation.html#cb680-17"></a><span class="co">##        0.52118132       -0.02564103        0.01180194</span></span></code></pre></div>
 <p>Результаты теста включают в себя следующие значения:</p>
 <ul>
 <li><strong>Moran I statistic</strong> — полученный индекс Морана</li>
@@ -1166,36 +1177,36 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 <div id="autocorrelation_permutation" class="section level3">
 <h3><span class="header-section-number">15.7.2</span> Перестановочный тест Морана</h3>
 <p>Графически вышеприведенные рассуждения можно иллюстрировать с помощью перестановочного теста (<strong>permutation test</strong>). Для этого значения исследуемой нами величины перемешиваются между территориальными единицами и далее строится гистограмма распределения. Перестановочный тест выполняется с помощью функции <code>moran.mc()</code> с параметром <code>nsim =</code>, задающим число перестановок:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="autocorrelation.html#cb20-1"></a>(<span class="dt">sim =</span> <span class="kw">moran.mc</span>(feb<span class="op">$</span>nsick, <span class="dt">listw =</span> W, <span class="dt">nsim =</span> <span class="dv">10000</span>))</span>
-<span id="cb20-2"><a href="autocorrelation.html#cb20-2"></a><span class="co">## </span></span>
-<span id="cb20-3"><a href="autocorrelation.html#cb20-3"></a><span class="co">##  Monte-Carlo simulation of Moran I</span></span>
-<span id="cb20-4"><a href="autocorrelation.html#cb20-4"></a><span class="co">## </span></span>
-<span id="cb20-5"><a href="autocorrelation.html#cb20-5"></a><span class="co">## data:  feb$nsick </span></span>
-<span id="cb20-6"><a href="autocorrelation.html#cb20-6"></a><span class="co">## weights: W  </span></span>
-<span id="cb20-7"><a href="autocorrelation.html#cb20-7"></a><span class="co">## number of simulations + 1: 10001 </span></span>
-<span id="cb20-8"><a href="autocorrelation.html#cb20-8"></a><span class="co">## </span></span>
-<span id="cb20-9"><a href="autocorrelation.html#cb20-9"></a><span class="co">## statistic = 0.52118, observed rank = 10001, p-value = 0.00009999</span></span>
-<span id="cb20-10"><a href="autocorrelation.html#cb20-10"></a><span class="co">## alternative hypothesis: greater</span></span>
-<span id="cb20-11"><a href="autocorrelation.html#cb20-11"></a></span>
-<span id="cb20-12"><a href="autocorrelation.html#cb20-12"></a><span class="co"># Построим гистограмму по вычисленным индексам:</span></span>
-<span id="cb20-13"><a href="autocorrelation.html#cb20-13"></a><span class="kw">hist</span>(sim<span class="op">$</span>res,</span>
-<span id="cb20-14"><a href="autocorrelation.html#cb20-14"></a>     <span class="dt">freq =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb20-15"><a href="autocorrelation.html#cb20-15"></a>     <span class="dt">breaks =</span> <span class="dv">20</span>, </span>
-<span id="cb20-16"><a href="autocorrelation.html#cb20-16"></a>     <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>),</span>
-<span id="cb20-17"><a href="autocorrelation.html#cb20-17"></a>     <span class="dt">main =</span> <span class="st">&quot;Перестановочный тест Морана&quot;</span>, </span>
-<span id="cb20-18"><a href="autocorrelation.html#cb20-18"></a>     <span class="dt">xlab =</span> <span class="st">&quot;Случайный индекс Морана&quot;</span>,</span>
-<span id="cb20-19"><a href="autocorrelation.html#cb20-19"></a>     <span class="dt">ylab =</span> <span class="st">&quot;Частота появления&quot;</span>,</span>
-<span id="cb20-20"><a href="autocorrelation.html#cb20-20"></a>     <span class="dt">col =</span> <span class="st">&quot;steelblue&quot;</span>)</span>
-<span id="cb20-21"><a href="autocorrelation.html#cb20-21"></a></span>
-<span id="cb20-22"><a href="autocorrelation.html#cb20-22"></a><span class="co"># Нанесем фактическое значение</span></span>
-<span id="cb20-23"><a href="autocorrelation.html#cb20-23"></a><span class="kw">abline</span>(<span class="dt">v =</span> sim<span class="op">$</span>statistic, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<div class="sourceCode" id="cb681"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb681-1"><a href="autocorrelation.html#cb681-1"></a>(<span class="dt">sim =</span> <span class="kw">moran.mc</span>(feb<span class="op">$</span>nsick, <span class="dt">listw =</span> W, <span class="dt">nsim =</span> <span class="dv">10000</span>))</span>
+<span id="cb681-2"><a href="autocorrelation.html#cb681-2"></a><span class="co">## </span></span>
+<span id="cb681-3"><a href="autocorrelation.html#cb681-3"></a><span class="co">##  Monte-Carlo simulation of Moran I</span></span>
+<span id="cb681-4"><a href="autocorrelation.html#cb681-4"></a><span class="co">## </span></span>
+<span id="cb681-5"><a href="autocorrelation.html#cb681-5"></a><span class="co">## data:  feb$nsick </span></span>
+<span id="cb681-6"><a href="autocorrelation.html#cb681-6"></a><span class="co">## weights: W  </span></span>
+<span id="cb681-7"><a href="autocorrelation.html#cb681-7"></a><span class="co">## number of simulations + 1: 10001 </span></span>
+<span id="cb681-8"><a href="autocorrelation.html#cb681-8"></a><span class="co">## </span></span>
+<span id="cb681-9"><a href="autocorrelation.html#cb681-9"></a><span class="co">## statistic = 0.52118, observed rank = 10001, p-value = 0.00009999</span></span>
+<span id="cb681-10"><a href="autocorrelation.html#cb681-10"></a><span class="co">## alternative hypothesis: greater</span></span>
+<span id="cb681-11"><a href="autocorrelation.html#cb681-11"></a></span>
+<span id="cb681-12"><a href="autocorrelation.html#cb681-12"></a><span class="co"># Построим гистограмму по вычисленным индексам:</span></span>
+<span id="cb681-13"><a href="autocorrelation.html#cb681-13"></a><span class="kw">hist</span>(sim<span class="op">$</span>res,</span>
+<span id="cb681-14"><a href="autocorrelation.html#cb681-14"></a>     <span class="dt">freq =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb681-15"><a href="autocorrelation.html#cb681-15"></a>     <span class="dt">breaks =</span> <span class="dv">20</span>, </span>
+<span id="cb681-16"><a href="autocorrelation.html#cb681-16"></a>     <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb681-17"><a href="autocorrelation.html#cb681-17"></a>     <span class="dt">main =</span> <span class="st">&quot;Перестановочный тест Морана&quot;</span>, </span>
+<span id="cb681-18"><a href="autocorrelation.html#cb681-18"></a>     <span class="dt">xlab =</span> <span class="st">&quot;Случайный индекс Морана&quot;</span>,</span>
+<span id="cb681-19"><a href="autocorrelation.html#cb681-19"></a>     <span class="dt">ylab =</span> <span class="st">&quot;Частота появления&quot;</span>,</span>
+<span id="cb681-20"><a href="autocorrelation.html#cb681-20"></a>     <span class="dt">col =</span> <span class="st">&quot;steelblue&quot;</span>)</span>
+<span id="cb681-21"><a href="autocorrelation.html#cb681-21"></a></span>
+<span id="cb681-22"><a href="autocorrelation.html#cb681-22"></a><span class="co"># Нанесем фактическое значение</span></span>
+<span id="cb681-23"><a href="autocorrelation.html#cb681-23"></a><span class="kw">abline</span>(<span class="dt">v =</span> sim<span class="op">$</span>statistic, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-644-1.png" width="672" /></p>
 </div>
 <div id="autocorrelation_moranscatter" class="section level3">
 <h3><span class="header-section-number">15.7.3</span> Диаграмма рассеяния Морана</h3>
 <p>Наконец, еще одним графическим инструментом оценки пространственной автокорреляции является диаграмма рассеяния Морана. По оси <span class="math inline">\(X\)</span> откладывается значение в каждой территориальной единице, в по оси <span class="math inline">\(Y\)</span> — ее пространственный лаг, который представляет собой средневзвешенное значение по всем ее соседям:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="autocorrelation.html#cb21-1"></a><span class="kw">moran.plot</span>(feb<span class="op">$</span>nsick, W)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<div class="sourceCode" id="cb682"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb682-1"><a href="autocorrelation.html#cb682-1"></a><span class="kw">moran.plot</span>(feb<span class="op">$</span>nsick, W)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-645-1.png" width="672" /></p>
 <p>На диаграмме рассеяния Морана линиями отмечаются средние значения по обеим осям, а наклонной линией представляется линейная регрессия этих значений, при этом тангенс угла наклона прямой равен значению индекса Морана. Поскольку в данном случае распределение явно не случайно, можно приступать к его моделированию.</p>
 </div>
 <div id="autocorrelation_autoregression" class="section level3">
@@ -1206,47 +1217,47 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 <li><p><code>Y ~ X</code> позволит найти коэффициенты <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\rho\)</span> и остатки <span class="math inline">\(\epsilon\)</span> пространственной регрессии вида <span class="math display">\[\mathbf{y} = \mu + \mathbf{X} \mathbf{\beta} + \rho\mathbf{Wy} +  \mathbf{\epsilon}.\]</span></p></li>
 <li><p><code>Y ~ X - 1</code> позволит найти коэффициенты <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\rho\)</span> и остатки <span class="math inline">\(\epsilon\)</span> пространственной регрессии вида <span class="math display">\[\mathbf{y} = \mathbf{X} \mathbf{\beta} + \rho\mathbf{Wy} + \mathbf{\epsilon}\]</span> без свободного члена <span class="math inline">\(\mu\)</span></p></li>
 </ul>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="autocorrelation.html#cb22-1"></a>model =<span class="st"> </span><span class="kw">lagsarlm</span>(nsick <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> feb, <span class="dt">listw =</span> W)</span>
-<span id="cb22-2"><a href="autocorrelation.html#cb22-2"></a>model</span>
-<span id="cb22-3"><a href="autocorrelation.html#cb22-3"></a><span class="co">## </span></span>
-<span id="cb22-4"><a href="autocorrelation.html#cb22-4"></a><span class="co">## Call:</span></span>
-<span id="cb22-5"><a href="autocorrelation.html#cb22-5"></a><span class="co">## lagsarlm(formula = nsick ~ 1, data = feb, listw = W)</span></span>
-<span id="cb22-6"><a href="autocorrelation.html#cb22-6"></a><span class="co">## Type: lag </span></span>
-<span id="cb22-7"><a href="autocorrelation.html#cb22-7"></a><span class="co">## </span></span>
-<span id="cb22-8"><a href="autocorrelation.html#cb22-8"></a><span class="co">## Coefficients:</span></span>
-<span id="cb22-9"><a href="autocorrelation.html#cb22-9"></a><span class="co">##         rho (Intercept) </span></span>
-<span id="cb22-10"><a href="autocorrelation.html#cb22-10"></a><span class="co">##    0.704957 1223.330336 </span></span>
-<span id="cb22-11"><a href="autocorrelation.html#cb22-11"></a><span class="co">## </span></span>
-<span id="cb22-12"><a href="autocorrelation.html#cb22-12"></a><span class="co">## Log likelihood: -346.2344</span></span></code></pre></div>
+<div class="sourceCode" id="cb683"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb683-1"><a href="autocorrelation.html#cb683-1"></a>model =<span class="st"> </span><span class="kw">lagsarlm</span>(nsick <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> feb, <span class="dt">listw =</span> W)</span>
+<span id="cb683-2"><a href="autocorrelation.html#cb683-2"></a>model</span>
+<span id="cb683-3"><a href="autocorrelation.html#cb683-3"></a><span class="co">## </span></span>
+<span id="cb683-4"><a href="autocorrelation.html#cb683-4"></a><span class="co">## Call:</span></span>
+<span id="cb683-5"><a href="autocorrelation.html#cb683-5"></a><span class="co">## lagsarlm(formula = nsick ~ 1, data = feb, listw = W)</span></span>
+<span id="cb683-6"><a href="autocorrelation.html#cb683-6"></a><span class="co">## Type: lag </span></span>
+<span id="cb683-7"><a href="autocorrelation.html#cb683-7"></a><span class="co">## </span></span>
+<span id="cb683-8"><a href="autocorrelation.html#cb683-8"></a><span class="co">## Coefficients:</span></span>
+<span id="cb683-9"><a href="autocorrelation.html#cb683-9"></a><span class="co">##         rho (Intercept) </span></span>
+<span id="cb683-10"><a href="autocorrelation.html#cb683-10"></a><span class="co">##    0.704957 1223.330336 </span></span>
+<span id="cb683-11"><a href="autocorrelation.html#cb683-11"></a><span class="co">## </span></span>
+<span id="cb683-12"><a href="autocorrelation.html#cb683-12"></a><span class="co">## Log likelihood: -346.2344</span></span></code></pre></div>
 <p>Расшифровываются параметры модели следующим образом:</p>
 <ul>
 <li><code>Intercept</code> = <span class="math inline">\(\mu\)</span>,</li>
 <li><code>rho</code> = <span class="math inline">\(\rho\)</span></li>
 </ul>
 <p>Извлекаем модельные значения <span class="math inline">\(Z\)</span> и записываем в таблицу</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="autocorrelation.html#cb23-1"></a><span class="co"># Извлекаем результаты пространственной авторегрессии</span></span>
-<span id="cb23-2"><a href="autocorrelation.html#cb23-2"></a>feb_spreg =<span class="st"> </span>feb <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-3"><a href="autocorrelation.html#cb23-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">fitted =</span> <span class="kw">fitted</span>(model),</span>
-<span id="cb23-4"><a href="autocorrelation.html#cb23-4"></a>         <span class="dt">residual =</span> <span class="kw">residuals</span>(model)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-5"><a href="autocorrelation.html#cb23-5"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="kw">c</span>(nsick, fitted, residual), </span>
-<span id="cb23-6"><a href="autocorrelation.html#cb23-6"></a>               <span class="dt">names_to =</span> <span class="st">&#39;type&#39;</span>,</span>
-<span id="cb23-7"><a href="autocorrelation.html#cb23-7"></a>               <span class="dt">values_to =</span> <span class="st">&#39;value&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-8"><a href="autocorrelation.html#cb23-8"></a><span class="st">  </span><span class="kw">st_set_geometry</span>(<span class="st">&#39;geometry&#39;</span>)</span>
-<span id="cb23-9"><a href="autocorrelation.html#cb23-9"></a></span>
-<span id="cb23-10"><a href="autocorrelation.html#cb23-10"></a><span class="co"># Построение серии карт</span></span>
-<span id="cb23-11"><a href="autocorrelation.html#cb23-11"></a>ramp =<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&#39;steelblue3&#39;</span>, <span class="st">&#39;white&#39;</span>, <span class="st">&#39;orange&#39;</span>, <span class="st">&#39;violetred&#39;</span>))</span>
-<span id="cb23-12"><a href="autocorrelation.html#cb23-12"></a>levels =<span class="st"> </span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">3000</span>, <span class="dv">10000</span>, <span class="dv">1000</span>)</span>
-<span id="cb23-13"><a href="autocorrelation.html#cb23-13"></a>nclasses =<span class="st"> </span><span class="kw">length</span>(levels) <span class="op">-</span><span class="st"> </span><span class="dv">1</span></span>
-<span id="cb23-14"><a href="autocorrelation.html#cb23-14"></a></span>
-<span id="cb23-15"><a href="autocorrelation.html#cb23-15"></a><span class="co"># Сравниваем исходные данные, модельные и остатки</span></span>
-<span id="cb23-16"><a href="autocorrelation.html#cb23-16"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
-<span id="cb23-17"><a href="autocorrelation.html#cb23-17"></a><span class="st">  </span><span class="kw">geom_sf</span>(feb_spreg, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">geometry =</span> geometry, <span class="dt">fill =</span> <span class="kw">cut</span>(value, levels))) <span class="op">+</span></span>
-<span id="cb23-18"><a href="autocorrelation.html#cb23-18"></a><span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> <span class="kw">ramp</span>(nclasses),</span>
-<span id="cb23-19"><a href="autocorrelation.html#cb23-19"></a>                    <span class="dt">labels =</span> <span class="kw">paste</span>(levels[<span class="op">-</span>nclasses<span class="dv">-1</span>], <span class="st">&#39;-&#39;</span>, levels[<span class="op">-</span><span class="dv">1</span>]),</span>
-<span id="cb23-20"><a href="autocorrelation.html#cb23-20"></a>                    <span class="dt">guide =</span> <span class="kw">guide_legend</span>(<span class="dt">reverse =</span> <span class="ot">TRUE</span>),</span>
-<span id="cb23-21"><a href="autocorrelation.html#cb23-21"></a>                    <span class="dt">drop =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
-<span id="cb23-22"><a href="autocorrelation.html#cb23-22"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>type)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<div class="sourceCode" id="cb684"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb684-1"><a href="autocorrelation.html#cb684-1"></a><span class="co"># Извлекаем результаты пространственной авторегрессии</span></span>
+<span id="cb684-2"><a href="autocorrelation.html#cb684-2"></a>feb_spreg =<span class="st"> </span>feb <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb684-3"><a href="autocorrelation.html#cb684-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">fitted =</span> <span class="kw">fitted</span>(model),</span>
+<span id="cb684-4"><a href="autocorrelation.html#cb684-4"></a>         <span class="dt">residual =</span> <span class="kw">residuals</span>(model)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb684-5"><a href="autocorrelation.html#cb684-5"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="kw">c</span>(nsick, fitted, residual), </span>
+<span id="cb684-6"><a href="autocorrelation.html#cb684-6"></a>               <span class="dt">names_to =</span> <span class="st">&#39;type&#39;</span>,</span>
+<span id="cb684-7"><a href="autocorrelation.html#cb684-7"></a>               <span class="dt">values_to =</span> <span class="st">&#39;value&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb684-8"><a href="autocorrelation.html#cb684-8"></a><span class="st">  </span><span class="kw">st_set_geometry</span>(<span class="st">&#39;geometry&#39;</span>)</span>
+<span id="cb684-9"><a href="autocorrelation.html#cb684-9"></a></span>
+<span id="cb684-10"><a href="autocorrelation.html#cb684-10"></a><span class="co"># Построение серии карт</span></span>
+<span id="cb684-11"><a href="autocorrelation.html#cb684-11"></a>ramp =<span class="st"> </span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&#39;steelblue3&#39;</span>, <span class="st">&#39;white&#39;</span>, <span class="st">&#39;orange&#39;</span>, <span class="st">&#39;violetred&#39;</span>))</span>
+<span id="cb684-12"><a href="autocorrelation.html#cb684-12"></a>levels =<span class="st"> </span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">3000</span>, <span class="dv">10000</span>, <span class="dv">1000</span>)</span>
+<span id="cb684-13"><a href="autocorrelation.html#cb684-13"></a>nclasses =<span class="st"> </span><span class="kw">length</span>(levels) <span class="op">-</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb684-14"><a href="autocorrelation.html#cb684-14"></a></span>
+<span id="cb684-15"><a href="autocorrelation.html#cb684-15"></a><span class="co"># Сравниваем исходные данные, модельные и остатки</span></span>
+<span id="cb684-16"><a href="autocorrelation.html#cb684-16"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb684-17"><a href="autocorrelation.html#cb684-17"></a><span class="st">  </span><span class="kw">geom_sf</span>(feb_spreg, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">geometry =</span> geometry, <span class="dt">fill =</span> <span class="kw">cut</span>(value, levels))) <span class="op">+</span></span>
+<span id="cb684-18"><a href="autocorrelation.html#cb684-18"></a><span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> <span class="kw">ramp</span>(nclasses),</span>
+<span id="cb684-19"><a href="autocorrelation.html#cb684-19"></a>                    <span class="dt">labels =</span> <span class="kw">paste</span>(levels[<span class="op">-</span>nclasses<span class="dv">-1</span>], <span class="st">&#39;-&#39;</span>, levels[<span class="op">-</span><span class="dv">1</span>]),</span>
+<span id="cb684-20"><a href="autocorrelation.html#cb684-20"></a>                    <span class="dt">guide =</span> <span class="kw">guide_legend</span>(<span class="dt">reverse =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb684-21"><a href="autocorrelation.html#cb684-21"></a>                    <span class="dt">drop =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb684-22"><a href="autocorrelation.html#cb684-22"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>type)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-647-1.png" width="672" /></p>
 </div>
 </div>
 <div id="autocorrelation_gwr" class="section level2">
@@ -1275,7 +1286,7 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 <div id="весовые-функции" class="section level3">
 <h3><span class="header-section-number">15.8.1</span> Весовые функции</h3>
 <p>Весовая функция должна быть убывающей. Существует множество вариантов таких функций, но наиболее часто используются гауссоподобные варианты:</p>
-<div class="figure"><span id="fig:unnamed-chunk-27"></span>
+<div class="figure"><span id="fig:unnamed-chunk-648"></span>
 <img src="slides/images/gwr_wlocal.png" alt="Весовая функция" width="469" />
 <p class="caption">
 Рис. 15.5: Весовая функция
@@ -1284,14 +1295,14 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 <p>В случае <em>фиксированной</em> весовой функции окрестность всегда имеет фиксированный размер:</p>
 <p><span class="math display">\[w_{ij} = \operatorname{exp}\{-\frac{1}{2} (d_{ij}/h)^2\},\]</span></p>
 <p>где <span class="math inline">\(d_{ij}\)</span> есть расстояние, <span class="math inline">\(h\)</span> — полоса пропускания.</p>
-<div class="figure"><span id="fig:unnamed-chunk-28"></span>
+<div class="figure"><span id="fig:unnamed-chunk-649"></span>
 <img src="slides/images/wfixed.png" alt="Фиксированная весовая функция" width="492" />
 <p class="caption">
 Рис. 15.6: Фиксированная весовая функция
 </p>
 </div>
 <p>В случае <em>адаптивной</em> весовой функции окрестность ограничивается <span class="math inline">\(N\)</span> ближайшими точками. За пределами этой окрестности веса принимаются равными нулю:</p>
-<div class="figure"><span id="fig:unnamed-chunk-29"></span>
+<div class="figure"><span id="fig:unnamed-chunk-650"></span>
 <img src="slides/images/wadaptive.png" alt="Адаптивная весовая функция" width="531" />
 <p class="caption">
 Рис. 15.7: Адаптивная весовая функция
@@ -1308,100 +1319,100 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 <div id="практический-анализ-1" class="section level3">
 <h3><span class="header-section-number">15.8.2</span> Практический анализ</h3>
 <p>В качестве примера проанализируем каким образом цена жилья зависит от количества комнат на примере данных по стоимости недвижимости в Бостоне, доступных на <a href="https://www.jefftk.com/apartment_prices/data-listing">данном сайте</a>, и выгруженных с североамериканского информационного портала недвижимости <a href="https://www.padmapper.com/apartments/boston-ma?box=-71.2297689,42.2745193,-70.9215169,42.4531515">padmapper.com</a>:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="autocorrelation.html#cb24-1"></a>realest =<span class="st"> </span><span class="kw">read_delim</span>(<span class="kw">url</span>(<span class="st">&#39;https://www.jefftk.com/apartment_prices/apts-1542637382.txt&#39;</span>),</span>
-<span id="cb24-2"><a href="autocorrelation.html#cb24-2"></a>                 <span class="dt">delim =</span> <span class="st">&#39; &#39;</span>,</span>
-<span id="cb24-3"><a href="autocorrelation.html#cb24-3"></a>                 <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&#39;price&#39;</span>, <span class="st">&#39;rooms&#39;</span>, <span class="st">&#39;id&#39;</span>, <span class="st">&#39;lon&#39;</span>, <span class="st">&#39;lat&#39;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb24-4"><a href="autocorrelation.html#cb24-4"></a><span class="st">  </span><span class="kw">st_as_sf</span>(<span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>, <span class="st">&#39;lat&#39;</span>), <span class="dt">crs =</span> <span class="dv">4326</span>) <span class="op">%&gt;%</span></span>
-<span id="cb24-5"><a href="autocorrelation.html#cb24-5"></a><span class="st">  </span><span class="kw">st_transform</span>(<span class="dv">3395</span>)</span>
-<span id="cb24-6"><a href="autocorrelation.html#cb24-6"></a></span>
-<span id="cb24-7"><a href="autocorrelation.html#cb24-7"></a><span class="co"># tmap_mode(&#39;view&#39;)</span></span>
-<span id="cb24-8"><a href="autocorrelation.html#cb24-8"></a><span class="kw">tm_shape</span>(realest) <span class="op">+</span></span>
-<span id="cb24-9"><a href="autocorrelation.html#cb24-9"></a><span class="st">  </span><span class="kw">tm_bubbles</span>(<span class="dt">col =</span> <span class="st">&#39;price&#39;</span>,</span>
-<span id="cb24-10"><a href="autocorrelation.html#cb24-10"></a>             <span class="dt">size =</span> <span class="st">&#39;rooms&#39;</span>,</span>
-<span id="cb24-11"><a href="autocorrelation.html#cb24-11"></a>             <span class="dt">style =</span> <span class="st">&#39;fixed&#39;</span>,</span>
-<span id="cb24-12"><a href="autocorrelation.html#cb24-12"></a>             <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1000</span>, <span class="dv">2000</span>, <span class="dv">3000</span>, <span class="dv">4000</span>, <span class="dv">5000</span>, <span class="dv">10000</span>, <span class="kw">max</span>(realest<span class="op">$</span>price)),</span>
-<span id="cb24-13"><a href="autocorrelation.html#cb24-13"></a>             <span class="dt">scale =</span> <span class="fl">0.25</span>,</span>
-<span id="cb24-14"><a href="autocorrelation.html#cb24-14"></a>             <span class="dt">palette =</span> <span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&#39;steelblue4&#39;</span>, <span class="st">&#39;orange&#39;</span>, <span class="st">&#39;darkred&#39;</span>))(<span class="dv">7</span>),</span>
-<span id="cb24-15"><a href="autocorrelation.html#cb24-15"></a>             <span class="dt">alpha =</span> <span class="fl">0.8</span>) <span class="op">+</span></span>
-<span id="cb24-16"><a href="autocorrelation.html#cb24-16"></a><span class="st">  </span><span class="kw">tm_view</span>(<span class="dt">symbol.size.fixed =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<div class="sourceCode" id="cb685"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb685-1"><a href="autocorrelation.html#cb685-1"></a>realest =<span class="st"> </span><span class="kw">read_delim</span>(<span class="kw">url</span>(<span class="st">&#39;https://www.jefftk.com/apartment_prices/apts-1542637382.txt&#39;</span>),</span>
+<span id="cb685-2"><a href="autocorrelation.html#cb685-2"></a>                 <span class="dt">delim =</span> <span class="st">&#39; &#39;</span>,</span>
+<span id="cb685-3"><a href="autocorrelation.html#cb685-3"></a>                 <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&#39;price&#39;</span>, <span class="st">&#39;rooms&#39;</span>, <span class="st">&#39;id&#39;</span>, <span class="st">&#39;lon&#39;</span>, <span class="st">&#39;lat&#39;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb685-4"><a href="autocorrelation.html#cb685-4"></a><span class="st">  </span><span class="kw">st_as_sf</span>(<span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>, <span class="st">&#39;lat&#39;</span>), <span class="dt">crs =</span> <span class="dv">4326</span>) <span class="op">%&gt;%</span></span>
+<span id="cb685-5"><a href="autocorrelation.html#cb685-5"></a><span class="st">  </span><span class="kw">st_transform</span>(<span class="dv">3395</span>)</span>
+<span id="cb685-6"><a href="autocorrelation.html#cb685-6"></a></span>
+<span id="cb685-7"><a href="autocorrelation.html#cb685-7"></a><span class="co"># tmap_mode(&#39;view&#39;)</span></span>
+<span id="cb685-8"><a href="autocorrelation.html#cb685-8"></a><span class="kw">tm_shape</span>(realest) <span class="op">+</span></span>
+<span id="cb685-9"><a href="autocorrelation.html#cb685-9"></a><span class="st">  </span><span class="kw">tm_bubbles</span>(<span class="dt">col =</span> <span class="st">&#39;price&#39;</span>,</span>
+<span id="cb685-10"><a href="autocorrelation.html#cb685-10"></a>             <span class="dt">size =</span> <span class="st">&#39;rooms&#39;</span>,</span>
+<span id="cb685-11"><a href="autocorrelation.html#cb685-11"></a>             <span class="dt">style =</span> <span class="st">&#39;fixed&#39;</span>,</span>
+<span id="cb685-12"><a href="autocorrelation.html#cb685-12"></a>             <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1000</span>, <span class="dv">2000</span>, <span class="dv">3000</span>, <span class="dv">4000</span>, <span class="dv">5000</span>, <span class="dv">10000</span>, <span class="kw">max</span>(realest<span class="op">$</span>price)),</span>
+<span id="cb685-13"><a href="autocorrelation.html#cb685-13"></a>             <span class="dt">scale =</span> <span class="fl">0.25</span>,</span>
+<span id="cb685-14"><a href="autocorrelation.html#cb685-14"></a>             <span class="dt">palette =</span> <span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&#39;steelblue4&#39;</span>, <span class="st">&#39;orange&#39;</span>, <span class="st">&#39;darkred&#39;</span>))(<span class="dv">7</span>),</span>
+<span id="cb685-15"><a href="autocorrelation.html#cb685-15"></a>             <span class="dt">alpha =</span> <span class="fl">0.8</span>) <span class="op">+</span></span>
+<span id="cb685-16"><a href="autocorrelation.html#cb685-16"></a><span class="st">  </span><span class="kw">tm_view</span>(<span class="dt">symbol.size.fixed =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-651-1.png" width="672" /></p>
 <p>Для того чтобы оценить пространственую неравномерность реакции стоимости жилья на увеличение количества комнат, построим модель географически взвешенной регрессии:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="autocorrelation.html#cb25-1"></a>samples =<span class="st"> </span>realest <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">sample_n</span>(<span class="dv">1000</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as</span>(<span class="st">&#39;Spatial&#39;</span>)</span>
-<span id="cb25-2"><a href="autocorrelation.html#cb25-2"></a></span>
-<span id="cb25-3"><a href="autocorrelation.html#cb25-3"></a>(<span class="dt">gwr_res =</span> <span class="kw">gwr.basic</span>(price <span class="op">~</span><span class="st"> </span>rooms, <span class="dt">data =</span> samples, <span class="dt">bw =</span> <span class="dv">1000</span>, <span class="dt">kernel =</span> <span class="st">&#39;gaussian&#39;</span>))</span>
-<span id="cb25-4"><a href="autocorrelation.html#cb25-4"></a><span class="co">##    ***********************************************************************</span></span>
-<span id="cb25-5"><a href="autocorrelation.html#cb25-5"></a><span class="co">##    *                       Package   GWmodel                             *</span></span>
-<span id="cb25-6"><a href="autocorrelation.html#cb25-6"></a><span class="co">##    ***********************************************************************</span></span>
-<span id="cb25-7"><a href="autocorrelation.html#cb25-7"></a><span class="co">##    Program starts at: 2020-10-26 12:16:12 </span></span>
-<span id="cb25-8"><a href="autocorrelation.html#cb25-8"></a><span class="co">##    Call:</span></span>
-<span id="cb25-9"><a href="autocorrelation.html#cb25-9"></a><span class="co">##    gwr.basic(formula = price ~ rooms, data = samples, bw = 1000, </span></span>
-<span id="cb25-10"><a href="autocorrelation.html#cb25-10"></a><span class="co">##     kernel = &quot;gaussian&quot;)</span></span>
-<span id="cb25-11"><a href="autocorrelation.html#cb25-11"></a><span class="co">## </span></span>
-<span id="cb25-12"><a href="autocorrelation.html#cb25-12"></a><span class="co">##    Dependent (y) variable:  price</span></span>
-<span id="cb25-13"><a href="autocorrelation.html#cb25-13"></a><span class="co">##    Independent variables:  rooms</span></span>
-<span id="cb25-14"><a href="autocorrelation.html#cb25-14"></a><span class="co">##    Number of data points: 1000</span></span>
-<span id="cb25-15"><a href="autocorrelation.html#cb25-15"></a><span class="co">##    ***********************************************************************</span></span>
-<span id="cb25-16"><a href="autocorrelation.html#cb25-16"></a><span class="co">##    *                    Results of Global Regression                     *</span></span>
-<span id="cb25-17"><a href="autocorrelation.html#cb25-17"></a><span class="co">##    ***********************************************************************</span></span>
-<span id="cb25-18"><a href="autocorrelation.html#cb25-18"></a><span class="co">## </span></span>
-<span id="cb25-19"><a href="autocorrelation.html#cb25-19"></a><span class="co">##    Call:</span></span>
-<span id="cb25-20"><a href="autocorrelation.html#cb25-20"></a><span class="co">##     lm(formula = formula, data = data)</span></span>
-<span id="cb25-21"><a href="autocorrelation.html#cb25-21"></a><span class="co">## </span></span>
-<span id="cb25-22"><a href="autocorrelation.html#cb25-22"></a><span class="co">##    Residuals:</span></span>
-<span id="cb25-23"><a href="autocorrelation.html#cb25-23"></a><span class="co">##    Min     1Q Median     3Q    Max </span></span>
-<span id="cb25-24"><a href="autocorrelation.html#cb25-24"></a><span class="co">##  -3120   -853   -420    216  34614 </span></span>
-<span id="cb25-25"><a href="autocorrelation.html#cb25-25"></a><span class="co">## </span></span>
-<span id="cb25-26"><a href="autocorrelation.html#cb25-26"></a><span class="co">##    Coefficients:</span></span>
-<span id="cb25-27"><a href="autocorrelation.html#cb25-27"></a><span class="co">##                Estimate Std. Error t value            Pr(&gt;|t|)    </span></span>
-<span id="cb25-28"><a href="autocorrelation.html#cb25-28"></a><span class="co">##    (Intercept)  2486.43     109.41  22.726 &lt;0.0000000000000002 ***</span></span>
-<span id="cb25-29"><a href="autocorrelation.html#cb25-29"></a><span class="co">##    rooms         383.28      44.14   8.683 &lt;0.0000000000000002 ***</span></span>
-<span id="cb25-30"><a href="autocorrelation.html#cb25-30"></a><span class="co">## </span></span>
-<span id="cb25-31"><a href="autocorrelation.html#cb25-31"></a><span class="co">##    ---Significance stars</span></span>
-<span id="cb25-32"><a href="autocorrelation.html#cb25-32"></a><span class="co">##    Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1 </span></span>
-<span id="cb25-33"><a href="autocorrelation.html#cb25-33"></a><span class="co">##    Residual standard error: 1849 on 998 degrees of freedom</span></span>
-<span id="cb25-34"><a href="autocorrelation.html#cb25-34"></a><span class="co">##    Multiple R-squared: 0.07023</span></span>
-<span id="cb25-35"><a href="autocorrelation.html#cb25-35"></a><span class="co">##    Adjusted R-squared: 0.0693 </span></span>
-<span id="cb25-36"><a href="autocorrelation.html#cb25-36"></a><span class="co">##    F-statistic: 75.39 on 1 and 998 DF,  p-value: &lt; 0.00000000000000022 </span></span>
-<span id="cb25-37"><a href="autocorrelation.html#cb25-37"></a><span class="co">##    ***Extra Diagnostic information</span></span>
-<span id="cb25-38"><a href="autocorrelation.html#cb25-38"></a><span class="co">##    Residual sum of squares: 3410987328</span></span>
-<span id="cb25-39"><a href="autocorrelation.html#cb25-39"></a><span class="co">##    Sigma(hat): 1848.736</span></span>
-<span id="cb25-40"><a href="autocorrelation.html#cb25-40"></a><span class="co">##    AIC:  17886.39</span></span>
-<span id="cb25-41"><a href="autocorrelation.html#cb25-41"></a><span class="co">##    AICc:  17886.41</span></span>
-<span id="cb25-42"><a href="autocorrelation.html#cb25-42"></a><span class="co">##    ***********************************************************************</span></span>
-<span id="cb25-43"><a href="autocorrelation.html#cb25-43"></a><span class="co">##    *          Results of Geographically Weighted Regression              *</span></span>
-<span id="cb25-44"><a href="autocorrelation.html#cb25-44"></a><span class="co">##    ***********************************************************************</span></span>
-<span id="cb25-45"><a href="autocorrelation.html#cb25-45"></a><span class="co">## </span></span>
-<span id="cb25-46"><a href="autocorrelation.html#cb25-46"></a><span class="co">##    *********************Model calibration information*********************</span></span>
-<span id="cb25-47"><a href="autocorrelation.html#cb25-47"></a><span class="co">##    Kernel function: gaussian </span></span>
-<span id="cb25-48"><a href="autocorrelation.html#cb25-48"></a><span class="co">##    Fixed bandwidth: 1000 </span></span>
-<span id="cb25-49"><a href="autocorrelation.html#cb25-49"></a><span class="co">##    Regression points: the same locations as observations are used.</span></span>
-<span id="cb25-50"><a href="autocorrelation.html#cb25-50"></a><span class="co">##    Distance metric: Euclidean distance metric is used.</span></span>
-<span id="cb25-51"><a href="autocorrelation.html#cb25-51"></a><span class="co">## </span></span>
-<span id="cb25-52"><a href="autocorrelation.html#cb25-52"></a><span class="co">##    ****************Summary of GWR coefficient estimates:******************</span></span>
-<span id="cb25-53"><a href="autocorrelation.html#cb25-53"></a><span class="co">##                  Min.  1st Qu.   Median  3rd Qu.   Max.</span></span>
-<span id="cb25-54"><a href="autocorrelation.html#cb25-54"></a><span class="co">##    Intercept -2410.75  1829.01  2175.68  2449.96 8742.5</span></span>
-<span id="cb25-55"><a href="autocorrelation.html#cb25-55"></a><span class="co">##    rooms     -2212.67   372.48   504.17   650.04 2535.0</span></span>
-<span id="cb25-56"><a href="autocorrelation.html#cb25-56"></a><span class="co">##    ************************Diagnostic information*************************</span></span>
-<span id="cb25-57"><a href="autocorrelation.html#cb25-57"></a><span class="co">##    Number of data points: 1000 </span></span>
-<span id="cb25-58"><a href="autocorrelation.html#cb25-58"></a><span class="co">##    Effective number of parameters (2trace(S) - trace(S&#39;S)): 124.5923 </span></span>
-<span id="cb25-59"><a href="autocorrelation.html#cb25-59"></a><span class="co">##    Effective degrees of freedom (n-2trace(S) + trace(S&#39;S)): 875.4077 </span></span>
-<span id="cb25-60"><a href="autocorrelation.html#cb25-60"></a><span class="co">##    AICc (GWR book, Fotheringham, et al. 2002, p. 61, eq 2.33): 17810.16 </span></span>
-<span id="cb25-61"><a href="autocorrelation.html#cb25-61"></a><span class="co">##    AIC (GWR book, Fotheringham, et al. 2002,GWR p. 96, eq. 4.22): 17692.61 </span></span>
-<span id="cb25-62"><a href="autocorrelation.html#cb25-62"></a><span class="co">##    Residual sum of squares: 2570947874 </span></span>
-<span id="cb25-63"><a href="autocorrelation.html#cb25-63"></a><span class="co">##    R-square value:  0.2992115 </span></span>
-<span id="cb25-64"><a href="autocorrelation.html#cb25-64"></a><span class="co">##    Adjusted R-square value:  0.1993578 </span></span>
-<span id="cb25-65"><a href="autocorrelation.html#cb25-65"></a><span class="co">## </span></span>
-<span id="cb25-66"><a href="autocorrelation.html#cb25-66"></a><span class="co">##    ***********************************************************************</span></span>
-<span id="cb25-67"><a href="autocorrelation.html#cb25-67"></a><span class="co">##    Program stops at: 2020-10-26 12:16:12</span></span>
-<span id="cb25-68"><a href="autocorrelation.html#cb25-68"></a></span>
-<span id="cb25-69"><a href="autocorrelation.html#cb25-69"></a><span class="kw">tm_shape</span>(gwr_res<span class="op">$</span>SDF) <span class="op">+</span></span>
-<span id="cb25-70"><a href="autocorrelation.html#cb25-70"></a><span class="st">  </span><span class="kw">tm_bubbles</span>(<span class="dt">col =</span> <span class="st">&#39;rooms&#39;</span>, <span class="co"># это не количество комнат, а коэффициент регрессии</span></span>
-<span id="cb25-71"><a href="autocorrelation.html#cb25-71"></a>             <span class="dt">style =</span> <span class="st">&#39;quantile&#39;</span>,</span>
-<span id="cb25-72"><a href="autocorrelation.html#cb25-72"></a>             <span class="dt">scale =</span> <span class="fl">0.3</span>,</span>
-<span id="cb25-73"><a href="autocorrelation.html#cb25-73"></a>             <span class="dt">palette =</span> <span class="st">&#39;Reds&#39;</span>,</span>
-<span id="cb25-74"><a href="autocorrelation.html#cb25-74"></a>             <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb25-75"><a href="autocorrelation.html#cb25-75"></a><span class="st">  </span><span class="kw">tm_view</span>(<span class="dt">symbol.size.fixed =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
-<p><img src="r-geo-course_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+<div class="sourceCode" id="cb686"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb686-1"><a href="autocorrelation.html#cb686-1"></a>samples =<span class="st"> </span>realest <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">sample_n</span>(<span class="dv">1000</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as</span>(<span class="st">&#39;Spatial&#39;</span>)</span>
+<span id="cb686-2"><a href="autocorrelation.html#cb686-2"></a></span>
+<span id="cb686-3"><a href="autocorrelation.html#cb686-3"></a>(<span class="dt">gwr_res =</span> <span class="kw">gwr.basic</span>(price <span class="op">~</span><span class="st"> </span>rooms, <span class="dt">data =</span> samples, <span class="dt">bw =</span> <span class="dv">1000</span>, <span class="dt">kernel =</span> <span class="st">&#39;gaussian&#39;</span>))</span>
+<span id="cb686-4"><a href="autocorrelation.html#cb686-4"></a><span class="co">##    ***********************************************************************</span></span>
+<span id="cb686-5"><a href="autocorrelation.html#cb686-5"></a><span class="co">##    *                       Package   GWmodel                             *</span></span>
+<span id="cb686-6"><a href="autocorrelation.html#cb686-6"></a><span class="co">##    ***********************************************************************</span></span>
+<span id="cb686-7"><a href="autocorrelation.html#cb686-7"></a><span class="co">##    Program starts at: 2020-10-26 12:35:10 </span></span>
+<span id="cb686-8"><a href="autocorrelation.html#cb686-8"></a><span class="co">##    Call:</span></span>
+<span id="cb686-9"><a href="autocorrelation.html#cb686-9"></a><span class="co">##    gwr.basic(formula = price ~ rooms, data = samples, bw = 1000, </span></span>
+<span id="cb686-10"><a href="autocorrelation.html#cb686-10"></a><span class="co">##     kernel = &quot;gaussian&quot;)</span></span>
+<span id="cb686-11"><a href="autocorrelation.html#cb686-11"></a><span class="co">## </span></span>
+<span id="cb686-12"><a href="autocorrelation.html#cb686-12"></a><span class="co">##    Dependent (y) variable:  price</span></span>
+<span id="cb686-13"><a href="autocorrelation.html#cb686-13"></a><span class="co">##    Independent variables:  rooms</span></span>
+<span id="cb686-14"><a href="autocorrelation.html#cb686-14"></a><span class="co">##    Number of data points: 1000</span></span>
+<span id="cb686-15"><a href="autocorrelation.html#cb686-15"></a><span class="co">##    ***********************************************************************</span></span>
+<span id="cb686-16"><a href="autocorrelation.html#cb686-16"></a><span class="co">##    *                    Results of Global Regression                     *</span></span>
+<span id="cb686-17"><a href="autocorrelation.html#cb686-17"></a><span class="co">##    ***********************************************************************</span></span>
+<span id="cb686-18"><a href="autocorrelation.html#cb686-18"></a><span class="co">## </span></span>
+<span id="cb686-19"><a href="autocorrelation.html#cb686-19"></a><span class="co">##    Call:</span></span>
+<span id="cb686-20"><a href="autocorrelation.html#cb686-20"></a><span class="co">##     lm(formula = formula, data = data)</span></span>
+<span id="cb686-21"><a href="autocorrelation.html#cb686-21"></a><span class="co">## </span></span>
+<span id="cb686-22"><a href="autocorrelation.html#cb686-22"></a><span class="co">##    Residuals:</span></span>
+<span id="cb686-23"><a href="autocorrelation.html#cb686-23"></a><span class="co">##     Min      1Q  Median      3Q     Max </span></span>
+<span id="cb686-24"><a href="autocorrelation.html#cb686-24"></a><span class="co">## -3996.9  -768.6  -318.6   335.5 15413.3 </span></span>
+<span id="cb686-25"><a href="autocorrelation.html#cb686-25"></a><span class="co">## </span></span>
+<span id="cb686-26"><a href="autocorrelation.html#cb686-26"></a><span class="co">##    Coefficients:</span></span>
+<span id="cb686-27"><a href="autocorrelation.html#cb686-27"></a><span class="co">##                Estimate Std. Error t value            Pr(&gt;|t|)    </span></span>
+<span id="cb686-28"><a href="autocorrelation.html#cb686-28"></a><span class="co">##    (Intercept)  2254.46      77.02   29.27 &lt;0.0000000000000002 ***</span></span>
+<span id="cb686-29"><a href="autocorrelation.html#cb686-29"></a><span class="co">##    rooms         457.07      31.49   14.51 &lt;0.0000000000000002 ***</span></span>
+<span id="cb686-30"><a href="autocorrelation.html#cb686-30"></a><span class="co">## </span></span>
+<span id="cb686-31"><a href="autocorrelation.html#cb686-31"></a><span class="co">##    ---Significance stars</span></span>
+<span id="cb686-32"><a href="autocorrelation.html#cb686-32"></a><span class="co">##    Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1 </span></span>
+<span id="cb686-33"><a href="autocorrelation.html#cb686-33"></a><span class="co">##    Residual standard error: 1343 on 998 degrees of freedom</span></span>
+<span id="cb686-34"><a href="autocorrelation.html#cb686-34"></a><span class="co">##    Multiple R-squared: 0.1743</span></span>
+<span id="cb686-35"><a href="autocorrelation.html#cb686-35"></a><span class="co">##    Adjusted R-squared: 0.1734 </span></span>
+<span id="cb686-36"><a href="autocorrelation.html#cb686-36"></a><span class="co">##    F-statistic: 210.6 on 1 and 998 DF,  p-value: &lt; 0.00000000000000022 </span></span>
+<span id="cb686-37"><a href="autocorrelation.html#cb686-37"></a><span class="co">##    ***Extra Diagnostic information</span></span>
+<span id="cb686-38"><a href="autocorrelation.html#cb686-38"></a><span class="co">##    Residual sum of squares: 1800037232</span></span>
+<span id="cb686-39"><a href="autocorrelation.html#cb686-39"></a><span class="co">##    Sigma(hat): 1342.998</span></span>
+<span id="cb686-40"><a href="autocorrelation.html#cb686-40"></a><span class="co">##    AIC:  17247.19</span></span>
+<span id="cb686-41"><a href="autocorrelation.html#cb686-41"></a><span class="co">##    AICc:  17247.22</span></span>
+<span id="cb686-42"><a href="autocorrelation.html#cb686-42"></a><span class="co">##    ***********************************************************************</span></span>
+<span id="cb686-43"><a href="autocorrelation.html#cb686-43"></a><span class="co">##    *          Results of Geographically Weighted Regression              *</span></span>
+<span id="cb686-44"><a href="autocorrelation.html#cb686-44"></a><span class="co">##    ***********************************************************************</span></span>
+<span id="cb686-45"><a href="autocorrelation.html#cb686-45"></a><span class="co">## </span></span>
+<span id="cb686-46"><a href="autocorrelation.html#cb686-46"></a><span class="co">##    *********************Model calibration information*********************</span></span>
+<span id="cb686-47"><a href="autocorrelation.html#cb686-47"></a><span class="co">##    Kernel function: gaussian </span></span>
+<span id="cb686-48"><a href="autocorrelation.html#cb686-48"></a><span class="co">##    Fixed bandwidth: 1000 </span></span>
+<span id="cb686-49"><a href="autocorrelation.html#cb686-49"></a><span class="co">##    Regression points: the same locations as observations are used.</span></span>
+<span id="cb686-50"><a href="autocorrelation.html#cb686-50"></a><span class="co">##    Distance metric: Euclidean distance metric is used.</span></span>
+<span id="cb686-51"><a href="autocorrelation.html#cb686-51"></a><span class="co">## </span></span>
+<span id="cb686-52"><a href="autocorrelation.html#cb686-52"></a><span class="co">##    ****************Summary of GWR coefficient estimates:******************</span></span>
+<span id="cb686-53"><a href="autocorrelation.html#cb686-53"></a><span class="co">##                 Min. 1st Qu.  Median 3rd Qu.   Max.</span></span>
+<span id="cb686-54"><a href="autocorrelation.html#cb686-54"></a><span class="co">##    Intercept -720.55 1824.11 2051.88 2226.05 4500.7</span></span>
+<span id="cb686-55"><a href="autocorrelation.html#cb686-55"></a><span class="co">##    rooms     -520.95  480.17  576.22  700.83 1675.0</span></span>
+<span id="cb686-56"><a href="autocorrelation.html#cb686-56"></a><span class="co">##    ************************Diagnostic information*************************</span></span>
+<span id="cb686-57"><a href="autocorrelation.html#cb686-57"></a><span class="co">##    Number of data points: 1000 </span></span>
+<span id="cb686-58"><a href="autocorrelation.html#cb686-58"></a><span class="co">##    Effective number of parameters (2trace(S) - trace(S&#39;S)): 113.5405 </span></span>
+<span id="cb686-59"><a href="autocorrelation.html#cb686-59"></a><span class="co">##    Effective degrees of freedom (n-2trace(S) + trace(S&#39;S)): 886.4595 </span></span>
+<span id="cb686-60"><a href="autocorrelation.html#cb686-60"></a><span class="co">##    AICc (GWR book, Fotheringham, et al. 2002, p. 61, eq 2.33): 17080.07 </span></span>
+<span id="cb686-61"><a href="autocorrelation.html#cb686-61"></a><span class="co">##    AIC (GWR book, Fotheringham, et al. 2002,GWR p. 96, eq. 4.22): 16973.31 </span></span>
+<span id="cb686-62"><a href="autocorrelation.html#cb686-62"></a><span class="co">##    Residual sum of squares: 1261766467 </span></span>
+<span id="cb686-63"><a href="autocorrelation.html#cb686-63"></a><span class="co">##    R-square value:  0.4211881 </span></span>
+<span id="cb686-64"><a href="autocorrelation.html#cb686-64"></a><span class="co">##    Adjusted R-square value:  0.3469684 </span></span>
+<span id="cb686-65"><a href="autocorrelation.html#cb686-65"></a><span class="co">## </span></span>
+<span id="cb686-66"><a href="autocorrelation.html#cb686-66"></a><span class="co">##    ***********************************************************************</span></span>
+<span id="cb686-67"><a href="autocorrelation.html#cb686-67"></a><span class="co">##    Program stops at: 2020-10-26 12:35:10</span></span>
+<span id="cb686-68"><a href="autocorrelation.html#cb686-68"></a></span>
+<span id="cb686-69"><a href="autocorrelation.html#cb686-69"></a><span class="kw">tm_shape</span>(gwr_res<span class="op">$</span>SDF) <span class="op">+</span></span>
+<span id="cb686-70"><a href="autocorrelation.html#cb686-70"></a><span class="st">  </span><span class="kw">tm_bubbles</span>(<span class="dt">col =</span> <span class="st">&#39;rooms&#39;</span>, <span class="co"># это не количество комнат, а коэффициент регрессии</span></span>
+<span id="cb686-71"><a href="autocorrelation.html#cb686-71"></a>             <span class="dt">style =</span> <span class="st">&#39;quantile&#39;</span>,</span>
+<span id="cb686-72"><a href="autocorrelation.html#cb686-72"></a>             <span class="dt">scale =</span> <span class="fl">0.3</span>,</span>
+<span id="cb686-73"><a href="autocorrelation.html#cb686-73"></a>             <span class="dt">palette =</span> <span class="st">&#39;Reds&#39;</span>,</span>
+<span id="cb686-74"><a href="autocorrelation.html#cb686-74"></a>             <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb686-75"><a href="autocorrelation.html#cb686-75"></a><span class="st">  </span><span class="kw">tm_view</span>(<span class="dt">symbol.size.fixed =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p><img src="r-geo-course_files/figure-html/unnamed-chunk-652-1.png" width="672" /></p>
 <p>Как видно, модель GWR наглядно показывает наличие пространственной гетерогенности (неоднороности) в распределении показателя. Четко видны районы (в основном цеентральные, но также и часть окраинных), где стоимость жилья резко возрастает при увеличении количества комнат.</p>
 </div>
 </div>
@@ -1472,10 +1483,10 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 </div>
 <div class="footnotes">
 <hr />
-<ol start="1">
-<li id="fn1"><p><em>Hubert, L. J., R. G. Golledge, and C. M. Costanza</em> (1981). <strong>Generalized Procedures for Evaluating Spatial Autocorrelation</strong>. Geographical Analysis 13, 224–32. DOI: 10.1111/j.1538-4632.1981.tb00731.x<a href="autocorrelation.html#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p><em>Gabriel K. R., Sokal R. R.</em> (1969), <strong>A new statistical approach to geographic variation analysis</strong>, Systematic Zoology, Society of Systematic Biologists, 18 (3): 259–270, DOI: 10.2307/2412323<a href="autocorrelation.html#fnref2" class="footnote-back">↩︎</a></p></li>
-<li id="fn3"><p><em>Toussaint G. T.</em> (1980), <strong>The relative neighborhood graph of a finite planar set</strong>, Pattern Recognition, 12 (4): 261–268, DOI: 10.1016/0031-3203(80)90066-7<a href="autocorrelation.html#fnref3" class="footnote-back">↩︎</a></p></li>
+<ol start="10">
+<li id="fn10"><p><em>Hubert, L. J., R. G. Golledge, and C. M. Costanza</em> (1981). <strong>Generalized Procedures for Evaluating Spatial Autocorrelation</strong>. Geographical Analysis 13, 224–32. DOI: 10.1111/j.1538-4632.1981.tb00731.x<a href="autocorrelation.html#fnref10" class="footnote-back">↩︎</a></p></li>
+<li id="fn11"><p><em>Gabriel K. R., Sokal R. R.</em> (1969), <strong>A new statistical approach to geographic variation analysis</strong>, Systematic Zoology, Society of Systematic Biologists, 18 (3): 259–270, DOI: 10.2307/2412323<a href="autocorrelation.html#fnref11" class="footnote-back">↩︎</a></p></li>
+<li id="fn12"><p><em>Toussaint G. T.</em> (1980), <strong>The relative neighborhood graph of a finite planar set</strong>, Pattern Recognition, 12 (4): 261–268, DOI: 10.1016/0031-3203(80)90066-7<a href="autocorrelation.html#fnref12" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>
