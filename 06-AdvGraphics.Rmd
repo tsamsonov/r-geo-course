@@ -43,7 +43,7 @@ trades = lapply(tables, function(X) { # прочтем несколько таб
 }) %>% 
   bind_rows() %>% # объединим прочитанные таблицы в одну
   select(-geo) %>% # убираем столбец с территорией торговли, т.к. там только Евросоюз
-  filter(stringr::str_detect(indic_et, 'Exports in|Imports in')) %>% # оставим только экспорт и импорт
+  dplyr::filter(stringr::str_detect(indic_et, 'Exports in|Imports in')) %>% # оставим только экспорт и импорт
   pivot_wider(names_from = indic_et, values_from = values) %>%  # вынесем данные по экспорту и импорту в отдельные переменные
   rename(export = `Exports in million of ECU/EURO`, # дадим им краткие названия
          import = `Imports in million of ECU/EURO`) %>% 
@@ -196,7 +196,7 @@ trades %>%
 ggplot(trades_total) + 
     geom_line(mapping = aes(x = time, y = export), color = 'blue')
 
-trade_russia = trades %>% filter(partner == 'Russia')
+trade_russia = trades %>% dplyr::filter(partner == 'Russia')
 
 ggplot(trade_russia) + # у каждой группы данных свой цвет (параметр внутри aes)
   geom_line(mapping = aes(x = time, y = export, color = sitc06))
@@ -262,7 +262,7 @@ trades %>%
 Еще один вид группировки — это группировка по соседству. Чтобы использовать ее, применить метод `position == 'dodge`:
 ```{r}
 trade_russia %>% 
-  filter(time >= as.Date('2013-01-01')) %>% 
+  dplyr::filter(time >= as.Date('2013-01-01')) %>% 
   ggplot(mapping = aes(x = time, y = export, fill = sitc06)) +
     geom_col(color = 'black', size = 0.2, position = 'dodge')
 ```
