@@ -1,676 +1,101 @@
 <!DOCTYPE html>
-<html lang="" xml:lang="">
+<html lang="en">
 <head>
-
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Глава 8 Дирекционные данные | Визуализация и анализ географических данных на языке R</title>
-  <meta name="description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
-
-  <meta property="og:title" content="Глава 8 Дирекционные данные | Визуализация и анализ географических данных на языке R" />
-  <meta property="og:type" content="book" />
-  
-  
-  <meta property="og:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
-  <meta name="github-repo" content="tsamsonov/r-geo-course" />
-
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Глава 8 Дирекционные данные | Визуализация и анализ географических данных на языке R" />
-  <meta name="twitter:site" content="@timofeysamsonov" />
-  <meta name="twitter:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
-  
-
-<meta name="author" content="Тимофей Самсонов" />
-
-
-<meta name="date" content="2021-01-25" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  
-  
-<link rel="prev" href="temporal.html"/>
-<link rel="next" href="spatial-data.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
-<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
-
-
-
-
-
-
-
-
-
-<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
-<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.17/datatables.js"></script>
-<link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
-<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
-<script src="libs/plotly-binding-4.9.3/plotly.js"></script>
-<script src="libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="libs/plotly-htmlwidgets-css-1.57.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotly-main-1.57.1/plotly-latest.min.js"></script>
-
-
-<style type="text/css">
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-</style>
-
-<link rel="stylesheet" href="style.css" type="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Глава 8 Дирекционные данные | Визуализация и анализ географических данных на языке R</title>
+<meta name="author" content="Тимофей Самсонов">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.6/header-attrs.js"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.4.9000/tabs.js"></script><script src="libs/bs3compat-0.2.4.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script><link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="libs/datatables-binding-0.17/datatables.js"></script><link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script><link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet">
+<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script><script src="libs/plotly-binding-4.9.3/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/plotly-htmlwidgets-css-1.57.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="libs/plotly-main-1.57.1/plotly-latest.min.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
 </head>
+<body data-spy="scroll" data-target="#toc">
 
-<body>
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
 
-
-
-  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
-
-    <div class="book-summary">
-      <nav role="navigation">
-
-<ul class="summary">
-<li><a href="./">Визуализация и анализ географических данных на языке R</a></li>
-
-<li class="divider"></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Введение</a>
-<ul>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#программное-обеспечение"><i class="fa fa-check"></i>Программное обеспечение</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#установка-и-подключение-пакетов"><i class="fa fa-check"></i>Установка и подключение пакетов</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#выполнение-программного-кода"><i class="fa fa-check"></i>Выполнение программного кода</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#установка-рабочей-директории"><i class="fa fa-check"></i>Установка рабочей директории</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#диагностические-функции"><i class="fa fa-check"></i>Диагностические функции</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#получение-справки"><i class="fa fa-check"></i>Получение справки</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#комментарии"><i class="fa fa-check"></i>Комментарии</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#стандарт-оформления-кода-на-r"><i class="fa fa-check"></i>Стандарт оформления кода на R</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#зарезервированные-слова"><i class="fa fa-check"></i>Зарезервированные слова</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#названия-переменных"><i class="fa fa-check"></i>Названия переменных</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#названия-специальных-символов"><i class="fa fa-check"></i>Названия специальных символов</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#управляющие-последовательности"><i class="fa fa-check"></i>Управляющие последовательности</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#ссылка-на-пособие"><i class="fa fa-check"></i>Ссылка на пособие</a></li>
-</ul></li>
-<li class="part"><span><b>I Основы языка R</b></span></li>
-<li class="chapter" data-level="1" data-path="data-types.html"><a href="data-types.html"><i class="fa fa-check"></i><b>1</b> Типы данных, условия, ввод и вывод</a>
-<ul>
-<li class="chapter" data-level="1.1" data-path="data-types.html"><a href="data-types.html#data_types"><i class="fa fa-check"></i><b>1.1</b> Типы данных</a>
-<ul>
-<li class="chapter" data-level="1.1.1" data-path="data-types.html"><a href="data-types.html#numbers"><i class="fa fa-check"></i><b>1.1.1</b> Числа</a></li>
-<li class="chapter" data-level="1.1.2" data-path="data-types.html"><a href="data-types.html#strings"><i class="fa fa-check"></i><b>1.1.2</b> Строки</a></li>
-<li class="chapter" data-level="1.1.3" data-path="data-types.html"><a href="data-types.html#dates"><i class="fa fa-check"></i><b>1.1.3</b> Даты и длительности</a></li>
-<li class="chapter" data-level="1.1.4" data-path="data-types.html"><a href="data-types.html#times"><i class="fa fa-check"></i><b>1.1.4</b> Время и периоды</a></li>
-<li class="chapter" data-level="1.1.5" data-path="data-types.html"><a href="data-types.html#booleans"><i class="fa fa-check"></i><b>1.1.5</b> Логические</a></li>
-</ul></li>
-<li class="chapter" data-level="1.2" data-path="data-types.html"><a href="data-types.html#manipulations"><i class="fa fa-check"></i><b>1.2</b> Манипуляции с типами</a>
-<ul>
-<li class="chapter" data-level="1.2.1" data-path="data-types.html"><a href="data-types.html#determine_data_type"><i class="fa fa-check"></i><b>1.2.1</b> Определение типа данных</a></li>
-<li class="chapter" data-level="1.2.2" data-path="data-types.html"><a href="data-types.html#conversion"><i class="fa fa-check"></i><b>1.2.2</b> Преобразование типов данных</a></li>
-<li class="chapter" data-level="1.2.3" data-path="data-types.html"><a href="data-types.html#check_types"><i class="fa fa-check"></i><b>1.2.3</b> Проверка типов данных и пустых значений</a></li>
-</ul></li>
-<li class="chapter" data-level="1.3" data-path="data-types.html"><a href="data-types.html#read_write_console"><i class="fa fa-check"></i><b>1.3</b> Ввод и вывод данных в консоли</a>
-<ul>
-<li class="chapter" data-level="1.3.1" data-path="data-types.html"><a href="data-types.html#read_console"><i class="fa fa-check"></i><b>1.3.1</b> Ввод данных</a></li>
-<li class="chapter" data-level="1.3.2" data-path="data-types.html"><a href="data-types.html#write_console"><i class="fa fa-check"></i><b>1.3.2</b> Вывод данных</a></li>
-</ul></li>
-<li class="chapter" data-level="1.4" data-path="data-types.html"><a href="data-types.html#ifelse"><i class="fa fa-check"></i><b>1.4</b> Условный оператор</a></li>
-<li class="chapter" data-level="1.5" data-path="data-types.html"><a href="data-types.html#switch"><i class="fa fa-check"></i><b>1.5</b> Оператор переключения</a></li>
-<li class="chapter" data-level="1.6" data-path="data-types.html"><a href="data-types.html#stop"><i class="fa fa-check"></i><b>1.6</b> Прерывание программы</a></li>
-<li class="chapter" data-level="1.7" data-path="data-types.html"><a href="data-types.html#basics-detail"><i class="fa fa-check"></i><b>1.7</b> Технические детали</a></li>
-<li class="chapter" data-level="1.8" data-path="data-types.html"><a href="data-types.html#review"><i class="fa fa-check"></i><b>1.8</b> Краткий обзор</a></li>
-<li class="chapter" data-level="1.9" data-path="data-types.html"><a href="data-types.html#questions_tasks_basics"><i class="fa fa-check"></i><b>1.9</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="1.9.1" data-path="data-types.html"><a href="data-types.html#questions_basics"><i class="fa fa-check"></i><b>1.9.1</b> Вопросы</a></li>
-<li class="chapter" data-level="1.9.2" data-path="data-types.html"><a href="data-types.html#tasks_basic"><i class="fa fa-check"></i><b>1.9.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="2" data-path="data-structures.html"><a href="data-structures.html"><i class="fa fa-check"></i><b>2</b> Структуры данных и циклы</a>
-<ul>
-<li class="chapter" data-level="2.1" data-path="data-structures.html"><a href="data-structures.html#data_structures_homo"><i class="fa fa-check"></i><b>2.1</b> Однородные структуры данных</a>
-<ul>
-<li class="chapter" data-level="2.1.1" data-path="data-structures.html"><a href="data-structures.html#vectors"><i class="fa fa-check"></i><b>2.1.1</b> Векторы</a></li>
-<li class="chapter" data-level="2.1.2" data-path="data-structures.html"><a href="data-structures.html#matrices"><i class="fa fa-check"></i><b>2.1.2</b> Матрицы</a></li>
-<li class="chapter" data-level="2.1.3" data-path="data-structures.html"><a href="data-structures.html#arrays"><i class="fa fa-check"></i><b>2.1.3</b> Массивы</a></li>
-</ul></li>
-<li class="chapter" data-level="2.2" data-path="data-structures.html"><a href="data-structures.html#heterogeneous"><i class="fa fa-check"></i><b>2.2</b> Разнородные структуры данных</a>
-<ul>
-<li class="chapter" data-level="2.2.1" data-path="data-structures.html"><a href="data-structures.html#data_frames"><i class="fa fa-check"></i><b>2.2.1</b> Фреймы данных</a></li>
-<li class="chapter" data-level="2.2.2" data-path="data-structures.html"><a href="data-structures.html#lists"><i class="fa fa-check"></i><b>2.2.2</b> Списки</a></li>
-</ul></li>
-<li class="chapter" data-level="2.3" data-path="data-structures.html"><a href="data-structures.html#factors"><i class="fa fa-check"></i><b>2.3</b> Факторы</a></li>
-<li class="chapter" data-level="2.4" data-path="data-structures.html"><a href="data-structures.html#vector_desc"><i class="fa fa-check"></i><b>2.4</b> Описание структуры данных</a></li>
-<li class="chapter" data-level="2.5" data-path="data-structures.html"><a href="data-structures.html#cycles"><i class="fa fa-check"></i><b>2.5</b> Циклы</a></li>
-<li class="chapter" data-level="2.6" data-path="data-structures.html"><a href="data-structures.html#structures-detail"><i class="fa fa-check"></i><b>2.6</b> Технические детали</a></li>
-<li class="chapter" data-level="2.7" data-path="data-structures.html"><a href="data-structures.html#review_structures"><i class="fa fa-check"></i><b>2.7</b> Краткий обзор</a></li>
-<li class="chapter" data-level="2.8" data-path="data-structures.html"><a href="data-structures.html#questions_tasks_vectors"><i class="fa fa-check"></i><b>2.8</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="2.8.1" data-path="data-structures.html"><a href="data-structures.html#questions_vectors"><i class="fa fa-check"></i><b>2.8.1</b> Вопросы</a></li>
-<li class="chapter" data-level="2.8.2" data-path="data-structures.html"><a href="data-structures.html#tasks_vectors"><i class="fa fa-check"></i><b>2.8.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="tables.html"><a href="tables.html"><i class="fa fa-check"></i><b>3</b> Табличные данные</a>
-<ul>
-<li class="chapter" data-level="3.1" data-path="tables.html"><a href="tables.html#tables_prerequisites"><i class="fa fa-check"></i><b>3.1</b> Предварительные требования</a></li>
-<li class="chapter" data-level="3.2" data-path="tables.html"><a href="tables.html#tables_datastructures"><i class="fa fa-check"></i><b>3.2</b> Структуры данных</a></li>
-<li class="chapter" data-level="3.3" data-path="tables.html"><a href="tables.html#tables_reading"><i class="fa fa-check"></i><b>3.3</b> Чтение</a>
-<ul>
-<li class="chapter" data-level="3.3.1" data-path="tables.html"><a href="tables.html#tables_reading_inner"><i class="fa fa-check"></i><b>3.3.1</b> Встроенные данные</a></li>
-<li class="chapter" data-level="3.3.2" data-path="tables.html"><a href="tables.html#tables_reading_text"><i class="fa fa-check"></i><b>3.3.2</b> Текстовые таблицы</a></li>
-<li class="chapter" data-level="3.3.3" data-path="tables.html"><a href="tables.html#tables_reading_excel"><i class="fa fa-check"></i><b>3.3.3</b> Таблицы Microsoft Excel</a></li>
-<li class="chapter" data-level="3.3.4" data-path="tables.html"><a href="tables.html#tables_reading_params"><i class="fa fa-check"></i><b>3.3.4</b> Параметры</a></li>
-</ul></li>
-<li class="chapter" data-level="3.4" data-path="tables.html"><a href="tables.html#tables_view"><i class="fa fa-check"></i><b>3.4</b> Просмотр</a></li>
-<li class="chapter" data-level="3.5" data-path="tables.html"><a href="tables.html#tables_elements"><i class="fa fa-check"></i><b>3.5</b> Столбцы, строки и ячейки</a>
-<ul>
-<li class="chapter" data-level="3.5.1" data-path="tables.html"><a href="tables.html#tables_elements_names"><i class="fa fa-check"></i><b>3.5.1</b> Названия</a></li>
-<li class="chapter" data-level="3.5.2" data-path="tables.html"><a href="tables.html#tables_elements_columns"><i class="fa fa-check"></i><b>3.5.2</b> Обращение к столбцам</a></li>
-<li class="chapter" data-level="3.5.3" data-path="tables.html"><a href="tables.html#tables_elements_rows"><i class="fa fa-check"></i><b>3.5.3</b> Обращение к строкам</a></li>
-<li class="chapter" data-level="3.5.4" data-path="tables.html"><a href="tables.html#tables_elements_cells"><i class="fa fa-check"></i><b>3.5.4</b> Обращение к ячейкам</a></li>
-</ul></li>
-<li class="chapter" data-level="3.6" data-path="tables.html"><a href="tables.html#tables_manipuilations"><i class="fa fa-check"></i><b>3.6</b> Преобразования</a>
-<ul>
-<li class="chapter" data-level="3.6.1" data-path="tables.html"><a href="tables.html#tables_manipiulations_grammar"><i class="fa fa-check"></i><b>3.6.1</b> Грамматика манипуляций</a></li>
-<li class="chapter" data-level="3.6.2" data-path="tables.html"><a href="tables.html#tables_manipiulations_pipeline"><i class="fa fa-check"></i><b>3.6.2</b> Конвейер манипуляций</a></li>
-<li class="chapter" data-level="3.6.3" data-path="tables.html"><a href="tables.html#tables_tidy"><i class="fa fa-check"></i><b>3.6.3</b> Преобразование структуры</a></li>
-</ul></li>
-<li class="chapter" data-level="3.7" data-path="tables.html"><a href="tables.html#tables_join"><i class="fa fa-check"></i><b>3.7</b> Соединение</a></li>
-<li class="chapter" data-level="3.8" data-path="tables.html"><a href="tables.html#tables_write"><i class="fa fa-check"></i><b>3.8</b> Запись</a></li>
-<li class="chapter" data-level="3.9" data-path="tables.html"><a href="tables.html#tables_rules"><i class="fa fa-check"></i><b>3.9</b> Рекомендации по подготовке таблиц для чтения в R</a></li>
-<li class="chapter" data-level="3.10" data-path="tables.html"><a href="tables.html#tables_review"><i class="fa fa-check"></i><b>3.10</b> Краткий обзор</a></li>
-<li class="chapter" data-level="3.11" data-path="tables.html"><a href="tables.html#tables_questions"><i class="fa fa-check"></i><b>3.11</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="3.11.1" data-path="tables.html"><a href="tables.html#tables_questions_questions"><i class="fa fa-check"></i><b>3.11.1</b> Вопросы</a></li>
-<li class="chapter" data-level="3.11.2" data-path="tables.html"><a href="tables.html#tables_questions_tasks"><i class="fa fa-check"></i><b>3.11.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="4" data-path="tech.html"><a href="tech.html"><i class="fa fa-check"></i><b>4</b> Техники программирования</a>
-<ul>
-<li class="chapter" data-level="4.1" data-path="tech.html"><a href="tech.html#tech-fun"><i class="fa fa-check"></i><b>4.1</b> Функциональное программирование</a>
-<ul>
-<li class="chapter" data-level="4.1.1" data-path="tech.html"><a href="tech.html#tech-fun-functions"><i class="fa fa-check"></i><b>4.1.1</b> Функции</a></li>
-<li class="chapter" data-level="4.1.2" data-path="tech.html"><a href="tech.html#tech-fun-functionals"><i class="fa fa-check"></i><b>4.1.2</b> Функционалы</a></li>
-</ul></li>
-<li class="chapter" data-level="4.2" data-path="tech.html"><a href="tech.html#tech-meta"><i class="fa fa-check"></i><b>4.2</b> Метапрограммирование</a></li>
-<li class="chapter" data-level="4.3" data-path="tech.html"><a href="tech.html#tech_review"><i class="fa fa-check"></i><b>4.3</b> Краткий обзор</a></li>
-<li class="chapter" data-level="4.4" data-path="tech.html"><a href="tech.html#tech_questions"><i class="fa fa-check"></i><b>4.4</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="4.4.1" data-path="tech.html"><a href="tech.html#tech_questions_questions"><i class="fa fa-check"></i><b>4.4.1</b> Вопросы</a></li>
-<li class="chapter" data-level="4.4.2" data-path="tech.html"><a href="tech.html#tech_questions_tasks"><i class="fa fa-check"></i><b>4.4.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="part"><span><b>II Графика и статистика</b></span></li>
-<li class="chapter" data-level="5" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>5</b> Базовая графика</a>
-<ul>
-<li class="chapter" data-level="5.1" data-path="graphics.html"><a href="graphics.html#yfxcharts"><i class="fa fa-check"></i><b>5.1</b> Стандартные графики</a>
-<ul>
-<li class="chapter" data-level="5.1.1" data-path="graphics.html"><a href="graphics.html#scatterplots"><i class="fa fa-check"></i><b>5.1.1</b> Диаграммы рассеяния</a></li>
-<li class="chapter" data-level="5.1.2" data-path="graphics.html"><a href="graphics.html#linear_graphs"><i class="fa fa-check"></i><b>5.1.2</b> Линейные графики</a></li>
-<li class="chapter" data-level="5.1.3" data-path="graphics.html"><a href="graphics.html#graph_combining"><i class="fa fa-check"></i><b>5.1.3</b> Совмещение графиков</a></li>
-<li class="chapter" data-level="5.1.4" data-path="graphics.html"><a href="graphics.html#func_parameters"><i class="fa fa-check"></i><b>5.1.4</b> Функциональные параметры</a></li>
-</ul></li>
-<li class="chapter" data-level="5.2" data-path="graphics.html"><a href="graphics.html#histograms"><i class="fa fa-check"></i><b>5.2</b> Гистограммы</a></li>
-<li class="chapter" data-level="5.3" data-path="graphics.html"><a href="graphics.html#barplots"><i class="fa fa-check"></i><b>5.3</b> Столбчатые графики</a></li>
-<li class="chapter" data-level="5.4" data-path="graphics.html"><a href="graphics.html#piecharts"><i class="fa fa-check"></i><b>5.4</b> Круговые (секторные) диаграммы</a></li>
-<li class="chapter" data-level="5.5" data-path="graphics.html"><a href="graphics.html#colors"><i class="fa fa-check"></i><b>5.5</b> Цвет и прозрачность</a></li>
-<li class="chapter" data-level="5.6" data-path="graphics.html"><a href="graphics.html#disp_settings"><i class="fa fa-check"></i><b>5.6</b> Настройки отображения</a>
-<ul>
-<li class="chapter" data-level="5.6.1" data-path="graphics.html"><a href="graphics.html#graph_params"><i class="fa fa-check"></i><b>5.6.1</b> Графические параметры</a></li>
-<li class="chapter" data-level="5.6.2" data-path="graphics.html"><a href="graphics.html#axes"><i class="fa fa-check"></i><b>5.6.2</b> Разметка осей, рамка, сетка координат и произвольные линии</a></li>
-<li class="chapter" data-level="5.6.3" data-path="graphics.html"><a href="graphics.html#annotations"><i class="fa fa-check"></i><b>5.6.3</b> Аннотации данных (текст на графике)</a></li>
-</ul></li>
-<li class="chapter" data-level="5.7" data-path="graphics.html"><a href="graphics.html#legend"><i class="fa fa-check"></i><b>5.7</b> Легенда</a></li>
-<li class="chapter" data-level="5.8" data-path="graphics.html"><a href="graphics.html#questions_tasks_graphics"><i class="fa fa-check"></i><b>5.8</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="5.8.1" data-path="graphics.html"><a href="graphics.html#questions_graphics"><i class="fa fa-check"></i><b>5.8.1</b> Вопросы</a></li>
-<li class="chapter" data-level="5.8.2" data-path="graphics.html"><a href="graphics.html#tasks_graphics"><i class="fa fa-check"></i><b>5.8.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="6" data-path="advgraphics.html"><a href="advgraphics.html"><i class="fa fa-check"></i><b>6</b> Продвинутая графика</a>
-<ul>
-<li class="chapter" data-level="6.1" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_prerequisites"><i class="fa fa-check"></i><b>6.1</b> Предварительные требования</a></li>
-<li class="chapter" data-level="6.2" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_eurostat"><i class="fa fa-check"></i><b>6.2</b> Загрузка данных Евростата</a></li>
-<li class="chapter" data-level="6.3" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_nasapower"><i class="fa fa-check"></i><b>6.3</b> Загрузка данных NASA POWER</a></li>
-<li class="chapter" data-level="6.4" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_soildb"><i class="fa fa-check"></i><b>6.4</b> Загрузка данных Soil Data Access</a></li>
-<li class="chapter" data-level="6.5" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_template"><i class="fa fa-check"></i><b>6.5</b> Базовый шаблон ggplot</a></li>
-<li class="chapter" data-level="6.6" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_geoms"><i class="fa fa-check"></i><b>6.6</b> Геометрические типы и преобразования</a></li>
-<li class="chapter" data-level="6.7" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_aes"><i class="fa fa-check"></i><b>6.7</b> Графические переменные и группировки</a></li>
-<li class="chapter" data-level="6.8" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_coords"><i class="fa fa-check"></i><b>6.8</b> Системы координат</a></li>
-<li class="chapter" data-level="6.9" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_titles"><i class="fa fa-check"></i><b>6.9</b> Названия осей и легенды</a></li>
-<li class="chapter" data-level="6.10" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_axes"><i class="fa fa-check"></i><b>6.10</b> Разметка осей</a></li>
-<li class="chapter" data-level="6.11" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_labels"><i class="fa fa-check"></i><b>6.11</b> Подписи и аннотации</a></li>
-<li class="chapter" data-level="6.12" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_facets"><i class="fa fa-check"></i><b>6.12</b> Фасеты</a></li>
-<li class="chapter" data-level="6.13" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_themes"><i class="fa fa-check"></i><b>6.13</b> Темы</a></li>
-<li class="chapter" data-level="6.14" data-path="advgraphics.html"><a href="advgraphics.html#questions_tasks_advgraphics"><i class="fa fa-check"></i><b>6.14</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="6.14.1" data-path="advgraphics.html"><a href="advgraphics.html#questions_advgraphics"><i class="fa fa-check"></i><b>6.14.1</b> Вопросы</a></li>
-<li class="chapter" data-level="6.14.2" data-path="advgraphics.html"><a href="advgraphics.html#tasks_advgraphics"><i class="fa fa-check"></i><b>6.14.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="7" data-path="temporal.html"><a href="temporal.html"><i class="fa fa-check"></i><b>7</b> Временные данные</a>
-<ul>
-<li class="chapter" data-level="7.1" data-path="temporal.html"><a href="temporal.html#temporal_prerequisites"><i class="fa fa-check"></i><b>7.1</b> Предварительные требования</a></li>
-<li class="chapter" data-level="7.2" data-path="temporal.html"><a href="temporal.html#temporal_lubridate"><i class="fa fa-check"></i><b>7.2</b> Создание и преобразование дат и времени</a></li>
-<li class="chapter" data-level="7.3" data-path="temporal.html"><a href="temporal.html#temporal_complete"><i class="fa fa-check"></i><b>7.3</b> Восстановление пропусков и проверка корректности дат</a></li>
-<li class="chapter" data-level="7.4" data-path="temporal.html"><a href="temporal.html#temporal_interp"><i class="fa fa-check"></i><b>7.4</b> Интерполяция по времени</a>
-<ul>
-<li class="chapter" data-level="7.4.1" data-path="temporal.html"><a href="temporal.html#temporal_interp_gaps"><i class="fa fa-check"></i><b>7.4.1</b> Заполнение пропусков</a></li>
-<li class="chapter" data-level="7.4.2" data-path="temporal.html"><a href="temporal.html#temporal_interp_reg"><i class="fa fa-check"></i><b>7.4.2</b> Пересчет на другую временную сетку</a></li>
-</ul></li>
-<li class="chapter" data-level="7.5" data-path="temporal.html"><a href="temporal.html#temporal_loess"><i class="fa fa-check"></i><b>7.5</b> Аппроксимация по времени</a></li>
-<li class="chapter" data-level="7.6" data-path="temporal.html"><a href="temporal.html#temporal_tests"><i class="fa fa-check"></i><b>7.6</b> Статистики</a></li>
-<li class="chapter" data-level="7.7" data-path="temporal.html"><a href="temporal.html#temporal_animation"><i class="fa fa-check"></i><b>7.7</b> Анимация</a>
-<ul>
-<li class="chapter" data-level="7.7.1" data-path="temporal.html"><a href="temporal.html#temporal_animation_time"><i class="fa fa-check"></i><b>7.7.1</b> Переход по времени</a></li>
-<li class="chapter" data-level="7.7.2" data-path="temporal.html"><a href="temporal.html#temporal_animation_states"><i class="fa fa-check"></i><b>7.7.2</b> Переход по состояниям</a></li>
-</ul></li>
-<li class="chapter" data-level="7.8" data-path="temporal.html"><a href="temporal.html#questions_tasks_temporal"><i class="fa fa-check"></i><b>7.8</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="7.8.1" data-path="temporal.html"><a href="temporal.html#questions_temporal"><i class="fa fa-check"></i><b>7.8.1</b> Вопросы</a></li>
-<li class="chapter" data-level="7.8.2" data-path="temporal.html"><a href="temporal.html#tasks_temporal"><i class="fa fa-check"></i><b>7.8.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="8" data-path="circular.html"><a href="circular.html"><i class="fa fa-check"></i><b>8</b> Дирекционные данные</a>
-<ul>
-<li class="chapter" data-level="8.1" data-path="circular.html"><a href="circular.html#circular_prerequisites"><i class="fa fa-check"></i><b>8.1</b> Предварительные требования</a></li>
-<li class="chapter" data-level="8.2" data-path="circular.html"><a href="circular.html#circular_circ"><i class="fa fa-check"></i><b>8.2</b> Статистика направлений</a>
-<ul>
-<li class="chapter" data-level="8.2.1" data-path="circular.html"><a href="circular.html#circular_circ_theory"><i class="fa fa-check"></i><b>8.2.1</b> Теория</a></li>
-<li class="chapter" data-level="8.2.2" data-path="circular.html"><a href="circular.html#circular_circ_vis"><i class="fa fa-check"></i><b>8.2.2</b> Практика</a></li>
-<li class="chapter" data-level="8.2.3" data-path="circular.html"><a href="circular.html#circular_tests"><i class="fa fa-check"></i><b>8.2.3</b> Описательные статистики и тесты</a></li>
-<li class="chapter" data-level="8.2.4" data-path="circular.html"><a href="circular.html#circular_correlation"><i class="fa fa-check"></i><b>8.2.4</b> Корреляция и регрессия</a></li>
-</ul></li>
-<li class="chapter" data-level="8.3" data-path="circular.html"><a href="circular.html#questions_tasks_circular"><i class="fa fa-check"></i><b>8.3</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="8.3.1" data-path="circular.html"><a href="circular.html#questions_circular"><i class="fa fa-check"></i><b>8.3.1</b> Вопросы</a></li>
-<li class="chapter" data-level="8.3.2" data-path="circular.html"><a href="circular.html#tasks_circular"><i class="fa fa-check"></i><b>8.3.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="part"><span><b>III Пространственные данные</b></span></li>
-<li class="chapter" data-level="9" data-path="spatial-data.html"><a href="spatial-data.html"><i class="fa fa-check"></i><b>9</b> Пространственные данные</a>
-<ul>
-<li class="chapter" data-level="9.1" data-path="circular.html"><a href="circular.html#circular_prerequisites"><i class="fa fa-check"></i><b>9.1</b> Предварительные требования</a></li>
-<li class="chapter" data-level="9.2" data-path="spatial-data.html"><a href="spatial-data.html#spatial_models"><i class="fa fa-check"></i><b>9.2</b> Модели пространственных данных</a>
-<ul>
-<li class="chapter" data-level="9.2.1" data-path="spatial-data.html"><a href="spatial-data.html#simple_features"><i class="fa fa-check"></i><b>9.2.1</b> Векторные данные</a></li>
-<li class="chapter" data-level="9.2.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_data"><i class="fa fa-check"></i><b>9.2.2</b> Растровые данные</a></li>
-</ul></li>
-<li class="chapter" data-level="9.3" data-path="spatial-data.html"><a href="spatial-data.html#spatref"><i class="fa fa-check"></i><b>9.3</b> Пространственная привязка</a>
-<ul>
-<li class="chapter" data-level="9.3.1" data-path="spatial-data.html"><a href="spatial-data.html#spatref_components"><i class="fa fa-check"></i><b>9.3.1</b> Компоненты пространственной привязки</a></li>
-<li class="chapter" data-level="9.3.2" data-path="spatial-data.html"><a href="spatial-data.html#spatref_formats"><i class="fa fa-check"></i><b>9.3.2</b> Форматы описания пространственной привязки</a></li>
-<li class="chapter" data-level="9.3.3" data-path="spatial-data.html"><a href="spatial-data.html#spatref_transform"><i class="fa fa-check"></i><b>9.3.3</b> Преобразование координат</a></li>
-</ul></li>
-<li class="chapter" data-level="9.4" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_r"><i class="fa fa-check"></i><b>9.4</b> Векторные данные</a>
-<ul>
-<li class="chapter" data-level="9.4.1" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_packages"><i class="fa fa-check"></i><b>9.4.1</b> Базовые библиотеки</a></li>
-<li class="chapter" data-level="9.4.2" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_reading"><i class="fa fa-check"></i><b>9.4.2</b> Чтение</a></li>
-<li class="chapter" data-level="9.4.3" data-path="spatial-data.html"><a href="spatial-data.html#sf_structure"><i class="fa fa-check"></i><b>9.4.3</b> Внутренняя структура</a></li>
-<li class="chapter" data-level="9.4.4" data-path="spatial-data.html"><a href="spatial-data.html#sf_plotting"><i class="fa fa-check"></i><b>9.4.4</b> Визуализация</a></li>
-<li class="chapter" data-level="9.4.5" data-path="spatial-data.html"><a href="spatial-data.html#sf_crs"><i class="fa fa-check"></i><b>9.4.5</b> Системы координат и проекции</a></li>
-<li class="chapter" data-level="9.4.6" data-path="spatial-data.html"><a href="spatial-data.html#sf_attrs"><i class="fa fa-check"></i><b>9.4.6</b> Атрибутивные операции</a></li>
-<li class="chapter" data-level="9.4.7" data-path="spatial-data.html"><a href="spatial-data.html#sf_spat_selection"><i class="fa fa-check"></i><b>9.4.7</b> Пространственные операции</a></li>
-<li class="chapter" data-level="9.4.8" data-path="spatial-data.html"><a href="spatial-data.html#sf_creation"><i class="fa fa-check"></i><b>9.4.8</b> Создание пространственных объектов</a></li>
-<li class="chapter" data-level="9.4.9" data-path="spatial-data.html"><a href="spatial-data.html#sf_geom_attrs"><i class="fa fa-check"></i><b>9.4.9</b> Геометрические атрибуты</a></li>
-<li class="chapter" data-level="9.4.10" data-path="spatial-data.html"><a href="spatial-data.html#sf_export"><i class="fa fa-check"></i><b>9.4.10</b> Экспорт</a></li>
-</ul></li>
-<li class="chapter" data-level="9.5" data-path="spatial-data.html"><a href="spatial-data.html#raster_data_r"><i class="fa fa-check"></i><b>9.5</b> Растровые данные</a>
-<ul>
-<li class="chapter" data-level="9.5.1" data-path="spatial-data.html"><a href="spatial-data.html#raster_read"><i class="fa fa-check"></i><b>9.5.1</b> Чтение</a></li>
-<li class="chapter" data-level="9.5.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_viz"><i class="fa fa-check"></i><b>9.5.2</b> Визуализация</a></li>
-<li class="chapter" data-level="9.5.3" data-path="spatial-data.html"><a href="spatial-data.html#raster_proj"><i class="fa fa-check"></i><b>9.5.3</b> Системы координат и проекции</a></li>
-<li class="chapter" data-level="9.5.4" data-path="spatial-data.html"><a href="spatial-data.html#raster_values"><i class="fa fa-check"></i><b>9.5.4</b> Операции со значениями</a></li>
-<li class="chapter" data-level="9.5.5" data-path="spatial-data.html"><a href="spatial-data.html#raster_export"><i class="fa fa-check"></i><b>9.5.5</b> Экспорт</a></li>
-</ul></li>
-<li class="chapter" data-level="9.6" data-path="spatial-data.html"><a href="spatial-data.html#spatial_ggplot2"><i class="fa fa-check"></i><b>9.6</b> Визуализация средствами ggplot2</a></li>
-<li class="chapter" data-level="9.7" data-path="spatial-data.html"><a href="spatial-data.html#spatial_interactive"><i class="fa fa-check"></i><b>9.7</b> Интерактивные карты</a></li>
-<li class="chapter" data-level="9.8" data-path="spatial-data.html"><a href="spatial-data.html#questions_tasks_spatial"><i class="fa fa-check"></i><b>9.8</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="9.8.1" data-path="spatial-data.html"><a href="spatial-data.html#questions_spatial"><i class="fa fa-check"></i><b>9.8.1</b> Вопросы</a></li>
-<li class="chapter" data-level="9.8.2" data-path="spatial-data.html"><a href="spatial-data.html#tasks_spatial"><i class="fa fa-check"></i><b>9.8.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="10" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html"><i class="fa fa-check"></i><b>10</b> Тематические карты</a>
-<ul>
-<li class="chapter" data-level="" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#предварительные-условия"><i class="fa fa-check"></i>Предварительные условия</a></li>
-<li class="chapter" data-level="10.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro"><i class="fa fa-check"></i><b>10.1</b> Введение</a>
-<ul>
-<li class="chapter" data-level="10.1.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro_ne"><i class="fa fa-check"></i><b>10.1.1</b> Данные Natural Earth</a></li>
-<li class="chapter" data-level="10.1.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro_wc"><i class="fa fa-check"></i><b>10.1.2</b> Данные WorldClim</a></li>
-</ul></li>
-<li class="chapter" data-level="10.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_tmap"><i class="fa fa-check"></i><b>10.2</b> Способы изображения</a>
-<ul>
-<li class="chapter" data-level="10.2.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_vectors"><i class="fa fa-check"></i><b>10.2.1</b> Векторные данные</a></li>
-<li class="chapter" data-level="10.2.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_rasters"><i class="fa fa-check"></i><b>10.2.2</b> Растровые данные</a></li>
-</ul></li>
-<li class="chapter" data-level="10.3" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_color_scales"><i class="fa fa-check"></i><b>10.3</b> Цветовые шкалы</a></li>
-<li class="chapter" data-level="10.4" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class"><i class="fa fa-check"></i><b>10.4</b> Классификация</a>
-<ul>
-<li class="chapter" data-level="10.4.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class_methods"><i class="fa fa-check"></i><b>10.4.1</b> Методы классификации</a></li>
-<li class="chapter" data-level="10.4.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class_application"><i class="fa fa-check"></i><b>10.4.2</b> Применение на картах</a></li>
-<li class="chapter" data-level="10.4.3" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class_application"><i class="fa fa-check"></i><b>10.4.3</b> Классификация при отображении</a></li>
-<li class="chapter" data-level="10.4.4" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_na"><i class="fa fa-check"></i><b>10.4.4</b> Пропущенные данные</a></li>
-</ul></li>
-<li class="chapter" data-level="10.5" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_layouts"><i class="fa fa-check"></i><b>10.5</b> Компоновка</a></li>
-<li class="chapter" data-level="10.6" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_facets"><i class="fa fa-check"></i><b>10.6</b> Фасеты и серии карт</a></li>
-<li class="chapter" data-level="10.7" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_animations"><i class="fa fa-check"></i><b>10.7</b> Картографические анимации</a></li>
-<li class="chapter" data-level="10.8" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_interactive"><i class="fa fa-check"></i><b>10.8</b> Интерактивные карты</a></li>
-<li class="chapter" data-level="10.9" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#questions_tasks_tmap"><i class="fa fa-check"></i><b>10.9</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="10.9.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#questions_tmap"><i class="fa fa-check"></i><b>10.9.1</b> Вопросы</a></li>
-<li class="chapter" data-level="10.9.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#tasks_tmap"><i class="fa fa-check"></i><b>10.9.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="11" data-path="three.html"><a href="three.html"><i class="fa fa-check"></i><b>11</b> Трехмерные модели</a>
-<ul>
-<li class="chapter" data-level="" data-path="three.html"><a href="three.html#предварительные-условия-1"><i class="fa fa-check"></i>Предварительные условия</a></li>
-<li class="chapter" data-level="11.1" data-path="three.html"><a href="three.html#three_intro"><i class="fa fa-check"></i><b>11.1</b> Введение</a></li>
-<li class="chapter" data-level="11.2" data-path="three.html"><a href="three.html#questions_tasks_three"><i class="fa fa-check"></i><b>11.2</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="11.2.1" data-path="three.html"><a href="three.html#questions_three"><i class="fa fa-check"></i><b>11.2.1</b> Вопросы</a></li>
-<li class="chapter" data-level="11.2.2" data-path="three.html"><a href="three.html#tasks_three"><i class="fa fa-check"></i><b>11.2.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="12" data-path="vector-analysis.html"><a href="vector-analysis.html"><i class="fa fa-check"></i><b>12</b> Векторный анализ</a>
-<ul>
-<li class="chapter" data-level="12.1" data-path="vector-analysis.html"><a href="vector-analysis.html#spatial_queries"><i class="fa fa-check"></i><b>12.1</b> Пространственные запросы</a>
-<ul>
-<li class="chapter" data-level="12.1.1" data-path="vector-analysis.html"><a href="vector-analysis.html#context_objects"><i class="fa fa-check"></i><b>12.1.1</b> Контекстные и целевые объекты</a></li>
-<li class="chapter" data-level="12.1.2" data-path="vector-analysis.html"><a href="vector-analysis.html#zones"><i class="fa fa-check"></i><b>12.1.2</b> Зоны окружения объектов</a></li>
-</ul></li>
-<li class="chapter" data-level="12.2" data-path="vector-analysis.html"><a href="vector-analysis.html#use_case"><i class="fa fa-check"></i><b>12.2</b> Постановка задач и изучение данных</a></li>
-<li class="chapter" data-level="12.3" data-path="vector-analysis.html"><a href="vector-analysis.html#distance_analysis"><i class="fa fa-check"></i><b>12.3</b> Анализ расстояний</a></li>
-<li class="chapter" data-level="12.4" data-path="vector-analysis.html"><a href="vector-analysis.html#topology_analysis"><i class="fa fa-check"></i><b>12.4</b> Анализ взаимного положения (топологический)</a></li>
-<li class="chapter" data-level="12.5" data-path="vector-analysis.html"><a href="vector-analysis.html#absolute_zones"><i class="fa fa-check"></i><b>12.5</b> Анализ абсолютных зон окружения</a></li>
-<li class="chapter" data-level="12.6" data-path="vector-analysis.html"><a href="vector-analysis.html#conc_zones"><i class="fa fa-check"></i><b>12.6</b> Анализ конкурентных зон окружения</a></li>
-<li class="chapter" data-level="12.7" data-path="vector-analysis.html"><a href="vector-analysis.html#transport_zones"><i class="fa fa-check"></i><b>12.7</b> Анализ зон транспортной доступности</a></li>
-<li class="chapter" data-level="12.8" data-path="vector-analysis.html"><a href="vector-analysis.html#routes"><i class="fa fa-check"></i><b>12.8</b> Построение маршрутов и матриц времени движения</a></li>
-<li class="chapter" data-level="12.9" data-path="vector-analysis.html"><a href="vector-analysis.html#qtasks_vector_analysis"><i class="fa fa-check"></i><b>12.9</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="12.9.1" data-path="vector-analysis.html"><a href="vector-analysis.html#questions_vector_analysis"><i class="fa fa-check"></i><b>12.9.1</b> Вопросы</a></li>
-<li class="chapter" data-level="12.9.2" data-path="vector-analysis.html"><a href="vector-analysis.html#tasks_vector_analysis"><i class="fa fa-check"></i><b>12.9.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="13" data-path="network-analysis.html"><a href="network-analysis.html"><i class="fa fa-check"></i><b>13</b> Cетевой анализ</a>
-<ul>
-<li class="chapter" data-level="13.1" data-path="network-analysis.html"><a href="network-analysis.html#qtasks_network_analysis"><i class="fa fa-check"></i><b>13.1</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="13.1.1" data-path="network-analysis.html"><a href="network-analysis.html#questions_network_analysis"><i class="fa fa-check"></i><b>13.1.1</b> Вопросы</a></li>
-<li class="chapter" data-level="13.1.2" data-path="network-analysis.html"><a href="network-analysis.html#tasks_network_analysis"><i class="fa fa-check"></i><b>13.1.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="14" data-path="raster-analysis.html"><a href="raster-analysis.html"><i class="fa fa-check"></i><b>14</b> Растровый анализ</a>
-<ul>
-<li class="chapter" data-level="" data-path="raster-analysis.html"><a href="raster-analysis.html#предварительные-условия-2"><i class="fa fa-check"></i>Предварительные условия</a></li>
-<li class="chapter" data-level="14.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_intro"><i class="fa fa-check"></i><b>14.1</b> Введение</a></li>
-<li class="chapter" data-level="14.2" data-path="raster-analysis.html"><a href="raster-analysis.html#растровая-алгебра"><i class="fa fa-check"></i><b>14.2</b> Растровая алгебра</a>
-<ul>
-<li class="chapter" data-level="14.2.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_local"><i class="fa fa-check"></i><b>14.2.1</b> Локальные операции</a></li>
-<li class="chapter" data-level="14.2.2" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal"><i class="fa fa-check"></i><b>14.2.2</b> Фокальные операции</a></li>
-<li class="chapter" data-level="14.2.3" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_zonal"><i class="fa fa-check"></i><b>14.2.3</b> Зональные операции</a></li>
-<li class="chapter" data-level="14.2.4" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_global"><i class="fa fa-check"></i><b>14.2.4</b> Глобальные операции</a></li>
-</ul></li>
-<li class="chapter" data-level="14.3" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_extract"><i class="fa fa-check"></i><b>14.3</b> Извлечение данных</a></li>
-<li class="chapter" data-level="14.4" data-path="raster-analysis.html"><a href="raster-analysis.html#questions_tasks_raster"><i class="fa fa-check"></i><b>14.4</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="14.4.1" data-path="raster-analysis.html"><a href="raster-analysis.html#questions_raster"><i class="fa fa-check"></i><b>14.4.1</b> Вопросы</a></li>
-<li class="chapter" data-level="14.4.2" data-path="raster-analysis.html"><a href="raster-analysis.html#tasks_raster"><i class="fa fa-check"></i><b>14.4.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="15" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html"><i class="fa fa-check"></i><b>15</b> Пространственная интерполяция и аппроксимация</a>
-<ul>
-<li class="chapter" data-level="15.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_intro"><i class="fa fa-check"></i><b>15.1</b> Введение</a></li>
-<li class="chapter" data-level="15.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_grid"><i class="fa fa-check"></i><b>15.2</b> Построение сетки</a></li>
-<li class="chapter" data-level="15.3" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_methods"><i class="fa fa-check"></i><b>15.3</b> Интерполяционные методы</a>
-<ul>
-<li class="chapter" data-level="15.3.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_nn"><i class="fa fa-check"></i><b>15.3.1</b> Метод ближайшего соседа (nearest neighbour)</a></li>
-<li class="chapter" data-level="15.3.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_tin"><i class="fa fa-check"></i><b>15.3.2</b> Интерполяция на основе триангуляции</a></li>
-<li class="chapter" data-level="15.3.3" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_idw"><i class="fa fa-check"></i><b>15.3.3</b> Метод обратно взвешенных расстояний (IDW)</a></li>
-<li class="chapter" data-level="15.3.4" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_rbf"><i class="fa fa-check"></i><b>15.3.4</b> Метод радиальных базисных функций (РБФ)</a></li>
-<li class="chapter" data-level="15.3.5" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_bspline"><i class="fa fa-check"></i><b>15.3.5</b> Метод иерархических базисных сплайнов (B-сплайнов)</a></li>
-</ul></li>
-<li class="chapter" data-level="15.4" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_methods"><i class="fa fa-check"></i><b>15.4</b> Аппроксимационные методы</a>
-<ul>
-<li class="chapter" data-level="15.4.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_global"><i class="fa fa-check"></i><b>15.4.1</b> Глобальный тренд</a></li>
-<li class="chapter" data-level="15.4.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_local"><i class="fa fa-check"></i><b>15.4.2</b> Локальный тренд</a></li>
-</ul></li>
-<li class="chapter" data-level="15.5" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#areal_interpolation"><i class="fa fa-check"></i><b>15.5</b> Интерполяция по ареалам</a></li>
-<li class="chapter" data-level="15.6" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interp_review"><i class="fa fa-check"></i><b>15.6</b> Краткий обзор</a></li>
-<li class="chapter" data-level="15.7" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#questions_tasks_interp"><i class="fa fa-check"></i><b>15.7</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="15.7.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#questions_interp"><i class="fa fa-check"></i><b>15.7.1</b> Вопросы</a></li>
-<li class="chapter" data-level="15.7.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#tasks_interp"><i class="fa fa-check"></i><b>15.7.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="part"><span><b>IV Пространственная статистика</b></span></li>
-<li class="chapter" data-level="16" data-path="kriging.html"><a href="kriging.html"><i class="fa fa-check"></i><b>16</b> Геостатистика</a>
-<ul>
-<li class="chapter" data-level="16.1" data-path="kriging.html"><a href="kriging.html#введение-1"><i class="fa fa-check"></i><b>16.1</b> Введение</a></li>
-<li class="chapter" data-level="16.2" data-path="kriging.html"><a href="kriging.html#базовые-понятия-и-элементы-геостатистики"><i class="fa fa-check"></i><b>16.2</b> Базовые понятия и элементы геостатистики</a>
-<ul>
-<li class="chapter" data-level="16.2.1" data-path="kriging.html"><a href="kriging.html#базовые-понятия"><i class="fa fa-check"></i><b>16.2.1</b> Базовые понятия</a></li>
-<li class="chapter" data-level="16.2.2" data-path="kriging.html"><a href="kriging.html#случайный-процесс-в-пространстве-и-его-моменты"><i class="fa fa-check"></i><b>16.2.2</b> Случайный процесс в пространстве и его моменты</a></li>
-</ul></li>
-<li class="chapter" data-level="16.3" data-path="kriging.html"><a href="kriging.html#стационарность-и-эргодичность"><i class="fa fa-check"></i><b>16.3</b> Стационарность и эргодичность</a>
-<ul>
-<li class="chapter" data-level="16.3.1" data-path="kriging.html"><a href="kriging.html#стационарность"><i class="fa fa-check"></i><b>16.3.1</b> Стационарность</a></li>
-<li class="chapter" data-level="16.3.2" data-path="kriging.html"><a href="kriging.html#эргодичность"><i class="fa fa-check"></i><b>16.3.2</b> Эргодичность</a></li>
-</ul></li>
-<li class="chapter" data-level="16.4" data-path="kriging.html"><a href="kriging.html#геостатистическое-оценивание"><i class="fa fa-check"></i><b>16.4</b> Геостатистическое оценивание</a>
-<ul>
-<li class="chapter" data-level="16.4.1" data-path="kriging.html"><a href="kriging.html#простой-кригинг"><i class="fa fa-check"></i><b>16.4.1</b> Простой кригинг</a></li>
-<li class="chapter" data-level="16.4.2" data-path="kriging.html"><a href="kriging.html#дисперсия-простого-кригинга"><i class="fa fa-check"></i><b>16.4.2</b> Дисперсия простого кригинга</a></li>
-<li class="chapter" data-level="16.4.3" data-path="kriging.html"><a href="kriging.html#стационарность-приращений"><i class="fa fa-check"></i><b>16.4.3</b> Стационарность приращений</a></li>
-<li class="chapter" data-level="16.4.4" data-path="kriging.html"><a href="kriging.html#переход-от-ковариации-к-вариограмме"><i class="fa fa-check"></i><b>16.4.4</b> Переход от ковариации к вариограмме</a></li>
-<li class="chapter" data-level="16.4.5" data-path="kriging.html"><a href="kriging.html#обычный-кригинг"><i class="fa fa-check"></i><b>16.4.5</b> Обычный кригинг</a></li>
-<li class="chapter" data-level="16.4.6" data-path="kriging.html"><a href="kriging.html#дисперсия-обычного-кригинга"><i class="fa fa-check"></i><b>16.4.6</b> Дисперсия обычного кригинга</a></li>
-<li class="chapter" data-level="16.4.7" data-path="kriging.html"><a href="kriging.html#универсальный-кригинг"><i class="fa fa-check"></i><b>16.4.7</b> Универсальный кригинг</a></li>
-<li class="chapter" data-level="16.4.8" data-path="kriging.html"><a href="kriging.html#дисперсия-универсального-кригинга"><i class="fa fa-check"></i><b>16.4.8</b> Дисперсия универсального кригинга</a></li>
-<li class="chapter" data-level="16.4.9" data-path="kriging.html"><a href="kriging.html#кросс-валидация"><i class="fa fa-check"></i><b>16.4.9</b> Кросс-валидация</a></li>
-<li class="chapter" data-level="16.4.10" data-path="kriging.html"><a href="kriging.html#вариограмма"><i class="fa fa-check"></i><b>16.4.10</b> Вариограмма</a></li>
-<li class="chapter" data-level="16.4.11" data-path="kriging.html"><a href="kriging.html#модели-вариограмм"><i class="fa fa-check"></i><b>16.4.11</b> Модели вариограмм</a></li>
-<li class="chapter" data-level="16.4.12" data-path="kriging.html"><a href="kriging.html#сферическая-модель"><i class="fa fa-check"></i><b>16.4.12</b> Сферическая модель</a></li>
-<li class="chapter" data-level="16.4.13" data-path="kriging.html"><a href="kriging.html#экспоненциальная-модель"><i class="fa fa-check"></i><b>16.4.13</b> Экспоненциальная модель</a></li>
-<li class="chapter" data-level="16.4.14" data-path="kriging.html"><a href="kriging.html#гауссова-модель"><i class="fa fa-check"></i><b>16.4.14</b> Гауссова модель</a></li>
-<li class="chapter" data-level="16.4.15" data-path="kriging.html"><a href="kriging.html#степенная-модель"><i class="fa fa-check"></i><b>16.4.15</b> Степенная модель</a></li>
-<li class="chapter" data-level="16.4.16" data-path="kriging.html"><a href="kriging.html#эффект-самородка-модель-наггет"><i class="fa fa-check"></i><b>16.4.16</b> Эффект самородка (модель наггет)</a></li>
-<li class="chapter" data-level="16.4.17" data-path="kriging.html"><a href="kriging.html#диаграмма-рассеяния-с-лагом"><i class="fa fa-check"></i><b>16.4.17</b> Диаграмма рассеяния с лагом</a></li>
-<li class="chapter" data-level="16.4.18" data-path="kriging.html"><a href="kriging.html#вариограммное-облако"><i class="fa fa-check"></i><b>16.4.18</b> Вариограммное облако</a></li>
-<li class="chapter" data-level="16.4.19" data-path="kriging.html"><a href="kriging.html#эмпирическая-вариограмма"><i class="fa fa-check"></i><b>16.4.19</b> Эмпирическая вариограмма</a></li>
-<li class="chapter" data-level="16.4.20" data-path="kriging.html"><a href="kriging.html#вариокарта"><i class="fa fa-check"></i><b>16.4.20</b> Вариокарта</a></li>
-<li class="chapter" data-level="16.4.21" data-path="kriging.html"><a href="kriging.html#приближение-теоретической-модели"><i class="fa fa-check"></i><b>16.4.21</b> Приближение теоретической модели</a></li>
-<li class="chapter" data-level="16.4.22" data-path="kriging.html"><a href="kriging.html#обычный-кригинг-1"><i class="fa fa-check"></i><b>16.4.22</b> Обычный кригинг</a></li>
-<li class="chapter" data-level="16.4.23" data-path="kriging.html"><a href="kriging.html#обычный-кригинг-2"><i class="fa fa-check"></i><b>16.4.23</b> Обычный кригинг</a></li>
-<li class="chapter" data-level="16.4.24" data-path="kriging.html"><a href="kriging.html#оценка-и-дисперсия-кригинга"><i class="fa fa-check"></i><b>16.4.24</b> Оценка и дисперсия кригинга</a></li>
-<li class="chapter" data-level="16.4.25" data-path="kriging.html"><a href="kriging.html#кросс-валидация-1"><i class="fa fa-check"></i><b>16.4.25</b> Кросс-валидация</a></li>
-</ul></li>
-<li class="chapter" data-level="16.5" data-path="kriging.html"><a href="kriging.html#geostat_review"><i class="fa fa-check"></i><b>16.5</b> Краткий обзор</a></li>
-<li class="chapter" data-level="16.6" data-path="kriging.html"><a href="kriging.html#geostat_qt"><i class="fa fa-check"></i><b>16.6</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="16.6.1" data-path="kriging.html"><a href="kriging.html#geostat_q"><i class="fa fa-check"></i><b>16.6.1</b> Вопросы</a></li>
-<li class="chapter" data-level="16.6.2" data-path="kriging.html"><a href="kriging.html#geostat_t"><i class="fa fa-check"></i><b>16.6.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="17" data-path="autocorrelation.html"><a href="autocorrelation.html"><i class="fa fa-check"></i><b>17</b> Пространственная регрессия</a>
-<ul>
-<li class="chapter" data-level="17.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_intro"><i class="fa fa-check"></i><b>17.1</b> Введение</a></li>
-<li class="chapter" data-level="17.2" data-path="autocorrelation.html"><a href="autocorrelation.html#линейная-регрессия"><i class="fa fa-check"></i><b>17.2</b> Линейная регрессия</a></li>
-<li class="chapter" data-level="17.3" data-path="autocorrelation.html"><a href="autocorrelation.html#пространственная-регрессия"><i class="fa fa-check"></i><b>17.3</b> Пространственная регрессия</a></li>
-<li class="chapter" data-level="17.4" data-path="autocorrelation.html"><a href="autocorrelation.html#практический-анализ"><i class="fa fa-check"></i><b>17.4</b> Практический анализ</a></li>
-<li class="chapter" data-level="17.5" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors"><i class="fa fa-check"></i><b>17.5</b> Пространственное соседство</a>
-<ul>
-<li class="chapter" data-level="17.5.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_contguity"><i class="fa fa-check"></i><b>17.5.1</b> Соседи по смежности</a></li>
-<li class="chapter" data-level="17.5.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_graph"><i class="fa fa-check"></i><b>17.5.2</b> Соседи по графу</a></li>
-<li class="chapter" data-level="17.5.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_metrics"><i class="fa fa-check"></i><b>17.5.3</b> Соседи по метрике</a></li>
-</ul></li>
-<li class="chapter" data-level="17.6" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_weights"><i class="fa fa-check"></i><b>17.6</b> Пространственные веса</a></li>
-<li class="chapter" data-level="17.7" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_measures"><i class="fa fa-check"></i><b>17.7</b> Пространственная автокорреляция</a>
-<ul>
-<li class="chapter" data-level="17.7.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_moran"><i class="fa fa-check"></i><b>17.7.1</b> Индекс Морана (Moran’s I)</a></li>
-<li class="chapter" data-level="17.7.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_permutation"><i class="fa fa-check"></i><b>17.7.2</b> Перестановочный тест Морана</a></li>
-<li class="chapter" data-level="17.7.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_moranscatter"><i class="fa fa-check"></i><b>17.7.3</b> Диаграмма рассеяния Морана</a></li>
-<li class="chapter" data-level="17.7.4" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_autoregression"><i class="fa fa-check"></i><b>17.7.4</b> Пространственная авторегрессия</a></li>
-</ul></li>
-<li class="chapter" data-level="17.8" data-path="autocorrelation.html"><a href="autocorrelation.html#spreg_review"><i class="fa fa-check"></i><b>17.8</b> Краткий обзор</a></li>
-<li class="chapter" data-level="17.9" data-path="autocorrelation.html"><a href="autocorrelation.html#questions_tasks_spreg"><i class="fa fa-check"></i><b>17.9</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="17.9.1" data-path="autocorrelation.html"><a href="autocorrelation.html#questions_spreg"><i class="fa fa-check"></i><b>17.9.1</b> Вопросы</a></li>
-<li class="chapter" data-level="17.9.2" data-path="autocorrelation.html"><a href="autocorrelation.html#tasks_spreg"><i class="fa fa-check"></i><b>17.9.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="18" data-path="gwr.html"><a href="gwr.html"><i class="fa fa-check"></i><b>18</b> Географически взвешенная регрессия</a>
-<ul>
-<li class="chapter" data-level="18.1" data-path="gwr.html"><a href="gwr.html#autocorrelation_gwr"><i class="fa fa-check"></i><b>18.1</b> Географически взвешенная регрессия (GWR)</a>
-<ul>
-<li class="chapter" data-level="18.1.1" data-path="gwr.html"><a href="gwr.html#весовые-функции"><i class="fa fa-check"></i><b>18.1.1</b> Весовые функции</a></li>
-<li class="chapter" data-level="18.1.2" data-path="gwr.html"><a href="gwr.html#практический-анализ-1"><i class="fa fa-check"></i><b>18.1.2</b> Практический анализ</a></li>
-</ul></li>
-<li class="chapter" data-level="18.2" data-path="gwr.html"><a href="gwr.html#gwr_review"><i class="fa fa-check"></i><b>18.2</b> Краткий обзор</a></li>
-<li class="chapter" data-level="18.3" data-path="gwr.html"><a href="gwr.html#questions_tasks_gwr"><i class="fa fa-check"></i><b>18.3</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="18.3.1" data-path="gwr.html"><a href="gwr.html#questions_gwr"><i class="fa fa-check"></i><b>18.3.1</b> Вопросы</a></li>
-<li class="chapter" data-level="18.3.2" data-path="gwr.html"><a href="gwr.html#tasks_gwr"><i class="fa fa-check"></i><b>18.3.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="19" data-path="point-patterns.html"><a href="point-patterns.html"><i class="fa fa-check"></i><b>19</b> Точечные процессы</a>
-<ul>
-<li class="chapter" data-level="19.1" data-path="point-patterns.html"><a href="point-patterns.html#точечный-паттерн"><i class="fa fa-check"></i><b>19.1</b> Точечный паттерн</a></li>
-<li class="chapter" data-level="19.2" data-path="point-patterns.html"><a href="point-patterns.html#точечные-процессы"><i class="fa fa-check"></i><b>19.2</b> Точечные процессы</a>
-<ul>
-<li class="chapter" data-level="19.2.1" data-path="point-patterns.html"><a href="point-patterns.html#равномерно-случайные-точки"><i class="fa fa-check"></i><b>19.2.1</b> Равномерно случайные точки</a></li>
-<li class="chapter" data-level="19.2.2" data-path="point-patterns.html"><a href="point-patterns.html#биномиальный-точечный-процесс"><i class="fa fa-check"></i><b>19.2.2</b> Биномиальный точечный процесс</a></li>
-<li class="chapter" data-level="19.2.3" data-path="point-patterns.html"><a href="point-patterns.html#пуассоновский-процесс"><i class="fa fa-check"></i><b>19.2.3</b> Пуассоновский процесс</a></li>
-<li class="chapter" data-level="19.2.4" data-path="point-patterns.html"><a href="point-patterns.html#неоднородный-пуассоновский-процесс"><i class="fa fa-check"></i><b>19.2.4</b> Неоднородный пуассоновский процесс</a></li>
-<li class="chapter" data-level="19.2.5" data-path="point-patterns.html"><a href="point-patterns.html#процесс-кокса-cox-process"><i class="fa fa-check"></i><b>19.2.5</b> Процесс Кокса (Cox process)</a></li>
-<li class="chapter" data-level="19.2.6" data-path="point-patterns.html"><a href="point-patterns.html#кластерные-процессы"><i class="fa fa-check"></i><b>19.2.6</b> Кластерные процессы</a></li>
-<li class="chapter" data-level="19.2.7" data-path="point-patterns.html"><a href="point-patterns.html#регулярные-процессы"><i class="fa fa-check"></i><b>19.2.7</b> Регулярные процессы</a></li>
-</ul></li>
-<li class="chapter" data-level="19.3" data-path="point-patterns.html"><a href="point-patterns.html#диагностика"><i class="fa fa-check"></i><b>19.3</b> Диагностика</a>
-<ul>
-<li class="chapter" data-level="19.3.1" data-path="point-patterns.html"><a href="point-patterns.html#анализ-интенсивности"><i class="fa fa-check"></i><b>19.3.1</b> Анализ интенсивности</a></li>
-<li class="chapter" data-level="19.3.2" data-path="point-patterns.html"><a href="point-patterns.html#анализ-зависимости"><i class="fa fa-check"></i><b>19.3.2</b> Анализ зависимости</a></li>
-</ul></li>
-<li class="chapter" data-level="19.4" data-path="point-patterns.html"><a href="point-patterns.html#моделирование"><i class="fa fa-check"></i><b>19.4</b> Моделирование</a></li>
-<li class="chapter" data-level="19.5" data-path="point-patterns.html"><a href="point-patterns.html#point_review"><i class="fa fa-check"></i><b>19.5</b> Краткий обзор</a></li>
-<li class="chapter" data-level="19.6" data-path="point-patterns.html"><a href="point-patterns.html#questions_tasks_patterns"><i class="fa fa-check"></i><b>19.6</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="19.6.1" data-path="point-patterns.html"><a href="point-patterns.html#questions_patterns"><i class="fa fa-check"></i><b>19.6.1</b> Вопросы</a></li>
-<li class="chapter" data-level="19.6.2" data-path="point-patterns.html"><a href="point-patterns.html#tasks_patterns"><i class="fa fa-check"></i><b>19.6.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="appendix"><span><b>Решение проблем</b></span></li>
-<li class="chapter" data-level="A" data-path="package-troubles.html"><a href="package-troubles.html"><i class="fa fa-check"></i><b>A</b> Установка пакетов</a>
-<ul>
-<li class="chapter" data-level="A.1" data-path="package-troubles.html"><a href="package-troubles.html#package-troubles-standard"><i class="fa fa-check"></i><b>A.1</b> Недоступен стандартный каталог</a></li>
-<li class="chapter" data-level="A.2" data-path="package-troubles.html"><a href="package-troubles.html#package-troubles-copy"><i class="fa fa-check"></i><b>A.2</b> Устанавливается, но не копируется</a></li>
-</ul></li>
-<li class="divider"></li>
-<li><a href="https://istina.msu.ru/profile/tsamsonov/" target="blank">Тимофей Самсонов</a></li>
-<li><a href="https://doi.org/10.5281/zenodo.901911"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.901911.svg" title="DOI"></a><li>
-
-</ul>
-
-      </nav>
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Визуализация и анализ географических данных на языке R</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
     </div>
 
-    <div class="book-body">
-      <div class="body-inner">
-        <div class="book-header" role="navigation">
-          <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Визуализация и анализ географических данных на языке R</a>
-          </h1>
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">Введение</a></li>
+<li class="book-part">Основы языка R</li>
+<li><a class="" href="basics.html"><span class="header-section-number">1</span> Типы данных, условия, ввод и вывод</a></li>
+<li><a class="" href="structures.html"><span class="header-section-number">2</span> Структуры данных и циклы</a></li>
+<li><a class="" href="tables.html"><span class="header-section-number">3</span> Табличные данные</a></li>
+<li><a class="" href="controls.html"><span class="header-section-number">4</span> Техники программирования</a></li>
+<li class="book-part">Графика и статистика</li>
+<li><a class="" href="graphics.html"><span class="header-section-number">5</span> Базовая графика</a></li>
+<li><a class="" href="advgraphics.html"><span class="header-section-number">6</span> Продвинутая графика</a></li>
+<li><a class="" href="temporal.html"><span class="header-section-number">7</span> Временные данные</a></li>
+<li><a class="active" href="circular.html"><span class="header-section-number">8</span> Дирекционные данные</a></li>
+<li class="book-part">Пространственные данные</li>
+<li><a class="" href="spatial.html"><span class="header-section-number">9</span> Пространственные данные</a></li>
+<li><a class="" href="three.html"><span class="header-section-number">10</span> Трехмерные модели</a></li>
+<li><a class="" href="vector.html"><span class="header-section-number">11</span> Векторный анализ</a></li>
+<li><a class="" href="network.html"><span class="header-section-number">12</span> Cетевой анализ</a></li>
+<li><a class="" href="raster.html"><span class="header-section-number">13</span> Растровый анализ</a></li>
+<li><a class="" href="interp.html"><span class="header-section-number">14</span> Пространственная интерполяция и аппроксимация</a></li>
+<li class="book-part">Пространственная статистика</li>
+<li><a class="" href="gstat.html"><span class="header-section-number">15</span> Геостатистика</a></li>
+<li><a class="" href="spreg.html"><span class="header-section-number">16</span> Пространственная регрессия</a></li>
+<li><a class="" href="gwr.html"><span class="header-section-number">17</span> Географически взвешенная регрессия</a></li>
+<li><a class="" href="points.html"><span class="header-section-number">18</span> Точечные процессы</a></li>
+<li class="book-part">Решение проблем</li>
+<li><a class="" href="package-troubles.html"><span class="header-section-number">A</span> Установка пакетов</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/tsamsonov/r-geo-course">View book source <i class="fab fa-github"></i></a></p>
         </div>
-
-        <div class="page-wrapper" tabindex="-1" role="main">
-          <div class="page-inner">
-
-            <section class="normal" id="section-">
-<div id="circular" class="section level1" number="8">
-<h1><span class="header-section-number">Глава 8</span> Дирекционные данные</h1>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="circular" class="section level1" number="8">
+<h1>
+<span class="header-section-number">Глава 8</span> Дирекционные данные<a class="anchor" aria-label="anchor" href="#circular"><i class="fas fa-link"></i></a>
+</h1>
 <div id="circular_prerequisites" class="section level2" number="8.1">
-<h2><span class="header-section-number">8.1</span> Предварительные требования</h2>
+<h2>
+<span class="header-section-number">8.1</span> Предварительные требования<a class="anchor" aria-label="anchor" href="#circular_prerequisites"><i class="fas fa-link"></i></a>
+</h2>
 <p>Для работы по теме текущей лекции вам понадобятся пакеты из <strong>tidyverse</strong>. Помимо этого, необходимы методы круговой статистики из пакетов <a href="https://cran.r-project.org/web/packages/circular/"><strong>circular</strong></a> и <a href="https://cran.r-project.org/web/packages/NPCirc/index.html"><strong>NPCirc</strong></a>, и методы из пакета <a href="https://cran.r-project.org/web/packages/pracma/index.html"><strong>pracma</strong></a>.</p>
-<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb382-1"><a href="circular.html#cb382-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb382-2"><a href="circular.html#cb382-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(circular)</span>
-<span id="cb382-3"><a href="circular.html#cb382-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
-<span id="cb382-4"><a href="circular.html#cb382-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(NPCirc)</span>
-<span id="cb382-5"><a href="circular.html#cb382-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pracma)</span></code></pre></div>
+<div class="sourceCode" id="cb382"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">circular</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.jstatsoft.org/v61/i09/">NPCirc</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">pracma</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="circular_circ" class="section level2" number="8.2">
-<h2><span class="header-section-number">8.2</span> Статистика направлений</h2>
+<h2>
+<span class="header-section-number">8.2</span> Статистика направлений<a class="anchor" aria-label="anchor" href="#circular_circ"><i class="fas fa-link"></i></a>
+</h2>
 <div id="circular_circ_theory" class="section level3" number="8.2.1">
-<h3><span class="header-section-number">8.2.1</span> Теория</h3>
+<h3>
+<span class="header-section-number">8.2.1</span> Теория<a class="anchor" aria-label="anchor" href="#circular_circ_theory"><i class="fas fa-link"></i></a>
+</h3>
 <div id="circular_circ_mises" class="section level4" number="8.2.1.1">
-<h4><span class="header-section-number">8.2.1.1</span> Распределение фон Мизеса</h4>
+<h4>
+<span class="header-section-number">8.2.1.1</span> Распределение фон Мизеса<a class="anchor" aria-label="anchor" href="#circular_circ_mises"><i class="fas fa-link"></i></a>
+</h4>
 <p>В географии направления играют огромную роль. Ветер, морские течения, уличная сеть, перелеты птиц — все эти явления можно охарактеризовать их направленностью. Для того, чтобы эффективно анализировать такие данные, необходимо владеть специализированным математическим аппаратом.</p>
 <p>Обработкой данных о направлениях занимается особая область математической статистики — <strong>статистика направлений</strong>, или <strong>круговая (циркулярная)</strong> статистика (Mardia, Jupp, 2000; Pewsey et al., 2013). В круговой статистике каждое направление <span class="math inline">\(\theta \in [0, 2\pi)\)</span> представляется в виде вектора <span class="math inline">\(x = (\cos \theta, sin \theta)\)</span>. Все операции производятся над подобными векторами и их координатами. Аналогом нормального распределения для круговой случайной величины является распределение фон Мизеса (von Mises, 1918), которое задается функцией плотности вероятности:
 <span class="math display">\[
@@ -686,7 +111,9 @@ I_p(\kappa) = \frac{1}{2π} \int_{0}^{2\pi} \cos (p \theta) e^{\kappa \cos θ} d
 </blockquote>
 </div>
 <div id="circular_circ_stats" class="section level4" number="8.2.1.2">
-<h4><span class="header-section-number">8.2.1.2</span> Вычисление статистических моментов</h4>
+<h4>
+<span class="header-section-number">8.2.1.2</span> Вычисление статистических моментов<a class="anchor" aria-label="anchor" href="#circular_circ_stats"><i class="fas fa-link"></i></a>
+</h4>
 <p>Для вычисления статистических моментов круговой случайной величины требуется найти средний равнодействующий вектор первого порядка:
 <span class="math display">\[R = (C, S),\]</span>
 где</p>
@@ -696,10 +123,12 @@ S = \frac{1}{n} \sum_{j=1}^{n} \sin \theta_j.\]</span></p>
 <p><strong>Выборочная средняя равнодействующая длина</strong> <span class="math inline">\(\bar R = \sqrt{C^2 + S^2}\)</span> принимает значения в диапазоне <span class="math inline">\([0, 1]\)</span> и показывает меру концентрации направлений относительно <span class="math inline">\(\theta\)</span>. <span class="math inline">\(\bar R = 1\)</span> означает, что все исходные направления совпадают, <span class="math inline">\(\bar R = 0\)</span> — что данные равномерно распределены по кругу, либо распределение имеет несколько мод, которые уравновешивают друг друга.</p>
 <p>Величина <span class="math inline">\(\bar R\)</span> дает важную информацию для предварительной диагностики картины направлений. Если значение <span class="math inline">\(\bar R\)</span> близко к единице, это означает, что распределение является унимодальным и в качестве основного направления можно принять значение <span class="math inline">\(\bar θ\)</span> <span class="citation">(<a href="package-troubles.html#ref-mardia2000directional" role="doc-biblioref">Mardia and Jupp 2000</a>)</span>.</p>
 <p><strong>Стандартное отклонение направлений</strong> <span class="math inline">\(v\)</span> в радианах может быть найдено как <span class="math inline">\(v=\sqrt{-2 \ln \bar R}\)</span> .</p>
-<p>В ряде случаев противоположные направления считаются эквивалентными. Например, нельзя сказать, идет ли улица с юга на север или с севера на юг. Такие данные в теории круговой статистики называются <strong>аксиальными</strong> (Mardia, Jupp, 2000). Для аксиальных данных возможный диапазон значений лежит в интервале <span class="math inline">\([0, \pi)\)</span>. Поскольку методы круговой статистики рассчитаны на круговое замыкание данных, стандартный подход к обработке аксиальных данных предполагает переход от направлений к их удвоенным значениям <span class="math inline">\(\theta&#39; = 2\theta\)</span>, обработку полученных значений стандартными методами и отображение полученных значение обратно на интервал <span class="math inline">\([0, \pi)\)</span>. Для среднего, медианы и моды распределения это означает простое деление полученного значения пополам <span class="citation">(<a href="package-troubles.html#ref-pewsey2013circular" role="doc-biblioref">Pewsey, Neuhäuser, and Ruxton 2013</a>)</span>.</p>
+<p>В ряде случаев противоположные направления считаются эквивалентными. Например, нельзя сказать, идет ли улица с юга на север или с севера на юг. Такие данные в теории круговой статистики называются <strong>аксиальными</strong> (Mardia, Jupp, 2000). Для аксиальных данных возможный диапазон значений лежит в интервале <span class="math inline">\([0, \pi)\)</span>. Поскольку методы круговой статистики рассчитаны на круговое замыкание данных, стандартный подход к обработке аксиальных данных предполагает переход от направлений к их удвоенным значениям <span class="math inline">\(\theta' = 2\theta\)</span>, обработку полученных значений стандартными методами и отображение полученных значение обратно на интервал <span class="math inline">\([0, \pi)\)</span>. Для среднего, медианы и моды распределения это означает простое деление полученного значения пополам <span class="citation">(<a href="package-troubles.html#ref-pewsey2013circular" role="doc-biblioref">Pewsey, Neuhäuser, and Ruxton 2013</a>)</span>.</p>
 </div>
 <div id="circular_circ_modes" class="section level4" number="8.2.1.3">
-<h4><span class="header-section-number">8.2.1.3</span> Определение модальных направлений</h4>
+<h4>
+<span class="header-section-number">8.2.1.3</span> Определение модальных направлений<a class="anchor" aria-label="anchor" href="#circular_circ_modes"><i class="fas fa-link"></i></a>
+</h4>
 <p>Модальные направления могут быть определены как по гистограмме распределения, так и методом ядерной оценки. Основной вопрос поиска эффективного ядра заключается в параметризации функции <span class="math inline">\(K\)</span>. Для распределения фон Мизеса таким параметром является концентрация <span class="math inline">\(\kappa\)</span>. Чем больше этот параметр, тем более локализованной будет оценка, тем сильнее будут проявляться в ней существующие моды распределения, но также будут и выделяться новые моды, которые на самом деле не значимы. Малые значения <span class="math inline">\(\kappa\)</span> приведут, наоборот, к «размыванию» плотности распределения в пределах полного круга. Как и в случае с количеством интервалов гистограммы, избыточно малые и большие значения κ нежелательны.</p>
 <p>В работе <span class="citation">(<a href="package-troubles.html#ref-Oliveira2012" role="doc-biblioref">M. Oliveira, Crujeiras, and Rod’riguez-Casal 2012</a>)</span> показано, что оптимальное значение <span class="math inline">\(\kappa\)</span> может быть подобрано также для оценки распределений, являющихся конечной суммой <span class="math inline">\(M\)</span> распределений фон Мизеса, то есть, мультимодальных распределений, имеющих плотность :
 <span class="math display">\[g(\theta)=\sum_{i=1}^{M} \alpha_i \frac{\exp\lbrace{\kappa_i \cos(\theta - \mu_i)\rbrace}}{2 \pi I_0 (\kappa_i)},\]</span>
@@ -709,19 +138,20 @@ S = \frac{1}{n} \sum_{j=1}^{n} \sin \theta_j.\]</span></p>
 </div>
 </div>
 <div id="circular_circ_vis" class="section level3" number="8.2.2">
-<h3><span class="header-section-number">8.2.2</span> Практика</h3>
+<h3>
+<span class="header-section-number">8.2.2</span> Практика<a class="anchor" aria-label="anchor" href="#circular_circ_vis"><i class="fas fa-link"></i></a>
+</h3>
 <p>В практической части данного раздела мы будем работать с массивом среднемесячных значений метеопараметров в пограничном слое атмосферы по полярным аэрологическим обсерваториям России. Массив данных ежемесячно обновляется на <a href="http://aisori-m.meteo.ru">портале Аисори-М</a> <a href="http://meteo.ru/"><strong>ВНИИГМИ-МЦД</strong></a>.</p>
 <p>В системе доступны данные по следующим обсерваториям:</p>
-<div class="sourceCode" id="cb383"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb383-1"><a href="circular.html#cb383-1" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">=</span> readxl<span class="sc">::</span><span class="fu">read_excel</span>(<span class="st">&#39;data/bound/scheme.xlsx&#39;</span>, <span class="dv">2</span>)</span></code></pre></div>
-<table>
-<thead>
-<tr class="header">
+<div class="sourceCode" id="cb383"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">obs</span> <span class="op">=</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel</a></span><span class="op">(</span><span class="st">'data/bound/scheme.xlsx'</span>, <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr class="header">
 <th align="right">Индекс</th>
 <th align="left">Название</th>
 <th align="right">Широта</th>
 <th align="right">Долгота</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
 <td align="right">20674</td>
@@ -802,25 +232,23 @@ S = \frac{1}{n} \sum_{j=1}^{n} \sin \theta_j.\]</span></p>
 <td align="right">19.71</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>Для каждой обсерватории даны следующие параметры:</p>
-<table>
+<div class="inline-table"><table class="table table-sm">
 <colgroup>
-<col width="54%" />
-<col width="8%" />
-<col width="8%" />
-<col width="13%" />
-<col width="15%" />
+<col width="54%">
+<col width="8%">
+<col width="8%">
+<col width="13%">
+<col width="15%">
 </colgroup>
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th align="left">Призначная часть/ метеоэлемент/число наблюдений</th>
 <th align="left">Обозначение</th>
 <th align="right">Число цифр</th>
 <th align="left">Единицы измерения</th>
 <th align="left">Константа отсутствия</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
 <td align="left">Индекс станции</td>
@@ -984,228 +412,240 @@ S = \frac{1}{n} \sum_{j=1}^{n} \sin \theta_j.\]</span></p>
 <td align="left">нет</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>Загрузим данные по всем обсерваториям из текстовых файлов в папке <em>bound</em>:</p>
-<div class="sourceCode" id="cb384"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb384-1"><a href="circular.html#cb384-1" aria-hidden="true" tabindex="-1"></a>files <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">&#39;data/bound&#39;</span>, <span class="fu">list.files</span>(<span class="st">&#39;data/bound&#39;</span>, <span class="st">&quot;*.txt&quot;</span>), <span class="at">sep =</span> <span class="st">&#39;/&#39;</span>)</span>
-<span id="cb384-2"><a href="circular.html#cb384-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb384-3"><a href="circular.html#cb384-3" aria-hidden="true" tabindex="-1"></a>(<span class="at">tab =</span> <span class="fu">lapply</span>(files, <span class="cf">function</span>(X) {</span>
-<span id="cb384-4"><a href="circular.html#cb384-4" aria-hidden="true" tabindex="-1"></a>    readr<span class="sc">::</span><span class="fu">read_table</span>(X, <span class="at">col_names =</span> params<span class="sc">$</span>Обозначение)</span>
-<span id="cb384-5"><a href="circular.html#cb384-5" aria-hidden="true" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span> </span>
-<span id="cb384-6"><a href="circular.html#cb384-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb384-7"><a href="circular.html#cb384-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(obs, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&#39;INDEX&#39;</span> <span class="ot">=</span> <span class="st">&#39;Индекс&#39;</span>))) <span class="co"># присоединим информацию о названиях станций</span></span>
-<span id="cb384-8"><a href="circular.html#cb384-8" aria-hidden="true" tabindex="-1"></a><span class="do">## # A tibble: 77,073 x 26</span></span>
-<span id="cb384-9"><a href="circular.html#cb384-9" aria-hidden="true" tabindex="-1"></a><span class="do">##    INDEX  GGGG    MM    HH     Z    MP    SP    NP    MT    ST    NT    MD    SD</span></span>
-<span id="cb384-10"><a href="circular.html#cb384-10" aria-hidden="true" tabindex="-1"></a><span class="do">##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span id="cb384-11"><a href="circular.html#cb384-11" aria-hidden="true" tabindex="-1"></a><span class="do">##  1 20674  2007     1     0  2000  7629    78    27  -187    35    27    53    46</span></span>
-<span id="cb384-12"><a href="circular.html#cb384-12" aria-hidden="true" tabindex="-1"></a><span class="do">##  2 20674  2007     1     0  1900  7732    79    27  -182    36    27    52    46</span></span>
-<span id="cb384-13"><a href="circular.html#cb384-13" aria-hidden="true" tabindex="-1"></a><span class="do">##  3 20674  2007     1     0  1800  7836    79    27  -178    36    27    51    45</span></span>
-<span id="cb384-14"><a href="circular.html#cb384-14" aria-hidden="true" tabindex="-1"></a><span class="do">##  4 20674  2007     1     0  1700  7942    80    27  -173    36    27    49    44</span></span>
-<span id="cb384-15"><a href="circular.html#cb384-15" aria-hidden="true" tabindex="-1"></a><span class="do">##  5 20674  2007     1     0  1600  8048    81    27  -168    36    27    48    44</span></span>
-<span id="cb384-16"><a href="circular.html#cb384-16" aria-hidden="true" tabindex="-1"></a><span class="do">##  6 20674  2007     1     0  1500  8157    81    27  -164    38    27    47    44</span></span>
-<span id="cb384-17"><a href="circular.html#cb384-17" aria-hidden="true" tabindex="-1"></a><span class="do">##  7 20674  2007     1     0  1400  8266    82    27  -160    39    27    45    44</span></span>
-<span id="cb384-18"><a href="circular.html#cb384-18" aria-hidden="true" tabindex="-1"></a><span class="do">##  8 20674  2007     1     0  1300  8376    82    27  -156    39    27    43    42</span></span>
-<span id="cb384-19"><a href="circular.html#cb384-19" aria-hidden="true" tabindex="-1"></a><span class="do">##  9 20674  2007     1     0  1200  8488    83    27  -152    40    27    40    40</span></span>
-<span id="cb384-20"><a href="circular.html#cb384-20" aria-hidden="true" tabindex="-1"></a><span class="do">## 10 20674  2007     1     0  1100  8601    83    27  -148    41    27    37    39</span></span>
-<span id="cb384-21"><a href="circular.html#cb384-21" aria-hidden="true" tabindex="-1"></a><span class="do">## # … with 77,063 more rows, and 13 more variables: ND &lt;dbl&gt;, MS &lt;dbl&gt;, SS &lt;dbl&gt;,</span></span>
-<span id="cb384-22"><a href="circular.html#cb384-22" aria-hidden="true" tabindex="-1"></a><span class="do">## #   NS &lt;dbl&gt;, MU &lt;dbl&gt;, SU &lt;dbl&gt;, NU &lt;dbl&gt;, MV &lt;dbl&gt;, SV &lt;dbl&gt;, NV &lt;dbl&gt;,</span></span>
-<span id="cb384-23"><a href="circular.html#cb384-23" aria-hidden="true" tabindex="-1"></a><span class="do">## #   Название &lt;chr&gt;, Широта &lt;dbl&gt;, Долгота &lt;dbl&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb384"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">files</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">'data/bound'</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">'data/bound'</span>, <span class="st">"*.txt"</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">'/'</span><span class="op">)</span>
+
+<span class="op">(</span><span class="va">tab</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">files</span>, <span class="kw">function</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">{</span>
+    <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_table.html">read_table</a></span><span class="op">(</span><span class="va">X</span>, col_names <span class="op">=</span> <span class="va">params</span><span class="op">$</span><span class="va">Обозначение</span><span class="op">)</span>
+  <span class="op">}</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">obs</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'INDEX'</span> <span class="op">=</span> <span class="st">'Индекс'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co"># присоединим информацию о названиях станций</span>
+<span class="co">## # A tibble: 77,073 x 26</span>
+<span class="co">##    INDEX  GGGG    MM    HH     Z    MP    SP    NP    MT    ST    NT    MD    SD</span>
+<span class="co">##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">##  1 20674  2007     1     0  2000  7629    78    27  -187    35    27    53    46</span>
+<span class="co">##  2 20674  2007     1     0  1900  7732    79    27  -182    36    27    52    46</span>
+<span class="co">##  3 20674  2007     1     0  1800  7836    79    27  -178    36    27    51    45</span>
+<span class="co">##  4 20674  2007     1     0  1700  7942    80    27  -173    36    27    49    44</span>
+<span class="co">##  5 20674  2007     1     0  1600  8048    81    27  -168    36    27    48    44</span>
+<span class="co">##  6 20674  2007     1     0  1500  8157    81    27  -164    38    27    47    44</span>
+<span class="co">##  7 20674  2007     1     0  1400  8266    82    27  -160    39    27    45    44</span>
+<span class="co">##  8 20674  2007     1     0  1300  8376    82    27  -156    39    27    43    42</span>
+<span class="co">##  9 20674  2007     1     0  1200  8488    83    27  -152    40    27    40    40</span>
+<span class="co">## 10 20674  2007     1     0  1100  8601    83    27  -148    41    27    37    39</span>
+<span class="co">## # … with 77,063 more rows, and 13 more variables: ND &lt;dbl&gt;, MS &lt;dbl&gt;, SS &lt;dbl&gt;,</span>
+<span class="co">## #   NS &lt;dbl&gt;, MU &lt;dbl&gt;, SU &lt;dbl&gt;, NU &lt;dbl&gt;, MV &lt;dbl&gt;, SV &lt;dbl&gt;, NV &lt;dbl&gt;,</span>
+<span class="co">## #   Название &lt;chr&gt;, Широта &lt;dbl&gt;, Долгота &lt;dbl&gt;</span></code></pre></div>
 <p>Создадим объект типа <code>circular</code> (из пакета <strong>circular</strong>) с направлениями ветра для анализа, и запишем его в новую переменую таблицы. Предварительно определим вспомогательную функцию, вычисляющую географический азимут на основе компонент скорости:</p>
-<div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb385-1"><a href="circular.html#cb385-1" aria-hidden="true" tabindex="-1"></a>geo_azimuth <span class="ot">=</span> <span class="cf">function</span>(dx, dy) {</span>
-<span id="cb385-2"><a href="circular.html#cb385-2" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">=</span> <span class="fu">atan2</span>(dx, dy)</span>
-<span id="cb385-3"><a href="circular.html#cb385-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(a <span class="sc">&lt;=</span> pi<span class="sc">/</span><span class="dv">2</span>, pi<span class="sc">/</span><span class="dv">2</span> <span class="sc">-</span> a,  <span class="dv">5</span><span class="sc">*</span>pi<span class="sc">/</span><span class="dv">2</span> <span class="sc">-</span> a)</span>
-<span id="cb385-4"><a href="circular.html#cb385-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb385-5"><a href="circular.html#cb385-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb385-6"><a href="circular.html#cb385-6" aria-hidden="true" tabindex="-1"></a>(<span class="at">winds =</span> tab <span class="sc">%&gt;%</span> </span>
-<span id="cb385-7"><a href="circular.html#cb385-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">wind =</span> <span class="fu">circular</span>(<span class="fu">geo_azimuth</span>(MV, MU), <span class="at">template =</span> <span class="st">&#39;geographics&#39;</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb385-8"><a href="circular.html#cb385-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(INDEX, <span class="at">name =</span> Название, GGGG, MM, HH, Z, MU, MV, SS, wind))</span>
-<span id="cb385-9"><a href="circular.html#cb385-9" aria-hidden="true" tabindex="-1"></a><span class="do">## # A tibble: 77,073 x 10</span></span>
-<span id="cb385-10"><a href="circular.html#cb385-10" aria-hidden="true" tabindex="-1"></a><span class="do">##    INDEX name           GGGG    MM    HH     Z    MU    MV    SS wind      </span></span>
-<span id="cb385-11"><a href="circular.html#cb385-11" aria-hidden="true" tabindex="-1"></a><span class="do">##    &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;circular&gt;</span></span>
-<span id="cb385-12"><a href="circular.html#cb385-12" aria-hidden="true" tabindex="-1"></a><span class="do">##  1 20674 Остров Диксон  2007     1     0  2000    33    31    45 0.8166380 </span></span>
-<span id="cb385-13"><a href="circular.html#cb385-13" aria-hidden="true" tabindex="-1"></a><span class="do">##  2 20674 Остров Диксон  2007     1     0  1900    32    32    45 0.7853982 </span></span>
-<span id="cb385-14"><a href="circular.html#cb385-14" aria-hidden="true" tabindex="-1"></a><span class="do">##  3 20674 Остров Диксон  2007     1     0  1800    30    33    46 0.7378151 </span></span>
-<span id="cb385-15"><a href="circular.html#cb385-15" aria-hidden="true" tabindex="-1"></a><span class="do">##  4 20674 Остров Диксон  2007     1     0  1700    29    35    47 0.6919214 </span></span>
-<span id="cb385-16"><a href="circular.html#cb385-16" aria-hidden="true" tabindex="-1"></a><span class="do">##  5 20674 Остров Диксон  2007     1     0  1600    28    38    49 0.6350267 </span></span>
-<span id="cb385-17"><a href="circular.html#cb385-17" aria-hidden="true" tabindex="-1"></a><span class="do">##  6 20674 Остров Диксон  2007     1     0  1500    26    40    50 0.5763752 </span></span>
-<span id="cb385-18"><a href="circular.html#cb385-18" aria-hidden="true" tabindex="-1"></a><span class="do">##  7 20674 Остров Диксон  2007     1     0  1400    25    41    51 0.5475622 </span></span>
-<span id="cb385-19"><a href="circular.html#cb385-19" aria-hidden="true" tabindex="-1"></a><span class="do">##  8 20674 Остров Диксон  2007     1     0  1300    25    42    54 0.5369107 </span></span>
-<span id="cb385-20"><a href="circular.html#cb385-20" aria-hidden="true" tabindex="-1"></a><span class="do">##  9 20674 Остров Диксон  2007     1     0  1200    24    45    56 0.4899573 </span></span>
-<span id="cb385-21"><a href="circular.html#cb385-21" aria-hidden="true" tabindex="-1"></a><span class="do">## 10 20674 Остров Диксон  2007     1     0  1100    24    49    58 0.4554511 </span></span>
-<span id="cb385-22"><a href="circular.html#cb385-22" aria-hidden="true" tabindex="-1"></a><span class="do">## # … with 77,063 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb385"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">geo_azimuth</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">dx</span>, <span class="va">dy</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">a</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">atan2</a></span><span class="op">(</span><span class="va">dx</span>, <span class="va">dy</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">a</span> <span class="op">&lt;=</span> <span class="va">pi</span><span class="op">/</span><span class="fl">2</span>, <span class="va">pi</span><span class="op">/</span><span class="fl">2</span> <span class="op">-</span> <span class="va">a</span>,  <span class="fl">5</span><span class="op">*</span><span class="va">pi</span><span class="op">/</span><span class="fl">2</span> <span class="op">-</span> <span class="va">a</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="op">(</span><span class="va">winds</span> <span class="op">=</span> <span class="va">tab</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>wind <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/circular/man/circular.html">circular</a></span><span class="op">(</span><span class="fu">geo_azimuth</span><span class="op">(</span><span class="va">MV</span>, <span class="va">MU</span><span class="op">)</span>, template <span class="op">=</span> <span class="st">'geographics'</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">INDEX</span>, name <span class="op">=</span> <span class="va">Название</span>, <span class="va">GGGG</span>, <span class="va">MM</span>, <span class="va">HH</span>, <span class="va">Z</span>, <span class="va">MU</span>, <span class="va">MV</span>, <span class="va">SS</span>, <span class="va">wind</span><span class="op">)</span><span class="op">)</span>
+<span class="co">## # A tibble: 77,073 x 10</span>
+<span class="co">##    INDEX name           GGGG    MM    HH     Z    MU    MV    SS wind      </span>
+<span class="co">##    &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;circular&gt;</span>
+<span class="co">##  1 20674 Остров Диксон  2007     1     0  2000    33    31    45 0.8166380 </span>
+<span class="co">##  2 20674 Остров Диксон  2007     1     0  1900    32    32    45 0.7853982 </span>
+<span class="co">##  3 20674 Остров Диксон  2007     1     0  1800    30    33    46 0.7378151 </span>
+<span class="co">##  4 20674 Остров Диксон  2007     1     0  1700    29    35    47 0.6919214 </span>
+<span class="co">##  5 20674 Остров Диксон  2007     1     0  1600    28    38    49 0.6350267 </span>
+<span class="co">##  6 20674 Остров Диксон  2007     1     0  1500    26    40    50 0.5763752 </span>
+<span class="co">##  7 20674 Остров Диксон  2007     1     0  1400    25    41    51 0.5475622 </span>
+<span class="co">##  8 20674 Остров Диксон  2007     1     0  1300    25    42    54 0.5369107 </span>
+<span class="co">##  9 20674 Остров Диксон  2007     1     0  1200    24    45    56 0.4899573 </span>
+<span class="co">## 10 20674 Остров Диксон  2007     1     0  1100    24    49    58 0.4554511 </span>
+<span class="co">## # … with 77,063 more rows</span></code></pre></div>
 <p>Выберем данные по высоте 0 метров за 12 часов дня для поселка Тикси, сохранив только составляющие скорости и ее скалярную величину:</p>
-<div class="sourceCode" id="cb386"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb386-1"><a href="circular.html#cb386-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">tiksi_wind =</span> winds <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(name <span class="sc">==</span> <span class="st">&#39;Тикси&#39;</span>, HH <span class="sc">==</span> <span class="dv">12</span>, Z <span class="sc">==</span> <span class="dv">0</span>))</span>
-<span id="cb386-2"><a href="circular.html#cb386-2" aria-hidden="true" tabindex="-1"></a><span class="do">## # A tibble: 136 x 10</span></span>
-<span id="cb386-3"><a href="circular.html#cb386-3" aria-hidden="true" tabindex="-1"></a><span class="do">##    INDEX name   GGGG    MM    HH     Z    MU    MV    SS wind      </span></span>
-<span id="cb386-4"><a href="circular.html#cb386-4" aria-hidden="true" tabindex="-1"></a><span class="do">##    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;circular&gt;</span></span>
-<span id="cb386-5"><a href="circular.html#cb386-5" aria-hidden="true" tabindex="-1"></a><span class="do">##  1 21824 Тикси  2007     1    12     0    36    35    48 0.7994817 </span></span>
-<span id="cb386-6"><a href="circular.html#cb386-6" aria-hidden="true" tabindex="-1"></a><span class="do">##  2 21824 Тикси  2007     2    12     0    16    11    27 0.9685090 </span></span>
-<span id="cb386-7"><a href="circular.html#cb386-7" aria-hidden="true" tabindex="-1"></a><span class="do">##  3 21824 Тикси  2007     3    12     0    23    22    34 0.8076167 </span></span>
-<span id="cb386-8"><a href="circular.html#cb386-8" aria-hidden="true" tabindex="-1"></a><span class="do">##  4 21824 Тикси  2007     4    12     0    17     9    30 1.0838971 </span></span>
-<span id="cb386-9"><a href="circular.html#cb386-9" aria-hidden="true" tabindex="-1"></a><span class="do">##  5 21824 Тикси  2007     5    12     0   -17    -3    34 4.5377168 </span></span>
-<span id="cb386-10"><a href="circular.html#cb386-10" aria-hidden="true" tabindex="-1"></a><span class="do">##  6 21824 Тикси  2007     6    12     0   -23   -25    27 3.8853482 </span></span>
-<span id="cb386-11"><a href="circular.html#cb386-11" aria-hidden="true" tabindex="-1"></a><span class="do">##  7 21824 Тикси  2007     7    12     0    -5   -11    27 3.5682201 </span></span>
-<span id="cb386-12"><a href="circular.html#cb386-12" aria-hidden="true" tabindex="-1"></a><span class="do">##  8 21824 Тикси  2007     8    12     0     4     5    25 0.6747409 </span></span>
-<span id="cb386-13"><a href="circular.html#cb386-13" aria-hidden="true" tabindex="-1"></a><span class="do">##  9 21824 Тикси  2007     9    12     0    24    14    34 1.0427219 </span></span>
-<span id="cb386-14"><a href="circular.html#cb386-14" aria-hidden="true" tabindex="-1"></a><span class="do">## 10 21824 Тикси  2007    10    12     0    41    47    40 0.7173217 </span></span>
-<span id="cb386-15"><a href="circular.html#cb386-15" aria-hidden="true" tabindex="-1"></a><span class="do">## # … with 126 more rows</span></span></code></pre></div>
-<p>Отобразим распределение направлений, розу-диаграмму и плотность распределения. Для построени графиков используем функции <code>plot.circular()</code> и <code>rose.diag</code> из пакета <strong>circular</strong>. Для аппроксимации плотности распределения направлений воспользуемся функцией <code>kern.den.circ()</code> из пакета <strong>NPCirc</strong>. Эта функция использует функцию плотности распределения <em>фон Мизеса</em> в качестве ядра и по умолчанию разбивает круг на 250 направлений, по которым производится оценка плотности (при необходимости это значение можно изменить в параметре <code>len</code>):</p>
-<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb387-1"><a href="circular.html#cb387-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.circular</span>(tiksi_wind<span class="sc">$</span>wind, </span>
-<span id="cb387-2"><a href="circular.html#cb387-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex =</span> <span class="fl">0.5</span>, </span>
-<span id="cb387-3"><a href="circular.html#cb387-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">stack =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb387-4"><a href="circular.html#cb387-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">sep =</span> <span class="fl">0.035</span>,</span>
-<span id="cb387-5"><a href="circular.html#cb387-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">axes =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb387-6"><a href="circular.html#cb387-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&#39;Среднемноголетняя роза ветров в Тикси&#39;</span>,</span>
-<span id="cb387-7"><a href="circular.html#cb387-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">sub =</span> <span class="st">&#39;Измерения за период с 2007 по 2018 г, высота 0 м&#39;</span>)</span>
-<span id="cb387-8"><a href="circular.html#cb387-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb387-9"><a href="circular.html#cb387-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rose.diag</span>(tiksi_wind<span class="sc">$</span>wind, </span>
-<span id="cb387-10"><a href="circular.html#cb387-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">bins =</span> <span class="dv">8</span>, </span>
-<span id="cb387-11"><a href="circular.html#cb387-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">col =</span> <span class="st">&#39;gray70&#39;</span>,</span>
-<span id="cb387-12"><a href="circular.html#cb387-12" aria-hidden="true" tabindex="-1"></a>          <span class="at">border =</span> <span class="st">&#39;gray30&#39;</span>,</span>
-<span id="cb387-13"><a href="circular.html#cb387-13" aria-hidden="true" tabindex="-1"></a>          <span class="at">prop =</span> <span class="dv">1</span>, </span>
-<span id="cb387-14"><a href="circular.html#cb387-14" aria-hidden="true" tabindex="-1"></a>          <span class="at">add =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb387-15"><a href="circular.html#cb387-15" aria-hidden="true" tabindex="-1"></a>          <span class="at">tick =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb387-16"><a href="circular.html#cb387-16" aria-hidden="true" tabindex="-1"></a>          <span class="at">lwd =</span> <span class="fl">0.5</span>)</span>
-<span id="cb387-17"><a href="circular.html#cb387-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb387-18"><a href="circular.html#cb387-18" aria-hidden="true" tabindex="-1"></a>kden <span class="ot">=</span> <span class="fu">kern.den.circ</span>(tiksi_wind<span class="sc">$</span>wind)</span>
-<span id="cb387-19"><a href="circular.html#cb387-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb387-20"><a href="circular.html#cb387-20" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(kden, <span class="at">shrink =</span> <span class="dv">3</span>, <span class="co"># параметр shrink отвечает за масштаб радиус-вектора</span></span>
-<span id="cb387-21"><a href="circular.html#cb387-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">join =</span> F,</span>
-<span id="cb387-22"><a href="circular.html#cb387-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">col =</span> <span class="st">&#39;steelblue&#39;</span>)</span></code></pre></div>
-<p><img src="09-CircularStats_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<div class="sourceCode" id="cb386"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="op">(</span><span class="va">tiksi_wind</span> <span class="op">=</span> <span class="va">winds</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="st">'Тикси'</span>, <span class="va">HH</span> <span class="op">==</span> <span class="fl">12</span>, <span class="va">Z</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span>
+<span class="co">## # A tibble: 136 x 10</span>
+<span class="co">##    INDEX name   GGGG    MM    HH     Z    MU    MV    SS wind      </span>
+<span class="co">##    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;circular&gt;</span>
+<span class="co">##  1 21824 Тикси  2007     1    12     0    36    35    48 0.7994817 </span>
+<span class="co">##  2 21824 Тикси  2007     2    12     0    16    11    27 0.9685090 </span>
+<span class="co">##  3 21824 Тикси  2007     3    12     0    23    22    34 0.8076167 </span>
+<span class="co">##  4 21824 Тикси  2007     4    12     0    17     9    30 1.0838971 </span>
+<span class="co">##  5 21824 Тикси  2007     5    12     0   -17    -3    34 4.5377168 </span>
+<span class="co">##  6 21824 Тикси  2007     6    12     0   -23   -25    27 3.8853482 </span>
+<span class="co">##  7 21824 Тикси  2007     7    12     0    -5   -11    27 3.5682201 </span>
+<span class="co">##  8 21824 Тикси  2007     8    12     0     4     5    25 0.6747409 </span>
+<span class="co">##  9 21824 Тикси  2007     9    12     0    24    14    34 1.0427219 </span>
+<span class="co">## 10 21824 Тикси  2007    10    12     0    41    47    40 0.7173217 </span>
+<span class="co">## # … with 126 more rows</span></code></pre></div>
+<p>Отобразим распределение направлений, розу-диаграмму и плотность распределения. Для построени графиков используем функции <code><a href="https://rdrr.io/pkg/circular/man/plot.circular.html">plot.circular()</a></code> и <code>rose.diag</code> из пакета <strong>circular</strong>. Для аппроксимации плотности распределения направлений воспользуемся функцией <code><a href="https://rdrr.io/pkg/NPCirc/man/kern.den.circ.html">kern.den.circ()</a></code> из пакета <strong>NPCirc</strong>. Эта функция использует функцию плотности распределения <em>фон Мизеса</em> в качестве ядра и по умолчанию разбивает круг на 250 направлений, по которым производится оценка плотности (при необходимости это значение можно изменить в параметре <code>len</code>):</p>
+<div class="sourceCode" id="cb387"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/circular/man/plot.circular.html">plot.circular</a></span><span class="op">(</span><span class="va">tiksi_wind</span><span class="op">$</span><span class="va">wind</span>, 
+     cex <span class="op">=</span> <span class="fl">0.5</span>, 
+     stack <span class="op">=</span> <span class="cn">TRUE</span>, 
+     sep <span class="op">=</span> <span class="fl">0.035</span>,
+     axes <span class="op">=</span> <span class="cn">FALSE</span>,
+     main <span class="op">=</span> <span class="st">'Среднемноголетняя роза ветров в Тикси'</span>,
+     sub <span class="op">=</span> <span class="st">'Измерения за период с 2007 по 2018 г, высота 0 м'</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/pkg/circular/man/rose.diag.html">rose.diag</a></span><span class="op">(</span><span class="va">tiksi_wind</span><span class="op">$</span><span class="va">wind</span>, 
+          bins <span class="op">=</span> <span class="fl">8</span>, 
+          col <span class="op">=</span> <span class="st">'gray70'</span>,
+          border <span class="op">=</span> <span class="st">'gray30'</span>,
+          prop <span class="op">=</span> <span class="fl">1</span>, 
+          add <span class="op">=</span> <span class="cn">TRUE</span>, 
+          tick <span class="op">=</span> <span class="cn">FALSE</span>,
+          lwd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
+
+<span class="va">kden</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/NPCirc/man/kern.den.circ.html">kern.den.circ</a></span><span class="op">(</span><span class="va">tiksi_wind</span><span class="op">$</span><span class="va">wind</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">kden</span>, shrink <span class="op">=</span> <span class="fl">3</span>, <span class="co"># параметр shrink отвечает за масштаб радиус-вектора</span>
+      join <span class="op">=</span> <span class="cn">F</span>,
+      col <span class="op">=</span> <span class="st">'steelblue'</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="09-CircularStats_files/figure-html/unnamed-chunk-9-1.png" width="672"></div>
 <blockquote>
 <p>Параметр <code>shrink</code> отвечает за масштаб радиус-вектора на графиках из пакета <strong>circular</strong>. Чем больше его величина, тем сильнее будет сжат график относительно центра круга.</p>
 </blockquote>
-<p>Так же как и в случае с обычными данными, плотность распределения удобно использовать для определения модальных направлений, то есть наиболее часто встречающихся. Для этого воспользуемся функцией <code>findpeaks()</code> из пакета <strong>pracma</strong>:</p>
-<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb388-1"><a href="circular.html#cb388-1" aria-hidden="true" tabindex="-1"></a>peak <span class="ot">=</span> <span class="fu">findpeaks</span>(kden<span class="sc">$</span>y, <span class="at">sortstr =</span> T)[<span class="dv">1</span>,<span class="dv">2</span>] <span class="co"># находим индекс самого высокого пика плотности распределения</span></span>
-<span id="cb388-2"><a href="circular.html#cb388-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb388-3"><a href="circular.html#cb388-3" aria-hidden="true" tabindex="-1"></a>(<span class="at">modal =</span> kden<span class="sc">$</span>x[peak]) <span class="co"># извлекаем сам угол</span></span>
-<span id="cb388-4"><a href="circular.html#cb388-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Circular Data: </span></span>
-<span id="cb388-5"><a href="circular.html#cb388-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Type = angles </span></span>
-<span id="cb388-6"><a href="circular.html#cb388-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Units = radians </span></span>
-<span id="cb388-7"><a href="circular.html#cb388-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Template = geographics </span></span>
-<span id="cb388-8"><a href="circular.html#cb388-8" aria-hidden="true" tabindex="-1"></a><span class="do">## Modulo = asis </span></span>
-<span id="cb388-9"><a href="circular.html#cb388-9" aria-hidden="true" tabindex="-1"></a><span class="do">## Zero = 1.570796 </span></span>
-<span id="cb388-10"><a href="circular.html#cb388-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Rotation = clock </span></span>
-<span id="cb388-11"><a href="circular.html#cb388-11" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 0.813786</span></span>
-<span id="cb388-12"><a href="circular.html#cb388-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb388-13"><a href="circular.html#cb388-13" aria-hidden="true" tabindex="-1"></a><span class="co"># раскладываем на составляющие для отрисовки линии</span></span>
-<span id="cb388-14"><a href="circular.html#cb388-14" aria-hidden="true" tabindex="-1"></a>xp <span class="ot">=</span> <span class="fu">sin</span>(modal)</span>
-<span id="cb388-15"><a href="circular.html#cb388-15" aria-hidden="true" tabindex="-1"></a>yp <span class="ot">=</span> <span class="fu">cos</span>(modal)</span>
-<span id="cb388-16"><a href="circular.html#cb388-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb388-17"><a href="circular.html#cb388-17" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.circular</span>(tiksi_wind<span class="sc">$</span>wind, </span>
-<span id="cb388-18"><a href="circular.html#cb388-18" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex =</span> <span class="fl">0.5</span>, </span>
-<span id="cb388-19"><a href="circular.html#cb388-19" aria-hidden="true" tabindex="-1"></a>     <span class="at">stack =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb388-20"><a href="circular.html#cb388-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">sep =</span> <span class="fl">0.035</span>,</span>
-<span id="cb388-21"><a href="circular.html#cb388-21" aria-hidden="true" tabindex="-1"></a>     <span class="at">axes =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb388-22"><a href="circular.html#cb388-22" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&#39;Среднемноголетняя роза ветров в Тикси&#39;</span>,</span>
-<span id="cb388-23"><a href="circular.html#cb388-23" aria-hidden="true" tabindex="-1"></a>     <span class="at">sub =</span> <span class="st">&#39;Измерения за период с 2007 по 2018 г, высота 0 м&#39;</span>)</span>
-<span id="cb388-24"><a href="circular.html#cb388-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb388-25"><a href="circular.html#cb388-25" aria-hidden="true" tabindex="-1"></a><span class="fu">rose.diag</span>(tiksi_wind<span class="sc">$</span>wind, </span>
-<span id="cb388-26"><a href="circular.html#cb388-26" aria-hidden="true" tabindex="-1"></a>          <span class="at">bins =</span> <span class="dv">8</span>, </span>
-<span id="cb388-27"><a href="circular.html#cb388-27" aria-hidden="true" tabindex="-1"></a>          <span class="at">col =</span> <span class="st">&#39;gray70&#39;</span>,</span>
-<span id="cb388-28"><a href="circular.html#cb388-28" aria-hidden="true" tabindex="-1"></a>          <span class="at">border =</span> <span class="st">&#39;gray30&#39;</span>,</span>
-<span id="cb388-29"><a href="circular.html#cb388-29" aria-hidden="true" tabindex="-1"></a>          <span class="at">prop =</span> <span class="dv">1</span>, </span>
-<span id="cb388-30"><a href="circular.html#cb388-30" aria-hidden="true" tabindex="-1"></a>          <span class="at">add =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb388-31"><a href="circular.html#cb388-31" aria-hidden="true" tabindex="-1"></a>          <span class="at">tick =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb388-32"><a href="circular.html#cb388-32" aria-hidden="true" tabindex="-1"></a>          <span class="at">lwd =</span> <span class="fl">0.5</span>)</span>
-<span id="cb388-33"><a href="circular.html#cb388-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb388-34"><a href="circular.html#cb388-34" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(kden, <span class="at">shrink =</span> <span class="dv">3</span>, </span>
-<span id="cb388-35"><a href="circular.html#cb388-35" aria-hidden="true" tabindex="-1"></a>      <span class="at">join =</span> F, <span class="at">col =</span> <span class="st">&#39;steelblue&#39;</span>)</span>
-<span id="cb388-36"><a href="circular.html#cb388-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb388-37"><a href="circular.html#cb388-37" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">c</span>(<span class="dv">0</span>, xp), <span class="fu">c</span>(<span class="dv">0</span>, yp),</span>
-<span id="cb388-38"><a href="circular.html#cb388-38" aria-hidden="true" tabindex="-1"></a>      <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">&#39;orangered&#39;</span>)</span>
-<span id="cb388-39"><a href="circular.html#cb388-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb388-40"><a href="circular.html#cb388-40" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x =</span> <span class="fl">1.4</span> <span class="sc">*</span> xp, <span class="at">y =</span> <span class="fl">1.4</span> <span class="sc">*</span> yp, </span>
-<span id="cb388-41"><a href="circular.html#cb388-41" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">&#39;orangered&#39;</span>,</span>
-<span id="cb388-42"><a href="circular.html#cb388-42" aria-hidden="true" tabindex="-1"></a>     <span class="at">labels =</span> <span class="fu">paste0</span>(<span class="fu">round</span>(<span class="dv">180</span> <span class="sc">*</span> modal <span class="sc">/</span> pi, <span class="dv">0</span>), <span class="st">&#39;°&#39;</span>)) <span class="co"># приводим к целым градусам</span></span></code></pre></div>
-<p><img src="09-CircularStats_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Так же как и в случае с обычными данными, плотность распределения удобно использовать для определения модальных направлений, то есть наиболее часто встречающихся. Для этого воспользуемся функцией <code><a href="https://rdrr.io/pkg/pracma/man/findpeaks.html">findpeaks()</a></code> из пакета <strong>pracma</strong>:</p>
+<div class="sourceCode" id="cb388"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">peak</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/pracma/man/findpeaks.html">findpeaks</a></span><span class="op">(</span><span class="va">kden</span><span class="op">$</span><span class="va">y</span>, sortstr <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">]</span> <span class="co"># находим индекс самого высокого пика плотности распределения</span>
+
+<span class="op">(</span><span class="va">modal</span> <span class="op">=</span> <span class="va">kden</span><span class="op">$</span><span class="va">x</span><span class="op">[</span><span class="va">peak</span><span class="op">]</span><span class="op">)</span> <span class="co"># извлекаем сам угол</span>
+<span class="co">## Circular Data: </span>
+<span class="co">## Type = angles </span>
+<span class="co">## Units = radians </span>
+<span class="co">## Template = geographics </span>
+<span class="co">## Modulo = asis </span>
+<span class="co">## Zero = 1.570796 </span>
+<span class="co">## Rotation = clock </span>
+<span class="co">## [1] 0.813786</span>
+
+<span class="co"># раскладываем на составляющие для отрисовки линии</span>
+<span class="va">xp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="va">modal</span><span class="op">)</span>
+<span class="va">yp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span><span class="op">(</span><span class="va">modal</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/pkg/circular/man/plot.circular.html">plot.circular</a></span><span class="op">(</span><span class="va">tiksi_wind</span><span class="op">$</span><span class="va">wind</span>, 
+     cex <span class="op">=</span> <span class="fl">0.5</span>, 
+     stack <span class="op">=</span> <span class="cn">TRUE</span>, 
+     sep <span class="op">=</span> <span class="fl">0.035</span>,
+     axes <span class="op">=</span> <span class="cn">FALSE</span>,
+     main <span class="op">=</span> <span class="st">'Среднемноголетняя роза ветров в Тикси'</span>,
+     sub <span class="op">=</span> <span class="st">'Измерения за период с 2007 по 2018 г, высота 0 м'</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/pkg/circular/man/rose.diag.html">rose.diag</a></span><span class="op">(</span><span class="va">tiksi_wind</span><span class="op">$</span><span class="va">wind</span>, 
+          bins <span class="op">=</span> <span class="fl">8</span>, 
+          col <span class="op">=</span> <span class="st">'gray70'</span>,
+          border <span class="op">=</span> <span class="st">'gray30'</span>,
+          prop <span class="op">=</span> <span class="fl">1</span>, 
+          add <span class="op">=</span> <span class="cn">TRUE</span>, 
+          tick <span class="op">=</span> <span class="cn">FALSE</span>,
+          lwd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">kden</span>, shrink <span class="op">=</span> <span class="fl">3</span>, 
+      join <span class="op">=</span> <span class="cn">F</span>, col <span class="op">=</span> <span class="st">'steelblue'</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">xp</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">yp</span><span class="op">)</span>,
+      lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">'orangered'</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1.4</span> <span class="op">*</span> <span class="va">xp</span>, y <span class="op">=</span> <span class="fl">1.4</span> <span class="op">*</span> <span class="va">yp</span>, 
+     col <span class="op">=</span> <span class="st">'orangered'</span>,
+     labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">180</span> <span class="op">*</span> <span class="va">modal</span> <span class="op">/</span> <span class="va">pi</span>, <span class="fl">0</span><span class="op">)</span>, <span class="st">'°'</span><span class="op">)</span><span class="op">)</span> <span class="co"># приводим к целым градусам</span></code></pre></div>
+<div class="inline-figure"><img src="09-CircularStats_files/figure-html/unnamed-chunk-10-1.png" width="672"></div>
 <p>Проведем анализ направлений для всех станций. Для этого рассчитаем функции плотности распределения и разместим их в новом фрейме данных с лист-колонкой.</p>
 <blockquote>
 <p><strong>Лист-колонка</strong> (<em>list-column</em>) позволяет хранить в ячейках таблицы данные произвольного типа. В частности, используя лист-колонку, вы можете хранить в каждой ячейке не один объект, а множество объектов, например записать в нее вектор. Лист-колонка имеет тип <code>list</code>, и каждая ячейка в этой колонке так же, соответственно, имеет тип <code>list</code>. Что (и в каком количестве) располагать внутри ячейки — уже ваше дело. Лист-колонки оказываются неожиданно удобны в самых разнообразных сценариях, в том числе для представления статистических моделей (соответствующих каждой строке таблицы) и для хранения пространственных данных (об этом — в следующей лекции). Вместо хранения этих данных в отдельных переменных вы можете записать их в ячейки.</p>
 </blockquote>
-<p>В приведенном ниже коде мы группируем все измерения по имени аэрологической обсерватории, вычисляем вектор плотности распределения, записываем его в список, и этот список уже помещается функцией <code>summarise()</code> в <em>единственную</em> ячейку столбца <em>kden</em>, соответствующую данной аэрологической станции. Далее полученная лист-колонка используется для нахождения модальных значений (тут оказывается полезно знание функционалов семейства <code>apply</code>):</p>
-<div class="sourceCode" id="cb389"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb389-1"><a href="circular.html#cb389-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">dens =</span> winds <span class="sc">%&gt;%</span> </span>
-<span id="cb389-2"><a href="circular.html#cb389-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(HH <span class="sc">==</span> <span class="dv">12</span>, Z <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb389-3"><a href="circular.html#cb389-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name) <span class="sc">%&gt;%</span> </span>
-<span id="cb389-4"><a href="circular.html#cb389-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">kden =</span> <span class="fu">list</span>(<span class="fu">kern.den.circ</span>(wind))) <span class="sc">%&gt;%</span> </span>
-<span id="cb389-5"><a href="circular.html#cb389-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">peak =</span> <span class="fu">sapply</span>(kden, <span class="cf">function</span>(X) {</span>
-<span id="cb389-6"><a href="circular.html#cb389-6" aria-hidden="true" tabindex="-1"></a>                  peak <span class="ot">=</span> <span class="fu">findpeaks</span>(X<span class="sc">$</span>y, <span class="at">sortstr =</span> T)[<span class="dv">1</span>,<span class="dv">2</span>]</span>
-<span id="cb389-7"><a href="circular.html#cb389-7" aria-hidden="true" tabindex="-1"></a>                  X<span class="sc">$</span>x[peak]</span>
-<span id="cb389-8"><a href="circular.html#cb389-8" aria-hidden="true" tabindex="-1"></a>                })</span>
-<span id="cb389-9"><a href="circular.html#cb389-9" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb389-10"><a href="circular.html#cb389-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb389-11"><a href="circular.html#cb389-11" aria-hidden="true" tabindex="-1"></a><span class="do">## # A tibble: 13 x 3</span></span>
-<span id="cb389-12"><a href="circular.html#cb389-12" aria-hidden="true" tabindex="-1"></a><span class="do">##    name            kden         peak</span></span>
-<span id="cb389-13"><a href="circular.html#cb389-13" aria-hidden="true" tabindex="-1"></a><span class="do">##    &lt;chr&gt;           &lt;list&gt;      &lt;dbl&gt;</span></span>
-<span id="cb389-14"><a href="circular.html#cb389-14" aria-hidden="true" tabindex="-1"></a><span class="do">##  1 Верхоянск       &lt;dnsty.cr&gt; -2.97 </span></span>
-<span id="cb389-15"><a href="circular.html#cb389-15" aria-hidden="true" tabindex="-1"></a><span class="do">##  2 Жиганск         &lt;dnsty.cr&gt; -3.20 </span></span>
-<span id="cb389-16"><a href="circular.html#cb389-16" aria-hidden="true" tabindex="-1"></a><span class="do">##  3 Кандалакша      &lt;dnsty.cr&gt; -0.347</span></span>
-<span id="cb389-17"><a href="circular.html#cb389-17" aria-hidden="true" tabindex="-1"></a><span class="do">##  4 Мирный          &lt;dnsty.cr&gt; -0.826</span></span>
-<span id="cb389-18"><a href="circular.html#cb389-18" aria-hidden="true" tabindex="-1"></a><span class="do">##  5 Мурманск        &lt;dnsty.cr&gt;  0.814</span></span>
-<span id="cb389-19"><a href="circular.html#cb389-19" aria-hidden="true" tabindex="-1"></a><span class="do">##  6 Нарьян-Мар      &lt;dnsty.cr&gt;  1.04 </span></span>
-<span id="cb389-20"><a href="circular.html#cb389-20" aria-hidden="true" tabindex="-1"></a><span class="do">##  7 Новолазаревская &lt;dnsty.cr&gt; -0.902</span></span>
-<span id="cb389-21"><a href="circular.html#cb389-21" aria-hidden="true" tabindex="-1"></a><span class="do">##  8 Норильск        &lt;dnsty.cr&gt; -0.877</span></span>
-<span id="cb389-22"><a href="circular.html#cb389-22" aria-hidden="true" tabindex="-1"></a><span class="do">##  9 Оленек          &lt;dnsty.cr&gt; -3.48 </span></span>
-<span id="cb389-23"><a href="circular.html#cb389-23" aria-hidden="true" tabindex="-1"></a><span class="do">## 10 Остров Диксон   &lt;dnsty.cr&gt; -0.145</span></span>
-<span id="cb389-24"><a href="circular.html#cb389-24" aria-hidden="true" tabindex="-1"></a><span class="do">## 11 Салехард        &lt;dnsty.cr&gt; -2.82 </span></span>
-<span id="cb389-25"><a href="circular.html#cb389-25" aria-hidden="true" tabindex="-1"></a><span class="do">## 12 Тикси           &lt;dnsty.cr&gt;  0.814</span></span>
-<span id="cb389-26"><a href="circular.html#cb389-26" aria-hidden="true" tabindex="-1"></a><span class="do">## 13 Шойна           &lt;dnsty.cr&gt;  0.561</span></span></code></pre></div>
+<p>В приведенном ниже коде мы группируем все измерения по имени аэрологической обсерватории, вычисляем вектор плотности распределения, записываем его в список, и этот список уже помещается функцией <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise()</a></code> в <em>единственную</em> ячейку столбца <em>kden</em>, соответствующую данной аэрологической станции. Далее полученная лист-колонка используется для нахождения модальных значений (тут оказывается полезно знание функционалов семейства <code>apply</code>):</p>
+<div class="sourceCode" id="cb389"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="op">(</span><span class="va">dens</span> <span class="op">=</span> <span class="va">winds</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">HH</span> <span class="op">==</span> <span class="fl">12</span>, <span class="va">Z</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>kden <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/NPCirc/man/kern.den.circ.html">kern.den.circ</a></span><span class="op">(</span><span class="va">wind</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>peak <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">kden</span>, <span class="kw">function</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">{</span>
+                  <span class="va">peak</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/pracma/man/findpeaks.html">findpeaks</a></span><span class="op">(</span><span class="va">X</span><span class="op">$</span><span class="va">y</span>, sortstr <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">]</span>
+                  <span class="va">X</span><span class="op">$</span><span class="va">x</span><span class="op">[</span><span class="va">peak</span><span class="op">]</span>
+                <span class="op">}</span><span class="op">)</span>
+  <span class="op">)</span>
+<span class="op">)</span>
+<span class="co">## # A tibble: 13 x 3</span>
+<span class="co">##    name            kden         peak</span>
+<span class="co">##    &lt;chr&gt;           &lt;list&gt;      &lt;dbl&gt;</span>
+<span class="co">##  1 Верхоянск       &lt;dnsty.cr&gt; -2.97 </span>
+<span class="co">##  2 Жиганск         &lt;dnsty.cr&gt; -3.20 </span>
+<span class="co">##  3 Кандалакша      &lt;dnsty.cr&gt; -0.347</span>
+<span class="co">##  4 Мирный          &lt;dnsty.cr&gt; -0.826</span>
+<span class="co">##  5 Мурманск        &lt;dnsty.cr&gt;  0.814</span>
+<span class="co">##  6 Нарьян-Мар      &lt;dnsty.cr&gt;  1.04 </span>
+<span class="co">##  7 Новолазаревская &lt;dnsty.cr&gt; -0.902</span>
+<span class="co">##  8 Норильск        &lt;dnsty.cr&gt; -0.877</span>
+<span class="co">##  9 Оленек          &lt;dnsty.cr&gt; -3.48 </span>
+<span class="co">## 10 Остров Диксон   &lt;dnsty.cr&gt; -0.145</span>
+<span class="co">## 11 Салехард        &lt;dnsty.cr&gt; -2.82 </span>
+<span class="co">## 12 Тикси           &lt;dnsty.cr&gt;  0.814</span>
+<span class="co">## 13 Шойна           &lt;dnsty.cr&gt;  0.561</span></code></pre></div>
 <p>После этого построим розы-диаграммы для всех станций. В данном случае оправдано использование обычного цикла, т.к. итераций немного:</p>
-<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb390-1"><a href="circular.html#cb390-1" aria-hidden="true" tabindex="-1"></a><span class="co"># устанавливаем параметры компоновки</span></span>
-<span id="cb390-2"><a href="circular.html#cb390-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>),</span>
-<span id="cb390-3"><a href="circular.html#cb390-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
-<span id="cb390-4"><a href="circular.html#cb390-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb390-5"><a href="circular.html#cb390-5" aria-hidden="true" tabindex="-1"></a><span class="co"># строим графики в цикле</span></span>
-<span id="cb390-6"><a href="circular.html#cb390-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (obs_name <span class="cf">in</span> dens<span class="sc">$</span>name) {</span>
-<span id="cb390-7"><a href="circular.html#cb390-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb390-8"><a href="circular.html#cb390-8" aria-hidden="true" tabindex="-1"></a>  wind_df <span class="ot">=</span> winds <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(name <span class="sc">==</span> obs_name, HH <span class="sc">==</span> <span class="dv">12</span>, Z <span class="sc">==</span> <span class="dv">0</span>)</span>
-<span id="cb390-9"><a href="circular.html#cb390-9" aria-hidden="true" tabindex="-1"></a>  dens_df <span class="ot">=</span> dens <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(name <span class="sc">==</span> obs_name)</span>
-<span id="cb390-10"><a href="circular.html#cb390-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb390-11"><a href="circular.html#cb390-11" aria-hidden="true" tabindex="-1"></a>  modal <span class="ot">=</span> dens_df<span class="sc">$</span>peak</span>
-<span id="cb390-12"><a href="circular.html#cb390-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb390-13"><a href="circular.html#cb390-13" aria-hidden="true" tabindex="-1"></a>  xp <span class="ot">=</span> <span class="fu">sin</span>(modal)</span>
-<span id="cb390-14"><a href="circular.html#cb390-14" aria-hidden="true" tabindex="-1"></a>  yp <span class="ot">=</span> <span class="fu">cos</span>(modal)</span>
-<span id="cb390-15"><a href="circular.html#cb390-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb390-16"><a href="circular.html#cb390-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot.circular</span>(wind_df<span class="sc">$</span>wind, </span>
-<span id="cb390-17"><a href="circular.html#cb390-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">shrink =</span> <span class="fl">1.2</span>,</span>
-<span id="cb390-18"><a href="circular.html#cb390-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">cex =</span> <span class="fl">0.5</span>, </span>
-<span id="cb390-19"><a href="circular.html#cb390-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">stack =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb390-20"><a href="circular.html#cb390-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">sep =</span> <span class="fl">0.035</span>,</span>
-<span id="cb390-21"><a href="circular.html#cb390-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">axes =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb390-22"><a href="circular.html#cb390-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> obs_name)</span>
-<span id="cb390-23"><a href="circular.html#cb390-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb390-24"><a href="circular.html#cb390-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rose.diag</span>(wind_df<span class="sc">$</span>wind, </span>
-<span id="cb390-25"><a href="circular.html#cb390-25" aria-hidden="true" tabindex="-1"></a>            <span class="at">bins =</span> <span class="dv">8</span>, </span>
-<span id="cb390-26"><a href="circular.html#cb390-26" aria-hidden="true" tabindex="-1"></a>            <span class="at">col =</span> <span class="st">&#39;gray70&#39;</span>,</span>
-<span id="cb390-27"><a href="circular.html#cb390-27" aria-hidden="true" tabindex="-1"></a>            <span class="at">border =</span> <span class="st">&#39;gray30&#39;</span>,</span>
-<span id="cb390-28"><a href="circular.html#cb390-28" aria-hidden="true" tabindex="-1"></a>            <span class="at">prop =</span> <span class="dv">1</span>, </span>
-<span id="cb390-29"><a href="circular.html#cb390-29" aria-hidden="true" tabindex="-1"></a>            <span class="at">add =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb390-30"><a href="circular.html#cb390-30" aria-hidden="true" tabindex="-1"></a>            <span class="at">tick =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb390-31"><a href="circular.html#cb390-31" aria-hidden="true" tabindex="-1"></a>            <span class="at">lwd =</span> <span class="fl">0.5</span>)</span>
-<span id="cb390-32"><a href="circular.html#cb390-32" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb390-33"><a href="circular.html#cb390-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(dens_df<span class="sc">$</span>kden[[<span class="dv">1</span>]], </span>
-<span id="cb390-34"><a href="circular.html#cb390-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">shrink =</span> <span class="dv">3</span>, <span class="at">join=</span>F,</span>
-<span id="cb390-35"><a href="circular.html#cb390-35" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> <span class="st">&#39;steelblue&#39;</span>)</span>
-<span id="cb390-36"><a href="circular.html#cb390-36" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb390-37"><a href="circular.html#cb390-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(<span class="fu">c</span>(<span class="dv">0</span>, xp), <span class="fu">c</span>(<span class="dv">0</span>, yp),</span>
-<span id="cb390-38"><a href="circular.html#cb390-38" aria-hidden="true" tabindex="-1"></a>        <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">&#39;orangered&#39;</span>)</span>
-<span id="cb390-39"><a href="circular.html#cb390-39" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb390-40"><a href="circular.html#cb390-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">text</span>(<span class="at">x =</span> <span class="fl">1.4</span> <span class="sc">*</span> xp, <span class="at">y =</span> <span class="fl">1.4</span> <span class="sc">*</span> yp, </span>
-<span id="cb390-41"><a href="circular.html#cb390-41" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="st">&#39;orangered&#39;</span>,</span>
-<span id="cb390-42"><a href="circular.html#cb390-42" aria-hidden="true" tabindex="-1"></a>       <span class="at">labels =</span> <span class="fu">paste0</span>(<span class="fu">round</span>(<span class="dv">180</span> <span class="sc">*</span> modal <span class="sc">/</span> pi, <span class="dv">0</span>), <span class="st">&#39;°&#39;</span>)) <span class="co"># приводим к целым градусам</span></span>
-<span id="cb390-43"><a href="circular.html#cb390-43" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<p><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-1.png" width="672" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-2.png" width="672" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-3.png" width="672" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-4.png" width="672" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-5.png" width="672" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-6.png" width="672" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-7.png" width="672" /></p>
+<div class="sourceCode" id="cb390"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># устанавливаем параметры компоновки</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>,
+    mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+
+<span class="co"># строим графики в цикле</span>
+<span class="kw">for</span> <span class="op">(</span><span class="va">obs_name</span> <span class="kw">in</span> <span class="va">dens</span><span class="op">$</span><span class="va">name</span><span class="op">)</span> <span class="op">{</span>
+  
+  <span class="va">wind_df</span> <span class="op">=</span> <span class="va">winds</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="va">obs_name</span>, <span class="va">HH</span> <span class="op">==</span> <span class="fl">12</span>, <span class="va">Z</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span>
+  <span class="va">dens_df</span> <span class="op">=</span> <span class="va">dens</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="va">obs_name</span><span class="op">)</span>
+  
+  <span class="va">modal</span> <span class="op">=</span> <span class="va">dens_df</span><span class="op">$</span><span class="va">peak</span>
+
+  <span class="va">xp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="va">modal</span><span class="op">)</span>
+  <span class="va">yp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span><span class="op">(</span><span class="va">modal</span><span class="op">)</span>
+  
+  <span class="fu"><a href="https://rdrr.io/pkg/circular/man/plot.circular.html">plot.circular</a></span><span class="op">(</span><span class="va">wind_df</span><span class="op">$</span><span class="va">wind</span>, 
+       shrink <span class="op">=</span> <span class="fl">1.2</span>,
+       cex <span class="op">=</span> <span class="fl">0.5</span>, 
+       stack <span class="op">=</span> <span class="cn">TRUE</span>, 
+       sep <span class="op">=</span> <span class="fl">0.035</span>,
+       axes <span class="op">=</span> <span class="cn">FALSE</span>,
+       main <span class="op">=</span> <span class="va">obs_name</span><span class="op">)</span>
+  
+  <span class="fu"><a href="https://rdrr.io/pkg/circular/man/rose.diag.html">rose.diag</a></span><span class="op">(</span><span class="va">wind_df</span><span class="op">$</span><span class="va">wind</span>, 
+            bins <span class="op">=</span> <span class="fl">8</span>, 
+            col <span class="op">=</span> <span class="st">'gray70'</span>,
+            border <span class="op">=</span> <span class="st">'gray30'</span>,
+            prop <span class="op">=</span> <span class="fl">1</span>, 
+            add <span class="op">=</span> <span class="cn">TRUE</span>, 
+            tick <span class="op">=</span> <span class="cn">FALSE</span>,
+            lwd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
+  
+  <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">dens_df</span><span class="op">$</span><span class="va">kden</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, 
+        shrink <span class="op">=</span> <span class="fl">3</span>, join<span class="op">=</span><span class="cn">F</span>,
+        col <span class="op">=</span> <span class="st">'steelblue'</span><span class="op">)</span>
+  
+  <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">xp</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">yp</span><span class="op">)</span>,
+        lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">'orangered'</span><span class="op">)</span>
+  
+  <span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1.4</span> <span class="op">*</span> <span class="va">xp</span>, y <span class="op">=</span> <span class="fl">1.4</span> <span class="op">*</span> <span class="va">yp</span>, 
+       col <span class="op">=</span> <span class="st">'orangered'</span>,
+       labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">180</span> <span class="op">*</span> <span class="va">modal</span> <span class="op">/</span> <span class="va">pi</span>, <span class="fl">0</span><span class="op">)</span>, <span class="st">'°'</span><span class="op">)</span><span class="op">)</span> <span class="co"># приводим к целым градусам</span>
+<span class="op">}</span></code></pre></div>
+<p><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-1.png" width="672"><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-2.png" width="672"><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-3.png" width="672"><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-4.png" width="672"><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-5.png" width="672"><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-6.png" width="672"><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-7.png" width="672"></p>
 <p>Таким образом, мы провели графический и статистический анализ среднемноголетних направлений ветра по данным полярных аэрологических станций России. Выявлены модальные направлений, выполнена аппроксимация функции плотности вероятности направлений ветра.</p>
 </div>
 <div id="circular_tests" class="section level3" number="8.2.3">
-<h3><span class="header-section-number">8.2.3</span> Описательные статистики и тесты</h3>
-<p>Стандартная функция <code>summary()</code>, вычисляющая описательные статистики, работает и для дирекционных данных:</p>
-<div class="sourceCode" id="cb391"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb391-1"><a href="circular.html#cb391-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tiksi_wind<span class="sc">$</span>wind)</span>
-<span id="cb391-2"><a href="circular.html#cb391-2" aria-hidden="true" tabindex="-1"></a><span class="do">##        n     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.      Rho </span></span>
-<span id="cb391-3"><a href="circular.html#cb391-3" aria-hidden="true" tabindex="-1"></a><span class="do">## 136.0000   4.1100   2.2580   0.9828   1.2540   0.6976   4.2050   0.4103</span></span></code></pre></div>
+<h3>
+<span class="header-section-number">8.2.3</span> Описательные статистики и тесты<a class="anchor" aria-label="anchor" href="#circular_tests"><i class="fas fa-link"></i></a>
+</h3>
+<p>Стандартная функция <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code>, вычисляющая описательные статистики, работает и для дирекционных данных:</p>
+<div class="sourceCode" id="cb391"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">tiksi_wind</span><span class="op">$</span><span class="va">wind</span><span class="op">)</span>
+<span class="co">##        n     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.      Rho </span>
+<span class="co">## 136.0000   4.1100   2.2580   0.9828   1.2540   0.6976   4.2050   0.4103</span></code></pre></div>
 </div>
 <div id="circular_correlation" class="section level3" number="8.2.4">
-<h3><span class="header-section-number">8.2.4</span> Корреляция и регрессия</h3>
+<h3>
+<span class="header-section-number">8.2.4</span> Корреляция и регрессия<a class="anchor" aria-label="anchor" href="#circular_correlation"><i class="fas fa-link"></i></a>
+</h3>
 <p>Существуют методы расчета показателей связи между двумя переменными, по крайней мере одна из которых является циркулярной (или сферической, если положение задается двумя углами). Их можно поделить на три большие группы, в зависимости от того, какая из переменных отвечает за направление:</p>
 <ul>
 <li>линейная—циркулярная;</li>
@@ -1219,20 +659,28 @@ S = \frac{1}{n} \sum_{j=1}^{n} \sin \theta_j.\]</span></p>
 \end{equation}\]</span></p>
 <p>Эта метрика обладает следующими особенностями:</p>
 <ul>
-<li><span class="math inline">\(-1 \leq \rho_T \leq 1\)</span>;</li>
+<li>
+<span class="math inline">\(-1 \leq \rho_T \leq 1\)</span>;</li>
 <li>если <span class="math inline">\(\Theta\)</span> и <span class="math inline">\(\Phi\)</span> независимы, то <span class="math inline">\(\rho_T = 0\)</span>;</li>
-<li><span class="math inline">\(\rho_T = 1\)</span> тогда и только тогда, когда <span class="math inline">\(\Theta = \Phi + \xi \mod 2\pi\)</span> для некого постоянного угла <span class="math inline">\(\xi\)</span>;</li>
-<li><span class="math inline">\(\rho_T = -1\)</span> тогда и только тогда, когда <span class="math inline">\(\Theta = -\Phi + \xi \mod 2\pi\)</span> для некоторого постоянного угла <span class="math inline">\(\xi\)</span>;</li>
-<li><span class="math inline">\(\rho_T\)</span> инвариантна относительно изменения нуля отсчета <span class="math inline">\(\Theta\)</span> and <span class="math inline">\(\Phi\)</span>;</li>
+<li>
+<span class="math inline">\(\rho_T = 1\)</span> тогда и только тогда, когда <span class="math inline">\(\Theta = \Phi + \xi \mod 2\pi\)</span> для некого постоянного угла <span class="math inline">\(\xi\)</span>;</li>
+<li>
+<span class="math inline">\(\rho_T = -1\)</span> тогда и только тогда, когда <span class="math inline">\(\Theta = -\Phi + \xi \mod 2\pi\)</span> для некоторого постоянного угла <span class="math inline">\(\xi\)</span>;</li>
+<li>
+<span class="math inline">\(\rho_T\)</span> инвариантна относительно изменения нуля отсчета <span class="math inline">\(\Theta\)</span> and <span class="math inline">\(\Phi\)</span>;</li>
 <li>отражение <span class="math inline">\(\Theta\)</span> or <span class="math inline">\(\Phi\)</span> меняет знак <span class="math inline">\(\rho_T\)</span>, но его аобслютная величина остается прежней;</li>
 <li>если распределения <span class="math inline">\(\Theta\)</span> и <span class="math inline">\(\Phi\)</span> унимодальные и концентрированные вокруг какого-то значения, то <span class="math inline">\(\rho_T(\Theta, \Phi)\)</span> может быть аппроксимировано обычным коэффициентом корреляции Пирсона <span class="math inline">\(\rho(\Theta, \Phi)\)</span>.</li>
 </ul>
 </div>
 </div>
 <div id="questions_tasks_circular" class="section level2" number="8.3">
-<h2><span class="header-section-number">8.3</span> Контрольные вопросы и упражнения</h2>
+<h2>
+<span class="header-section-number">8.3</span> Контрольные вопросы и упражнения<a class="anchor" aria-label="anchor" href="#questions_tasks_circular"><i class="fas fa-link"></i></a>
+</h2>
 <div id="questions_circular" class="section level3" number="8.3.1">
-<h3><span class="header-section-number">8.3.1</span> Вопросы</h3>
+<h3>
+<span class="header-section-number">8.3.1</span> Вопросы<a class="anchor" aria-label="anchor" href="#questions_circular"><i class="fas fa-link"></i></a>
+</h3>
 <ol style="list-style-type: decimal">
 <li>В каком виде направления рассматриваются в круговой статистике?</li>
 <li>Какое распределение является аналогом нормального распределения для круговых данных? Что означают параметры <span class="math inline">\(\kappa\)</span> и <span class="math inline">\(\mu\)</span> в функции этого распределения?</li>
@@ -1247,92 +695,84 @@ S = \frac{1}{n} \sum_{j=1}^{n} \sin \theta_j.\]</span></p>
 </ol>
 </div>
 <div id="tasks_circular" class="section level3" number="8.3.2">
-<h3><span class="header-section-number">8.3.2</span> Упражнения</h3>
+<h3>
+<span class="header-section-number">8.3.2</span> Упражнения<a class="anchor" aria-label="anchor" href="#tasks_circular"><i class="fas fa-link"></i></a>
+</h3>
 <ol style="list-style-type: decimal">
-<li><p>Загрузите <a href="https://github.com/tsamsonov/r-geo-course/blob/master/data/gem_faults.xlsx">файл</a> с фрагментом базы данных <a href="https://github.com/GEMScienceTools/gem-global-active-faults"><strong>GEM Global Active Faults</strong></a> по линеаментам сейсмически активных разломов:</p>
-<p><img src="images/gem_faults.png" width="1004" /></p>
+<li>
+<p>Загрузите <a href="https://github.com/tsamsonov/r-geo-course/blob/master/data/gem_faults.xlsx">файл</a> с фрагментом базы данных <a href="https://github.com/GEMScienceTools/gem-global-active-faults"><strong>GEM Global Active Faults</strong></a> по линеаментам сейсмически активных разломов:</p>
+<div class="inline-figure"><img src="images/gem_faults.png" width="1004"></div>
 <p>Данный файл содержит информацию по разломам Байкальской рифтовой зоны (каталог <code>EMME</code>) и Большого Кавказского хребта (каталог <code>GEM_NE_Asia</code>). При его построении исходные линии были разбиты на отрезки одинаковой длины и азимут каждого отрезка вычислен в поле <code>dir</code>. Преобразуйте эти данные к типу <code>circular</code>, вычислите описательные статистики направлений разломов для двух участков, а также постройте для них розы-диаграммы с выделенным модальным направлением и функцией плотности распределения направлений. Выведите в подзаголовок графика название участка.</p>
 <blockquote>
 <p><strong>Совет:</strong> чтобы не вызывать последовательность функций построения розы-диаграммы для каждого графика, соберите их в одну функцию, которая принимает в качестве пераметров вектор типа <code>circular</code>, заголовок графика и подзаголовок графика.</p>
-</blockquote></li>
-<li><p>Используя <a href="https://github.com/tsamsonov/r-geo-course/blob/master/data/tverobl_streets.xlsx">таблицу</a>, подготовленную на основе данных <a href="https://www.openstreetmap.org/#map=3/69.62/-74.90"><strong>OpenStreetMap</strong></a>, проведите аналогичный анализ направлений (поле <code>dir</code>) для улиц четырех городов Тверской области (<em>Бежецк, Бологое, Кашин, Торжок</em>).</p>
+</blockquote>
+</li>
+<li>
+<p>Используя <a href="https://github.com/tsamsonov/r-geo-course/blob/master/data/tverobl_streets.xlsx">таблицу</a>, подготовленную на основе данных <a href="https://www.openstreetmap.org/#map=3/69.62/-74.90"><strong>OpenStreetMap</strong></a>, проведите аналогичный анализ направлений (поле <code>dir</code>) для улиц четырех городов Тверской области (<em>Бежецк, Бологое, Кашин, Торжок</em>).</p>
 <blockquote>
 <p><strong>Внимание:</strong> В этой таблице, в отличие от предыдущей, направление рассчитано в диапазоне от 0 до 360 градусов. Чтобы корректно оценить распределение направлений, необходимо перед вычислением круговых статистик вычесть 180 из углов, больших 180 градусов.</p>
-</blockquote></li>
+</blockquote>
+</li>
 </ol>
-<table>
-<tbody>
-<tr class="odd">
-<td><em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, 2021. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a></td>
-</tr>
-</tbody>
-</table>
-
+<div class="inline-table"><table class="table table-sm"><tbody><tr class="odd">
+<td>
+<em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, 2021. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a>
+</td>
+</tr></tbody></table></div>
 </div>
 </div>
 </div>
 
 
 
-            </section>
+  <div class="chapter-nav">
+<div class="prev"><a href="temporal.html"><span class="header-section-number">7</span> Временные данные</a></div>
+<div class="next"><a href="spatial.html"><span class="header-section-number">9</span> Пространственные данные</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#circular"><span class="header-section-number">8</span> Дирекционные данные</a></li>
+<li><a class="nav-link" href="#circular_prerequisites"><span class="header-section-number">8.1</span> Предварительные требования</a></li>
+<li>
+<a class="nav-link" href="#circular_circ"><span class="header-section-number">8.2</span> Статистика направлений</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#circular_circ_theory"><span class="header-section-number">8.2.1</span> Теория</a></li>
+<li><a class="nav-link" href="#circular_circ_vis"><span class="header-section-number">8.2.2</span> Практика</a></li>
+<li><a class="nav-link" href="#circular_tests"><span class="header-section-number">8.2.3</span> Описательные статистики и тесты</a></li>
+<li><a class="nav-link" href="#circular_correlation"><span class="header-section-number">8.2.4</span> Корреляция и регрессия</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#questions_tasks_circular"><span class="header-section-number">8.3</span> Контрольные вопросы и упражнения</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#questions_circular"><span class="header-section-number">8.3.1</span> Вопросы</a></li>
+<li><a class="nav-link" href="#tasks_circular"><span class="header-section-number">8.3.2</span> Упражнения</a></li>
+</ul>
+</li>
+</ul>
 
-          </div>
-        </div>
-      </div>
-<a href="temporal.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="spatial-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
-    </div>
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/tsamsonov/r-geo-course/blob/master/09-CircularStats.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/tsamsonov/r-geo-course/edit/master/09-CircularStats.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-01-26.</p>
   </div>
-<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
-<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
-<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
-<script>
-gitbook.require(["gitbook"], function(gitbook) {
-gitbook.start({
-"sharing": {
-"github": false,
-"facebook": true,
-"twitter": true,
-"linkedin": false,
-"weibo": false,
-"instapaper": false,
-"vk": false,
-"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
-},
-"fontsettings": {
-"theme": "white",
-"family": "sans",
-"size": 2
-},
-"edit": {
-"link": null,
-"text": null
-},
-"history": {
-"link": null,
-"text": null
-},
-"view": {
-"link": null,
-"text": null
-},
-"download": null,
-"toc": {
-"collapse": "section",
-"edit": "https://github.com/tsamsonov/r-geo-course/edit/master/%s"
-}
-});
-});
-</script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
@@ -1346,5 +786,4 @@ gitbook.start({
   })();
 </script>
 </body>
-
 </html>

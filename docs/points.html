@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Глава 18 Точечные процессы | Визуализация и анализ географических данных на языке R</title>
+<meta name="author" content="Тимофей Самсонов">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.6/header-attrs.js"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.4.9000/tabs.js"></script><script src="libs/bs3compat-0.2.4.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script><link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="libs/datatables-binding-0.17/datatables.js"></script><link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script><link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet">
+<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script><script src="libs/plotly-binding-4.9.3/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/plotly-htmlwidgets-css-1.57.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="libs/plotly-main-1.57.1/plotly-latest.min.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Визуализация и анализ географических данных на языке R</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">Введение</a></li>
+<li class="book-part">Основы языка R</li>
+<li><a class="" href="basics.html"><span class="header-section-number">1</span> Типы данных, условия, ввод и вывод</a></li>
+<li><a class="" href="structures.html"><span class="header-section-number">2</span> Структуры данных и циклы</a></li>
+<li><a class="" href="tables.html"><span class="header-section-number">3</span> Табличные данные</a></li>
+<li><a class="" href="controls.html"><span class="header-section-number">4</span> Техники программирования</a></li>
+<li class="book-part">Графика и статистика</li>
+<li><a class="" href="graphics.html"><span class="header-section-number">5</span> Базовая графика</a></li>
+<li><a class="" href="advgraphics.html"><span class="header-section-number">6</span> Продвинутая графика</a></li>
+<li><a class="" href="temporal.html"><span class="header-section-number">7</span> Временные данные</a></li>
+<li><a class="" href="circular.html"><span class="header-section-number">8</span> Дирекционные данные</a></li>
+<li class="book-part">Пространственные данные</li>
+<li><a class="" href="spatial.html"><span class="header-section-number">9</span> Пространственные данные</a></li>
+<li><a class="" href="three.html"><span class="header-section-number">10</span> Трехмерные модели</a></li>
+<li><a class="" href="vector.html"><span class="header-section-number">11</span> Векторный анализ</a></li>
+<li><a class="" href="network.html"><span class="header-section-number">12</span> Cетевой анализ</a></li>
+<li><a class="" href="raster.html"><span class="header-section-number">13</span> Растровый анализ</a></li>
+<li><a class="" href="interp.html"><span class="header-section-number">14</span> Пространственная интерполяция и аппроксимация</a></li>
+<li class="book-part">Пространственная статистика</li>
+<li><a class="" href="gstat.html"><span class="header-section-number">15</span> Геостатистика</a></li>
+<li><a class="" href="spreg.html"><span class="header-section-number">16</span> Пространственная регрессия</a></li>
+<li><a class="" href="gwr.html"><span class="header-section-number">17</span> Географически взвешенная регрессия</a></li>
+<li><a class="active" href="points.html"><span class="header-section-number">18</span> Точечные процессы</a></li>
+<li class="book-part">Решение проблем</li>
+<li><a class="" href="package-troubles.html"><span class="header-section-number">A</span> Установка пакетов</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/tsamsonov/r-geo-course">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="points" class="section level1" number="18">
+<h1>
+<span class="header-section-number">Глава 18</span> Точечные процессы<a class="anchor" aria-label="anchor" href="#points"><i class="fas fa-link"></i></a>
+</h1>
+<p><a href="https://github.com/tsamsonov/r-geo-course/blob/master/code/16-PointPatterns.R">Программный код главы</a></p>
+<div id="точечный-паттерн" class="section level2" number="18.1">
+<h2>
+<span class="header-section-number">18.1</span> Точечный паттерн<a class="anchor" aria-label="anchor" href="#%D1%82%D0%BE%D1%87%D0%B5%D1%87%D0%BD%D1%8B%D0%B9-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD"><i class="fas fa-link"></i></a>
+</h2>
+<p><strong>Точечный паттерн</strong> <em>(point pattern)</em> представляет собой множество точек в <span class="math inline">\(\mathbb{R}^2\)</span>, обозначаемое <em>малой</em> жирной буквой:</p>
+<p><span class="math display">\[\mathbf{x} = \{x_1, x_2,...x_n\}\]</span>
+- Количество точек <span class="math inline">\(n = n(\mathbf{x})\)</span> может быть любым неотрицательным числом</p>
+<ul>
+<li><p>Множество является неупорядоченным (индексы чисто условны)</p></li>
+<li><p>Допускаются дубликаты (совпадающие точки), однако большинство методов рассчитаны на то, что дубликатов в множестве нет.</p></li>
+</ul>
+<p>Если <span class="math inline">\(\mathbf{x}\)</span> представляет точечный паттерн и <span class="math inline">\(B\)</span> — это некий регион, то <span class="math inline">\(\mathbf{x} \cap B\)</span> есть подмножество <span class="math inline">\(\mathbf{x}\)</span>, состоящее из точек, попадающих в <span class="math inline">\(B\)</span>:</p>
+<div class="figure">
+<img src="slides/images/pregion.png" alt=""><p class="caption">Baddeley et. al., 2016</p>
+</div>
+<p>В данном случае количество точек, попадающих в <span class="math inline">\(B\)</span>, равняется <span class="math inline">\(n = n(\mathbf{x} \cap B)\)</span></p>
+</div>
+<div id="точечные-процессы" class="section level2" number="18.2">
+<h2>
+<span class="header-section-number">18.2</span> Точечные процессы<a class="anchor" aria-label="anchor" href="#%D1%82%D0%BE%D1%87%D0%B5%D1%87%D0%BD%D1%8B%D0%B5-%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81%D1%8B"><i class="fas fa-link"></i></a>
+</h2>
+<blockquote>
+<p>__ Точечным процессом__ называется случайный процесс, реализациями которого являются точечные паттерны</p>
+</blockquote>
+<p><strong>Конечный точечный процесс</strong> <em>(finite point process)</em> — это точечный процесс, каждая реализация которого представляет собой точечный паттерн с конечным числом точек. При этом для любой области <span class="math inline">\(B\)</span> количество точек <span class="math inline">\(\mathbf{x} \cap B\)</span> представляет собой случайную величину с определимыми параметрами.</p>
+<p><strong>Локально конечный точечный процесс</strong> имеет конечное число точек в любой ограниченной области <span class="math inline">\(B\)</span> (более мягкое утверждение). Реализацией такого процесса является <em>локально конечный точечный паттерн</em>.</p>
+<div id="равномерно-случайные-точки" class="section level3" number="18.2.1">
+<h3>
+<span class="header-section-number">18.2.1</span> Равномерно случайные точки<a class="anchor" aria-label="anchor" href="#%D1%80%D0%B0%D0%B2%D0%BD%D0%BE%D0%BC%D0%B5%D1%80%D0%BD%D0%BE-%D1%81%D0%BB%D1%83%D1%87%D0%B0%D0%B9%D0%BD%D1%8B%D0%B5-%D1%82%D0%BE%D1%87%D0%BA%D0%B8"><i class="fas fa-link"></i></a>
+</h3>
+<p>Простейшим точечныйм процессом является процесс <span class="math inline">\(U = (U_1, U_2)\)</span>, каждая реализация которого включает одну точку <span class="math inline">\(u = (u_1, u_2)\)</span>.</p>
+<p>Случайная точка будет <em>равномерно</em> распределена в пространственной облсти <span class="math inline">\(W\)</span>, если ее координаты <span class="math inline">\((U_1, U_2)\)</span> имеют совместную плотность распределения, которая постоянна в пределах <span class="math inline">\(W\)</span> и равна нулю за ее пределами.</p>
+<p>Поскольку интеграл плотности распределения равен 1, величина постоянной будет равна <span class="math inline">\(1/|W|\)</span>:</p>
+<p><span class="math display">\[f(u_1, u_2) = \begin{cases}
+  1/|W|,~\text{если}~(u_1, u_2) \in W\\
+  0, ~\text{в противном случае}
+\end{cases}\]</span></p>
+<p>Если <span class="math inline">\(B\)</span> представляет собой тестовую область в <span class="math inline">\(W\)</span>, то вероятность того, что точка <span class="math inline">\(U\)</span> попадет в <span class="math inline">\(B\)</span>, будет равна:</p>
+<p><span class="math display">\[\mathbb{P}\{U \in B \} = \int_B f(u_1, u_2) du_1 du_2 = \\ = \frac{1}{|W|} \int_B 1 du_1 du_2 = \frac{|B|}{|W|}\]</span>
+- эта вероятность равна доле площади <span class="math inline">\(B\)</span> в <span class="math inline">\(W\)</span></p>
+<ul>
+<li>вероятность зависит только от площади, и не зависит от положения и формы области <span class="math inline">\(B\)</span>
+</li>
+</ul>
+</div>
+<div id="биномиальный-точечный-процесс" class="section level3" number="18.2.2">
+<h3>
+<span class="header-section-number">18.2.2</span> Биномиальный точечный процесс<a class="anchor" aria-label="anchor" href="#%D0%B1%D0%B8%D0%BD%D0%BE%D0%BC%D0%B8%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9-%D1%82%D0%BE%D1%87%D0%B5%D1%87%D0%BD%D1%8B%D0%B9-%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81"><i class="fas fa-link"></i></a>
+</h3>
+<p><strong>Биномиальным</strong> называется точечный процесс <span class="math inline">\(\mathbf{X} = \{X_1,..., X_n\}\)</span>, реализации которого содержат <span class="math inline">\(n\)</span> точек.</p>
+<div class="figure">
+<img src="slides/images/pbinomial.png" alt=""><p class="caption">Baddeley et. al., 2016</p>
+</div>
+<p>Чтобы точки были распределены равномерно по пространству, необходимо выполнение двух условий:</p>
+<ul>
+<li>
+<span class="math inline">\(X_1,...,X_n\)</span> представляют собой <em>независимые</em> случайные величины</li>
+<li>Каждая из этих величин <em>равномерно</em> распределена в пределах <span class="math inline">\(W\)</span>.</li>
+</ul>
+<p>Если <span class="math inline">\(B\)</span> представляет собой тестовую область, то количество <span class="math inline">\(n(\mathbf{X} \cap B)\)</span> случайных точек, попавших в <span class="math inline">\(B\)</span>, будет равняться количеству индексов <span class="math inline">\(i\)</span> таких, что <span class="math inline">\(X_i \in B\)</span>.</p>
+<p>Чтобы определить вероятностное распределение <span class="math inline">\(n(\mathbf{X} \cap B)\)</span>, рассмотрим эту величину как количество успешных исходов в <span class="math inline">\(n\)</span> независимых испытаниях. Будем считать «успехом» исход, при котором случайная точка <span class="math inline">\(X_i\)</span> попадает в <span class="math inline">\(B\)</span>.</p>
+<p>Если испытания независимы и равномерно распределены, то вероятность успеха равна <span class="math inline">\(p = |B| / |W|\)</span> и величина <span class="math inline">\(n(\mathbf{X} \cap B)\)</span> имеет <em>биномиальный закон распределения</em>:</p>
+<p><span class="math display">\[\mathbb{P}\{n(\mathbf{X} \cap B) = k\} = 
+  \left(
+    \begin{array}{c}
+      n \\
+      k
+    \end{array}
+  \right) p^k (1-p)^{n-k}\color{grey}{, k = 0, 1, ..., n}\]</span></p>
+<p>Биномиальный коэффициент равен числу сочетаний из <span class="math inline">\(n\)</span> по <span class="math inline">\(k\)</span> (без учета порядка):
+<span class="math display">\[\left(
+    \begin{array}{c}
+      n \\
+      k
+    \end{array}
+  \right) = \frac{n!}{(n-k)!~k!}\]</span></p>
+</div>
+<div id="пуассоновский-процесс" class="section level3" number="18.2.3">
+<h3>
+<span class="header-section-number">18.2.3</span> Пуассоновский процесс<a class="anchor" aria-label="anchor" href="#%D0%BF%D1%83%D0%B0%D1%81%D1%81%D0%BE%D0%BD%D0%BE%D0%B2%D1%81%D0%BA%D0%B8%D0%B9-%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81"><i class="fas fa-link"></i></a>
+</h3>
+<p><strong>Однородный пуассоновский точечный процесс</strong> (homogeneous Poisson point process), или <em>абсолютная пространственная случайность</em> (complete spatial randomness — CSR) характеризуется следующими свойствами:</p>
+<ul>
+<li>
+<strong>гомогенность</strong>: размещение точек не имеет пространственных закономерностей</li>
+<li>
+<strong>независимость</strong>: результат реализации процесса в одной области не оказывает влияние на результат реализации в других областях</li>
+</ul>
+<div class="figure">
+<img src="slides/images/ppoisson.png" alt=""><p class="caption">Baddeley et. al., 2016</p>
+</div>
+<p><strong>Однородность</strong> <em>(гомогенность)</em> означает, что ожидаемое количество точек, попадающих в регион <span class="math inline">\(B\)</span> должно быть пропорционально его площади:</p>
+<p><span class="math display">\[\operatorname E[n(\mathbf{X} \cap B)] = \lambda |B|\]</span>
+Параметр <span class="math inline">\(\lambda\)</span> представляет собой среднее количество точек на единицу площади — <strong>интенсивность точечного процесса</strong>.</p>
+<blockquote>
+<p>В отличие от биномиального процесса, полностью случайный (Пуассоновский) процесс характеризуется <em>случайным количеством точек</em>.</p>
+</blockquote>
+<p><strong>Пространственная независимость</strong> означает, что количества точек в двух неперекрывающихся областях <span class="math inline">\(A\)</span> и <span class="math inline">\(B\)</span> являются независимыми случайными переменными:</p>
+<p><span class="math display">\[n(\mathbf{X} \cap A) \not\sim n(\mathbf{X} \cap B),~A \cap B = \emptyset\]</span>
+&gt; Для биномиального процесса условие независимости не выполняется, поскольку известно общее количество точек. Если в область <span class="math inline">\(A\)</span> попало <span class="math inline">\(k\)</span> точек, то в область <span class="math inline">\(B\)</span> не может попасть более чем <span class="math inline">\(n-k\)</span> точек, что нарушает условие независимости распределений.</p>
+<p>Предположение о независимости выполняется для любых непересекающихся регионов <span class="math inline">\(A\)</span> и <span class="math inline">\(B\)</span> и для любого числа этих регионов</p>
+<p>Одним из следствий независимости является тот факт, что количество точек, подсчитанное по <em>регулярной сетке квадратов</em>, также даст совокупность независимых величин (для любого размера сетки):</p>
+<div class="figure">
+<img src="slides/images/qcounts.png" alt=""><p class="caption">Baddeley et. al., 2016</p>
+</div>
+<p><strong>Упорядоченность</strong> <em>(orderliness)</em>: при стремлении площади области к нулю, вероятность нахождения в этой области более одной точки, деленная на площадь, также стремится к нулю</p>
+<div class="figure">
+<img src="slides/images/smalltrials.png" alt=""><p class="caption">Baddeley et. al., 2016</p>
+</div>
+<p>Если реализации отвечают условию независимости и вероятность нахождения более одной точки в бесконечно малом квадрате пренебрежимо мала, то случайную величину <span class="math inline">\(n(\mathbf{X} \cap B)\)</span> можно рассматривать как <em>количество «успехов» в большом числе независимых испытаний, каждое из которых имеет малую вероятность успеха</em>.</p>
+<p>Это означает, что <span class="math inline">\(n(\mathbf{X} \cap B)\)</span> подчиняется <strong>распределению Пуассона</strong>, которое характеризует <em>частоту редких событий</em>.</p>
+<p>В соответствии с этим законом, вероятность получить <span class="math inline">\(k\)</span> редких событий равна</p>
+<p><span class="math display">\[\mathbb{P}\{N = k\} = e^{-\mu} \frac{\mu^k}{k!}\color{grey}{,~k = 0, 1, 2, ...}\]</span></p>
+<p>Величина <span class="math inline">\(\mu\)</span> представляет собой <em>математическое ожидание</em> распределения Пуассона.</p>
+<blockquote>
+<p>Дисперсия распределения Пуассона равна его математическому ожиданию</p>
+</blockquote>
+<p>Поскольку, как мы показали ранее, ожидаемое количество точек в регионе <span class="math inline">\(B\)</span> равняется <span class="math inline">\(\operatorname E[n(\mathbf{X} \cap B)] = \lambda |B|\)</span>, можно сделать вывод, что случайная величина <span class="math inline">\(n(\mathbf{X} \cap B)\)</span> имеет распределение Пуассона с математическим ожиданием:</p>
+<p><span class="math display">\[\mu = \lambda |B|\]</span></p>
+<p>Пуассоновский процесс определяется следующими <strong>параметрами</strong>:</p>
+<ul>
+<li><p><strong>однородность</strong>: количество <span class="math inline">\(n(\mathbf{B} \cap B)\)</span> случайных точек, попадающих в выборочную область <span class="math inline">\(B\)</span> характеризуется мат. ожиданием <span class="math inline">\(\mathbb{E}n(\mathbf{X} \cap B) = \lambda |B|\)</span>;</p></li>
+<li><p><strong>независимость</strong>: для неперекрывающихся выборочных областей <span class="math inline">\(B_1, B_2, ..., B_k\)</span>, количества <span class="math inline">\(n(\mathbf{X} \cap B_1), ..., n(\mathbf{X} \cap B_k)\)</span> предствляют собой независимые случайные величины;</p></li>
+<li><p><strong>распределение Пуассона</strong>: число <span class="math inline">\(n(\mathbf{B} \cap B)\)</span> случайных точек, попадающих в выборочную область <span class="math inline">\(B\)</span> распределено по закону Пуассона.</p></li>
+</ul>
+<p><strong>Свойства</strong> пуассоновского процесса:</p>
+<ul>
+<li><p><strong>условность</strong> <em>(conditional)</em>: в любой области <span class="math inline">\(B\)</span> точки процесса независимо и равномерно распределены;</p></li>
+<li>
+<p><strong>прореживаемость</strong> <em>(thinning)</em>: при случайном прореживании (отборе точек) пуассоновского точечного паттерна с интенсивностью <span class="math inline">\(\lambda\)</span> результирующий паттерн будет соответствовать Пуассоновскому процессу с интенсивностью <span class="math inline">\(p\lambda\)</span>, где <span class="math inline">\(p\)</span> — вероятность сохранения точки (процент отбора);</p>
+<div class="figure">
+<img src="slides/images/pthinning.png" alt=""><p class="caption">Baddeley et. al., 2016</p>
+</div>
+</li>
+<li>
+<p><strong>суперпозиция</strong> <em>(superposition)</em>: сумма двух независимых гомогенных случайных точечных процессов <span class="math inline">\(Z = X \cup Y\)</span> с интенсивностями <span class="math inline">\(\lambda_X\)</span> и <span class="math inline">\(\lambda_Y\)</span> является гомогенным Пуассоновским процессом с интенсивностью <span class="math inline">\(\lambda_Z = \lambda_X + \lambda_Y\)</span></p>
+<div class="figure">
+<img src="slides/images/psuperposition.png" alt=""><p class="caption">Baddeley et. al., 2016</p>
+</div>
+</li>
+</ul>
+<div id="симуляция-пуассоновского-процесса" class="section level4" number="18.2.3.1">
+<h4>
+<span class="header-section-number">18.2.3.1</span> Симуляция Пуассоновского процесса<a class="anchor" aria-label="anchor" href="#%D1%81%D0%B8%D0%BC%D1%83%D0%BB%D1%8F%D1%86%D0%B8%D1%8F-%D0%BF%D1%83%D0%B0%D1%81%D1%81%D0%BE%D0%BD%D0%BE%D0%B2%D1%81%D0%BA%D0%BE%D0%B3%D0%BE-%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81%D0%B0"><i class="fas fa-link"></i></a>
+</h4>
+<p>Пусть дана область <span class="math inline">\(B = [x_{min}, x_{max}] \times [y_{min}, y_{max}]\)</span> и интенсивность точечного процесса <span class="math inline">\(\lambda\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li><p>Сгенерировать случайное число <span class="math inline">\(N\)</span>, имеющее распределение Пуассона с параметром <span class="math inline">\(\mu = \lambda |B|\)</span>.</p></li>
+<li><p>Сгенерировать <span class="math inline">\(N\)</span> координат <span class="math inline">\(X\)</span>, имеющих равномерное распределение на промежутке <span class="math inline">\([x_{min}, x_{max}]\)</span>.</p></li>
+<li><p>Сгенерировать <span class="math inline">\(N\)</span> координат <span class="math inline">\(Y\)</span>, имеющих равномерное распределение на промежутке <span class="math inline">\([y_{min}, y_{max}]\)</span>.</p></li>
+</ol>
+<blockquote>
+<p>Вероятность получить 0 точек также существует и равна <span class="math inline">\(\mathbb{P}\{N = 0\} = e^{-\mu} \frac{\mu^0}{0!} = e^{-\lambda |B|}\)</span></p>
+</blockquote>
+</div>
+</div>
+<div id="неоднородный-пуассоновский-процесс" class="section level3" number="18.2.4">
+<h3>
+<span class="header-section-number">18.2.4</span> Неоднородный пуассоновский процесс<a class="anchor" aria-label="anchor" href="#%D0%BD%D0%B5%D0%BE%D0%B4%D0%BD%D0%BE%D1%80%D0%BE%D0%B4%D0%BD%D1%8B%D0%B9-%D0%BF%D1%83%D0%B0%D1%81%D1%81%D0%BE%D0%BD%D0%BE%D0%B2%D1%81%D0%BA%D0%B8%D0%B9-%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81"><i class="fas fa-link"></i></a>
+</h3>
+<p>Определяется следующими параметрами:</p>
+<ul>
+<li><p><strong>функция интенсивности</strong>: количество <span class="math inline">\(n(\mathbf{X} \cap B)\)</span> случайных точек, попадающих в выборочную область <span class="math inline">\(B\)</span> характеризуется мат. ожиданием <span class="math inline">\(\mathbb{E}n(\mathbf{X} \cap B) = \int_B \lambda(u) du = \mu\)</span>, где <span class="math inline">\(\lambda(u)\)</span> есть пространственная функция интенсивности;</p></li>
+<li><p><strong>независимость</strong>: для неперекрывающихся выборочных областей <span class="math inline">\(B_1, B_2, ..., B_k\)</span>, количества <span class="math inline">\(n(\mathbf{X} \cap B_1), ..., n(\mathbf{X} \cap B_k)\)</span> предствляют собой независимые случайные величины;</p></li>
+<li><p><strong>распределение Пуассона</strong>: число <span class="math inline">\(n(\mathbf{B} \cap B)\)</span> случайных точек, попадающих в выборочную область <span class="math inline">\(B\)</span> распределено по закону Пуассона.</p></li>
+</ul>
+<p>Данные параметры отличаются следующими свойствами:</p>
+<ul>
+<li><p>функция плотности <span class="math inline">\(\lambda(u)\)</span> определяет общее количество точек и их пространственное распределение;</p></li>
+<li><p>никаких ограничений на функцию <span class="math inline">\(\lambda(u)\)</span> не накладывается, вследствие этого модель неоднородного Пуассоновского процесса является достаточно общей;</p></li>
+<li><p>свойства условности, прореживаемости и суперпозиции справедливы также и для неоднородного пуассоновского процесса;</p></li>
+</ul>
+<div id="симуляция-неоднородного-пуассоновского-процесса" class="section level4" number="18.2.4.1">
+<h4>
+<span class="header-section-number">18.2.4.1</span> Симуляция неоднородного пуассоновского процесса<a class="anchor" aria-label="anchor" href="#%D1%81%D0%B8%D0%BC%D1%83%D0%BB%D1%8F%D1%86%D0%B8%D1%8F-%D0%BD%D0%B5%D0%BE%D0%B4%D0%BD%D0%BE%D1%80%D0%BE%D0%B4%D0%BD%D0%BE%D0%B3%D0%BE-%D0%BF%D1%83%D0%B0%D1%81%D1%81%D0%BE%D0%BD%D0%BE%D0%B2%D1%81%D0%BA%D0%BE%D0%B3%D0%BE-%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81%D0%B0"><i class="fas fa-link"></i></a>
+</h4>
+<p>Метод <em>Льюиса-Шедлера</em> (Lewis-Shedler thinning):</p>
+<ol style="list-style-type: decimal">
+<li><p>Генерируется однородный Пуассоновской процесс с интенсивностью <span class="math inline">\(M = \max_L\big[\lambda(u)\big]\)</span>.</p></li>
+<li><p>Осуществляется случайное прореживание (исключение) точек с вероятностью сохранения точки <span class="math inline">\(p(u) = \lambda(u) / M\)</span>, пропорциональной функции интенсивности.</p></li>
+</ol>
+<p>Чтобы понять, будет ли точка исключена, генерируется случайное число 0 или 1, имющее распределени Бернулли с вероятностью положительного исхода <span class="math inline">\(p = p(u)\)</span>. Это можно сделать с помощью функции <code><a href="https://rdrr.io/r/stats/Binomial.html">rbinom(1, 1, p)</a></code></p>
+<p><span class="math display">\[\lambda(x,y) = x + y^2\]</span></p>
+<div class="inline-figure"><img src="20-PointPatterns_files/figure-html/unnamed-chunk-1-1.png" width="3000"></div>
+</div>
+</div>
+<div id="процесс-кокса-cox-process" class="section level3" number="18.2.5">
+<h3>
+<span class="header-section-number">18.2.5</span> Процесс Кокса (Cox process)<a class="anchor" aria-label="anchor" href="#%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81-%D0%BA%D0%BE%D0%BA%D1%81%D0%B0-cox-process"><i class="fas fa-link"></i></a>
+</h3>
+<p>Процесс Кокса определяется как Пуассоновский процесс со случайной функцией интенсивности <span class="math inline">\(\Lambda(u)\)</span>, которая называется <em>порождающей интенсивностью</em></p>
+<div class="figure">
+<img src="slides/images/cox.png" alt=""><p class="caption">Baddeley et. al., 2016</p>
+</div>
+<p>Слева — реализация случайной функции <span class="math inline">\(\Lambda(u)\)</span>. По центру — реализация Пуассоновского точечного процесса с интенсивностью <span class="math inline">\(\Lambda(u)\)</span>.</p>
+<ul>
+<li><p><strong>Cмешанный Пуассоновский процесс</strong>: однородный Пуассоновский процесс, порождаемый постоянной случайной величиной <span class="math inline">\(\Lambda\)</span>. Интенсивность процесса равна <span class="math inline">\(\lambda = \mathbb E\Lambda\)</span>.</p></li>
+<li><p><strong>Логнормальный процесс Кокса</strong>: процесс Кокса с порождающей интенсивностью, равной <span class="math inline">\(\Lambda(u) = \exp\big[G(u)\big]\)</span>, где <span class="math inline">\(G(u)\)</span> — Гауссовское случайное поле.</p></li>
+</ul>
+<p>Для <em>гауссовского случайного поля</em> в каждой точке <span class="math inline">\(u_i\)</span> случайная величина <span class="math inline">\(G(u_i)\)</span> имеет нормальное распределение, для пары точек <span class="math inline">\(u\)</span> и <span class="math inline">\(v\)</span> пара величин <span class="math inline">\(\big(G(u), G(v)\big)\)</span> имеет двумерное нормальное распределение. Аналогично и для произвольного числа точек.</p>
+<p>Независимые реализации логнормального процесса Кокса:</p>
+<div class="figure">
+<img src="slides/images/coxnormal.png" alt=""><p class="caption">Baddeley et. al., 2016</p>
+</div>
+</div>
+<div id="кластерные-процессы" class="section level3" number="18.2.6">
+<h3>
+<span class="header-section-number">18.2.6</span> Кластерные процессы<a class="anchor" aria-label="anchor" href="#%D0%BA%D0%BB%D0%B0%D1%81%D1%82%D0%B5%D1%80%D0%BD%D1%8B%D0%B5-%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81%D1%8B"><i class="fas fa-link"></i></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li><p>Генерируется «родительский» точечный процесс <span class="math inline">\(\mathbf{Y}\)</span>.</p></li>
+<li><p>Каждая точка родительского процесса <span class="math inline">\(y_i\)</span> порождает случайный точечный паттерн «потомков» <span class="math inline">\(x_{ij}\)</span></p></li>
+</ol>
+<div class="figure">
+<img src="slides/images/clustered.png" alt=""><p class="caption">Baddeley et. al., 2016</p>
+</div>
+<p>— Наблюдаются только точки потомков (каждая родительская точка замещается ее потомками).</p>
+<p>— Множество точек <span class="math inline">\(x_{ij}\)</span> формирует реализацию кластерного точечного процесса <span class="math inline">\(\mathbf{X}\)</span>.</p>
+<div class="figure">
+<img src="slides/images/clustered.png" alt=""><p class="caption">Baddeley et. al., 2016</p>
+</div>
+<p>Возможные свойства кластерных процессов:</p>
+<ul>
+<li><p>(CLP1) <strong>пуассоновские родители</strong>: родительские точки являются реализацией Пуассоновского процесса.</p></li>
+<li><p>(CLP2) <strong>независимые кластеры</strong>: кластеры независимы друг от друга.</p></li>
+<li><p>(CLP3) <strong>идентично распределенные кластеры</strong>: если совместить разные кластеры, то они будут иметь одно распределение.</p></li>
+<li><p>(CLP4) <strong>независимые потомки</strong>: потомки внутри каждого кластера независимы и одинаково распределены.</p></li>
+</ul>
+<p>Процессы, отвечающие требованиям (CLP1)—(CLP4) носят название процессов <strong>Неймана-Скотта</strong> (<em>Neyman-Scott</em>).</p>
+<ul>
+<li><p>(CLP5) <strong>пуассоновское количество потомков</strong>: для каждой родительской точки количество потомков есть пуассоновская случайная величина.</p></li>
+<li><p>(CLP6) <strong>изотропные кластеры</strong>: плотность распределения потомков зависит только от расстояния до родительской точки.</p></li>
+</ul>
+<p>Распространенные частные случаи:</p>
+<ul>
+<li>
+<p>Процесс Матерна <span class="math inline">\((\kappa, \mu, r)\)</span>: процесс <span class="math inline">\(Y\)</span> имеет интенсивность <span class="math inline">\(κ\)</span>, каждый родитель имеет <span class="math inline">\(Π(μ)\)</span> потомков, случайно распределенных в радиусе <span class="math inline">\(r\)</span></p>
+<p>Реализации процесса Матерна в квадрате <span class="math inline">\([0, 1] \times [0, 1]\)</span> с интенсивностью родителей <span class="math inline">\(\kappa = 8\)</span>, средним количеством потомков <span class="math inline">\(\mu = 5\)</span> и радиусом кластера <span class="math inline">\(R = 0.1\)</span>:</p>
+<div class="figure">
+<img src="slides/images/matern.png" alt=""><p class="caption">Baddeley et. al., 2016</p>
+</div>
+</li>
+<li><p>Процесс Томаса <span class="math inline">\((\kappa, \mu, \sigma)\)</span>: процесс <span class="math inline">\(Y\)</span> имеет интенсивность κ, каждый родитель имеет <span class="math inline">\(Π(μ)\)</span> потомков, смещенных на расстояние, подчиняющееся распределению <span class="math inline">\(N(0,\sigma^2)\)</span></p></li>
+</ul>
+</div>
+<div id="регулярные-процессы" class="section level3" number="18.2.7">
+<h3>
+<span class="header-section-number">18.2.7</span> Регулярные процессы<a class="anchor" aria-label="anchor" href="#%D1%80%D0%B5%D0%B3%D1%83%D0%BB%D1%8F%D1%80%D0%BD%D1%8B%D0%B5-%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81%D1%8B"><i class="fas fa-link"></i></a>
+</h3>
+<p>Точки не могут располагаться на расстоянии ближе чем <span class="math inline">\(r\)</span> — <strong>расстояния ингибиции</strong> (отталкивания).</p>
+<ul>
+<li><p><strong>Последовательные модели</strong>: точки генерируются последовательно согласно Пуассоновскому распредедению (координаты равномерно распределены). Каждая последующая точка сохраняется, только если она находится на расстоянии не ближе, чем <span class="math inline">\(r\)</span>.</p></li>
+<li><p><strong>Зависимое прореживание</strong>: генерируется Пуассоновский процесс. После этого удаляются точки, расположенные на расстоянии меньшем <span class="math inline">\(r\)</span>. Пары близко расположенных точек аннигилируют (<em>процесс Матерна I</em>). Либо точки маркируются случайным «временем прибытия» и удаляется точка, имеющая более позднее время прибытия (<em>процесс Матерна II</em>).</p></li>
+</ul>
+<p><strong>Последовательная модель</strong>:</p>
+<div class="figure">
+<img src="slides/images/rssi.png" alt=""><p class="caption">Baddeley et. al., 2016</p>
+</div>
+<p><strong>Процесс Матерна I</strong>:</p>
+<div class="figure">
+<img src="slides/images/matern1.png" alt=""><p class="caption">Baddeley et. al., 2016</p>
+</div>
+<p><strong>Процесс Матерна II</strong>:</p>
+<div class="inline-figure"><img src="slides/images/matern2.png"></div>
+</div>
+</div>
+<div id="диагностика" class="section level2" number="18.3">
+<h2>
+<span class="header-section-number">18.3</span> Диагностика<a class="anchor" aria-label="anchor" href="#%D0%B4%D0%B8%D0%B0%D0%B3%D0%BD%D0%BE%D1%81%D1%82%D0%B8%D0%BA%D0%B0"><i class="fas fa-link"></i></a>
+</h2>
+<p>В предыдущем разделе мы рассмотрели основные типы точечных процессов на плоскости, а также методы их симуляции в виде случайных распределений. В настоящем параграфе показаны различные методы, с помощью которых можно установить, к какому типу процессов относятся наблюдаемые в реальности точки.</p>
+<div id="анализ-интенсивности" class="section level3" number="18.3.1">
+<h3>
+<span class="header-section-number">18.3.1</span> Анализ интенсивности<a class="anchor" aria-label="anchor" href="#%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7-%D0%B8%D0%BD%D1%82%D0%B5%D0%BD%D1%81%D0%B8%D0%B2%D0%BD%D0%BE%D1%81%D1%82%D0%B8"><i class="fas fa-link"></i></a>
+</h3>
+</div>
+<div id="анализ-зависимости" class="section level3" number="18.3.2">
+<h3>
+<span class="header-section-number">18.3.2</span> Анализ зависимости<a class="anchor" aria-label="anchor" href="#%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7-%D0%B7%D0%B0%D0%B2%D0%B8%D1%81%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B8"><i class="fas fa-link"></i></a>
+</h3>
+</div>
+</div>
+<div id="моделирование" class="section level2" number="18.4">
+<h2>
+<span class="header-section-number">18.4</span> Моделирование<a class="anchor" aria-label="anchor" href="#%D0%BC%D0%BE%D0%B4%D0%B5%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5"><i class="fas fa-link"></i></a>
+</h2>
+<p>Настоящий раздел посвящен подбору параметров модели точечного процесса для фактических данных о размещении объектов.</p>
+</div>
+<div id="point_review" class="section level2" number="18.5">
+<h2>
+<span class="header-section-number">18.5</span> Краткий обзор<a class="anchor" aria-label="anchor" href="#point_review"><i class="fas fa-link"></i></a>
+</h2>
+<p>Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
+<iframe src="https://tsamsonov.github.io/r-geo-course/slides/16-PointPatterns_slides.html#1" width="672" height="500px"></iframe></p>
+<blockquote>
+<p>Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.</p>
+</blockquote>
+</div>
+<div id="questions_tasks_patterns" class="section level2" number="18.6">
+<h2>
+<span class="header-section-number">18.6</span> Контрольные вопросы и упражнения<a class="anchor" aria-label="anchor" href="#questions_tasks_patterns"><i class="fas fa-link"></i></a>
+</h2>
+<div id="questions_patterns" class="section level3" number="18.6.1">
+<h3>
+<span class="header-section-number">18.6.1</span> Вопросы<a class="anchor" aria-label="anchor" href="#questions_patterns"><i class="fas fa-link"></i></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li>Дайте определение точечного паттерна и точечного процесса.</li>
+<li>Перечислите три основных типа точечных процессов.</li>
+<li>Какими особенностями обладают конечный и локально конечный точечный процесс?</li>
+<li>Каким уравнением опрпеделяется плотность распределения для равномерно случайного точечного процесса в области <span class="math inline">\(W\)</span>? Чему будет равна вероятность попадания точки в подобласть <span class="math inline">\(B\)</span> этой области?</li>
+<li>Сформулируйте определение биномиального точечного процесса. Какие условия должны выполняться для процесса данного типа?</li>
+<li>Какими свойствами характеризуется однородный пуассоновский точечный процесс? Как эти свойства можно выразить математически?</li>
+<li>Перечислите основные параметры пуассоновского точечного процесса.</li>
+<li>Изложите алгоритм симуляции однородного пуассоновского точечного процесса. Назовите программные средства R, которые можно использовать для этого.</li>
+<li>Чем неоднородный пуассоновский процесс отличается от однородного? Сформулируйте отличия словесно и математически.</li>
+<li>Изложите алгоритм симуляции неоднородного пуассоновского точечного процесса по методу Льюиса-Шедлера. Назовите программные средства R, которые можно использовать для этого.</li>
+<li>Дайте определение процессу Кокса. Приведите два примера частных случаев процесса Кокса.</li>
+<li>Перечислите концептуальные принципы, лежащие в основе теории кластерных точечных процессов.</li>
+<li>Назовите шесть основных свойств, с помощью которых определяется характер кластерного точечного процесса.</li>
+<li>Какими свойствами обладают процессы Неймана-Скотта?</li>
+<li>Дайте определение кластерных процессов Матерна и Томаса.</li>
+<li>Какие программные средства имеются в среде R для анализа и симуляции кластерных точечных процессов?</li>
+<li>Сформулируйте определение регулярного точечного процесса. Каков его основной параметр? Приведите примеры регулярных процессов в географической среде.</li>
+<li>Назовите два типа моделей, используемых для представления регулярных точечных процессов. Изложите кратко используемые в них алгоритмы симуляции.</li>
+<li>Перечислите основные статистические функции, используемые для анализа точечных паттернов.</li>
+<li>Что из себя представляет индекс Моришита? Приведите формулу для его вычисления и раскройте суть каждой компоненты этой формулы.</li>
+<li>В чем заключается преимущество K-функции Рипли в сравенении с другими методами оценки характера точечных паттернов?</li>
+</ol>
+</div>
+<div id="tasks_patterns" class="section level3" number="18.6.2">
+<h3>
+<span class="header-section-number">18.6.2</span> Упражнения<a class="anchor" aria-label="anchor" href="#tasks_patterns"><i class="fas fa-link"></i></a>
+</h3>
+<div class="inline-table"><table class="table table-sm"><tbody><tr class="odd">
+<td>
+<em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, 2021. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a>
+</td>
+</tr></tbody></table></div>
+</div>
+</div>
+</div>
+
+
+
+  <div class="chapter-nav">
+<div class="prev"><a href="gwr.html"><span class="header-section-number">17</span> Географически взвешенная регрессия</a></div>
+<div class="next"><a href="package-troubles.html"><span class="header-section-number">A</span> Установка пакетов</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#points"><span class="header-section-number">18</span> Точечные процессы</a></li>
+<li><a class="nav-link" href="#%D1%82%D0%BE%D1%87%D0%B5%D1%87%D0%BD%D1%8B%D0%B9-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD"><span class="header-section-number">18.1</span> Точечный паттерн</a></li>
+<li>
+<a class="nav-link" href="#%D1%82%D0%BE%D1%87%D0%B5%D1%87%D0%BD%D1%8B%D0%B5-%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81%D1%8B"><span class="header-section-number">18.2</span> Точечные процессы</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%D1%80%D0%B0%D0%B2%D0%BD%D0%BE%D0%BC%D0%B5%D1%80%D0%BD%D0%BE-%D1%81%D0%BB%D1%83%D1%87%D0%B0%D0%B9%D0%BD%D1%8B%D0%B5-%D1%82%D0%BE%D1%87%D0%BA%D0%B8"><span class="header-section-number">18.2.1</span> Равномерно случайные точки</a></li>
+<li><a class="nav-link" href="#%D0%B1%D0%B8%D0%BD%D0%BE%D0%BC%D0%B8%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9-%D1%82%D0%BE%D1%87%D0%B5%D1%87%D0%BD%D1%8B%D0%B9-%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81"><span class="header-section-number">18.2.2</span> Биномиальный точечный процесс</a></li>
+<li><a class="nav-link" href="#%D0%BF%D1%83%D0%B0%D1%81%D1%81%D0%BE%D0%BD%D0%BE%D0%B2%D1%81%D0%BA%D0%B8%D0%B9-%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81"><span class="header-section-number">18.2.3</span> Пуассоновский процесс</a></li>
+<li><a class="nav-link" href="#%D0%BD%D0%B5%D0%BE%D0%B4%D0%BD%D0%BE%D1%80%D0%BE%D0%B4%D0%BD%D1%8B%D0%B9-%D0%BF%D1%83%D0%B0%D1%81%D1%81%D0%BE%D0%BD%D0%BE%D0%B2%D1%81%D0%BA%D0%B8%D0%B9-%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81"><span class="header-section-number">18.2.4</span> Неоднородный пуассоновский процесс</a></li>
+<li><a class="nav-link" href="#%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81-%D0%BA%D0%BE%D0%BA%D1%81%D0%B0-cox-process"><span class="header-section-number">18.2.5</span> Процесс Кокса (Cox process)</a></li>
+<li><a class="nav-link" href="#%D0%BA%D0%BB%D0%B0%D1%81%D1%82%D0%B5%D1%80%D0%BD%D1%8B%D0%B5-%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81%D1%8B"><span class="header-section-number">18.2.6</span> Кластерные процессы</a></li>
+<li><a class="nav-link" href="#%D1%80%D0%B5%D0%B3%D1%83%D0%BB%D1%8F%D1%80%D0%BD%D1%8B%D0%B5-%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81%D1%8B"><span class="header-section-number">18.2.7</span> Регулярные процессы</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#%D0%B4%D0%B8%D0%B0%D0%B3%D0%BD%D0%BE%D1%81%D1%82%D0%B8%D0%BA%D0%B0"><span class="header-section-number">18.3</span> Диагностика</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7-%D0%B8%D0%BD%D1%82%D0%B5%D0%BD%D1%81%D0%B8%D0%B2%D0%BD%D0%BE%D1%81%D1%82%D0%B8"><span class="header-section-number">18.3.1</span> Анализ интенсивности</a></li>
+<li><a class="nav-link" href="#%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7-%D0%B7%D0%B0%D0%B2%D0%B8%D1%81%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B8"><span class="header-section-number">18.3.2</span> Анализ зависимости</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#%D0%BC%D0%BE%D0%B4%D0%B5%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5"><span class="header-section-number">18.4</span> Моделирование</a></li>
+<li><a class="nav-link" href="#point_review"><span class="header-section-number">18.5</span> Краткий обзор</a></li>
+<li>
+<a class="nav-link" href="#questions_tasks_patterns"><span class="header-section-number">18.6</span> Контрольные вопросы и упражнения</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#questions_patterns"><span class="header-section-number">18.6.1</span> Вопросы</a></li>
+<li><a class="nav-link" href="#tasks_patterns"><span class="header-section-number">18.6.2</span> Упражнения</a></li>
+</ul>
+</li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/tsamsonov/r-geo-course/blob/master/20-PointPatterns.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/tsamsonov/r-geo-course/edit/master/20-PointPatterns.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-01-26.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+</html>

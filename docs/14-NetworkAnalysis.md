@@ -1,4 +1,4 @@
-# Cетевой анализ {#network_analysis}
+# Cетевой анализ {#network}
 
 
 

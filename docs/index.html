@@ -1,708 +1,130 @@
 <!DOCTYPE html>
-<html lang="" xml:lang="">
+<html lang="en">
 <head>
-
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Визуализация и анализ географических данных на языке R</title>
-  <meta name="description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
-
-  <meta property="og:title" content="Визуализация и анализ географических данных на языке R" />
-  <meta property="og:type" content="book" />
-  
-  
-  <meta property="og:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
-  <meta name="github-repo" content="tsamsonov/r-geo-course" />
-
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Визуализация и анализ географических данных на языке R" />
-  <meta name="twitter:site" content="@timofeysamsonov" />
-  <meta name="twitter:description" content="Курс лекций, посвященных использованию языка программирования R для визуализации и анализа географических данных" />
-  
-
-<meta name="author" content="Тимофей Самсонов" />
-
-
-<meta name="date" content="2021-01-25" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  
-  
-
-<link rel="next" href="data-types.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
-<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
-
-
-
-
-
-
-
-
-
-<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
-<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.17/datatables.js"></script>
-<link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
-<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
-<script src="libs/plotly-binding-4.9.3/plotly.js"></script>
-<script src="libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="libs/plotly-htmlwidgets-css-1.57.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotly-main-1.57.1/plotly-latest.min.js"></script>
-
-
-<style type="text/css">
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-</style>
-
-<link rel="stylesheet" href="style.css" type="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Введение | Визуализация и анализ географических данных на языке R</title>
+<meta name="author" content="Тимофей Самсонов">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.6/header-attrs.js"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.4.9000/tabs.js"></script><script src="libs/bs3compat-0.2.4.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script><link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="libs/datatables-binding-0.17/datatables.js"></script><link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script><link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet">
+<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script><script src="libs/plotly-binding-4.9.3/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/plotly-htmlwidgets-css-1.57.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="libs/plotly-main-1.57.1/plotly-latest.min.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
 </head>
+<body data-spy="scroll" data-target="#toc">
 
-<body>
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
 
-
-
-  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
-
-    <div class="book-summary">
-      <nav role="navigation">
-
-<ul class="summary">
-<li><a href="./">Визуализация и анализ географических данных на языке R</a></li>
-
-<li class="divider"></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Введение</a>
-<ul>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#программное-обеспечение"><i class="fa fa-check"></i>Программное обеспечение</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#установка-и-подключение-пакетов"><i class="fa fa-check"></i>Установка и подключение пакетов</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#выполнение-программного-кода"><i class="fa fa-check"></i>Выполнение программного кода</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#установка-рабочей-директории"><i class="fa fa-check"></i>Установка рабочей директории</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#диагностические-функции"><i class="fa fa-check"></i>Диагностические функции</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#получение-справки"><i class="fa fa-check"></i>Получение справки</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#комментарии"><i class="fa fa-check"></i>Комментарии</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#стандарт-оформления-кода-на-r"><i class="fa fa-check"></i>Стандарт оформления кода на R</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#зарезервированные-слова"><i class="fa fa-check"></i>Зарезервированные слова</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#названия-переменных"><i class="fa fa-check"></i>Названия переменных</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#названия-специальных-символов"><i class="fa fa-check"></i>Названия специальных символов</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#управляющие-последовательности"><i class="fa fa-check"></i>Управляющие последовательности</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#ссылка-на-пособие"><i class="fa fa-check"></i>Ссылка на пособие</a></li>
-</ul></li>
-<li class="part"><span><b>I Основы языка R</b></span></li>
-<li class="chapter" data-level="1" data-path="data-types.html"><a href="data-types.html"><i class="fa fa-check"></i><b>1</b> Типы данных, условия, ввод и вывод</a>
-<ul>
-<li class="chapter" data-level="1.1" data-path="data-types.html"><a href="data-types.html#data_types"><i class="fa fa-check"></i><b>1.1</b> Типы данных</a>
-<ul>
-<li class="chapter" data-level="1.1.1" data-path="data-types.html"><a href="data-types.html#numbers"><i class="fa fa-check"></i><b>1.1.1</b> Числа</a></li>
-<li class="chapter" data-level="1.1.2" data-path="data-types.html"><a href="data-types.html#strings"><i class="fa fa-check"></i><b>1.1.2</b> Строки</a></li>
-<li class="chapter" data-level="1.1.3" data-path="data-types.html"><a href="data-types.html#dates"><i class="fa fa-check"></i><b>1.1.3</b> Даты и длительности</a></li>
-<li class="chapter" data-level="1.1.4" data-path="data-types.html"><a href="data-types.html#times"><i class="fa fa-check"></i><b>1.1.4</b> Время и периоды</a></li>
-<li class="chapter" data-level="1.1.5" data-path="data-types.html"><a href="data-types.html#booleans"><i class="fa fa-check"></i><b>1.1.5</b> Логические</a></li>
-</ul></li>
-<li class="chapter" data-level="1.2" data-path="data-types.html"><a href="data-types.html#manipulations"><i class="fa fa-check"></i><b>1.2</b> Манипуляции с типами</a>
-<ul>
-<li class="chapter" data-level="1.2.1" data-path="data-types.html"><a href="data-types.html#determine_data_type"><i class="fa fa-check"></i><b>1.2.1</b> Определение типа данных</a></li>
-<li class="chapter" data-level="1.2.2" data-path="data-types.html"><a href="data-types.html#conversion"><i class="fa fa-check"></i><b>1.2.2</b> Преобразование типов данных</a></li>
-<li class="chapter" data-level="1.2.3" data-path="data-types.html"><a href="data-types.html#check_types"><i class="fa fa-check"></i><b>1.2.3</b> Проверка типов данных и пустых значений</a></li>
-</ul></li>
-<li class="chapter" data-level="1.3" data-path="data-types.html"><a href="data-types.html#read_write_console"><i class="fa fa-check"></i><b>1.3</b> Ввод и вывод данных в консоли</a>
-<ul>
-<li class="chapter" data-level="1.3.1" data-path="data-types.html"><a href="data-types.html#read_console"><i class="fa fa-check"></i><b>1.3.1</b> Ввод данных</a></li>
-<li class="chapter" data-level="1.3.2" data-path="data-types.html"><a href="data-types.html#write_console"><i class="fa fa-check"></i><b>1.3.2</b> Вывод данных</a></li>
-</ul></li>
-<li class="chapter" data-level="1.4" data-path="data-types.html"><a href="data-types.html#ifelse"><i class="fa fa-check"></i><b>1.4</b> Условный оператор</a></li>
-<li class="chapter" data-level="1.5" data-path="data-types.html"><a href="data-types.html#switch"><i class="fa fa-check"></i><b>1.5</b> Оператор переключения</a></li>
-<li class="chapter" data-level="1.6" data-path="data-types.html"><a href="data-types.html#stop"><i class="fa fa-check"></i><b>1.6</b> Прерывание программы</a></li>
-<li class="chapter" data-level="1.7" data-path="data-types.html"><a href="data-types.html#basics-detail"><i class="fa fa-check"></i><b>1.7</b> Технические детали</a></li>
-<li class="chapter" data-level="1.8" data-path="data-types.html"><a href="data-types.html#review"><i class="fa fa-check"></i><b>1.8</b> Краткий обзор</a></li>
-<li class="chapter" data-level="1.9" data-path="data-types.html"><a href="data-types.html#questions_tasks_basics"><i class="fa fa-check"></i><b>1.9</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="1.9.1" data-path="data-types.html"><a href="data-types.html#questions_basics"><i class="fa fa-check"></i><b>1.9.1</b> Вопросы</a></li>
-<li class="chapter" data-level="1.9.2" data-path="data-types.html"><a href="data-types.html#tasks_basic"><i class="fa fa-check"></i><b>1.9.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="2" data-path="data-structures.html"><a href="data-structures.html"><i class="fa fa-check"></i><b>2</b> Структуры данных и циклы</a>
-<ul>
-<li class="chapter" data-level="2.1" data-path="data-structures.html"><a href="data-structures.html#data_structures_homo"><i class="fa fa-check"></i><b>2.1</b> Однородные структуры данных</a>
-<ul>
-<li class="chapter" data-level="2.1.1" data-path="data-structures.html"><a href="data-structures.html#vectors"><i class="fa fa-check"></i><b>2.1.1</b> Векторы</a></li>
-<li class="chapter" data-level="2.1.2" data-path="data-structures.html"><a href="data-structures.html#matrices"><i class="fa fa-check"></i><b>2.1.2</b> Матрицы</a></li>
-<li class="chapter" data-level="2.1.3" data-path="data-structures.html"><a href="data-structures.html#arrays"><i class="fa fa-check"></i><b>2.1.3</b> Массивы</a></li>
-</ul></li>
-<li class="chapter" data-level="2.2" data-path="data-structures.html"><a href="data-structures.html#heterogeneous"><i class="fa fa-check"></i><b>2.2</b> Разнородные структуры данных</a>
-<ul>
-<li class="chapter" data-level="2.2.1" data-path="data-structures.html"><a href="data-structures.html#data_frames"><i class="fa fa-check"></i><b>2.2.1</b> Фреймы данных</a></li>
-<li class="chapter" data-level="2.2.2" data-path="data-structures.html"><a href="data-structures.html#lists"><i class="fa fa-check"></i><b>2.2.2</b> Списки</a></li>
-</ul></li>
-<li class="chapter" data-level="2.3" data-path="data-structures.html"><a href="data-structures.html#factors"><i class="fa fa-check"></i><b>2.3</b> Факторы</a></li>
-<li class="chapter" data-level="2.4" data-path="data-structures.html"><a href="data-structures.html#vector_desc"><i class="fa fa-check"></i><b>2.4</b> Описание структуры данных</a></li>
-<li class="chapter" data-level="2.5" data-path="data-structures.html"><a href="data-structures.html#cycles"><i class="fa fa-check"></i><b>2.5</b> Циклы</a></li>
-<li class="chapter" data-level="2.6" data-path="data-structures.html"><a href="data-structures.html#structures-detail"><i class="fa fa-check"></i><b>2.6</b> Технические детали</a></li>
-<li class="chapter" data-level="2.7" data-path="data-structures.html"><a href="data-structures.html#review_structures"><i class="fa fa-check"></i><b>2.7</b> Краткий обзор</a></li>
-<li class="chapter" data-level="2.8" data-path="data-structures.html"><a href="data-structures.html#questions_tasks_vectors"><i class="fa fa-check"></i><b>2.8</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="2.8.1" data-path="data-structures.html"><a href="data-structures.html#questions_vectors"><i class="fa fa-check"></i><b>2.8.1</b> Вопросы</a></li>
-<li class="chapter" data-level="2.8.2" data-path="data-structures.html"><a href="data-structures.html#tasks_vectors"><i class="fa fa-check"></i><b>2.8.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="tables.html"><a href="tables.html"><i class="fa fa-check"></i><b>3</b> Табличные данные</a>
-<ul>
-<li class="chapter" data-level="3.1" data-path="tables.html"><a href="tables.html#tables_prerequisites"><i class="fa fa-check"></i><b>3.1</b> Предварительные требования</a></li>
-<li class="chapter" data-level="3.2" data-path="tables.html"><a href="tables.html#tables_datastructures"><i class="fa fa-check"></i><b>3.2</b> Структуры данных</a></li>
-<li class="chapter" data-level="3.3" data-path="tables.html"><a href="tables.html#tables_reading"><i class="fa fa-check"></i><b>3.3</b> Чтение</a>
-<ul>
-<li class="chapter" data-level="3.3.1" data-path="tables.html"><a href="tables.html#tables_reading_inner"><i class="fa fa-check"></i><b>3.3.1</b> Встроенные данные</a></li>
-<li class="chapter" data-level="3.3.2" data-path="tables.html"><a href="tables.html#tables_reading_text"><i class="fa fa-check"></i><b>3.3.2</b> Текстовые таблицы</a></li>
-<li class="chapter" data-level="3.3.3" data-path="tables.html"><a href="tables.html#tables_reading_excel"><i class="fa fa-check"></i><b>3.3.3</b> Таблицы Microsoft Excel</a></li>
-<li class="chapter" data-level="3.3.4" data-path="tables.html"><a href="tables.html#tables_reading_params"><i class="fa fa-check"></i><b>3.3.4</b> Параметры</a></li>
-</ul></li>
-<li class="chapter" data-level="3.4" data-path="tables.html"><a href="tables.html#tables_view"><i class="fa fa-check"></i><b>3.4</b> Просмотр</a></li>
-<li class="chapter" data-level="3.5" data-path="tables.html"><a href="tables.html#tables_elements"><i class="fa fa-check"></i><b>3.5</b> Столбцы, строки и ячейки</a>
-<ul>
-<li class="chapter" data-level="3.5.1" data-path="tables.html"><a href="tables.html#tables_elements_names"><i class="fa fa-check"></i><b>3.5.1</b> Названия</a></li>
-<li class="chapter" data-level="3.5.2" data-path="tables.html"><a href="tables.html#tables_elements_columns"><i class="fa fa-check"></i><b>3.5.2</b> Обращение к столбцам</a></li>
-<li class="chapter" data-level="3.5.3" data-path="tables.html"><a href="tables.html#tables_elements_rows"><i class="fa fa-check"></i><b>3.5.3</b> Обращение к строкам</a></li>
-<li class="chapter" data-level="3.5.4" data-path="tables.html"><a href="tables.html#tables_elements_cells"><i class="fa fa-check"></i><b>3.5.4</b> Обращение к ячейкам</a></li>
-</ul></li>
-<li class="chapter" data-level="3.6" data-path="tables.html"><a href="tables.html#tables_manipuilations"><i class="fa fa-check"></i><b>3.6</b> Преобразования</a>
-<ul>
-<li class="chapter" data-level="3.6.1" data-path="tables.html"><a href="tables.html#tables_manipiulations_grammar"><i class="fa fa-check"></i><b>3.6.1</b> Грамматика манипуляций</a></li>
-<li class="chapter" data-level="3.6.2" data-path="tables.html"><a href="tables.html#tables_manipiulations_pipeline"><i class="fa fa-check"></i><b>3.6.2</b> Конвейер манипуляций</a></li>
-<li class="chapter" data-level="3.6.3" data-path="tables.html"><a href="tables.html#tables_tidy"><i class="fa fa-check"></i><b>3.6.3</b> Преобразование структуры</a></li>
-</ul></li>
-<li class="chapter" data-level="3.7" data-path="tables.html"><a href="tables.html#tables_join"><i class="fa fa-check"></i><b>3.7</b> Соединение</a></li>
-<li class="chapter" data-level="3.8" data-path="tables.html"><a href="tables.html#tables_write"><i class="fa fa-check"></i><b>3.8</b> Запись</a></li>
-<li class="chapter" data-level="3.9" data-path="tables.html"><a href="tables.html#tables_rules"><i class="fa fa-check"></i><b>3.9</b> Рекомендации по подготовке таблиц для чтения в R</a></li>
-<li class="chapter" data-level="3.10" data-path="tables.html"><a href="tables.html#tables_review"><i class="fa fa-check"></i><b>3.10</b> Краткий обзор</a></li>
-<li class="chapter" data-level="3.11" data-path="tables.html"><a href="tables.html#tables_questions"><i class="fa fa-check"></i><b>3.11</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="3.11.1" data-path="tables.html"><a href="tables.html#tables_questions_questions"><i class="fa fa-check"></i><b>3.11.1</b> Вопросы</a></li>
-<li class="chapter" data-level="3.11.2" data-path="tables.html"><a href="tables.html#tables_questions_tasks"><i class="fa fa-check"></i><b>3.11.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="4" data-path="tech.html"><a href="tech.html"><i class="fa fa-check"></i><b>4</b> Техники программирования</a>
-<ul>
-<li class="chapter" data-level="4.1" data-path="tech.html"><a href="tech.html#tech-fun"><i class="fa fa-check"></i><b>4.1</b> Функциональное программирование</a>
-<ul>
-<li class="chapter" data-level="4.1.1" data-path="tech.html"><a href="tech.html#tech-fun-functions"><i class="fa fa-check"></i><b>4.1.1</b> Функции</a></li>
-<li class="chapter" data-level="4.1.2" data-path="tech.html"><a href="tech.html#tech-fun-functionals"><i class="fa fa-check"></i><b>4.1.2</b> Функционалы</a></li>
-</ul></li>
-<li class="chapter" data-level="4.2" data-path="tech.html"><a href="tech.html#tech-meta"><i class="fa fa-check"></i><b>4.2</b> Метапрограммирование</a></li>
-<li class="chapter" data-level="4.3" data-path="tech.html"><a href="tech.html#tech_review"><i class="fa fa-check"></i><b>4.3</b> Краткий обзор</a></li>
-<li class="chapter" data-level="4.4" data-path="tech.html"><a href="tech.html#tech_questions"><i class="fa fa-check"></i><b>4.4</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="4.4.1" data-path="tech.html"><a href="tech.html#tech_questions_questions"><i class="fa fa-check"></i><b>4.4.1</b> Вопросы</a></li>
-<li class="chapter" data-level="4.4.2" data-path="tech.html"><a href="tech.html#tech_questions_tasks"><i class="fa fa-check"></i><b>4.4.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="part"><span><b>II Графика и статистика</b></span></li>
-<li class="chapter" data-level="5" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>5</b> Базовая графика</a>
-<ul>
-<li class="chapter" data-level="5.1" data-path="graphics.html"><a href="graphics.html#yfxcharts"><i class="fa fa-check"></i><b>5.1</b> Стандартные графики</a>
-<ul>
-<li class="chapter" data-level="5.1.1" data-path="graphics.html"><a href="graphics.html#scatterplots"><i class="fa fa-check"></i><b>5.1.1</b> Диаграммы рассеяния</a></li>
-<li class="chapter" data-level="5.1.2" data-path="graphics.html"><a href="graphics.html#linear_graphs"><i class="fa fa-check"></i><b>5.1.2</b> Линейные графики</a></li>
-<li class="chapter" data-level="5.1.3" data-path="graphics.html"><a href="graphics.html#graph_combining"><i class="fa fa-check"></i><b>5.1.3</b> Совмещение графиков</a></li>
-<li class="chapter" data-level="5.1.4" data-path="graphics.html"><a href="graphics.html#func_parameters"><i class="fa fa-check"></i><b>5.1.4</b> Функциональные параметры</a></li>
-</ul></li>
-<li class="chapter" data-level="5.2" data-path="graphics.html"><a href="graphics.html#histograms"><i class="fa fa-check"></i><b>5.2</b> Гистограммы</a></li>
-<li class="chapter" data-level="5.3" data-path="graphics.html"><a href="graphics.html#barplots"><i class="fa fa-check"></i><b>5.3</b> Столбчатые графики</a></li>
-<li class="chapter" data-level="5.4" data-path="graphics.html"><a href="graphics.html#piecharts"><i class="fa fa-check"></i><b>5.4</b> Круговые (секторные) диаграммы</a></li>
-<li class="chapter" data-level="5.5" data-path="graphics.html"><a href="graphics.html#colors"><i class="fa fa-check"></i><b>5.5</b> Цвет и прозрачность</a></li>
-<li class="chapter" data-level="5.6" data-path="graphics.html"><a href="graphics.html#disp_settings"><i class="fa fa-check"></i><b>5.6</b> Настройки отображения</a>
-<ul>
-<li class="chapter" data-level="5.6.1" data-path="graphics.html"><a href="graphics.html#graph_params"><i class="fa fa-check"></i><b>5.6.1</b> Графические параметры</a></li>
-<li class="chapter" data-level="5.6.2" data-path="graphics.html"><a href="graphics.html#axes"><i class="fa fa-check"></i><b>5.6.2</b> Разметка осей, рамка, сетка координат и произвольные линии</a></li>
-<li class="chapter" data-level="5.6.3" data-path="graphics.html"><a href="graphics.html#annotations"><i class="fa fa-check"></i><b>5.6.3</b> Аннотации данных (текст на графике)</a></li>
-</ul></li>
-<li class="chapter" data-level="5.7" data-path="graphics.html"><a href="graphics.html#legend"><i class="fa fa-check"></i><b>5.7</b> Легенда</a></li>
-<li class="chapter" data-level="5.8" data-path="graphics.html"><a href="graphics.html#questions_tasks_graphics"><i class="fa fa-check"></i><b>5.8</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="5.8.1" data-path="graphics.html"><a href="graphics.html#questions_graphics"><i class="fa fa-check"></i><b>5.8.1</b> Вопросы</a></li>
-<li class="chapter" data-level="5.8.2" data-path="graphics.html"><a href="graphics.html#tasks_graphics"><i class="fa fa-check"></i><b>5.8.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="6" data-path="advgraphics.html"><a href="advgraphics.html"><i class="fa fa-check"></i><b>6</b> Продвинутая графика</a>
-<ul>
-<li class="chapter" data-level="6.1" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_prerequisites"><i class="fa fa-check"></i><b>6.1</b> Предварительные требования</a></li>
-<li class="chapter" data-level="6.2" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_eurostat"><i class="fa fa-check"></i><b>6.2</b> Загрузка данных Евростата</a></li>
-<li class="chapter" data-level="6.3" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_nasapower"><i class="fa fa-check"></i><b>6.3</b> Загрузка данных NASA POWER</a></li>
-<li class="chapter" data-level="6.4" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_soildb"><i class="fa fa-check"></i><b>6.4</b> Загрузка данных Soil Data Access</a></li>
-<li class="chapter" data-level="6.5" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_template"><i class="fa fa-check"></i><b>6.5</b> Базовый шаблон ggplot</a></li>
-<li class="chapter" data-level="6.6" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_geoms"><i class="fa fa-check"></i><b>6.6</b> Геометрические типы и преобразования</a></li>
-<li class="chapter" data-level="6.7" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_aes"><i class="fa fa-check"></i><b>6.7</b> Графические переменные и группировки</a></li>
-<li class="chapter" data-level="6.8" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_coords"><i class="fa fa-check"></i><b>6.8</b> Системы координат</a></li>
-<li class="chapter" data-level="6.9" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_titles"><i class="fa fa-check"></i><b>6.9</b> Названия осей и легенды</a></li>
-<li class="chapter" data-level="6.10" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_axes"><i class="fa fa-check"></i><b>6.10</b> Разметка осей</a></li>
-<li class="chapter" data-level="6.11" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_labels"><i class="fa fa-check"></i><b>6.11</b> Подписи и аннотации</a></li>
-<li class="chapter" data-level="6.12" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_facets"><i class="fa fa-check"></i><b>6.12</b> Фасеты</a></li>
-<li class="chapter" data-level="6.13" data-path="advgraphics.html"><a href="advgraphics.html#advgraphics_themes"><i class="fa fa-check"></i><b>6.13</b> Темы</a></li>
-<li class="chapter" data-level="6.14" data-path="advgraphics.html"><a href="advgraphics.html#questions_tasks_advgraphics"><i class="fa fa-check"></i><b>6.14</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="6.14.1" data-path="advgraphics.html"><a href="advgraphics.html#questions_advgraphics"><i class="fa fa-check"></i><b>6.14.1</b> Вопросы</a></li>
-<li class="chapter" data-level="6.14.2" data-path="advgraphics.html"><a href="advgraphics.html#tasks_advgraphics"><i class="fa fa-check"></i><b>6.14.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="7" data-path="temporal.html"><a href="temporal.html"><i class="fa fa-check"></i><b>7</b> Временные данные</a>
-<ul>
-<li class="chapter" data-level="7.1" data-path="temporal.html"><a href="temporal.html#temporal_prerequisites"><i class="fa fa-check"></i><b>7.1</b> Предварительные требования</a></li>
-<li class="chapter" data-level="7.2" data-path="temporal.html"><a href="temporal.html#temporal_lubridate"><i class="fa fa-check"></i><b>7.2</b> Создание и преобразование дат и времени</a></li>
-<li class="chapter" data-level="7.3" data-path="temporal.html"><a href="temporal.html#temporal_complete"><i class="fa fa-check"></i><b>7.3</b> Восстановление пропусков и проверка корректности дат</a></li>
-<li class="chapter" data-level="7.4" data-path="temporal.html"><a href="temporal.html#temporal_interp"><i class="fa fa-check"></i><b>7.4</b> Интерполяция по времени</a>
-<ul>
-<li class="chapter" data-level="7.4.1" data-path="temporal.html"><a href="temporal.html#temporal_interp_gaps"><i class="fa fa-check"></i><b>7.4.1</b> Заполнение пропусков</a></li>
-<li class="chapter" data-level="7.4.2" data-path="temporal.html"><a href="temporal.html#temporal_interp_reg"><i class="fa fa-check"></i><b>7.4.2</b> Пересчет на другую временную сетку</a></li>
-</ul></li>
-<li class="chapter" data-level="7.5" data-path="temporal.html"><a href="temporal.html#temporal_loess"><i class="fa fa-check"></i><b>7.5</b> Аппроксимация по времени</a></li>
-<li class="chapter" data-level="7.6" data-path="temporal.html"><a href="temporal.html#temporal_tests"><i class="fa fa-check"></i><b>7.6</b> Статистики</a></li>
-<li class="chapter" data-level="7.7" data-path="temporal.html"><a href="temporal.html#temporal_animation"><i class="fa fa-check"></i><b>7.7</b> Анимация</a>
-<ul>
-<li class="chapter" data-level="7.7.1" data-path="temporal.html"><a href="temporal.html#temporal_animation_time"><i class="fa fa-check"></i><b>7.7.1</b> Переход по времени</a></li>
-<li class="chapter" data-level="7.7.2" data-path="temporal.html"><a href="temporal.html#temporal_animation_states"><i class="fa fa-check"></i><b>7.7.2</b> Переход по состояниям</a></li>
-</ul></li>
-<li class="chapter" data-level="7.8" data-path="temporal.html"><a href="temporal.html#questions_tasks_temporal"><i class="fa fa-check"></i><b>7.8</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="7.8.1" data-path="temporal.html"><a href="temporal.html#questions_temporal"><i class="fa fa-check"></i><b>7.8.1</b> Вопросы</a></li>
-<li class="chapter" data-level="7.8.2" data-path="temporal.html"><a href="temporal.html#tasks_temporal"><i class="fa fa-check"></i><b>7.8.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="8" data-path="circular.html"><a href="circular.html"><i class="fa fa-check"></i><b>8</b> Дирекционные данные</a>
-<ul>
-<li class="chapter" data-level="8.1" data-path="circular.html"><a href="circular.html#circular_prerequisites"><i class="fa fa-check"></i><b>8.1</b> Предварительные требования</a></li>
-<li class="chapter" data-level="8.2" data-path="circular.html"><a href="circular.html#circular_circ"><i class="fa fa-check"></i><b>8.2</b> Статистика направлений</a>
-<ul>
-<li class="chapter" data-level="8.2.1" data-path="circular.html"><a href="circular.html#circular_circ_theory"><i class="fa fa-check"></i><b>8.2.1</b> Теория</a></li>
-<li class="chapter" data-level="8.2.2" data-path="circular.html"><a href="circular.html#circular_circ_vis"><i class="fa fa-check"></i><b>8.2.2</b> Практика</a></li>
-<li class="chapter" data-level="8.2.3" data-path="circular.html"><a href="circular.html#circular_tests"><i class="fa fa-check"></i><b>8.2.3</b> Описательные статистики и тесты</a></li>
-<li class="chapter" data-level="8.2.4" data-path="circular.html"><a href="circular.html#circular_correlation"><i class="fa fa-check"></i><b>8.2.4</b> Корреляция и регрессия</a></li>
-</ul></li>
-<li class="chapter" data-level="8.3" data-path="circular.html"><a href="circular.html#questions_tasks_circular"><i class="fa fa-check"></i><b>8.3</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="8.3.1" data-path="circular.html"><a href="circular.html#questions_circular"><i class="fa fa-check"></i><b>8.3.1</b> Вопросы</a></li>
-<li class="chapter" data-level="8.3.2" data-path="circular.html"><a href="circular.html#tasks_circular"><i class="fa fa-check"></i><b>8.3.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="part"><span><b>III Пространственные данные</b></span></li>
-<li class="chapter" data-level="9" data-path="spatial-data.html"><a href="spatial-data.html"><i class="fa fa-check"></i><b>9</b> Пространственные данные</a>
-<ul>
-<li class="chapter" data-level="9.1" data-path="circular.html"><a href="circular.html#circular_prerequisites"><i class="fa fa-check"></i><b>9.1</b> Предварительные требования</a></li>
-<li class="chapter" data-level="9.2" data-path="spatial-data.html"><a href="spatial-data.html#spatial_models"><i class="fa fa-check"></i><b>9.2</b> Модели пространственных данных</a>
-<ul>
-<li class="chapter" data-level="9.2.1" data-path="spatial-data.html"><a href="spatial-data.html#simple_features"><i class="fa fa-check"></i><b>9.2.1</b> Векторные данные</a></li>
-<li class="chapter" data-level="9.2.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_data"><i class="fa fa-check"></i><b>9.2.2</b> Растровые данные</a></li>
-</ul></li>
-<li class="chapter" data-level="9.3" data-path="spatial-data.html"><a href="spatial-data.html#spatref"><i class="fa fa-check"></i><b>9.3</b> Пространственная привязка</a>
-<ul>
-<li class="chapter" data-level="9.3.1" data-path="spatial-data.html"><a href="spatial-data.html#spatref_components"><i class="fa fa-check"></i><b>9.3.1</b> Компоненты пространственной привязки</a></li>
-<li class="chapter" data-level="9.3.2" data-path="spatial-data.html"><a href="spatial-data.html#spatref_formats"><i class="fa fa-check"></i><b>9.3.2</b> Форматы описания пространственной привязки</a></li>
-<li class="chapter" data-level="9.3.3" data-path="spatial-data.html"><a href="spatial-data.html#spatref_transform"><i class="fa fa-check"></i><b>9.3.3</b> Преобразование координат</a></li>
-</ul></li>
-<li class="chapter" data-level="9.4" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_r"><i class="fa fa-check"></i><b>9.4</b> Векторные данные</a>
-<ul>
-<li class="chapter" data-level="9.4.1" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_packages"><i class="fa fa-check"></i><b>9.4.1</b> Базовые библиотеки</a></li>
-<li class="chapter" data-level="9.4.2" data-path="spatial-data.html"><a href="spatial-data.html#vector_data_reading"><i class="fa fa-check"></i><b>9.4.2</b> Чтение</a></li>
-<li class="chapter" data-level="9.4.3" data-path="spatial-data.html"><a href="spatial-data.html#sf_structure"><i class="fa fa-check"></i><b>9.4.3</b> Внутренняя структура</a></li>
-<li class="chapter" data-level="9.4.4" data-path="spatial-data.html"><a href="spatial-data.html#sf_plotting"><i class="fa fa-check"></i><b>9.4.4</b> Визуализация</a></li>
-<li class="chapter" data-level="9.4.5" data-path="spatial-data.html"><a href="spatial-data.html#sf_crs"><i class="fa fa-check"></i><b>9.4.5</b> Системы координат и проекции</a></li>
-<li class="chapter" data-level="9.4.6" data-path="spatial-data.html"><a href="spatial-data.html#sf_attrs"><i class="fa fa-check"></i><b>9.4.6</b> Атрибутивные операции</a></li>
-<li class="chapter" data-level="9.4.7" data-path="spatial-data.html"><a href="spatial-data.html#sf_spat_selection"><i class="fa fa-check"></i><b>9.4.7</b> Пространственные операции</a></li>
-<li class="chapter" data-level="9.4.8" data-path="spatial-data.html"><a href="spatial-data.html#sf_creation"><i class="fa fa-check"></i><b>9.4.8</b> Создание пространственных объектов</a></li>
-<li class="chapter" data-level="9.4.9" data-path="spatial-data.html"><a href="spatial-data.html#sf_geom_attrs"><i class="fa fa-check"></i><b>9.4.9</b> Геометрические атрибуты</a></li>
-<li class="chapter" data-level="9.4.10" data-path="spatial-data.html"><a href="spatial-data.html#sf_export"><i class="fa fa-check"></i><b>9.4.10</b> Экспорт</a></li>
-</ul></li>
-<li class="chapter" data-level="9.5" data-path="spatial-data.html"><a href="spatial-data.html#raster_data_r"><i class="fa fa-check"></i><b>9.5</b> Растровые данные</a>
-<ul>
-<li class="chapter" data-level="9.5.1" data-path="spatial-data.html"><a href="spatial-data.html#raster_read"><i class="fa fa-check"></i><b>9.5.1</b> Чтение</a></li>
-<li class="chapter" data-level="9.5.2" data-path="spatial-data.html"><a href="spatial-data.html#raster_viz"><i class="fa fa-check"></i><b>9.5.2</b> Визуализация</a></li>
-<li class="chapter" data-level="9.5.3" data-path="spatial-data.html"><a href="spatial-data.html#raster_proj"><i class="fa fa-check"></i><b>9.5.3</b> Системы координат и проекции</a></li>
-<li class="chapter" data-level="9.5.4" data-path="spatial-data.html"><a href="spatial-data.html#raster_values"><i class="fa fa-check"></i><b>9.5.4</b> Операции со значениями</a></li>
-<li class="chapter" data-level="9.5.5" data-path="spatial-data.html"><a href="spatial-data.html#raster_export"><i class="fa fa-check"></i><b>9.5.5</b> Экспорт</a></li>
-</ul></li>
-<li class="chapter" data-level="9.6" data-path="spatial-data.html"><a href="spatial-data.html#spatial_ggplot2"><i class="fa fa-check"></i><b>9.6</b> Визуализация средствами ggplot2</a></li>
-<li class="chapter" data-level="9.7" data-path="spatial-data.html"><a href="spatial-data.html#spatial_interactive"><i class="fa fa-check"></i><b>9.7</b> Интерактивные карты</a></li>
-<li class="chapter" data-level="9.8" data-path="spatial-data.html"><a href="spatial-data.html#questions_tasks_spatial"><i class="fa fa-check"></i><b>9.8</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="9.8.1" data-path="spatial-data.html"><a href="spatial-data.html#questions_spatial"><i class="fa fa-check"></i><b>9.8.1</b> Вопросы</a></li>
-<li class="chapter" data-level="9.8.2" data-path="spatial-data.html"><a href="spatial-data.html#tasks_spatial"><i class="fa fa-check"></i><b>9.8.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="10" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html"><i class="fa fa-check"></i><b>10</b> Тематические карты</a>
-<ul>
-<li class="chapter" data-level="" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#предварительные-условия"><i class="fa fa-check"></i>Предварительные условия</a></li>
-<li class="chapter" data-level="10.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro"><i class="fa fa-check"></i><b>10.1</b> Введение</a>
-<ul>
-<li class="chapter" data-level="10.1.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro_ne"><i class="fa fa-check"></i><b>10.1.1</b> Данные Natural Earth</a></li>
-<li class="chapter" data-level="10.1.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_intro_wc"><i class="fa fa-check"></i><b>10.1.2</b> Данные WorldClim</a></li>
-</ul></li>
-<li class="chapter" data-level="10.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_tmap"><i class="fa fa-check"></i><b>10.2</b> Способы изображения</a>
-<ul>
-<li class="chapter" data-level="10.2.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_vectors"><i class="fa fa-check"></i><b>10.2.1</b> Векторные данные</a></li>
-<li class="chapter" data-level="10.2.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_rasters"><i class="fa fa-check"></i><b>10.2.2</b> Растровые данные</a></li>
-</ul></li>
-<li class="chapter" data-level="10.3" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_color_scales"><i class="fa fa-check"></i><b>10.3</b> Цветовые шкалы</a></li>
-<li class="chapter" data-level="10.4" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class"><i class="fa fa-check"></i><b>10.4</b> Классификация</a>
-<ul>
-<li class="chapter" data-level="10.4.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class_methods"><i class="fa fa-check"></i><b>10.4.1</b> Методы классификации</a></li>
-<li class="chapter" data-level="10.4.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class_application"><i class="fa fa-check"></i><b>10.4.2</b> Применение на картах</a></li>
-<li class="chapter" data-level="10.4.3" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_class_application"><i class="fa fa-check"></i><b>10.4.3</b> Классификация при отображении</a></li>
-<li class="chapter" data-level="10.4.4" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_na"><i class="fa fa-check"></i><b>10.4.4</b> Пропущенные данные</a></li>
-</ul></li>
-<li class="chapter" data-level="10.5" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_layouts"><i class="fa fa-check"></i><b>10.5</b> Компоновка</a></li>
-<li class="chapter" data-level="10.6" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_facets"><i class="fa fa-check"></i><b>10.6</b> Фасеты и серии карт</a></li>
-<li class="chapter" data-level="10.7" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_animations"><i class="fa fa-check"></i><b>10.7</b> Картографические анимации</a></li>
-<li class="chapter" data-level="10.8" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#thematic_mapping_interactive"><i class="fa fa-check"></i><b>10.8</b> Интерактивные карты</a></li>
-<li class="chapter" data-level="10.9" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#questions_tasks_tmap"><i class="fa fa-check"></i><b>10.9</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="10.9.1" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#questions_tmap"><i class="fa fa-check"></i><b>10.9.1</b> Вопросы</a></li>
-<li class="chapter" data-level="10.9.2" data-path="thematic-mapping-new.html"><a href="thematic-mapping-new.html#tasks_tmap"><i class="fa fa-check"></i><b>10.9.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="11" data-path="three.html"><a href="three.html"><i class="fa fa-check"></i><b>11</b> Трехмерные модели</a>
-<ul>
-<li class="chapter" data-level="" data-path="three.html"><a href="three.html#предварительные-условия-1"><i class="fa fa-check"></i>Предварительные условия</a></li>
-<li class="chapter" data-level="11.1" data-path="three.html"><a href="three.html#three_intro"><i class="fa fa-check"></i><b>11.1</b> Введение</a></li>
-<li class="chapter" data-level="11.2" data-path="three.html"><a href="three.html#questions_tasks_three"><i class="fa fa-check"></i><b>11.2</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="11.2.1" data-path="three.html"><a href="three.html#questions_three"><i class="fa fa-check"></i><b>11.2.1</b> Вопросы</a></li>
-<li class="chapter" data-level="11.2.2" data-path="three.html"><a href="three.html#tasks_three"><i class="fa fa-check"></i><b>11.2.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="12" data-path="vector-analysis.html"><a href="vector-analysis.html"><i class="fa fa-check"></i><b>12</b> Векторный анализ</a>
-<ul>
-<li class="chapter" data-level="12.1" data-path="vector-analysis.html"><a href="vector-analysis.html#spatial_queries"><i class="fa fa-check"></i><b>12.1</b> Пространственные запросы</a>
-<ul>
-<li class="chapter" data-level="12.1.1" data-path="vector-analysis.html"><a href="vector-analysis.html#context_objects"><i class="fa fa-check"></i><b>12.1.1</b> Контекстные и целевые объекты</a></li>
-<li class="chapter" data-level="12.1.2" data-path="vector-analysis.html"><a href="vector-analysis.html#zones"><i class="fa fa-check"></i><b>12.1.2</b> Зоны окружения объектов</a></li>
-</ul></li>
-<li class="chapter" data-level="12.2" data-path="vector-analysis.html"><a href="vector-analysis.html#use_case"><i class="fa fa-check"></i><b>12.2</b> Постановка задач и изучение данных</a></li>
-<li class="chapter" data-level="12.3" data-path="vector-analysis.html"><a href="vector-analysis.html#distance_analysis"><i class="fa fa-check"></i><b>12.3</b> Анализ расстояний</a></li>
-<li class="chapter" data-level="12.4" data-path="vector-analysis.html"><a href="vector-analysis.html#topology_analysis"><i class="fa fa-check"></i><b>12.4</b> Анализ взаимного положения (топологический)</a></li>
-<li class="chapter" data-level="12.5" data-path="vector-analysis.html"><a href="vector-analysis.html#absolute_zones"><i class="fa fa-check"></i><b>12.5</b> Анализ абсолютных зон окружения</a></li>
-<li class="chapter" data-level="12.6" data-path="vector-analysis.html"><a href="vector-analysis.html#conc_zones"><i class="fa fa-check"></i><b>12.6</b> Анализ конкурентных зон окружения</a></li>
-<li class="chapter" data-level="12.7" data-path="vector-analysis.html"><a href="vector-analysis.html#transport_zones"><i class="fa fa-check"></i><b>12.7</b> Анализ зон транспортной доступности</a></li>
-<li class="chapter" data-level="12.8" data-path="vector-analysis.html"><a href="vector-analysis.html#routes"><i class="fa fa-check"></i><b>12.8</b> Построение маршрутов и матриц времени движения</a></li>
-<li class="chapter" data-level="12.9" data-path="vector-analysis.html"><a href="vector-analysis.html#qtasks_vector_analysis"><i class="fa fa-check"></i><b>12.9</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="12.9.1" data-path="vector-analysis.html"><a href="vector-analysis.html#questions_vector_analysis"><i class="fa fa-check"></i><b>12.9.1</b> Вопросы</a></li>
-<li class="chapter" data-level="12.9.2" data-path="vector-analysis.html"><a href="vector-analysis.html#tasks_vector_analysis"><i class="fa fa-check"></i><b>12.9.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="13" data-path="network-analysis.html"><a href="network-analysis.html"><i class="fa fa-check"></i><b>13</b> Cетевой анализ</a>
-<ul>
-<li class="chapter" data-level="13.1" data-path="network-analysis.html"><a href="network-analysis.html#qtasks_network_analysis"><i class="fa fa-check"></i><b>13.1</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="13.1.1" data-path="network-analysis.html"><a href="network-analysis.html#questions_network_analysis"><i class="fa fa-check"></i><b>13.1.1</b> Вопросы</a></li>
-<li class="chapter" data-level="13.1.2" data-path="network-analysis.html"><a href="network-analysis.html#tasks_network_analysis"><i class="fa fa-check"></i><b>13.1.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="14" data-path="raster-analysis.html"><a href="raster-analysis.html"><i class="fa fa-check"></i><b>14</b> Растровый анализ</a>
-<ul>
-<li class="chapter" data-level="" data-path="raster-analysis.html"><a href="raster-analysis.html#предварительные-условия-2"><i class="fa fa-check"></i>Предварительные условия</a></li>
-<li class="chapter" data-level="14.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_intro"><i class="fa fa-check"></i><b>14.1</b> Введение</a></li>
-<li class="chapter" data-level="14.2" data-path="raster-analysis.html"><a href="raster-analysis.html#растровая-алгебра"><i class="fa fa-check"></i><b>14.2</b> Растровая алгебра</a>
-<ul>
-<li class="chapter" data-level="14.2.1" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_local"><i class="fa fa-check"></i><b>14.2.1</b> Локальные операции</a></li>
-<li class="chapter" data-level="14.2.2" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_focal"><i class="fa fa-check"></i><b>14.2.2</b> Фокальные операции</a></li>
-<li class="chapter" data-level="14.2.3" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_zonal"><i class="fa fa-check"></i><b>14.2.3</b> Зональные операции</a></li>
-<li class="chapter" data-level="14.2.4" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_global"><i class="fa fa-check"></i><b>14.2.4</b> Глобальные операции</a></li>
-</ul></li>
-<li class="chapter" data-level="14.3" data-path="raster-analysis.html"><a href="raster-analysis.html#raster_extract"><i class="fa fa-check"></i><b>14.3</b> Извлечение данных</a></li>
-<li class="chapter" data-level="14.4" data-path="raster-analysis.html"><a href="raster-analysis.html#questions_tasks_raster"><i class="fa fa-check"></i><b>14.4</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="14.4.1" data-path="raster-analysis.html"><a href="raster-analysis.html#questions_raster"><i class="fa fa-check"></i><b>14.4.1</b> Вопросы</a></li>
-<li class="chapter" data-level="14.4.2" data-path="raster-analysis.html"><a href="raster-analysis.html#tasks_raster"><i class="fa fa-check"></i><b>14.4.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="15" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html"><i class="fa fa-check"></i><b>15</b> Пространственная интерполяция и аппроксимация</a>
-<ul>
-<li class="chapter" data-level="15.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_intro"><i class="fa fa-check"></i><b>15.1</b> Введение</a></li>
-<li class="chapter" data-level="15.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_grid"><i class="fa fa-check"></i><b>15.2</b> Построение сетки</a></li>
-<li class="chapter" data-level="15.3" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_methods"><i class="fa fa-check"></i><b>15.3</b> Интерполяционные методы</a>
-<ul>
-<li class="chapter" data-level="15.3.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_nn"><i class="fa fa-check"></i><b>15.3.1</b> Метод ближайшего соседа (nearest neighbour)</a></li>
-<li class="chapter" data-level="15.3.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_tin"><i class="fa fa-check"></i><b>15.3.2</b> Интерполяция на основе триангуляции</a></li>
-<li class="chapter" data-level="15.3.3" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_idw"><i class="fa fa-check"></i><b>15.3.3</b> Метод обратно взвешенных расстояний (IDW)</a></li>
-<li class="chapter" data-level="15.3.4" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_rbf"><i class="fa fa-check"></i><b>15.3.4</b> Метод радиальных базисных функций (РБФ)</a></li>
-<li class="chapter" data-level="15.3.5" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interpolation_bspline"><i class="fa fa-check"></i><b>15.3.5</b> Метод иерархических базисных сплайнов (B-сплайнов)</a></li>
-</ul></li>
-<li class="chapter" data-level="15.4" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_methods"><i class="fa fa-check"></i><b>15.4</b> Аппроксимационные методы</a>
-<ul>
-<li class="chapter" data-level="15.4.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_global"><i class="fa fa-check"></i><b>15.4.1</b> Глобальный тренд</a></li>
-<li class="chapter" data-level="15.4.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#approximation_local"><i class="fa fa-check"></i><b>15.4.2</b> Локальный тренд</a></li>
-</ul></li>
-<li class="chapter" data-level="15.5" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#areal_interpolation"><i class="fa fa-check"></i><b>15.5</b> Интерполяция по ареалам</a></li>
-<li class="chapter" data-level="15.6" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#interp_review"><i class="fa fa-check"></i><b>15.6</b> Краткий обзор</a></li>
-<li class="chapter" data-level="15.7" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#questions_tasks_interp"><i class="fa fa-check"></i><b>15.7</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="15.7.1" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#questions_interp"><i class="fa fa-check"></i><b>15.7.1</b> Вопросы</a></li>
-<li class="chapter" data-level="15.7.2" data-path="interpolation-deterministic.html"><a href="interpolation-deterministic.html#tasks_interp"><i class="fa fa-check"></i><b>15.7.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="part"><span><b>IV Пространственная статистика</b></span></li>
-<li class="chapter" data-level="16" data-path="kriging.html"><a href="kriging.html"><i class="fa fa-check"></i><b>16</b> Геостатистика</a>
-<ul>
-<li class="chapter" data-level="16.1" data-path="kriging.html"><a href="kriging.html#введение-1"><i class="fa fa-check"></i><b>16.1</b> Введение</a></li>
-<li class="chapter" data-level="16.2" data-path="kriging.html"><a href="kriging.html#базовые-понятия-и-элементы-геостатистики"><i class="fa fa-check"></i><b>16.2</b> Базовые понятия и элементы геостатистики</a>
-<ul>
-<li class="chapter" data-level="16.2.1" data-path="kriging.html"><a href="kriging.html#базовые-понятия"><i class="fa fa-check"></i><b>16.2.1</b> Базовые понятия</a></li>
-<li class="chapter" data-level="16.2.2" data-path="kriging.html"><a href="kriging.html#случайный-процесс-в-пространстве-и-его-моменты"><i class="fa fa-check"></i><b>16.2.2</b> Случайный процесс в пространстве и его моменты</a></li>
-</ul></li>
-<li class="chapter" data-level="16.3" data-path="kriging.html"><a href="kriging.html#стационарность-и-эргодичность"><i class="fa fa-check"></i><b>16.3</b> Стационарность и эргодичность</a>
-<ul>
-<li class="chapter" data-level="16.3.1" data-path="kriging.html"><a href="kriging.html#стационарность"><i class="fa fa-check"></i><b>16.3.1</b> Стационарность</a></li>
-<li class="chapter" data-level="16.3.2" data-path="kriging.html"><a href="kriging.html#эргодичность"><i class="fa fa-check"></i><b>16.3.2</b> Эргодичность</a></li>
-</ul></li>
-<li class="chapter" data-level="16.4" data-path="kriging.html"><a href="kriging.html#геостатистическое-оценивание"><i class="fa fa-check"></i><b>16.4</b> Геостатистическое оценивание</a>
-<ul>
-<li class="chapter" data-level="16.4.1" data-path="kriging.html"><a href="kriging.html#простой-кригинг"><i class="fa fa-check"></i><b>16.4.1</b> Простой кригинг</a></li>
-<li class="chapter" data-level="16.4.2" data-path="kriging.html"><a href="kriging.html#дисперсия-простого-кригинга"><i class="fa fa-check"></i><b>16.4.2</b> Дисперсия простого кригинга</a></li>
-<li class="chapter" data-level="16.4.3" data-path="kriging.html"><a href="kriging.html#стационарность-приращений"><i class="fa fa-check"></i><b>16.4.3</b> Стационарность приращений</a></li>
-<li class="chapter" data-level="16.4.4" data-path="kriging.html"><a href="kriging.html#переход-от-ковариации-к-вариограмме"><i class="fa fa-check"></i><b>16.4.4</b> Переход от ковариации к вариограмме</a></li>
-<li class="chapter" data-level="16.4.5" data-path="kriging.html"><a href="kriging.html#обычный-кригинг"><i class="fa fa-check"></i><b>16.4.5</b> Обычный кригинг</a></li>
-<li class="chapter" data-level="16.4.6" data-path="kriging.html"><a href="kriging.html#дисперсия-обычного-кригинга"><i class="fa fa-check"></i><b>16.4.6</b> Дисперсия обычного кригинга</a></li>
-<li class="chapter" data-level="16.4.7" data-path="kriging.html"><a href="kriging.html#универсальный-кригинг"><i class="fa fa-check"></i><b>16.4.7</b> Универсальный кригинг</a></li>
-<li class="chapter" data-level="16.4.8" data-path="kriging.html"><a href="kriging.html#дисперсия-универсального-кригинга"><i class="fa fa-check"></i><b>16.4.8</b> Дисперсия универсального кригинга</a></li>
-<li class="chapter" data-level="16.4.9" data-path="kriging.html"><a href="kriging.html#кросс-валидация"><i class="fa fa-check"></i><b>16.4.9</b> Кросс-валидация</a></li>
-<li class="chapter" data-level="16.4.10" data-path="kriging.html"><a href="kriging.html#вариограмма"><i class="fa fa-check"></i><b>16.4.10</b> Вариограмма</a></li>
-<li class="chapter" data-level="16.4.11" data-path="kriging.html"><a href="kriging.html#модели-вариограмм"><i class="fa fa-check"></i><b>16.4.11</b> Модели вариограмм</a></li>
-<li class="chapter" data-level="16.4.12" data-path="kriging.html"><a href="kriging.html#сферическая-модель"><i class="fa fa-check"></i><b>16.4.12</b> Сферическая модель</a></li>
-<li class="chapter" data-level="16.4.13" data-path="kriging.html"><a href="kriging.html#экспоненциальная-модель"><i class="fa fa-check"></i><b>16.4.13</b> Экспоненциальная модель</a></li>
-<li class="chapter" data-level="16.4.14" data-path="kriging.html"><a href="kriging.html#гауссова-модель"><i class="fa fa-check"></i><b>16.4.14</b> Гауссова модель</a></li>
-<li class="chapter" data-level="16.4.15" data-path="kriging.html"><a href="kriging.html#степенная-модель"><i class="fa fa-check"></i><b>16.4.15</b> Степенная модель</a></li>
-<li class="chapter" data-level="16.4.16" data-path="kriging.html"><a href="kriging.html#эффект-самородка-модель-наггет"><i class="fa fa-check"></i><b>16.4.16</b> Эффект самородка (модель наггет)</a></li>
-<li class="chapter" data-level="16.4.17" data-path="kriging.html"><a href="kriging.html#диаграмма-рассеяния-с-лагом"><i class="fa fa-check"></i><b>16.4.17</b> Диаграмма рассеяния с лагом</a></li>
-<li class="chapter" data-level="16.4.18" data-path="kriging.html"><a href="kriging.html#вариограммное-облако"><i class="fa fa-check"></i><b>16.4.18</b> Вариограммное облако</a></li>
-<li class="chapter" data-level="16.4.19" data-path="kriging.html"><a href="kriging.html#эмпирическая-вариограмма"><i class="fa fa-check"></i><b>16.4.19</b> Эмпирическая вариограмма</a></li>
-<li class="chapter" data-level="16.4.20" data-path="kriging.html"><a href="kriging.html#вариокарта"><i class="fa fa-check"></i><b>16.4.20</b> Вариокарта</a></li>
-<li class="chapter" data-level="16.4.21" data-path="kriging.html"><a href="kriging.html#приближение-теоретической-модели"><i class="fa fa-check"></i><b>16.4.21</b> Приближение теоретической модели</a></li>
-<li class="chapter" data-level="16.4.22" data-path="kriging.html"><a href="kriging.html#обычный-кригинг-1"><i class="fa fa-check"></i><b>16.4.22</b> Обычный кригинг</a></li>
-<li class="chapter" data-level="16.4.23" data-path="kriging.html"><a href="kriging.html#обычный-кригинг-2"><i class="fa fa-check"></i><b>16.4.23</b> Обычный кригинг</a></li>
-<li class="chapter" data-level="16.4.24" data-path="kriging.html"><a href="kriging.html#оценка-и-дисперсия-кригинга"><i class="fa fa-check"></i><b>16.4.24</b> Оценка и дисперсия кригинга</a></li>
-<li class="chapter" data-level="16.4.25" data-path="kriging.html"><a href="kriging.html#кросс-валидация-1"><i class="fa fa-check"></i><b>16.4.25</b> Кросс-валидация</a></li>
-</ul></li>
-<li class="chapter" data-level="16.5" data-path="kriging.html"><a href="kriging.html#geostat_review"><i class="fa fa-check"></i><b>16.5</b> Краткий обзор</a></li>
-<li class="chapter" data-level="16.6" data-path="kriging.html"><a href="kriging.html#geostat_qt"><i class="fa fa-check"></i><b>16.6</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="16.6.1" data-path="kriging.html"><a href="kriging.html#geostat_q"><i class="fa fa-check"></i><b>16.6.1</b> Вопросы</a></li>
-<li class="chapter" data-level="16.6.2" data-path="kriging.html"><a href="kriging.html#geostat_t"><i class="fa fa-check"></i><b>16.6.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="17" data-path="autocorrelation.html"><a href="autocorrelation.html"><i class="fa fa-check"></i><b>17</b> Пространственная регрессия</a>
-<ul>
-<li class="chapter" data-level="17.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_intro"><i class="fa fa-check"></i><b>17.1</b> Введение</a></li>
-<li class="chapter" data-level="17.2" data-path="autocorrelation.html"><a href="autocorrelation.html#линейная-регрессия"><i class="fa fa-check"></i><b>17.2</b> Линейная регрессия</a></li>
-<li class="chapter" data-level="17.3" data-path="autocorrelation.html"><a href="autocorrelation.html#пространственная-регрессия"><i class="fa fa-check"></i><b>17.3</b> Пространственная регрессия</a></li>
-<li class="chapter" data-level="17.4" data-path="autocorrelation.html"><a href="autocorrelation.html#практический-анализ"><i class="fa fa-check"></i><b>17.4</b> Практический анализ</a></li>
-<li class="chapter" data-level="17.5" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors"><i class="fa fa-check"></i><b>17.5</b> Пространственное соседство</a>
-<ul>
-<li class="chapter" data-level="17.5.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_contguity"><i class="fa fa-check"></i><b>17.5.1</b> Соседи по смежности</a></li>
-<li class="chapter" data-level="17.5.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_graph"><i class="fa fa-check"></i><b>17.5.2</b> Соседи по графу</a></li>
-<li class="chapter" data-level="17.5.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_neighbors_metrics"><i class="fa fa-check"></i><b>17.5.3</b> Соседи по метрике</a></li>
-</ul></li>
-<li class="chapter" data-level="17.6" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_weights"><i class="fa fa-check"></i><b>17.6</b> Пространственные веса</a></li>
-<li class="chapter" data-level="17.7" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_measures"><i class="fa fa-check"></i><b>17.7</b> Пространственная автокорреляция</a>
-<ul>
-<li class="chapter" data-level="17.7.1" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_moran"><i class="fa fa-check"></i><b>17.7.1</b> Индекс Морана (Moran’s I)</a></li>
-<li class="chapter" data-level="17.7.2" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_permutation"><i class="fa fa-check"></i><b>17.7.2</b> Перестановочный тест Морана</a></li>
-<li class="chapter" data-level="17.7.3" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_moranscatter"><i class="fa fa-check"></i><b>17.7.3</b> Диаграмма рассеяния Морана</a></li>
-<li class="chapter" data-level="17.7.4" data-path="autocorrelation.html"><a href="autocorrelation.html#autocorrelation_autoregression"><i class="fa fa-check"></i><b>17.7.4</b> Пространственная авторегрессия</a></li>
-</ul></li>
-<li class="chapter" data-level="17.8" data-path="autocorrelation.html"><a href="autocorrelation.html#spreg_review"><i class="fa fa-check"></i><b>17.8</b> Краткий обзор</a></li>
-<li class="chapter" data-level="17.9" data-path="autocorrelation.html"><a href="autocorrelation.html#questions_tasks_spreg"><i class="fa fa-check"></i><b>17.9</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="17.9.1" data-path="autocorrelation.html"><a href="autocorrelation.html#questions_spreg"><i class="fa fa-check"></i><b>17.9.1</b> Вопросы</a></li>
-<li class="chapter" data-level="17.9.2" data-path="autocorrelation.html"><a href="autocorrelation.html#tasks_spreg"><i class="fa fa-check"></i><b>17.9.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="18" data-path="gwr.html"><a href="gwr.html"><i class="fa fa-check"></i><b>18</b> Географически взвешенная регрессия</a>
-<ul>
-<li class="chapter" data-level="18.1" data-path="gwr.html"><a href="gwr.html#autocorrelation_gwr"><i class="fa fa-check"></i><b>18.1</b> Географически взвешенная регрессия (GWR)</a>
-<ul>
-<li class="chapter" data-level="18.1.1" data-path="gwr.html"><a href="gwr.html#весовые-функции"><i class="fa fa-check"></i><b>18.1.1</b> Весовые функции</a></li>
-<li class="chapter" data-level="18.1.2" data-path="gwr.html"><a href="gwr.html#практический-анализ-1"><i class="fa fa-check"></i><b>18.1.2</b> Практический анализ</a></li>
-</ul></li>
-<li class="chapter" data-level="18.2" data-path="gwr.html"><a href="gwr.html#gwr_review"><i class="fa fa-check"></i><b>18.2</b> Краткий обзор</a></li>
-<li class="chapter" data-level="18.3" data-path="gwr.html"><a href="gwr.html#questions_tasks_gwr"><i class="fa fa-check"></i><b>18.3</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="18.3.1" data-path="gwr.html"><a href="gwr.html#questions_gwr"><i class="fa fa-check"></i><b>18.3.1</b> Вопросы</a></li>
-<li class="chapter" data-level="18.3.2" data-path="gwr.html"><a href="gwr.html#tasks_gwr"><i class="fa fa-check"></i><b>18.3.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="19" data-path="point-patterns.html"><a href="point-patterns.html"><i class="fa fa-check"></i><b>19</b> Точечные процессы</a>
-<ul>
-<li class="chapter" data-level="19.1" data-path="point-patterns.html"><a href="point-patterns.html#точечный-паттерн"><i class="fa fa-check"></i><b>19.1</b> Точечный паттерн</a></li>
-<li class="chapter" data-level="19.2" data-path="point-patterns.html"><a href="point-patterns.html#точечные-процессы"><i class="fa fa-check"></i><b>19.2</b> Точечные процессы</a>
-<ul>
-<li class="chapter" data-level="19.2.1" data-path="point-patterns.html"><a href="point-patterns.html#равномерно-случайные-точки"><i class="fa fa-check"></i><b>19.2.1</b> Равномерно случайные точки</a></li>
-<li class="chapter" data-level="19.2.2" data-path="point-patterns.html"><a href="point-patterns.html#биномиальный-точечный-процесс"><i class="fa fa-check"></i><b>19.2.2</b> Биномиальный точечный процесс</a></li>
-<li class="chapter" data-level="19.2.3" data-path="point-patterns.html"><a href="point-patterns.html#пуассоновский-процесс"><i class="fa fa-check"></i><b>19.2.3</b> Пуассоновский процесс</a></li>
-<li class="chapter" data-level="19.2.4" data-path="point-patterns.html"><a href="point-patterns.html#неоднородный-пуассоновский-процесс"><i class="fa fa-check"></i><b>19.2.4</b> Неоднородный пуассоновский процесс</a></li>
-<li class="chapter" data-level="19.2.5" data-path="point-patterns.html"><a href="point-patterns.html#процесс-кокса-cox-process"><i class="fa fa-check"></i><b>19.2.5</b> Процесс Кокса (Cox process)</a></li>
-<li class="chapter" data-level="19.2.6" data-path="point-patterns.html"><a href="point-patterns.html#кластерные-процессы"><i class="fa fa-check"></i><b>19.2.6</b> Кластерные процессы</a></li>
-<li class="chapter" data-level="19.2.7" data-path="point-patterns.html"><a href="point-patterns.html#регулярные-процессы"><i class="fa fa-check"></i><b>19.2.7</b> Регулярные процессы</a></li>
-</ul></li>
-<li class="chapter" data-level="19.3" data-path="point-patterns.html"><a href="point-patterns.html#диагностика"><i class="fa fa-check"></i><b>19.3</b> Диагностика</a>
-<ul>
-<li class="chapter" data-level="19.3.1" data-path="point-patterns.html"><a href="point-patterns.html#анализ-интенсивности"><i class="fa fa-check"></i><b>19.3.1</b> Анализ интенсивности</a></li>
-<li class="chapter" data-level="19.3.2" data-path="point-patterns.html"><a href="point-patterns.html#анализ-зависимости"><i class="fa fa-check"></i><b>19.3.2</b> Анализ зависимости</a></li>
-</ul></li>
-<li class="chapter" data-level="19.4" data-path="point-patterns.html"><a href="point-patterns.html#моделирование"><i class="fa fa-check"></i><b>19.4</b> Моделирование</a></li>
-<li class="chapter" data-level="19.5" data-path="point-patterns.html"><a href="point-patterns.html#point_review"><i class="fa fa-check"></i><b>19.5</b> Краткий обзор</a></li>
-<li class="chapter" data-level="19.6" data-path="point-patterns.html"><a href="point-patterns.html#questions_tasks_patterns"><i class="fa fa-check"></i><b>19.6</b> Контрольные вопросы и упражнения</a>
-<ul>
-<li class="chapter" data-level="19.6.1" data-path="point-patterns.html"><a href="point-patterns.html#questions_patterns"><i class="fa fa-check"></i><b>19.6.1</b> Вопросы</a></li>
-<li class="chapter" data-level="19.6.2" data-path="point-patterns.html"><a href="point-patterns.html#tasks_patterns"><i class="fa fa-check"></i><b>19.6.2</b> Упражнения</a></li>
-</ul></li>
-</ul></li>
-<li class="appendix"><span><b>Решение проблем</b></span></li>
-<li class="chapter" data-level="A" data-path="package-troubles.html"><a href="package-troubles.html"><i class="fa fa-check"></i><b>A</b> Установка пакетов</a>
-<ul>
-<li class="chapter" data-level="A.1" data-path="package-troubles.html"><a href="package-troubles.html#package-troubles-standard"><i class="fa fa-check"></i><b>A.1</b> Недоступен стандартный каталог</a></li>
-<li class="chapter" data-level="A.2" data-path="package-troubles.html"><a href="package-troubles.html#package-troubles-copy"><i class="fa fa-check"></i><b>A.2</b> Устанавливается, но не копируется</a></li>
-</ul></li>
-<li class="divider"></li>
-<li><a href="https://istina.msu.ru/profile/tsamsonov/" target="blank">Тимофей Самсонов</a></li>
-<li><a href="https://doi.org/10.5281/zenodo.901911"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.901911.svg" title="DOI"></a><li>
-
-</ul>
-
-      </nav>
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Визуализация и анализ географических данных на языке R</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
     </div>
 
-    <div class="book-body">
-      <div class="body-inner">
-        <div class="book-header" role="navigation">
-          <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Визуализация и анализ географических данных на языке R</a>
-          </h1>
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="active" href="index.html">Введение</a></li>
+<li class="book-part">Основы языка R</li>
+<li><a class="" href="basics.html"><span class="header-section-number">1</span> Типы данных, условия, ввод и вывод</a></li>
+<li><a class="" href="structures.html"><span class="header-section-number">2</span> Структуры данных и циклы</a></li>
+<li><a class="" href="tables.html"><span class="header-section-number">3</span> Табличные данные</a></li>
+<li><a class="" href="controls.html"><span class="header-section-number">4</span> Техники программирования</a></li>
+<li class="book-part">Графика и статистика</li>
+<li><a class="" href="graphics.html"><span class="header-section-number">5</span> Базовая графика</a></li>
+<li><a class="" href="advgraphics.html"><span class="header-section-number">6</span> Продвинутая графика</a></li>
+<li><a class="" href="temporal.html"><span class="header-section-number">7</span> Временные данные</a></li>
+<li><a class="" href="circular.html"><span class="header-section-number">8</span> Дирекционные данные</a></li>
+<li class="book-part">Пространственные данные</li>
+<li><a class="" href="spatial.html"><span class="header-section-number">9</span> Пространственные данные</a></li>
+<li><a class="" href="three.html"><span class="header-section-number">10</span> Трехмерные модели</a></li>
+<li><a class="" href="vector.html"><span class="header-section-number">11</span> Векторный анализ</a></li>
+<li><a class="" href="network.html"><span class="header-section-number">12</span> Cетевой анализ</a></li>
+<li><a class="" href="raster.html"><span class="header-section-number">13</span> Растровый анализ</a></li>
+<li><a class="" href="interp.html"><span class="header-section-number">14</span> Пространственная интерполяция и аппроксимация</a></li>
+<li class="book-part">Пространственная статистика</li>
+<li><a class="" href="gstat.html"><span class="header-section-number">15</span> Геостатистика</a></li>
+<li><a class="" href="spreg.html"><span class="header-section-number">16</span> Пространственная регрессия</a></li>
+<li><a class="" href="gwr.html"><span class="header-section-number">17</span> Географически взвешенная регрессия</a></li>
+<li><a class="" href="points.html"><span class="header-section-number">18</span> Точечные процессы</a></li>
+<li class="book-part">Решение проблем</li>
+<li><a class="" href="package-troubles.html"><span class="header-section-number">A</span> Установка пакетов</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/tsamsonov/r-geo-course">View book source <i class="fab fa-github"></i></a></p>
         </div>
-
-        <div class="page-wrapper" tabindex="-1" role="main">
-          <div class="page-inner">
-
-            <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Визуализация и анализ географических данных на языке R</h1>
-<p class="author"><em>Тимофей Самсонов</em></p>
-<p class="date"><em>2021-01-25</em></p>
+      </nav>
 </div>
-<div id="введение" class="section level1 unnumbered">
-<h1>Введение</h1>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><!--bookdown:title:end--><!--bookdown:title:start--><div id="введение" class="section level1 unnumbered">
+<h1>Введение<a class="anchor" aria-label="anchor" href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5"><i class="fas fa-link"></i></a>
+</h1>
 <p>Добро пожаловать в курс <em>“Визуализация и анализ географических данных на языке R”</em>! В данном курсе мы освоим азы программирования на языке <strong>R</strong>, а затем научимся использовать его для решения географических задач. Никаких предварительных знаний и навыков программирования не требуется.</p>
 <div id="программное-обеспечение" class="section level2 unnumbered">
-<h2>Программное обеспечение</h2>
+<h2>Программное обеспечение<a class="anchor" aria-label="anchor" href="#%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%BD%D0%BE%D0%B5-%D0%BE%D0%B1%D0%B5%D1%81%D0%BF%D0%B5%D1%87%D0%B5%D0%BD%D0%B8%D0%B5"><i class="fas fa-link"></i></a>
+</h2>
 <p>Для успешного прохождения курса на вашем компьютере должно быть установлено следующее программное обеспечение:</p>
 <ul>
-<li>Язык <a href="https://cran.r-project.org">R</a></li>
-<li>Среда разработки <a href="https://www.rstudio.com/products/rstudio/download3/">RStudio</a></li>
+<li>Язык <a href="https://cran.r-project.org">R</a>
+</li>
+<li>Среда разработки <a href="https://www.rstudio.com/products/rstudio/download3/">RStudio</a>
+</li>
 </ul>
 <p>Выбирайте инсталлятор, соответствующий вашей операционной системе. Обратите внимание на то, что <strong>RStudio</strong> не будет работать, пока вы не установите базовые библиотеки языка <strong>R</strong>. Поэтому обе вышеуказанные компоненты ПО обязательны для установки.</p>
 </div>
 <div id="установка-и-подключение-пакетов" class="section level2 unnumbered">
-<h2>Установка и подключение пакетов</h2>
+<h2>Установка и подключение пакетов<a class="anchor" aria-label="anchor" href="#%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%BE%D0%B2"><i class="fas fa-link"></i></a>
+</h2>
 <p>Существует <a href="https://cran.r-project.org/web/packages/">множество</a> дополнительных пакетов <strong>R</strong> практически на все случаи жизни (вы тоже можете написать свой). Как и дистрибутив <strong>R</strong>, они доступны через <a href="https://cran.r-project.org">CRAN (Comprehensive R Archive Network)</a>. Одним из таких пакетов является, например, пакет <a href="https://cran.r-project.org/web/packages/writexl/index.html"><code>writexl</code></a>, позволяющий записывать файлы в форматах <strong>Microsoft Excel</strong>.</p>
 <p>Наиболее часто используются два способа установки пакетов в <strong>RStudio</strong>.</p>
 <p>Во-первых, вы можете сделать это в графическом интерфесе, нажав кнопку <em>Install</em> на панели <em>Packages</em> (по умолчанию эта панель расположена в нижней правой четверти окна программы). В появившемся окне введите название пакета и нажмите <em>Install</em>:</p>
-<div class="figure"><span id="fig:unnamed-chunk-1"></span>
-<img src="images/InstallPackages.png" alt="Установка пакета" width="753" />
-<p class="caption">
+<div class="figure">
+<span id="fig:unnamed-chunk-1"></span>
+<img src="images/InstallPackages.png" alt="Установка пакета" width="753"><p class="caption">
 Рис. 0.1: Установка пакета
 </p>
 </div>
-<p>Во-вторых, вы можете вызвать <em>из консоли</em> команду <code>install.packages()</code>, передав ей в качестве параметра название пакета, заключенное в кавычки:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;writexl&quot;</span>)</span></code></pre></div>
+<p>Во-вторых, вы можете вызвать <em>из консоли</em> команду <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code>, передав ей в качестве параметра название пакета, заключенное в кавычки:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"writexl"</span><span class="op">)</span></code></pre></div>
 <blockquote>
-<p><strong>Никогда не включайте команду <code>install.packages()</code> в тело скрипта.</strong> Это приведет к тому, что каждый раз при запуске программы среда <strong>RStudio</strong> будет пытаться заново установить пакет, который уже установлен. Запускайте эту функцию <em>только из консоли</em>.</p>
+<p><strong>Никогда не включайте команду <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> в тело скрипта.</strong> Это приведет к тому, что каждый раз при запуске программы среда <strong>RStudio</strong> будет пытаться заново установить пакет, который уже установлен. Запускайте эту функцию <em>только из консоли</em>.</p>
 </blockquote>
-<p>Подключение пакета осуществляется с помощью функции <code>library()</code>, при этом название пакета можно в кавычки не заключать:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="index.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(writexl)</span></code></pre></div>
+<p>Подключение пакета осуществляется с помощью функции <code><a href="https://rdrr.io/r/base/library.html">library()</a></code>, при этом название пакета можно в кавычки не заключать:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/writexl">writexl</a></span><span class="op">)</span></code></pre></div>
 </div>
 <div id="выполнение-программного-кода" class="section level2 unnumbered">
-<h2>Выполнение программного кода</h2>
+<h2>Выполнение программного кода<a class="anchor" aria-label="anchor" href="#%D0%B2%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%BD%D0%BE%D0%B3%D0%BE-%D0%BA%D0%BE%D0%B4%D0%B0"><i class="fas fa-link"></i></a>
+</h2>
 <p>,
 Существует несколько способов выполнения исходного кода:</p>
 <ul>
-<li><strong>Выполнить одну строку</strong>: поставить курсор в любую строку и нажать над редактором кода кнопку <em>Run</em> или сочетание клавиш <code>Ctrl</code>+<code>Enter</code> (<code>Cmd</code>+<code>Enter</code> для OS X).</li>
-<li><strong>Выполнить несколько строк</strong>: выделить необходимые строки и нажать над редактором кода кнопку <em>Run</em> или сочетание клавиш <code>Ctrl</code>+<code>Enter</code> (<code>Cmd</code>+<code>Enter</code> для OS X).</li>
-<li><strong>Выполнить весь код</strong> можно сразу тремя способами:
+<li>
+<strong>Выполнить одну строку</strong>: поставить курсор в любую строку и нажать над редактором кода кнопку <em>Run</em> или сочетание клавиш <code>Ctrl</code>+<code>Enter</code> (<code>Cmd</code>+<code>Enter</code> для OS X).</li>
+<li>
+<strong>Выполнить несколько строк</strong>: выделить необходимые строки и нажать над редактором кода кнопку <em>Run</em> или сочетание клавиш <code>Ctrl</code>+<code>Enter</code> (<code>Cmd</code>+<code>Enter</code> для OS X).</li>
+<li>
+<strong>Выполнить весь код</strong> можно сразу тремя способами:
 <ul>
 <li>Выделить весь текст и нажать над редактором кода кнопку <em>Run</em> или сочетание клавиш <code>Ctrl+Enter</code> (<code>Cmd</code>+<code>Enter</code> для OS X)</li>
 <li>Нажать клавиатурное сочетание <code>Ctrl</code>+<code>Alt</code>+<code>Enter</code> (<code>Cmd</code>+<code>Alt</code>+<code>Enter</code> для OS X)</li>
-<li>Нажать в правом верхнем углу редактора кода кнопку <em>Source</em></li>
-</ul></li>
+<li>Нажать в правом верхнем углу редактора кода кнопку <em>Source</em>
+</li>
+</ul>
+</li>
 </ul>
 <blockquote>
 <p><strong>Команды <em>Source</em> и <code>Ctrl</code>+<code>Alt</code>+<code>Enter</code> могут не сработать</strong>, если у вас не установлена рабочая директория, или если в пути к рабочей директории содержатся кириллические символы (не актуально для Windows 10+, macOS и Linux, которые являются системами, основанными на кодировке Unicode).</p>
@@ -713,27 +135,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 </div>
 <div id="установка-рабочей-директории" class="section level2 unnumbered">
-<h2>Установка рабочей директории</h2>
+<h2>Установка рабочей директории<a class="anchor" aria-label="anchor" href="#%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D1%80%D0%B0%D0%B1%D0%BE%D1%87%D0%B5%D0%B9-%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%B8%D0%B8"><i class="fas fa-link"></i></a>
+</h2>
 <p>Вы можете открывать и сохранять любые поддерживаемые файлы в <strong>R</strong>, указывая полный системный путь к файлу. Например, так может выглядеть открытие и сохранение таблицы в формате <em>CSV</em> на компьютере <em>Mac</em>:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="index.html#cb3-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">&quot;/Volumes/Data/GitHub/r-geo-course/data/oxr_vod.csv&quot;</span>)</span>
-<span id="cb3-2"><a href="index.html#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(d, <span class="st">&quot;/Volumes/Data/GitHub/r-geo-course/data/oxr_vod_copy.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">d</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"/Volumes/Data/GitHub/r-geo-course/data/oxr_vod.csv"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.csv</a></span><span class="op">(</span><span class="va">d</span>, <span class="st">"/Volumes/Data/GitHub/r-geo-course/data/oxr_vod_copy.csv"</span><span class="op">)</span></code></pre></div>
 <p>Однако, если вам требуется открыть или сохранить несколько файлов (и не только данных, но и графиков, карт и т.п.), программа будет выглядеть громоздко. К тому же, прописывать каждый раз полный путь достаточно утомительно и неприятно (даже путем копирования и вставки), а главное — может привести к ошибкам.</p>
-<p>Чтобы облегчить работу с файлами, в <strong>R</strong> существует понятие домашней директории. Домашняя директория задается для текущей сессии <strong>R</strong> с помощью функции <code>setwd()</code>. После установки домашней директории <strong>R</strong> будет полагать, что все открываемые и сохраняемые файлы должны находиться в ней:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="index.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">&quot;/Volumes/Data/GitHub/r-geo-course/data&quot;</span>)</span>
-<span id="cb4-2"><a href="index.html#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="index.html#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(<span class="st">&quot;oxr_vod.csv&quot;</span>)</span>
-<span id="cb4-4"><a href="index.html#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(d, <span class="st">&quot;oxr_vod_copy.csv&quot;</span>)</span></code></pre></div>
+<p>Чтобы облегчить работу с файлами, в <strong>R</strong> существует понятие домашней директории. Домашняя директория задается для текущей сессии <strong>R</strong> с помощью функции <code><a href="https://rdrr.io/r/base/getwd.html">setwd()</a></code>. После установки домашней директории <strong>R</strong> будет полагать, что все открываемые и сохраняемые файлы должны находиться в ней:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/getwd.html">setwd</a></span><span class="op">(</span><span class="st">"/Volumes/Data/GitHub/r-geo-course/data"</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"oxr_vod.csv"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.csv</a></span><span class="op">(</span><span class="va">d</span>, <span class="st">"oxr_vod_copy.csv"</span><span class="op">)</span></code></pre></div>
 <p>Как видно, мы добавили дополнительную строчку кода, но сэкономили на длине двух других строк. При увеличении количества обращений к файлам польза домашней директории будет возрастать. При этом вы можете открывать и сохранять файлы в поддиректориях, наддиректориях и соседних директориях, используя синтаксис, стандартный для большинства операционных систем:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="index.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># сохранить файл в поддиректорию data</span></span>
-<span id="cb5-2"><a href="index.html#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(d, <span class="st">&quot;data/oxr_vod_copy.csv&quot;</span>)</span>
-<span id="cb5-3"><a href="index.html#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="index.html#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># сохранить файл в наддиректорию по отношению к текущей директории</span></span>
-<span id="cb5-5"><a href="index.html#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(d, <span class="st">&quot;../oxr_vod_copy.csv&quot;</span>)</span>
-<span id="cb5-6"><a href="index.html#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="index.html#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># сохранить файл в директорию data, соседнюю по отношению к текущей директории</span></span>
-<span id="cb5-8"><a href="index.html#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(d, <span class="st">&quot;../data/oxr_vod_copy.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># сохранить файл в поддиректорию data</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.csv</a></span><span class="op">(</span><span class="va">d</span>, <span class="st">"data/oxr_vod_copy.csv"</span><span class="op">)</span>
+
+<span class="co"># сохранить файл в наддиректорию по отношению к текущей директории</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.csv</a></span><span class="op">(</span><span class="va">d</span>, <span class="st">"../oxr_vod_copy.csv"</span><span class="op">)</span>
+
+<span class="co"># сохранить файл в директорию data, соседнюю по отношению к текущей директории</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.csv</a></span><span class="op">(</span><span class="va">d</span>, <span class="st">"../data/oxr_vod_copy.csv"</span><span class="op">)</span></code></pre></div>
 <blockquote>
-<p><strong>Если вы перенесли код и данные с другого компьютера</strong> (возможно, вы получили их от своего коллеги или скачали с репозитория данного пособия), необходимо заменить путь, указанный в функции <code>setwd()</code> на путь к каталогу, в который вы положили данные.</p>
+<p><strong>Если вы перенесли код и данные с другого компьютера</strong> (возможно, вы получили их от своего коллеги или скачали с репозитория данного пособия), необходимо заменить путь, указанный в функции <code><a href="https://rdrr.io/r/base/getwd.html">setwd()</a></code> на путь к каталогу, в который вы положили данные.</p>
 </blockquote>
 <blockquote>
 <p><strong>Рабочая директория и местоположение скрипта могут не совпадать</strong>. Вы можете хранить их в разных местах. Однако рекомендуется держать их вместе, что облегчит передачу вашей программы вместе с данными другим пользователям.</p>
@@ -741,108 +167,107 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>К сожалению, не существует надежного программного способа сказать среде выполнения <strong>R</strong>, что в качестве домашей директории следует использовать директорию в которой лежит сам скрипт (что, вообще говоря, было бы крайне удобно). Возможно, в будущем разработчики языка добавят такую полезную функцию. Однако, если для работы с <strong>R</strong> вы пользуетесь средой <strong>RStudio</strong>, задача может быть решена путем использования проектов. Подробнее читайте <a href="https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects">здесь</a>.</p>
 </div>
 <div id="диагностические-функции" class="section level2 unnumbered">
-<h2>Диагностические функции</h2>
+<h2>Диагностические функции<a class="anchor" aria-label="anchor" href="#%D0%B4%D0%B8%D0%B0%D0%B3%D0%BD%D0%BE%D1%81%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8"><i class="fas fa-link"></i></a>
+</h2>
 <p>В <strong>R</strong> существует ряд диагностических функций, которые позволяют узнавать техническую информацию об объектах и переменных. Эти функции полезны, когда необходимо понять, какого типа, размера и содержания данные хранятся в той или иной переменной. Нижеприведенный список функций не являются исчерпывающим, но охватывает часто употребляемые функции:</p>
-<table>
-<thead>
-<tr class="header">
+<div class="inline-table"><table class="table table-sm">
+<thead><tr class="header">
 <th>Функция</th>
 <th>Назначение</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>class()</code></td>
+<td><code><a href="https://rdrr.io/r/base/class.html">class()</a></code></td>
 <td>Класс (тип данных или структура данных) объекта</td>
 </tr>
 <tr class="even">
-<td><code>attr()</code></td>
+<td><code><a href="https://rdrr.io/r/base/attr.html">attr()</a></code></td>
 <td>Атрибуты объекта</td>
 </tr>
 <tr class="odd">
-<td><code>str()</code></td>
+<td><code><a href="https://rdrr.io/r/utils/str.html">str()</a></code></td>
 <td>Компактное представление внутренней структуры объекта.</td>
 </tr>
 <tr class="even">
-<td><code>names()</code></td>
+<td><code><a href="https://rdrr.io/r/base/names.html">names()</a></code></td>
 <td>Названия элементов объекта</td>
 </tr>
 <tr class="odd">
-<td><code>colnames()</code></td>
+<td><code><a href="https://rdrr.io/r/base/colnames.html">colnames()</a></code></td>
 <td>Названия колонок фрейма данных или матрицы</td>
 </tr>
 <tr class="even">
-<td><code>rownames()</code></td>
+<td><code><a href="https://rdrr.io/r/base/colnames.html">rownames()</a></code></td>
 <td>Названия строк фрейма данных или матрицы</td>
 </tr>
 <tr class="odd">
-<td><code>mode()</code></td>
+<td><code><a href="https://rdrr.io/r/base/mode.html">mode()</a></code></td>
 <td>Режим хранения объекта.</td>
 </tr>
 <tr class="even">
-<td><code>length()</code></td>
+<td><code><a href="https://rdrr.io/r/base/length.html">length()</a></code></td>
 <td>Размер (длина) объекта.</td>
 </tr>
 <tr class="odd">
-<td><code>dim()</code></td>
+<td><code><a href="https://rdrr.io/r/base/dim.html">dim()</a></code></td>
 <td>Измерение объекта.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>Помимо этого, часто используются следующие функции, имеющие отношение не к конкретным объектам, а к параметрам работы текущей сессии:</p>
-<table>
+<div class="inline-table"><table class="table table-sm">
 <colgroup>
-<col width="42%" />
-<col width="57%" />
+<col width="42%">
+<col width="57%">
 </colgroup>
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th>Функция</th>
 <th>Назначение</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>sessionInfo()</code></td>
+<td><code><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo()</a></code></td>
 <td>Информация о текущей сессии R и подключенных пакетах.</td>
 </tr>
 <tr class="even">
-<td><code>gc()</code></td>
+<td><code><a href="https://rdrr.io/r/base/gc.html">gc()</a></code></td>
 <td>Информация об объеме памяти, занимаемой текущей сессией R (находящейся под управлением <a href="https://ru.wikipedia.org/wiki/%D0%A1%D0%B1%D0%BE%D1%80%D0%BA%D0%B0_%D0%BC%D1%83%D1%81%D0%BE%D1%80%D0%B0">сборщика мусора</a>).</td>
 </tr>
 <tr class="odd">
-<td><code>options()</code></td>
+<td><code><a href="https://rdrr.io/r/base/options.html">options()</a></code></td>
 <td>Получение и установка параметров среды.</td>
 </tr>
 <tr class="even">
-<td><code>getwd()</code></td>
+<td><code><a href="https://rdrr.io/r/base/getwd.html">getwd()</a></code></td>
 <td>Получение текущей рабочей директории</td>
 </tr>
 <tr class="odd">
-<td><code>setwd()</code></td>
+<td><code><a href="https://rdrr.io/r/base/getwd.html">setwd()</a></code></td>
 <td>Установка текущей рабочей директории</td>
 </tr>
 <tr class="even">
-<td><code>par()</code></td>
+<td><code><a href="https://rdrr.io/r/graphics/par.html">par()</a></code></td>
 <td>Получение и установка графических параметров</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 </div>
 <div id="получение-справки" class="section level2 unnumbered">
-<h2>Получение справки</h2>
+<h2>Получение справки<a class="anchor" aria-label="anchor" href="#%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B8"><i class="fas fa-link"></i></a>
+</h2>
 <p>Правильно оформленная функция <strong>R</strong> содержит документированное описание ее параметров и правил использования. Справку можно получить несколькими способами:</p>
 <ul>
 <li>Найти интересующую вас функцию вручную на вкладке <strong>Packages</strong>, выбрав нужный пакет.</li>
 <li>Воспользоваться строкой поиска на вкладке <strong>Help</strong>.</li>
 <li>Ввести знак вопроса и название функции в консоли (будет искать только среди подключенных в настоящий момент пакетов):</li>
 </ul>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="index.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(writexl)</span>
-<span id="cb6-2"><a href="index.html#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="index.html#cb6-3" aria-hidden="true" tabindex="-1"></a>?write_xlsx <span class="co"># равносильно вызову функции help(write_xlsx)</span></span></code></pre></div>
-<div class="figure"><span id="fig:unnamed-chunk-8"></span>
-<img src="images/write_xlsx.png" alt="Справка по функции `write_xlsx`" width="785" />
-<p class="caption">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/writexl">writexl</a></span><span class="op">)</span>
+
+<span class="op">?</span><span class="va">write_xlsx</span> <span class="co"># равносильно вызову функции help(write_xlsx)</span></code></pre></div>
+<div class="figure">
+<span id="fig:unnamed-chunk-8"></span>
+<img src="images/write_xlsx.png" alt="Справка по функции `write_xlsx`" width="785"><p class="caption">
 Рис. 0.2: Справка по функции <code>write_xlsx</code>
 </p>
 </div>
@@ -850,22 +275,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Ввести двойной знак вопроса и название функции в консоли (будет искать по всем установленным пакетам, независимо от того, подключены ли они в настоящий момент). Например, вот так можно найти все варианты справочных материалов по функции <code>aggregate</code>:</li>
 </ul>
 <pre><code>&gt; ??aggregate</code></pre>
-<div class="figure"><span id="fig:unnamed-chunk-9"></span>
-<img src="images/ch0_aggregate.png" alt="Справочные материалы по функциям `aggregate` из установленных пакетов" width="780" />
-<p class="caption">
+<div class="figure">
+<span id="fig:unnamed-chunk-9"></span>
+<img src="images/ch0_aggregate.png" alt="Справочные материалы по функциям `aggregate` из установленных пакетов" width="780"><p class="caption">
 Рис. 0.3: Справочные материалы по функциям <code>aggregate</code> из установленных пакетов
 </p>
 </div>
 <p>Во многих пакетах есть также подробная документация с примерами использования функций в виде руководств и так называемых <a href="https://ru.wikipedia.org/wiki/%D0%92%D0%B8%D0%BD%D1%8C%D0%B5%D1%82%D0%BA%D0%B0_(%D0%BB%D0%B8%D1%82%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D0%B0)"><em>виньеток</em></a> (<em>vignettes</em>), которые представляют из себя расширенные руководства (статьи) по использованию пакета. С документацией пакета можно ознакомиться, щелкнув на его названии на вкладке <em>Packages</em> и перейдя по ссылке <em>User guides, package vignettes and other documentation</em>:</p>
-<div class="figure"><span id="fig:unnamed-chunk-10"></span>
-<img src="images/ch0_vignette.png" alt="Документация пакета `sf`" width="696" />
-<p class="caption">
+<div class="figure">
+<span id="fig:unnamed-chunk-10"></span>
+<img src="images/ch0_vignette.png" alt="Документация пакета `sf`" width="696"><p class="caption">
 Рис. 0.4: Документация пакета <code>sf</code>
 </p>
 </div>
 </div>
 <div id="комментарии" class="section level2 unnumbered">
-<h2>Комментарии</h2>
+<h2>Комментарии<a class="anchor" aria-label="anchor" href="#%D0%BA%D0%BE%D0%BC%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%80%D0%B8%D0%B8"><i class="fas fa-link"></i></a>
+</h2>
 <p><strong>Комментарии</strong> — это фрагменты текста программы, начинающиеся с символа <code>#</code>. Комментарии не воспринимаются как исполняемый код и служат для документирования программы. При выполнении программы содержимое комментария в зависимости от настроек среды может выводиться или не выводиться в консоль, однако их содержание никак не влияет на результаты выполнения программы.</p>
 <blockquote>
 <p><strong>Всегда пишите комментарии</strong>, чтобы по прошествии времени можно было открыть файл и быстро восстановить в памяти логику программы и смысл отдельных операций. Комментарии особенно необходимы, если вашей программой будет пользоваться кто-то другой — без них будет трудно разобраться в программном коде.</p>
@@ -874,102 +300,107 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <blockquote>
 <p><strong>Прервать комментарий и написать справа от него исполняемый код нельзя</strong></p>
 </blockquote>
-<p>Полнострочные комментарии часто используются для выделения разделов в программе и написания объемных пояснений. Часто в них вводят имитации разделительных линий с помощью символов дефиса (<code>-</code>) или подчеркивания (<code>_</code>), а заголовки набирают прописными буквами. Короткие комментарии справа от фрагментов кода обычно служат пояснением конкретных простых операций. Подобная логика употребления комментариев не является обязательной. Вы можете оформлять их на свое усмотрение. Главное, чтобы они выполняли свою основную функцию — пояснять смысл выполняемых действий. Например:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="index.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ОПЕРАЦИИ С ЧИСЛАМИ</span></span>
-<span id="cb8-2"><a href="index.html#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------</span></span>
-<span id="cb8-3"><a href="index.html#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># В данном разделе рассматриваются арифметические операции, такие как сложение, вычитание, деление, деление с остатком, взятие остатка и возведение в степень:</span></span>
-<span id="cb8-4"><a href="index.html#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="index.html#cb8-5" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="dv">3</span> <span class="sc">+</span> <span class="dv">2</span> <span class="co"># Сложение</span></span>
-<span id="cb8-6"><a href="index.html#cb8-6" aria-hidden="true" tabindex="-1"></a>b <span class="ot">=</span> <span class="dv">4</span> <span class="sc">^</span> <span class="dv">8</span> <span class="co"># Возведение в степень</span></span>
-<span id="cb8-7"><a href="index.html#cb8-7" aria-hidden="true" tabindex="-1"></a>c <span class="ot">=</span> b <span class="sc">%%</span> a <span class="co"># Взятие остатка</span></span>
-<span id="cb8-8"><a href="index.html#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="index.html#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Деление</span></span>
-<span id="cb8-10"><a href="index.html#cb8-10" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> c <span class="sc">/</span> a </span>
-<span id="cb8-11"><a href="index.html#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="index.html#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Умножение</span></span>
-<span id="cb8-13"><a href="index.html#cb8-13" aria-hidden="true" tabindex="-1"></a>e <span class="ot">=</span> d <span class="sc">*</span> b</span></code></pre></div>
+<p>Полнострочные комментарии часто используются для выделения разделов в программе и написания объемных пояснений. Часто в них вводят имитации разделительных линий с помощью символов дефиса (<code><a href="https://rdrr.io/r/base/Arithmetic.html">-</a></code>) или подчеркивания (<code>_</code>), а заголовки набирают прописными буквами. Короткие комментарии справа от фрагментов кода обычно служат пояснением конкретных простых операций. Подобная логика употребления комментариев не является обязательной. Вы можете оформлять их на свое усмотрение. Главное, чтобы они выполняли свою основную функцию — пояснять смысл выполняемых действий. Например:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># ОПЕРАЦИИ С ЧИСЛАМИ</span>
+<span class="co"># ---------------------------</span>
+<span class="co"># В данном разделе рассматриваются арифметические операции, такие как сложение, вычитание, деление, деление с остатком, взятие остатка и возведение в степень:</span>
+
+<span class="va">a</span> <span class="op">=</span> <span class="fl">3</span> <span class="op">+</span> <span class="fl">2</span> <span class="co"># Сложение</span>
+<span class="va">b</span> <span class="op">=</span> <span class="fl">4</span> <span class="op">^</span> <span class="fl">8</span> <span class="co"># Возведение в степень</span>
+<span class="va">c</span> <span class="op">=</span> <span class="va">b</span> <span class="op">%%</span> <span class="va">a</span> <span class="co"># Взятие остатка</span>
+
+<span class="co"># Деление</span>
+<span class="va">d</span> <span class="op">=</span> <span class="va">c</span> <span class="op">/</span> <span class="va">a</span> 
+
+<span class="co"># Умножение</span>
+<span class="va">e</span> <span class="op">=</span> <span class="va">d</span> <span class="op">*</span> <span class="va">b</span></code></pre></div>
 <p>Однако, усердствовать с комментированием каждой мелочи в программе, разумеется, не стоит. Со временем у вас выработается взвешенный подход к документированию программ и понимание того, какие ее фрагменты требуют пояснения, а какие самоочевидны.</p>
 <blockquote>
 <p><strong>Для быстрой вставки комментария, обозначающего новый раздел программы</strong>, воспользуйтесь командой меню <em>Code &gt; Insert Section</em> или клавиатурным сочетанием <code>Ctrl</code>+<code>Shift</code>+<code>R</code> (<code>Cmd</code>+<code>Shift</code>+<code>R</code> для OS X)</p>
 </blockquote>
 </div>
 <div id="стандарт-оформления-кода-на-r" class="section level2 unnumbered">
-<h2>Стандарт оформления кода на R</h2>
+<h2>Стандарт оформления кода на R<a class="anchor" aria-label="anchor" href="#%D1%81%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82-%D0%BE%D1%84%D0%BE%D1%80%D0%BC%D0%BB%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BA%D0%BE%D0%B4%D0%B0-%D0%BD%D0%B0-r"><i class="fas fa-link"></i></a>
+</h2>
 <p>Очень важно сразу же приучить себя грамотно, структурированно и красиво оформлять код на языке <strong>R</strong>. Это существенно облегчит чтение и понимание ваших программ не только вами, но и другими пользователями и разработчиками. Помимо вышеуказанных рекомендаций по написанию комментариев существует также определенное количество хорошо зарекомендовавших себя и широко используемых практик оформления кода. Эти практики есть в каждом языке программирования и их можно найти в литературе (и в Интернете) в виде негласных сводов правил (<em>style guides</em>).</p>
 <p>В частности, одним из полезных для изучения является стандарт <a href="https://style.tidyverse.org/"><strong>tidyverse</strong></a>, систематизированный <a href="http://hadley.nz/">Хэдли Уикхемом</a> — одним из ведущих идеологов развития языка R и его библиотек.</p>
 <blockquote>
-<p><strong>Стандарт оформления кода иногда также называют <em>стилем программирования</em>.</strong> Однако под стилем программирования традиционно понимают все же фундаментальный подход (<em>парадигму</em>) к построению программ: процедурный, функциональный, логический, объектно-ориентированный стиль и некоторые <a href="https://ru.wikipedia.org/wiki/Парадигма_программирования">другие</a>.</p>
+<p><strong>Стандарт оформления кода иногда также называют <em>стилем программирования</em>.</strong> Однако под стилем программирования традиционно понимают все же фундаментальный подход (<em>парадигму</em>) к построению программ: процедурный, функциональный, логический, объектно-ориентированный стиль и некоторые <a href="https://ru.wikipedia.org/wiki/%D0%9F%D0%B0%D1%80%D0%B0%D0%B4%D0%B8%D0%B3%D0%BC%D0%B0_%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F">другие</a>.</p>
 </blockquote>
 <p>К числу негласных правил оформления кода на <strong>R</strong> можно отнести следующие:</p>
 <ol style="list-style-type: decimal">
-<li>Последовательно используйте знак присвоения <code>&lt;-</code> или <code>=</code> на протяжении всей программы. Если вы начали использовать <code>=</code> – применяйте его на протяжении всей программы, не используя <code>&lt;-</code>.</li>
+<li>Последовательно используйте знак присвоения <code><a href="https://rdrr.io/r/base/assignOps.html">&lt;-</a></code> или <code><a href="https://rdrr.io/r/base/assignOps.html">=</a></code> на протяжении всей программы. Если вы начали использовать <code><a href="https://rdrr.io/r/base/assignOps.html">=</a></code> – применяйте его на протяжении всей программы, не используя <code><a href="https://rdrr.io/r/base/assignOps.html">&lt;-</a></code>.</li>
 </ol>
 <blockquote>
-<p><strong>Традиционный подход предполагает использование <code>&lt;-</code></strong>, однако все больше программистов использует знак <code>=</code> в своих программах, что делает <strong>R</strong> более похожим на другие языки программирования. Помните, что использование <code>=</code> официально не рекомендуется, поскольку существует много старого кода на R, который может ошибочно выполняться в сочетании с кодом, использующим <code>=</code>. Но вы, скорее всего, с такими проблемами не столкнетесь. Так что выбор за вами!</p>
+<p><strong>Традиционный подход предполагает использование <code><a href="https://rdrr.io/r/base/assignOps.html">&lt;-</a></code></strong>, однако все больше программистов использует знак <code><a href="https://rdrr.io/r/base/assignOps.html">=</a></code> в своих программах, что делает <strong>R</strong> более похожим на другие языки программирования. Помните, что использование <code><a href="https://rdrr.io/r/base/assignOps.html">=</a></code> официально не рекомендуется, поскольку существует много старого кода на R, который может ошибочно выполняться в сочетании с кодом, использующим <code><a href="https://rdrr.io/r/base/assignOps.html">=</a></code>. Но вы, скорее всего, с такими проблемами не столкнетесь. Так что выбор за вами!</p>
 </blockquote>
 <ol start="2" style="list-style-type: decimal">
 <li>После запятой всегда ставьте пробел, перед запятой – нет:</li>
 </ol>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="index.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Правильно:</span></span>
-<span id="cb9-2"><a href="index.html#cb9-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>)</span>
-<span id="cb9-3"><a href="index.html#cb9-3" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">matrix</span>(a, <span class="dv">2</span>, <span class="dv">2</span>)</span>
-<span id="cb9-4"><a href="index.html#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="index.html#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Неправильно:</span></span>
-<span id="cb9-6"><a href="index.html#cb9-6" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)</span>
-<span id="cb9-7"><a href="index.html#cb9-7" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span> ,<span class="dv">2</span> ,<span class="dv">3</span> ,<span class="dv">4</span>)</span>
-<span id="cb9-8"><a href="index.html#cb9-8" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span> , <span class="dv">2</span> , <span class="dv">3</span> , <span class="dv">4</span>)</span>
-<span id="cb9-9"><a href="index.html#cb9-9" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">matrix</span>(a,<span class="dv">2</span>,<span class="dv">2</span>)</span>
-<span id="cb9-10"><a href="index.html#cb9-10" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">matrix</span>(a ,<span class="dv">2</span> ,<span class="dv">2</span>)</span>
-<span id="cb9-11"><a href="index.html#cb9-11" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">matrix</span>(a , <span class="dv">2</span> , <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Правильно:</span>
+<span class="va">a</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>
+<span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">a</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>
+
+<span class="co"># Неправильно:</span>
+<span class="va">a</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span>
+<span class="va">a</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span> ,<span class="fl">2</span> ,<span class="fl">3</span> ,<span class="fl">4</span><span class="op">)</span>
+<span class="va">a</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span> , <span class="fl">2</span> , <span class="fl">3</span> , <span class="fl">4</span><span class="op">)</span>
+<span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">a</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>
+<span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">a</span> ,<span class="fl">2</span> ,<span class="fl">2</span><span class="op">)</span>
+<span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">a</span> , <span class="fl">2</span> , <span class="fl">2</span><span class="op">)</span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li>Отделяйте любые бинарные операторы (такие как <code>=, +, -, &lt;-, *</code>) пробелами с двух сторон:</li>
 </ol>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="index.html#cb10-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="fu">sin</span>(b <span class="sc">+</span> pi <span class="sc">*</span> <span class="fl">0.5</span>) <span class="co"># правильно</span></span>
-<span id="cb10-2"><a href="index.html#cb10-2" aria-hidden="true" tabindex="-1"></a>a<span class="ot">=</span><span class="fu">sin</span>(b<span class="sc">+</span>pi<span class="sc">*</span><span class="fl">0.5</span>) <span class="co"># неправильно</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">a</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="va">b</span> <span class="op">+</span> <span class="va">pi</span> <span class="op">*</span> <span class="fl">0.5</span><span class="op">)</span> <span class="co"># правильно</span>
+<span class="va">a</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="va">b</span><span class="op">+</span><span class="va">pi</span><span class="op">*</span><span class="fl">0.5</span><span class="op">)</span> <span class="co"># неправильно</span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
 <li>Между названием функции и открывающей скобкой пробела быть не должно. То же самое касается обращения к элементам вектора, матрицы и т.п.:</li>
 </ol>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="index.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Правильно:</span></span>
-<span id="cb11-2"><a href="index.html#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sin</span>(b)</span>
-<span id="cb11-3"><a href="index.html#cb11-3" aria-hidden="true" tabindex="-1"></a>a[<span class="dv">2</span>]</span>
-<span id="cb11-4"><a href="index.html#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="index.html#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Неправильно:</span></span>
-<span id="cb11-6"><a href="index.html#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sin</span> (b)</span>
-<span id="cb11-7"><a href="index.html#cb11-7" aria-hidden="true" tabindex="-1"></a>a [<span class="dv">2</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Правильно:</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span>
+<span class="va">a</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>
+
+<span class="co"># Неправильно:</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span> <span class="op">(</span><span class="va">b</span><span class="op">)</span>
+<span class="va">a</span> <span class="op">[</span><span class="fl">2</span><span class="op">]</span></code></pre></div>
 <ol start="5" style="list-style-type: decimal">
 <li>В то же время, при вызове команд управления выполнением программы (условные операторы и циклы) перед и после скобок пробел <strong>должен</strong> стоять:</li>
 </ol>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="index.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Правильно:</span></span>
-<span id="cb12-2"><a href="index.html#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (a <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb12-3"><a href="index.html#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(a)</span>
-<span id="cb12-4"><a href="index.html#cb12-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb12-5"><a href="index.html#cb12-5" aria-hidden="true" tabindex="-1"></a>i <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb12-6"><a href="index.html#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> (i <span class="sc">&lt;</span> a) {</span>
-<span id="cb12-7"><a href="index.html#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(i)</span>
-<span id="cb12-8"><a href="index.html#cb12-8" aria-hidden="true" tabindex="-1"></a>  i <span class="ot">=</span> i <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb12-9"><a href="index.html#cb12-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb12-10"><a href="index.html#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-11"><a href="index.html#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Неправильно:</span></span>
-<span id="cb12-12"><a href="index.html#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(a <span class="sc">&gt;</span> <span class="dv">0</span>){</span>
-<span id="cb12-13"><a href="index.html#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(a)</span>
-<span id="cb12-14"><a href="index.html#cb12-14" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb12-15"><a href="index.html#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-16"><a href="index.html#cb12-16" aria-hidden="true" tabindex="-1"></a>i <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb12-17"><a href="index.html#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span>(i <span class="sc">&lt;</span> a){</span>
-<span id="cb12-18"><a href="index.html#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(i)</span>
-<span id="cb12-19"><a href="index.html#cb12-19" aria-hidden="true" tabindex="-1"></a>  i <span class="ot">=</span> i <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb12-20"><a href="index.html#cb12-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Правильно:</span>
+<span class="kw">if</span> <span class="op">(</span><span class="va">a</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="va">i</span> <span class="op">=</span> <span class="fl">0</span>
+<span class="kw">while</span> <span class="op">(</span><span class="va">i</span> <span class="op">&lt;</span> <span class="va">a</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span>
+  <span class="va">i</span> <span class="op">=</span> <span class="va">i</span> <span class="op">+</span> <span class="fl">1</span>
+<span class="op">}</span>
+
+<span class="co"># Неправильно:</span>
+<span class="kw">if</span><span class="op">(</span><span class="va">a</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span><span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="va">i</span> <span class="op">=</span> <span class="fl">0</span>
+<span class="kw">while</span><span class="op">(</span><span class="va">i</span> <span class="op">&lt;</span> <span class="va">a</span><span class="op">)</span><span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span>
+  <span class="va">i</span> <span class="op">=</span> <span class="va">i</span> <span class="op">+</span> <span class="fl">1</span>
+<span class="op">}</span></code></pre></div>
 </div>
 <div id="зарезервированные-слова" class="section level2 unnumbered">
-<h2>Зарезервированные слова</h2>
-<p>В <strong>R</strong> существует небольшое количество зарезервированных слов, которые нельзя использовать в качестве имен переменных, функций и проч. Список этих слов можно получить, набрав в консоли <code>?Reserved</code>. К ним относятся:</p>
-<table>
-<thead>
-<tr class="header">
+<h2>Зарезервированные слова<a class="anchor" aria-label="anchor" href="#%D0%B7%D0%B0%D1%80%D0%B5%D0%B7%D0%B5%D1%80%D0%B2%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D1%81%D0%BB%D0%BE%D0%B2%D0%B0"><i class="fas fa-link"></i></a>
+</h2>
+<p>В <strong>R</strong> существует небольшое количество зарезервированных слов, которые нельзя использовать в качестве имен переменных, функций и проч. Список этих слов можно получить, набрав в консоли <code><a href="https://rdrr.io/r/base/Reserved.html">?Reserved</a></code>. К ним относятся:</p>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr class="header">
 <th>Слово</th>
 <th>Назначение</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
 <td><code>if</code></td>
@@ -1048,25 +479,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td>Отсутствующая строка</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 </div>
 <div id="названия-переменных" class="section level2 unnumbered">
-<h2>Названия переменных</h2>
-<p>В качестве названий переменных <strong>нельзя использовать заразервированные слова</strong>, а также не рекомендуется использовать названия общеупотребительных (диагностических) функций и констант. Также не следует давать переменным названия, совпадающие с широко распространенными функциями – например, котороткими функциями из пакета <code>base</code>, такими как <code>t()</code>, <code>с()</code> и т.д., так как это может привести к путанице в программе и даже ошибкам выполнения кода. Каждый раз, создавая переменную, спрашивайте себя, не совпадает ли ее название с названием одной из используемых вами функций.</p>
+<h2>Названия переменных<a class="anchor" aria-label="anchor" href="#%D0%BD%D0%B0%D0%B7%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F-%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D1%85"><i class="fas fa-link"></i></a>
+</h2>
+<p>В качестве названий переменных <strong>нельзя использовать заразервированные слова</strong>, а также не рекомендуется использовать названия общеупотребительных (диагностических) функций и констант. Также не следует давать переменным названия, совпадающие с широко распространенными функциями – например, котороткими функциями из пакета <code>base</code>, такими как <code><a href="https://rdrr.io/r/base/t.html">t()</a></code>, <code>с()</code> и т.д., так как это может привести к путанице в программе и даже ошибкам выполнения кода. Каждый раз, создавая переменную, спрашивайте себя, не совпадает ли ее название с названием одной из используемых вами функций.</p>
 </div>
 <div id="названия-специальных-символов" class="section level2 unnumbered">
-<h2>Названия специальных символов</h2>
+<h2>Названия специальных символов<a class="anchor" aria-label="anchor" href="#%D0%BD%D0%B0%D0%B7%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F-%D1%81%D0%BF%D0%B5%D1%86%D0%B8%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D1%85-%D1%81%D0%B8%D0%BC%D0%B2%D0%BE%D0%BB%D0%BE%D0%B2"><i class="fas fa-link"></i></a>
+</h2>
 <p>В <strong>R</strong>, как и во многих других языках программирования используются различные специальные символы. Их смысл и значение мы узнаем по ходу изучения языка, а пока что ознакомьтесь с ними, чтобы понимать как их произносить, когда они будут встречаться в программе.</p>
-<table>
-<thead>
-<tr class="header">
+<div class="inline-table"><table class="table table-sm">
+<thead><tr class="header">
 <th>Символ</th>
 <th>Название</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>$</code></td>
+<td><code><a href="https://rdrr.io/r/base/Extract.html">$</a></code></td>
 <td>доллар</td>
 </tr>
 <tr class="even">
@@ -1074,11 +505,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td>шарп (решетка)</td>
 </tr>
 <tr class="odd">
-<td><code>&amp;</code></td>
+<td><code><a href="https://rdrr.io/r/base/Logic.html">&amp;</a></code></td>
 <td>амперсанд (и)</td>
 </tr>
 <tr class="even">
-<td><code>/</code></td>
+<td><code><a href="https://rdrr.io/r/base/Arithmetic.html">/</a></code></td>
 <td>слеш (косая черта)</td>
 </tr>
 <tr class="odd">
@@ -1086,19 +517,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td>обратный слеш (обратная косая черта)</td>
 </tr>
 <tr class="even">
-<td><code>|</code></td>
+<td><code><a href="https://rdrr.io/r/base/Logic.html">|</a></code></td>
 <td>пайп (вертикальная черта)</td>
 </tr>
 <tr class="odd">
-<td><code>^</code></td>
+<td><code><a href="https://rdrr.io/r/base/Arithmetic.html">^</a></code></td>
 <td>циркумфлекс (крышечка)</td>
 </tr>
 <tr class="even">
-<td><code>@</code></td>
+<td><code><a href="https://rdrr.io/r/base/slotOp.html">@</a></code></td>
 <td>эт (собачка)</td>
 </tr>
 <tr class="odd">
-<td><code>~</code></td>
+<td><code><a href="https://rdrr.io/r/base/tilde.html">~</a></code></td>
 <td>тильда</td>
 </tr>
 <tr class="even">
@@ -1114,111 +545,101 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td>обратные кавычки</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 </div>
 <div id="управляющие-последовательности" class="section level2 unnumbered">
-<h2>Управляющие последовательности</h2>
+<h2>Управляющие последовательности<a class="anchor" aria-label="anchor" href="#%D1%83%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D1%8F%D1%8E%D1%89%D0%B8%D0%B5-%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8"><i class="fas fa-link"></i></a>
+</h2>
 <p>При работе со строками вам может понадобиться знание так называемых <a href="https://ru.wikipedia.org/wiki/%D0%A3%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D1%8F%D1%8E%D1%89%D0%B0%D1%8F_%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D1%8C"><em>управляющих последовательностей</em></a> (<em>escape</em>-последовательностей). Под этим понимается совокупность подряд идущих символов, которая интерпретируется обрабатывающим механизмом как единое целое. Как правило, такие последовательности начинаются с хорошо узнаваемого символа, не являющегося буквенно-цифровым (см. предыдущий раздел)</p>
 <p>В частности, последовательности, начинающиеся с символа обратной косой черты (<code>\</code>) используются для <a href="https://ru.wikipedia.org/wiki/%D0%A3%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D1%8F%D1%8E%D1%89%D0%B8%D0%B5_%D1%81%D0%B8%D0%BC%D0%B2%D0%BE%D0%BB%D1%8B">управления выводом</a> программы. Например, последовательность <code>\n</code> приводит к переносу строки в том месте, где она расположена, а последовательность <code>\t</code> позволит вставить символ табуляции. То есть, фраза <code>"Визуализация и анализ\nгеографических данных на языке R"</code> будет выведена в две строки с переносом после слова <code>"анализ"</code>:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="index.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Визуализация и анализ</span><span class="sc">\n</span><span class="st">географических данных на языке R&quot;</span>)</span>
-<span id="cb13-2"><a href="index.html#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Визуализация и анализ</span></span>
-<span id="cb13-3"><a href="index.html#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="do">## географических данных на языке R</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Визуализация и анализ\nгеографических данных на языке R"</span><span class="op">)</span>
+<span class="co">## Визуализация и анализ</span>
+<span class="co">## географических данных на языке R</span></code></pre></div>
 <p>Такая возможность бывает полезна, когда вы хотите, например, вывести длинный заголовок графика в несколько строк, а система построения графиков не умеет расставлять переносы автоматически. Управляющие символы позволяют менять не только текстовый вывод. В частности, символ <code>\a</code>, будучи отправленным в консоль, приведет в извлечению звука.</p>
 <p>При этом вы можете столкнуться с ситуацией, когда необходимо подавить возможность управления выводом через символы в строке. Например, если последовательность символов является частью более длинной последовательности. Классический сюжет — пути к папкам в операционной системе <em>Windows</em>, наподобие <code>d:\aikido\training</code>. Вы хотите вывести на экран путь к каталогу с результатами ваших тренировок по айкидо, а вместо этого программа издаёт звук и вставляет посередине пути символ табуляции:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="index.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;d:</span><span class="sc">\a</span><span class="st">ikido</span><span class="sc">\t</span><span class="st">raining&quot;</span>)</span>
-<span id="cb14-2"><a href="index.html#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="do">## d:ikido raining</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"d:\aikido\training"</span><span class="op">)</span>
+<span class="co">## d:ikido raining</span></code></pre></div>
 <p>Чтобы исключить подобное безобразие, следует нежелательные последовательности <em>экранировать</em>. Экранирование обычно делается тем же специальным символом, с которого начинается сама управляющая последовательность. То есть, вы должны принудительно вставить еще один такой же символ:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="index.html#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;d:</span><span class="sc">\\</span><span class="st">aikido</span><span class="sc">\\</span><span class="st">training&quot;</span>)</span>
-<span id="cb15-2"><a href="index.html#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="do">## d:\aikido\training</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"d:\\aikido\\training"</span><span class="op">)</span>
+<span class="co">## d:\aikido\training</span></code></pre></div>
 <p>Однако в данном конкретном случае проще заменить обратные слеши на прямые — Windows может работать с путями и таким образом:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="index.html#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;d:/aikido/training&quot;</span>)</span>
-<span id="cb16-2"><a href="index.html#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="do">## d:/aikido/training</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"d:/aikido/training"</span><span class="op">)</span>
+<span class="co">## d:/aikido/training</span></code></pre></div>
 <blockquote>
-<p>В UNIX-подобных операционных системах (Linux, macOS) такой проблемы нет, поскольку для формирования пути к каталогу можно использовать <em>только</em> прямую косую черту (<code>/</code>). С учетом того, что Windows <em>допускает</em> и такой способ задания путей, в данном контексте рекомендуется всегде использовать прямые, а не обратные косые черты.</p>
+<p>В UNIX-подобных операционных системах (Linux, macOS) такой проблемы нет, поскольку для формирования пути к каталогу можно использовать <em>только</em> прямую косую черту (<code><a href="https://rdrr.io/r/base/Arithmetic.html">/</a></code>). С учетом того, что Windows <em>допускает</em> и такой способ задания путей, в данном контексте рекомендуется всегде использовать прямые, а не обратные косые черты.</p>
 </blockquote>
-<p>Дополнительные сведения по управляющим последовательностям в R можно почерпнуть, если набрать в консоли <code>?Quotes</code>:</p>
-<div class="figure"><span id="fig:unnamed-chunk-21"></span>
-<img src="images/quotes.png" alt="Справка по управляющим последовательностям в R" width="797" />
-<p class="caption">
+<p>Дополнительные сведения по управляющим последовательностям в R можно почерпнуть, если набрать в консоли <code><a href="https://rdrr.io/r/base/Quotes.html">?Quotes</a></code>:</p>
+<div class="figure">
+<span id="fig:unnamed-chunk-21"></span>
+<img src="images/quotes.png" alt="Справка по управляющим последовательностям в R" width="797"><p class="caption">
 Рис. 0.5: Справка по управляющим последовательностям в R
 </p>
 </div>
 </div>
 <div id="ссылка-на-пособие" class="section level2 unnumbered">
-<h2>Ссылка на пособие</h2>
+<h2>Ссылка на пособие<a class="anchor" aria-label="anchor" href="#%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B0-%D0%BD%D0%B0-%D0%BF%D0%BE%D1%81%D0%BE%D0%B1%D0%B8%D0%B5"><i class="fas fa-link"></i></a>
+</h2>
 <p>Если этот курс лекций оказался полезным для вас, и вы хотите процитировать его с списке литературы вашей работы, то ссылку можно оформить по следующей форме:</p>
-<table>
-<tbody>
-<tr class="odd">
-<td><em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, 2021. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a></td>
-</tr>
-</tbody>
-</table>
-
+<div class="inline-table"><table class="table table-sm"><tbody><tr class="odd">
+<td>
+<em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, 2021. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a>
+</td>
+</tr></tbody></table></div>
 </div>
 </div>
 
 
 
-            </section>
+  <div class="chapter-nav">
+<div class="empty"></div>
+<div class="next"><a href="basics.html"><span class="header-section-number">1</span> Типы данных, условия, ввод и вывод</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a></li>
+<li><a class="nav-link" href="#%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%BD%D0%BE%D0%B5-%D0%BE%D0%B1%D0%B5%D1%81%D0%BF%D0%B5%D1%87%D0%B5%D0%BD%D0%B8%D0%B5">Программное обеспечение</a></li>
+<li><a class="nav-link" href="#%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%BE%D0%B2">Установка и подключение пакетов</a></li>
+<li><a class="nav-link" href="#%D0%B2%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%BD%D0%BE%D0%B3%D0%BE-%D0%BA%D0%BE%D0%B4%D0%B0">Выполнение программного кода</a></li>
+<li><a class="nav-link" href="#%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D1%80%D0%B0%D0%B1%D0%BE%D1%87%D0%B5%D0%B9-%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%B8%D0%B8">Установка рабочей директории</a></li>
+<li><a class="nav-link" href="#%D0%B4%D0%B8%D0%B0%D0%B3%D0%BD%D0%BE%D1%81%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8">Диагностические функции</a></li>
+<li><a class="nav-link" href="#%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B8">Получение справки</a></li>
+<li><a class="nav-link" href="#%D0%BA%D0%BE%D0%BC%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%80%D0%B8%D0%B8">Комментарии</a></li>
+<li><a class="nav-link" href="#%D1%81%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82-%D0%BE%D1%84%D0%BE%D1%80%D0%BC%D0%BB%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BA%D0%BE%D0%B4%D0%B0-%D0%BD%D0%B0-r">Стандарт оформления кода на R</a></li>
+<li><a class="nav-link" href="#%D0%B7%D0%B0%D1%80%D0%B5%D0%B7%D0%B5%D1%80%D0%B2%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D1%81%D0%BB%D0%BE%D0%B2%D0%B0">Зарезервированные слова</a></li>
+<li><a class="nav-link" href="#%D0%BD%D0%B0%D0%B7%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F-%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D1%85">Названия переменных</a></li>
+<li><a class="nav-link" href="#%D0%BD%D0%B0%D0%B7%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F-%D1%81%D0%BF%D0%B5%D1%86%D0%B8%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D1%85-%D1%81%D0%B8%D0%BC%D0%B2%D0%BE%D0%BB%D0%BE%D0%B2">Названия специальных символов</a></li>
+<li><a class="nav-link" href="#%D1%83%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D1%8F%D1%8E%D1%89%D0%B8%D0%B5-%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8">Управляющие последовательности</a></li>
+<li><a class="nav-link" href="#%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B0-%D0%BD%D0%B0-%D0%BF%D0%BE%D1%81%D0%BE%D0%B1%D0%B8%D0%B5">Ссылка на пособие</a></li>
+</ul>
 
-          </div>
-        </div>
-      </div>
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/tsamsonov/r-geo-course/blob/master/index.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/tsamsonov/r-geo-course/edit/master/index.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
 
-<a href="data-types.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
-    </div>
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-01-26.</p>
   </div>
-<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
-<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
-<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
-<script>
-gitbook.require(["gitbook"], function(gitbook) {
-gitbook.start({
-"sharing": {
-"github": false,
-"facebook": true,
-"twitter": true,
-"linkedin": false,
-"weibo": false,
-"instapaper": false,
-"vk": false,
-"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
-},
-"fontsettings": {
-"theme": "white",
-"family": "sans",
-"size": 2
-},
-"edit": {
-"link": null,
-"text": null
-},
-"history": {
-"link": null,
-"text": null
-},
-"view": {
-"link": null,
-"text": null
-},
-"download": null,
-"toc": {
-"collapse": "section",
-"edit": "https://github.com/tsamsonov/r-geo-course/edit/master/%s"
-}
-});
-});
-</script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
@@ -1232,5 +653,4 @@ gitbook.start({
   })();
 </script>
 </body>
-
 </html>

@@ -1,4 +1,4 @@
-# Точечные процессы {#point_patterns}
+# Точечные процессы {#points}
 
 [Программный код главы](https://github.com/tsamsonov/r-geo-course/blob/master/code/16-PointPatterns.R)
 

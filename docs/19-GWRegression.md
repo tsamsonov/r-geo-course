@@ -111,7 +111,7 @@ samples = realest %>% dplyr::sample_n(1000) %>% as('Spatial')
 ##    ***********************************************************************
 ##    *                       Package   GWmodel                             *
 ##    ***********************************************************************
-##    Program starts at: 2021-01-25 18:19:30 
+##    Program starts at: 2021-01-26 14:47:39 
 ##    Call:
 ##    gwr.basic(formula = price ~ rooms, data = samples, bw = 1000, 
 ##     kernel = "gaussian")
@@ -128,24 +128,24 @@ samples = realest %>% dplyr::sample_n(1000) %>% as('Spatial')
 ## 
 ##    Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -3861.8  -792.3  -342.3   349.9 15488.9 
+## -3119.1  -808.2  -386.4   401.9 10005.8 
 ## 
 ##    Coefficients:
 ##                Estimate Std. Error t value Pr(>|t|)    
-##    (Intercept)  2338.47      79.55   29.40   <2e-16 ***
-##    rooms         403.88      31.71   12.74   <2e-16 ***
+##    (Intercept)  2375.53      79.53   29.87   <2e-16 ***
+##    rooms         410.89      32.29   12.72   <2e-16 ***
 ## 
 ##    ---Significance stars
 ##    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
-##    Residual standard error: 1366 on 998 degrees of freedom
-##    Multiple R-squared: 0.1398
-##    Adjusted R-squared: 0.1389 
-##    F-statistic: 162.2 on 1 and 998 DF,  p-value: < 2.2e-16 
+##    Residual standard error: 1337 on 998 degrees of freedom
+##    Multiple R-squared: 0.1396
+##    Adjusted R-squared: 0.1387 
+##    F-statistic: 161.9 on 1 and 998 DF,  p-value: < 2.2e-16 
 ##    ***Extra Diagnostic information
-##    Residual sum of squares: 1863581242
-##    Sigma(hat): 1366.498
-##    AIC:  17281.89
-##    AICc:  17281.91
+##    Residual sum of squares: 1784149023
+##    Sigma(hat): 1337.058
+##    AIC:  17238.33
+##    AICc:  17238.35
 ##    ***********************************************************************
 ##    *          Results of Geographically Weighted Regression              *
 ##    ***********************************************************************
@@ -157,21 +157,21 @@ samples = realest %>% dplyr::sample_n(1000) %>% as('Spatial')
 ##    Distance metric: Euclidean distance metric is used.
 ## 
 ##    ****************Summary of GWR coefficient estimates:******************
-##                  Min.  1st Qu.   Median  3rd Qu. Max.
-##    Intercept   595.47  1806.78  2099.27  2334.29 7937
-##    rooms     -1742.91   453.98   502.75   685.04 1582
+##                  Min.  1st Qu.   Median  3rd Qu.   Max.
+##    Intercept -1525.15  1764.41  2110.58  2487.23 4725.0
+##    rooms      -645.40   439.63   545.43   680.04 2055.6
 ##    ************************Diagnostic information*************************
 ##    Number of data points: 1000 
-##    Effective number of parameters (2trace(S) - trace(S'S)): 115.8536 
-##    Effective degrees of freedom (n-2trace(S) + trace(S'S)): 884.1464 
-##    AICc (GWR book, Fotheringham, et al. 2002, p. 61, eq 2.33): 17089.42 
-##    AIC (GWR book, Fotheringham, et al. 2002,GWR p. 96, eq. 4.22): 16981.49 
-##    Residual sum of squares: 1271095182 
-##    R-square value:  0.4132837 
-##    Adjusted R-square value:  0.3363166 
+##    Effective number of parameters (2trace(S) - trace(S'S)): 124.3264 
+##    Effective degrees of freedom (n-2trace(S) + trace(S'S)): 875.6736 
+##    AICc (GWR book, Fotheringham, et al. 2002, p. 61, eq 2.33): 17068.95 
+##    AIC (GWR book, Fotheringham, et al. 2002,GWR p. 96, eq. 4.22): 16952.35 
+##    Residual sum of squares: 1227115572 
+##    R-square value:  0.4082272 
+##    Adjusted R-square value:  0.3241124 
 ## 
 ##    ***********************************************************************
-##    Program stops at: 2021-01-25 18:19:30
+##    Program stops at: 2021-01-26 14:47:39
 
 tm_shape(gwr_res$SDF) +
   tm_bubbles(col = 'rooms', # это не количество комнат, а коэффициент регрессии
