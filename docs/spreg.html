@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Глава 16 Пространственная регрессия | Визуализация и анализ географических данных на языке R</title>
+<title>Глава 18 Пространственная регрессия | Визуализация и анализ географических данных на языке R</title>
 <meta name="author" content="Тимофей Самсонов">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.6/header-attrs.js"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
@@ -45,20 +45,22 @@
 <li class="book-part">Графика и статистика</li>
 <li><a class="" href="graphics.html"><span class="header-section-number">5</span> Базовая графика</a></li>
 <li><a class="" href="advgraphics.html"><span class="header-section-number">6</span> Продвинутая графика</a></li>
-<li><a class="" href="temporal.html"><span class="header-section-number">7</span> Временные данные</a></li>
-<li><a class="" href="circular.html"><span class="header-section-number">8</span> Дирекционные данные</a></li>
+<li><a class="" href="stats.html"><span class="header-section-number">7</span> Основы статистики</a></li>
+<li><a class="" href="temporal.html"><span class="header-section-number">8</span> Временные данные</a></li>
+<li><a class="" href="circular.html"><span class="header-section-number">9</span> Дирекционные данные</a></li>
 <li class="book-part">Пространственные данные</li>
-<li><a class="" href="spatial.html"><span class="header-section-number">9</span> Пространственные данные</a></li>
-<li><a class="" href="three.html"><span class="header-section-number">10</span> Трехмерные модели</a></li>
-<li><a class="" href="vector.html"><span class="header-section-number">11</span> Векторный анализ</a></li>
-<li><a class="" href="network.html"><span class="header-section-number">12</span> Cетевой анализ</a></li>
-<li><a class="" href="raster.html"><span class="header-section-number">13</span> Растровый анализ</a></li>
-<li><a class="" href="interp.html"><span class="header-section-number">14</span> Пространственная интерполяция и аппроксимация</a></li>
+<li><a class="" href="spatial.html"><span class="header-section-number">10</span> Пространственные данные</a></li>
+<li><a class="" href="mapping.html"><span class="header-section-number">11</span> Тематические карты</a></li>
+<li><a class="" href="three.html"><span class="header-section-number">12</span> Трехмерные модели</a></li>
+<li><a class="" href="vector.html"><span class="header-section-number">13</span> Векторный анализ</a></li>
+<li><a class="" href="network.html"><span class="header-section-number">14</span> Cетевой анализ</a></li>
+<li><a class="" href="raster.html"><span class="header-section-number">15</span> Растровый анализ</a></li>
+<li><a class="" href="interp.html"><span class="header-section-number">16</span> Интерполяция геополей</a></li>
 <li class="book-part">Пространственная статистика</li>
-<li><a class="" href="gstat.html"><span class="header-section-number">15</span> Геостатистика</a></li>
-<li><a class="active" href="spreg.html"><span class="header-section-number">16</span> Пространственная регрессия</a></li>
-<li><a class="" href="gwr.html"><span class="header-section-number">17</span> Географически взвешенная регрессия</a></li>
-<li><a class="" href="points.html"><span class="header-section-number">18</span> Точечные процессы</a></li>
+<li><a class="" href="gstat.html"><span class="header-section-number">17</span> Геостатистика</a></li>
+<li><a class="active" href="spreg.html"><span class="header-section-number">18</span> Пространственная регрессия</a></li>
+<li><a class="" href="gwr.html"><span class="header-section-number">19</span> Географически взвешенная регрессия</a></li>
+<li><a class="" href="points.html"><span class="header-section-number">20</span> Точечные процессы</a></li>
 <li class="book-part">Решение проблем</li>
 <li><a class="" href="package-troubles.html"><span class="header-section-number">A</span> Установка пакетов</a></li>
 </ul>
@@ -68,14 +70,14 @@
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="spreg" class="section level1" number="16">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="spreg" class="section level1" number="18">
 <h1>
-<span class="header-section-number">Глава 16</span> Пространственная регрессия<a class="anchor" aria-label="anchor" href="#spreg"><i class="fas fa-link"></i></a>
+<span class="header-section-number">Глава 18</span> Пространственная регрессия<a class="anchor" aria-label="anchor" href="#spreg"><i class="fas fa-link"></i></a>
 </h1>
 <p><a href="https://github.com/tsamsonov/r-geo-course/blob/master/code/15-SpatstatAutocorrelation.R">Программный код главы</a></p>
-<div id="autocorrelation_intro" class="section level2" number="16.1">
+<div id="autocorrelation_intro" class="section level2" number="18.1">
 <h2>
-<span class="header-section-number">16.1</span> Введение<a class="anchor" aria-label="anchor" href="#autocorrelation_intro"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.1</span> Введение<a class="anchor" aria-label="anchor" href="#autocorrelation_intro"><i class="fas fa-link"></i></a>
 </h2>
 <p>В данном модуле мы приступим к исследованию связей в географическом пространстве. Понятие пространственной автокорреляции является математическим отражением первого закона географии: все связано со всем, но близкорасположенные объекты связаны сильнее. Различные коэффициенты пространственной автокорреляции, такие как индекс Морана (Moran’s I) позволяют охарактеризовать силу этой связи с точки зрения математической статистики. Однако для их вычисления необходимо формализовать понятия географической близости, или географического соседства. В настоящем модуле рассматриваются различные подходы к решению данной проблемы.</p>
 <p>Пространственные случайные процессы часть характеризуются следующими свойствами:</p>
@@ -90,9 +92,9 @@
 <p>Анализ ПА, как правило, осуществляется по жестко зафиксированной сетке (lattice) учетных единиц, в качестве которых могут выступать как площади, так и точки. Но, строго говоря, пространственная статистика в конечном счете любую единицу будет интерпретировать как точку.</p>
 <p>Конечной целью исследований ПА является построение статистической модели зависимости значения показателя в каждой единице от значений в соседних единицах и (опционально) неких факторов. Наличие статистически значимой ПА говорит о влиянии процессов, обуславливающих кластеризацию значений в соседних территориальных единицах. И пока эти механизмы не установлены, модель ПА дает инструмент их статистического моделирования. Добавление известных факторов в модель может улучшить точность моделирования.</p>
 </div>
-<div id="линейная-регрессия" class="section level2" number="16.2">
+<div id="линейная-регрессия" class="section level2" number="18.2">
 <h2>
-<span class="header-section-number">16.2</span> Линейная регрессия<a class="anchor" aria-label="anchor" href="#%D0%BB%D0%B8%D0%BD%D0%B5%D0%B9%D0%BD%D0%B0%D1%8F-%D1%80%D0%B5%D0%B3%D1%80%D0%B5%D1%81%D1%81%D0%B8%D1%8F"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.2</span> Линейная регрессия<a class="anchor" aria-label="anchor" href="#%D0%BB%D0%B8%D0%BD%D0%B5%D0%B9%D0%BD%D0%B0%D1%8F-%D1%80%D0%B5%D0%B3%D1%80%D0%B5%D1%81%D1%81%D0%B8%D1%8F"><i class="fas fa-link"></i></a>
 </h2>
 <p>Пусть дан вектор <span class="math inline">\(\mathbf{y} = \{y_1, y_2, ... y_n\}\)</span> измерений зависимой переменной, а также матрица <span class="math inline">\(\mathbf{X} = \{x_{ij}\}\)</span> размером <span class="math inline">\(n \times m\)</span>, состоящая из значений <span class="math inline">\(m\)</span> независимых переменных для <span class="math inline">\(n\)</span> измерений. В этом случае модель линейной регрессии может быть записана как</p>
 <p><span class="math display">\[\mathbf{y} = \mathbf{X} \boldsymbol\beta + \boldsymbol\epsilon,\]</span></p>
@@ -123,28 +125,28 @@
 <p>В качестве примера приведем модель, в которой процент домохозяйств, находящихся во владении, моделируется как переменная зависимая от уровня безработицы [Fotheringam, Brunsdon, Charlton, 2002]:</p>
 <div class="figure">
 <span id="fig:unnamed-chunk-1"></span>
-<img src="slides/images/tyne_ownerocc.png" alt="Процент домохозяйств, находящихся во владении" width="596"><p class="caption">
+<img src="slides/images/tyne_ownerocc.png" alt="Процент домохозяйств, находящихся во владении" width="100%"><p class="caption">
 Рис. 0.1: Процент домохозяйств, находящихся во владении
 </p>
 </div>
 <div class="figure">
 <span id="fig:unnamed-chunk-2"></span>
-<img src="slides/images/tyne_unempl.png" alt="Уровень безработицы" width="574"><p class="caption">
-Рис. 16.1: Уровень безработицы
+<img src="slides/images/tyne_unempl.png" alt="Уровень безработицы" width="100%"><p class="caption">
+Рис. 18.1: Уровень безработицы
 </p>
 </div>
 <p>Обычная линейная регрессия показывает хорошую согласованность между этими параметрами:</p>
 <div class="figure">
 <span id="fig:unnamed-chunk-3"></span>
-<img src="slides/images/tyne_regr.png" alt="Зависимость процента домохозяйств во владении от уровня безработицы" width="565"><p class="caption">
-Рис. 16.2: Зависимость процента домохозяйств во владении от уровня безработицы
+<img src="slides/images/tyne_regr.png" alt="Зависимость процента домохозяйств во владении от уровня безработицы" width="100%"><p class="caption">
+Рис. 18.2: Зависимость процента домохозяйств во владении от уровня безработицы
 </p>
 </div>
 <p>Однако остатки регрессии демонстрируют явную пространственную зависимость, что говорит о том, что построенная модель неадекватно описывает исследуемую закономерность:</p>
 <div class="figure">
 <span id="fig:unnamed-chunk-4"></span>
-<img src="slides/images/tyne_resid.png" alt="Остатки линейной регрессии" width="586"><p class="caption">
-Рис. 16.3: Остатки линейной регрессии
+<img src="slides/images/tyne_resid.png" alt="Остатки линейной регрессии" width="100%"><p class="caption">
+Рис. 18.3: Остатки линейной регрессии
 </p>
 </div>
 <p>Чтобы моделировать подобную зависимость остатков, необходим более широкий класс моделей:</p>
@@ -156,9 +158,9 @@
 <li><p>Вектор коэффициентов регрессии <span class="math inline">\(\boldsymbol\beta\)</span> может быть получен путем минимизации <span class="math inline">\(\mathbf{y} - \mathbf{X}\boldsymbol\beta\)</span> путем решения <span class="math inline">\(\beta = \big(\mathbf{X}^T \mathbf{CX} \big)^{-1} \mathbf{X}^T \mathbf{X y}\)</span>. Однако это требует знания ковариационной матрицы, которая обычно неизвестна. Поэтому как <span class="math inline">\(\mathbf{C}\)</span>, так и <span class="math inline">\(\boldsymbol\beta\)</span> калибруются по выборке.</p></li>
 </ul>
 </div>
-<div id="пространственная-регрессия" class="section level2" number="16.3">
+<div id="пространственная-регрессия" class="section level2" number="18.3">
 <h2>
-<span class="header-section-number">16.3</span> Пространственная регрессия<a class="anchor" aria-label="anchor" href="#%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F-%D1%80%D0%B5%D0%B3%D1%80%D0%B5%D1%81%D1%81%D0%B8%D1%8F"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.3</span> Пространственная регрессия<a class="anchor" aria-label="anchor" href="#%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F-%D1%80%D0%B5%D0%B3%D1%80%D0%B5%D1%81%D1%81%D0%B8%D1%8F"><i class="fas fa-link"></i></a>
 </h2>
 <p>Для того чтобы учесть пространственную автокорреляцию остатков, в модель линейной регрессии добавляется компонента <strong>пространственной авторегрессии</strong> <em>(spatial autoregression)</em>, которая моделирует <em>пространстенный лаг</em>:</p>
 <p><span class="math display">\[\mathbf{y} = \mathbf{X} \mathbf{\beta} + \color{red}{\rho\mathbf{Wy}} +  \mathbf{\epsilon},\]</span></p>
@@ -200,13 +202,13 @@
 <li><p>Например, статистика по показателю, контролируемому на региональном уровне, собирается по муниципалитетам. В этом случае фильтрация позволяет подобрать параметры <span class="math inline">\(\mathbf{\beta}\)</span>, учитывающие наличие высокой пространственной автокорреляци.</p></li>
 </ul>
 </div>
-<div id="практический-анализ" class="section level2" number="16.4">
+<div id="практический-анализ" class="section level2" number="18.4">
 <h2>
-<span class="header-section-number">16.4</span> Практический анализ<a class="anchor" aria-label="anchor" href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.4</span> Практический анализ<a class="anchor" aria-label="anchor" href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7"><i class="fas fa-link"></i></a>
 </h2>
 <p>Как мы уже сказали, исследование ПА начинается с анализа географического соседства. То есть, для каждой анализируемой единицы мы должны определить соседние по отношению к ней единицы. Это не так-то просто,поскольку существует множество способов определить соседство.</p>
 <p>Перед выполнением анализа подключим необходимые библиотеки и визуализируем исходные данные, в качестве которых выступают границы муниципалитетов Кировской области.</p>
-<div class="sourceCode" id="cb595"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb668"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-spatial/spdep/">spdep</a></span><span class="op">)</span>  <span class="co"># оценка соседства, построение матрицы весов, индексы автокорреляции</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-spatial/spatialreg/">spatialreg</a></span><span class="op">)</span> <span class="co"># пространственная регрессия</span>
@@ -231,11 +233,11 @@
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">reg</span>, border <span class="op">=</span> <span class="st">"gray50"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-5-1.png" width="672"></div>
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-5-1.png" width="100%"></div>
 </div>
-<div id="autocorrelation_neighbors" class="section level2" number="16.5">
+<div id="autocorrelation_neighbors" class="section level2" number="18.5">
 <h2>
-<span class="header-section-number">16.5</span> Пространственное соседство<a class="anchor" aria-label="anchor" href="#autocorrelation_neighbors"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.5</span> Пространственное соседство<a class="anchor" aria-label="anchor" href="#autocorrelation_neighbors"><i class="fas fa-link"></i></a>
 </h2>
 <p>В целом, можно выделить три большие группы методов:</p>
 <ul>
@@ -252,13 +254,13 @@
 <p>Результатом анализа соседства является <strong>граф соседства</strong>(neighborhood graph), в котором сами объекты являются вершинами, а связи между ними — ребрами.</p>
 <p>Анализ географического соседства на языке R можно провести с помощью пакета <a href="https://cran.r-project.org/web/packages/spdep/index.html">spdep</a>.</p>
 <p>Рассмотрим суть и принципы построения графов соседства на основе различных принципов.</p>
-<div id="autocorrelation_neighbors_contguity" class="section level3" number="16.5.1">
+<div id="autocorrelation_neighbors_contguity" class="section level3" number="18.5.1">
 <h3>
-<span class="header-section-number">16.5.1</span> Соседи по смежности<a class="anchor" aria-label="anchor" href="#autocorrelation_neighbors_contguity"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.5.1</span> Соседи по смежности<a class="anchor" aria-label="anchor" href="#autocorrelation_neighbors_contguity"><i class="fas fa-link"></i></a>
 </h3>
 <p>Список соседей по смежности можно получить с помощью функции <code><a href="https://rdrr.io/pkg/spdep/man/poly2nb.html">poly2nb()</a></code>.</p>
 <p>Возвращаемый объект является классом типа <code>nb</code>. Для каждой единицы в нем содержится список номеров соседних по отношению к нему единиц. По умолчанию функция находит соседей по правилу ферзя:</p>
-<div class="sourceCode" id="cb596"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb669"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nb_queen</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/poly2nb.html">poly2nb</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span> <span class="co"># Соседство по правилу ферзя</span>
 <span class="va">nb_queen</span>  <span class="co"># посмотрим сводную информацию</span>
 <span class="co">## Neighbour list object:</span>
@@ -269,7 +271,7 @@
 <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">nb_queen</span><span class="op">)</span>  <span class="co"># проверим тип объекта</span>
 <span class="co">## [1] "nb"</span></code></pre></div>
 <p>Для объектов типа <code>nb</code> в пакете <code>spdep</code> определена своя функция <code><a href="https://r-spatial.github.io/sf/reference/plot.html">plot()</a></code>, которая позволяет визуализировать граф соседства. Функция требует на вход координаты точек, в случае площадных единиц для этого используют центроиды площадей, которые можно получить функцией <code><a href="https://rdrr.io/pkg/raster/man/xyFromCell.html">coordinates()</a></code>:</p>
-<div class="sourceCode" id="cb597"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb670"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">coords</span> <span class="op">=</span> <span class="va">reg</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html">st_coordinates</a></span><span class="op">(</span><span class="op">)</span>
@@ -278,30 +280,30 @@
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">reg</span>, border <span class="op">=</span> <span class="st">"gray50"</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">nb_queen</span>, <span class="va">coords</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Соседи по смежности (правило ферзя)"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-7-1.png" width="672"></div>
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-7-1.png" width="100%"></div>
 <p>Для определения соседей по правилу ладьи необходимо вызвать функцию <code><a href="https://rdrr.io/pkg/spdep/man/poly2nb.html">poly2nb()</a></code> с аргументом <code>queen=FALSE</code>. В нашем случае, правда, это даст тот же результат, поскольку в данных отсутствуют единицы, соприкасающиеся в одной лишь точке:</p>
-<div class="sourceCode" id="cb598"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb671"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nb_rook</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/poly2nb.html">poly2nb</a></span><span class="op">(</span><span class="va">reg</span>, queen <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># Соседство по правилу ладьи</span>
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">reg</span>, border <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">nb_rook</span>, <span class="va">coords</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Соседи по смежности (правило ладьи)"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-8-1.png" width="672"></div>
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-8-1.png" width="100%"></div>
 <p>Обратим внимание на то, что функция <code><a href="https://rdrr.io/pkg/spdep/man/poly2nb.html">poly2nb()</a></code> принимает на вход площадные объекты. Все помледующие методы определения соседства (по графу и по метрике) работают с точечными данными.</p>
 </div>
-<div id="autocorrelation_neighbors_graph" class="section level3" number="16.5.2">
+<div id="autocorrelation_neighbors_graph" class="section level3" number="18.5.2">
 <h3>
-<span class="header-section-number">16.5.2</span> Соседи по графу<a class="anchor" aria-label="anchor" href="#autocorrelation_neighbors_graph"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.5.2</span> Соседи по графу<a class="anchor" aria-label="anchor" href="#autocorrelation_neighbors_graph"><i class="fas fa-link"></i></a>
 </h3>
 <p>Данная группа методов определения соседства основана на построении триангуляции Делоне для точек исходных данных. Далее эта триангуляция может быть оставлена в неизменном виде, или быть подвержена процедуре фильтрации, которая удалит из нее ребра, не удовлетворяющие заданному критерию.</p>
 <p><strong>Соседи по триангуляции Делоне</strong> без фильтрации могут быть получены с помощью функции <code><a href="https://rdrr.io/pkg/spdep/man/tri2nb.html">tri2nb()</a></code>:</p>
-<div class="sourceCode" id="cb599"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb672"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nb_tin</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/tri2nb.html">tri2nb</a></span><span class="op">(</span><span class="va">coords</span><span class="op">)</span>
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">reg</span>, border <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">nb_tin</span>, <span class="va">coords</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Соседи по триангуляции Делоне"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-9-1.png" width="672"></div>
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-9-1.png" width="100%"></div>
 <p><strong>Соседи по сфере влияния</strong> получаются путем фильтрации триангуляции Делоне. Для каждой вершины находится расстояние до ближайшего соседа <span class="math inline">\(D_{min}\)</span> — это расстояние называется радиусом <em>сферы влияния</em> вершины. Остальные ребра триангуляции, инцидентные (примыкающие к) данной вершине, сохраняются только если их длина <span class="math inline">\(D\)</span> превышает радиус ее сферы влияния не более чем вдвое: <span class="math inline">\(D \leq 2D_{min}\)</span>. Рассуждая геометрически, можно сказать, что сферы радиусом <span class="math inline">\(D_{min}\)</span>, построенные в точке и ее соседях по триангуляции, должны пересекаться. Процесс фильтрации по сфере влияния иллюстрирует рисунок ниже.</p>
 <div class="figure">
 <img src="images/SphereOfInfluence.png" alt=""><p class="caption"><em>Поиск географических соседей по правилу сферы влияния</em></p>
@@ -313,13 +315,13 @@
 <li>фильтрация триангуляции по правилу сферы влияния (функция <code><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">soi.graph()</a></code>)</li>
 <li>преобразование полученного объекта в класс <code>nb</code>(функция <code><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">graph2nb()</a></code>)</li>
 </ul>
-<div class="sourceCode" id="cb600"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb673"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nb_tin</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">soi.graph</a></span><span class="op">(</span><span class="va">nb_tin</span>, <span class="va">coords</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">graph2nb</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">reg</span>, border <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">nb_tin</span>, <span class="va">coords</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Соседи по сфере влияния"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-10-1.png" width="672"></div>
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-10-1.png" width="100%"></div>
 <p><strong>Соседи по графу Гэбриела</strong> получаются также путем фильтрации триангуляции Делоне. В каждом треугольнике ребро сохранятся только тогда, когда построенная на нем окружность не включает третью точку треугольника (Gabriel, Sokal, 1969)<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;em&gt;Gabriel K. R., Sokal R. R.&lt;/em&gt; (1969), &lt;strong&gt;A new statistical approach to geographic variation analysis&lt;/strong&gt;, Systematic Zoology, Society of Systematic Biologists, 18 (3): 259–270, DOI: 10.2307/2412323&lt;/p&gt;"><sup>10</sup></a>. Данный метод проиллюстрирован рисунком ниже.</p>
 <div class="figure">
 <img src="images/Gabriel.png" alt=""><p class="caption"><em>Поиск географических соседей по графу Гэбриела</em></p>
@@ -329,30 +331,30 @@
 <li>построение графа Гэбриела (функция <code><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">gabrielneigh()</a></code>)</li>
 <li>преобразование полученного объекта в класс <code>nb</code>(функция <code><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">graph2nb()</a></code>)</li>
 </ul>
-<div class="sourceCode" id="cb601"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb674"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nb_gab</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">gabrielneigh</a></span><span class="op">(</span><span class="va">coords</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">graph2nb</a></span><span class="op">(</span><span class="op">)</span>
  
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">reg</span>, border <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">nb_gab</span>, <span class="va">coords</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Соседи по графу Гэбриела"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-11-1.png" width="672"></div>
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-11-1.png" width="100%"></div>
 <p><strong>Относительные соседи по графу</strong> получаются путем фильтрации триангуляции Делоне по следующему правилу: ребро <span class="math inline">\(A\)</span>, соединяющее две вершины <span class="math inline">\(p\)</span> и <span class="math inline">\(q\)</span>, будет удалено, если найдется третья вершина <span class="math inline">\(r\)</span>, такая что расстояния от нее до <span class="math inline">\(p\)</span> и <span class="math inline">\(q\)</span> (<span class="math inline">\(B\)</span> и <span class="math inline">\(C\)</span> соответственно) окажутся короче, чем <span class="math inline">\(A\)</span>, то есть: <span class="math inline">\(A &gt; B\)</span> <strong>and</strong> <span class="math inline">\(A &gt; C\)</span>. Полученный граф носит название графа относительных соседей (relative neighborhood graph). Данный метод был предложен французским информатиком Готфридом Туассеном для выявления структуры множества точек, которая бы максимально соответствовала восприятию человеком формы этого множества (Toussaint, 1980)<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;em&gt;Toussaint G. T.&lt;/em&gt; (1980), &lt;strong&gt;The relative neighborhood graph of a finite planar set&lt;/strong&gt;, Pattern Recognition, 12 (4): 261–268, DOI: 10.1016/0031-3203(80)90066-7&lt;/p&gt;"><sup>11</sup></a>.</p>
 <p>Поиск соседей по графу относительных соседей осуществляется в 2 шага:</p>
 <ul>
 <li>построение графа относительных соседей (функция <code><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">relativeneigh()</a></code>)</li>
 <li>преобразование полученного объекта в класс <code>nb</code>(функция <code><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">graph2nb()</a></code>)</li>
 </ul>
-<div class="sourceCode" id="cb602"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb675"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nb_rel</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">relativeneigh</a></span><span class="op">(</span><span class="va">coords</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">graph2nb</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">reg</span>, border <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">nb_rel</span>, <span class="va">coords</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Относительные соседи по графу"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-12-1.png" width="672"></div>
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-12-1.png" width="100%"></div>
 </div>
-<div id="autocorrelation_neighbors_metrics" class="section level3" number="16.5.3">
+<div id="autocorrelation_neighbors_metrics" class="section level3" number="18.5.3">
 <h3>
-<span class="header-section-number">16.5.3</span> Соседи по метрике<a class="anchor" aria-label="anchor" href="#autocorrelation_neighbors_metrics"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.5.3</span> Соседи по метрике<a class="anchor" aria-label="anchor" href="#autocorrelation_neighbors_metrics"><i class="fas fa-link"></i></a>
 </h3>
 <p>Поиск соседей по метрике — наиболее простой способ определения соседства. Для его использования необходимо задать метрику (как правило, расстояние между точками), а также критерий фильтрации связей: по количеству (<span class="math inline">\(k\)</span> ближайших) или по расстоянию (не ближе чем <span class="math inline">\(d_1\)</span>, но и не далее чем <span class="math inline">\(d_2\)</span>).</p>
 <p>Поиск <strong>соседей по количеству</strong> осуществляется в 2 шага:</p>
@@ -361,7 +363,7 @@
 <li>преобразование полученного объекта в класс <code>nb</code>(функция <code><a href="https://rdrr.io/pkg/spdep/man/knn2nb.html">knn2nb()</a></code>)</li>
 </ul>
 <p>Рассмотрим поиск по количеству на примере нескольких пороговых значений:</p>
-<div class="sourceCode" id="cb603"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb676"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>,
     mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span><span class="op">{</span>
@@ -371,9 +373,9 @@
   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">nb_knn</span>, <span class="va">coords</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
   <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span>main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Ближайшие соседи (k = "</span>, <span class="va">i</span>, <span class="st">")"</span>, sep <span class="op">=</span> <span class="st">''</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-13-1.png" width="672"></div>
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-13-1.png" width="100%"></div>
 <p>Поиск <strong>соседей по расстоянию</strong> осуществляется средствами функции <code><a href="https://rdrr.io/pkg/spdep/man/dnearneigh.html">dnearneigh()</a></code>, которая принимает 3 аргумента: координаты точек, минимальное <span class="math inline">\(d_1\)</span> и максимальное <span class="math inline">\(d_2\)</span> расстояние. Минимальное расстояние имеет смысл использовать чтобы избежать анализа совпадающих по положению объектов, или когда известен пространственный период явления, превышающий <span class="math inline">\(d_1\)</span>:</p>
-<div class="sourceCode" id="cb604"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb677"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>,
     mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">d</span> <span class="kw">in</span> <span class="fl">5</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span> <span class="op">{</span>
@@ -383,17 +385,17 @@
   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">dnearnei</span>, <span class="va">coords</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
   <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span>main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Ближайшие соседи (d &lt;="</span>, <span class="fl">10000</span> <span class="op">*</span> <span class="va">d</span>, <span class="st">")"</span>, sep <span class="op">=</span> <span class="st">''</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-14-1.png" width="672"></div>
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-14-1.png" width="100%"></div>
 <p>Итак, мы рассмотрели различные принципы выявления географического соседства. После того, как определен сам факт соседства, необходимо оценить силу пространственной связи между всеми парами соседних единиц. Эта оценка производится путем построения <strong>матрицы пространственных весов</strong>(spatial weights matrix).</p>
 </div>
 </div>
-<div id="autocorrelation_weights" class="section level2" number="16.6">
+<div id="autocorrelation_weights" class="section level2" number="18.6">
 <h2>
-<span class="header-section-number">16.6</span> Пространственные веса<a class="anchor" aria-label="anchor" href="#autocorrelation_weights"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.6</span> Пространственные веса<a class="anchor" aria-label="anchor" href="#autocorrelation_weights"><i class="fas fa-link"></i></a>
 </h2>
 <p>Пространственные веса характеризуют силу связи между единицами. Если единицы не являются соседними (по выбранному правилу), то пространственный вес их связи будет равен нулю. Во всех остальных случаях веса будут ненулевыми. Поскольку теоретически каждая единица может быть связана с любой другой единицей, распространена форма представления весов в виде матрицы <span class="math inline">\(W\)</span> размером <span class="math inline">\(N \times N\)</span>, где <span class="math inline">\(N\)</span> – число единиц. На пересечении <span class="math inline">\(i\)</span>-й строки и <span class="math inline">\(j\)</span>-го столбца матрицы располагается вес связи между <span class="math inline">\(i\)</span>-й и <span class="math inline">\(j\)</span>-й единицей.</p>
 <p>Простейший вид матрицы <span class="math inline">\(W\)</span> — бинарная. Если связь есть, то ее вес равен единице (1), если нет — нулю (0). Для построения бинарной матрицы нужно использовать функцию <code><a href="https://rdrr.io/pkg/spdep/man/nb2listw.html">nb2listw()</a></code> c параметром <code>style="B"</code>:</p>
-<div class="sourceCode" id="cb605"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb678"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">Wbin</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/nb2listw.html">nb2listw</a></span><span class="op">(</span><span class="va">nb_queen</span>, style <span class="op">=</span> <span class="st">"B"</span><span class="op">)</span>
 <span class="va">Wbin</span>  <span class="co"># посмотрим, что за объект получается на выходе (listw)</span>
 <span class="co">## Characteristics of weights list object:</span>
@@ -408,7 +410,7 @@
 <span class="co">##    n   nn  S0  S1   S2</span>
 <span class="co">## B 40 1600 174 348 3416</span></code></pre></div>
 <p>Оказывается, что это на самом деле не матрица. Это объект с двумя слотами. В слоте weights содержатся веса, а в слоте neighbours — идентификаторы соседей:</p>
-<div class="sourceCode" id="cb606"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb679"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">Wbin</span><span class="op">$</span><span class="va">neighbours</span>
 <span class="co">## Neighbour list object:</span>
 <span class="co">## Number of regions: 40 </span>
@@ -544,12 +546,12 @@
 <p>Дело в том, что матрица весов всегда получается разреженной. То есть, в основном она содержит нули. Это логично, поскольку у каждой точки как правило есть лишь ограниченное число соседей. При этом общее количество точек может быть достаточно большим: чем больше точек мы анализируем, тем больше будет нулей в матрице. Получается, что хранить матрицу как матрицу неэкономично. Более рационально для каждого объекта возвращать список весов, которые соответствуют его соседям. Что и делает функция <code><a href="https://rdrr.io/pkg/spdep/man/nb2listw.html">nb2listw()</a></code>.</p>
 </blockquote>
 <p>Матрицу весов как правило визуализируют, поскольку она может содержать в себе довольно интересные паттерны. Для этого полученный список весов нужно превратить в матрицу с помощью функции <code><a href="https://rdrr.io/pkg/spdep/man/nb2mat.html">listw2mat()</a></code>. Далее использовать функцию <code>levelplot</code> из пакета <code>lattice</code>, которая раскрашивает ячейки матрицы или растрового набора данных:</p>
-<div class="sourceCode" id="cb607"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb680"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">M</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/nb2mat.html">listw2mat</a></span><span class="op">(</span><span class="va">Wbin</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/lattice/man/levelplot.html">levelplot</a></span><span class="op">(</span><span class="va">M</span>, main <span class="op">=</span> <span class="st">"Матрица весов (бинарная)"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-17-1.png" width="672"></div>
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-17-1.png" width="100%"></div>
 <p>Более интересный результат дает нормированная матрица. В ней веса всех соседей нормируются на количество соседей. То есть, если у текущей точки 2 соседа, их веса будут равны 0.5. Если 3 соседа то 0.33, 4 — 0.25 и так далее. Взвешенная матрица позволяет отразить тот факт, что одна и та же территориальная единица может оказывать неодинаковое влияние на соседние единицы:</p>
-<div class="sourceCode" id="cb608"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb681"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">Wstand</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/nb2listw.html">nb2listw</a></span><span class="op">(</span><span class="va">nb_queen</span>, style <span class="op">=</span> <span class="st">"W"</span><span class="op">)</span>
 <span class="va">M</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/nb2mat.html">listw2mat</a></span><span class="op">(</span><span class="va">Wstand</span><span class="op">)</span>
 
@@ -559,12 +561,12 @@
           main<span class="op">=</span><span class="st">"Матрица весов (нормированная)"</span>, 
           at <span class="op">=</span> <span class="va">levels</span>, 
           col.regions<span class="op">=</span><span class="fu">ramp</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-18-1.png" width="672"></div>
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-18-1.png" width="100%"></div>
 <blockquote>
 <p>Обратите внимание, что на этот раз цвета в матрице распределены асимметрично.</p>
 </blockquote>
 <p>Однако есть методы определения соседства, которые приведут также и к асимметричному виду самой матрицы, а не только значений. Например, при поиске соседей по количеству соседство A и B вовсе не означает соседство B и A. Проверим это на опыте:</p>
-<div class="sourceCode" id="cb609"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb682"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Ближайшие соседи (k = 1)</span>
 <span class="va">nb_knn</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/knearneigh.html">knearneigh</a></span><span class="op">(</span><span class="va">coords</span>, k <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/knn2nb.html">knn2nb</a></span><span class="op">(</span><span class="op">)</span>
 
@@ -574,12 +576,12 @@
           main <span class="op">=</span> <span class="st">"Матрица весов (нормированная)"</span>, 
           at <span class="op">=</span> <span class="va">levels</span>, 
           col.regions <span class="op">=</span> <span class="fu">ramp</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-19-1.png" width="672"></div>
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-19-1.png" width="100%"></div>
 <p>Полученная матрица весов дает искомую меру потенциальной пространственной связи (близости) между всеми парами территориальных единиц. Сопоставив эту меру со значениями показателя, зафиксированными в тех же единицах, можно получить статистическую оценку пространственной автокорреляции изучаемой величины.</p>
 </div>
-<div id="autocorrelation_measures" class="section level2" number="16.7">
+<div id="autocorrelation_measures" class="section level2" number="18.7">
 <h2>
-<span class="header-section-number">16.7</span> Пространственная автокорреляция<a class="anchor" aria-label="anchor" href="#autocorrelation_measures"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.7</span> Пространственная автокорреляция<a class="anchor" aria-label="anchor" href="#autocorrelation_measures"><i class="fas fa-link"></i></a>
 </h2>
 <p>Далее мы рассмотрим вычисление меры пространственной автокорреляции — индекса Морана, который дает оценку статистической зависимости между значением показателя в каждой локации (территориальной единице) и значениями в соседних локациях. Имея предположение о наличии пространственной автокорреляции, можно построить модель пространственной авторегрессии, которая дает фоновое распределение показателя по территориальным единицам, а также случайные остатки.</p>
 <p>На этом занятии мы кратко познакомимся со статистической оценкой пространственной автокорреляции, а также построением простейших авторегрессионных моделей.</p>
@@ -597,7 +599,7 @@
 <li>Построить карты реальных, модельных (fitted) значений и остатков (lag)</li>
 </ol>
 <p>Для начала построим серию карт чтобы оценить по ним наличие или отсутствие пространственной автокорреляции по месяцам:</p>
-<div class="sourceCode" id="cb610"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb683"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mun_src</span> <span class="op">=</span> <span class="va">reg_sf</span>
 
 <span class="co"># Чтение таблицы со статистикой</span>
@@ -628,10 +630,10 @@
                     guide <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op">(</span>reverse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
                     drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">month</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-20-1.png" width="768"></div>
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-20-1.png" width="100%"></div>
 <p>Данная серия карт показывает, что наиболее интересный для анализа месяц — февраль, в котором наблюдается рост заболеваемости, а также очевидно наличие пространственной автокорреляции с двумя очагами в центральных и северо-зпапдных районах области.</p>
 <p>Вычислим матрицу пространственных весов:</p>
-<div class="sourceCode" id="cb611"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb684"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Определение соседства (правило ферзя)</span>
 <span class="va">nb_queen</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/poly2nb.html">poly2nb</a></span><span class="op">(</span><span class="va">mun_src</span><span class="op">)</span>
 
@@ -640,8 +642,8 @@
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">mun_src</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="op">)</span>, border <span class="op">=</span> <span class="st">"darkgray"</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">nb_queen</span>, <span class="va">coords</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Соседи по смежности (правило ферзя)"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-21-1.png" width="672"></div>
-<div class="sourceCode" id="cb612"><pre class="downlit sourceCode r">
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-21-1.png" width="100%"></div>
+<div class="sourceCode" id="cb685"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># Вычисление весов (нормированная матрица)</span>
 <span class="va">W</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/nb2listw.html">nb2listw</a></span><span class="op">(</span><span class="va">nb_queen</span><span class="op">)</span>
@@ -655,10 +657,10 @@
           main <span class="op">=</span> <span class="st">"Матрица весов (нормированная)"</span>, 
           at <span class="op">=</span> <span class="va">levels2</span>, 
           col.regions <span class="op">=</span> <span class="fu">ramp2</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-21-2.png" width="672"></div>
-<div id="autocorrelation_moran" class="section level3" number="16.7.1">
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-21-2.png" width="100%"></div>
+<div id="autocorrelation_moran" class="section level3" number="18.7.1">
 <h3>
-<span class="header-section-number">16.7.1</span> Индекс Морана (Moran’s I)<a class="anchor" aria-label="anchor" href="#autocorrelation_moran"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.7.1</span> Индекс Морана (Moran’s I)<a class="anchor" aria-label="anchor" href="#autocorrelation_moran"><i class="fas fa-link"></i></a>
 </h3>
 <p>Анализ пространственной автокорреляции осуществляется, как правило, путем вычисления индекса Морана (Moran’s I), :
 <span class="math display">\[
@@ -679,7 +681,7 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 низких и высоких значений, напоминающее шахматную доску</li>
 </ul>
 <p>Для вычисления индекса Морана следует использовать функцию <code><a href="https://rdrr.io/pkg/spdep/man/moran.test.html">moran.test()</a></code>, которая дополнительно оценивает статистическую значимость полученного значения:</p>
-<div class="sourceCode" id="cb613"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb686"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Выбираем данные за февраль</span>
 <span class="va">feb</span> <span class="op">=</span> <span class="va">mun</span> <span class="op">%&gt;%</span> 
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">month</span> <span class="op">==</span> <span class="st">'Февраль'</span><span class="op">)</span>
@@ -729,12 +731,12 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 </ul>
 <p>Это означает, что вероятность того, что фактическое значение индекса Морана могло бы появиться на основе случайно распределенных данных с вероятностью <span class="math inline">\(5\%\)</span> и <span class="math inline">\(1\%\)</span> соответственно. Чем меньше <span class="math inline">\(p\)</span>, тем менее вероятно, что распределение случайно. Говорят, что <span class="math inline">\(p\)</span> — это вероятность сделать ошибку первого рода, т.е. отвергнуть нулевую гипотезу, в то время как она на самом деле является истинной.</p>
 </div>
-<div id="autocorrelation_permutation" class="section level3" number="16.7.2">
+<div id="autocorrelation_permutation" class="section level3" number="18.7.2">
 <h3>
-<span class="header-section-number">16.7.2</span> Перестановочный тест Морана<a class="anchor" aria-label="anchor" href="#autocorrelation_permutation"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.7.2</span> Перестановочный тест Морана<a class="anchor" aria-label="anchor" href="#autocorrelation_permutation"><i class="fas fa-link"></i></a>
 </h3>
 <p>Графически вышеприведенные рассуждения можно иллюстрировать с помощью перестановочного теста (<strong>permutation test</strong>). Для этого значения исследуемой нами величины перемешиваются между территориальными единицами и далее строится гистограмма распределения. Перестановочный тест выполняется с помощью функции <code><a href="https://rdrr.io/pkg/spdep/man/moran.mc.html">moran.mc()</a></code> с параметром <code>nsim =</code>, задающим число перестановок:</p>
-<div class="sourceCode" id="cb614"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb687"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">sim</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/moran.mc.html">moran.mc</a></span><span class="op">(</span><span class="va">feb</span><span class="op">$</span><span class="va">nsick</span>, listw <span class="op">=</span> <span class="va">W</span>, nsim <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span><span class="op">)</span>
 <span class="co">## </span>
 <span class="co">##  Monte-Carlo simulation of Moran I</span>
@@ -758,21 +760,21 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 
 <span class="co"># Нанесем фактическое значение</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">statistic</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-23-1.png" width="672"></div>
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-23-1.png" width="100%"></div>
 </div>
-<div id="autocorrelation_moranscatter" class="section level3" number="16.7.3">
+<div id="autocorrelation_moranscatter" class="section level3" number="18.7.3">
 <h3>
-<span class="header-section-number">16.7.3</span> Диаграмма рассеяния Морана<a class="anchor" aria-label="anchor" href="#autocorrelation_moranscatter"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.7.3</span> Диаграмма рассеяния Морана<a class="anchor" aria-label="anchor" href="#autocorrelation_moranscatter"><i class="fas fa-link"></i></a>
 </h3>
 <p>Наконец, еще одним графическим инструментом оценки пространственной автокорреляции является диаграмма рассеяния Морана. По оси <span class="math inline">\(X\)</span> откладывается значение в каждой территориальной единице, в по оси <span class="math inline">\(Y\)</span> — ее пространственный лаг, который представляет собой средневзвешенное значение по всем ее соседям:</p>
-<div class="sourceCode" id="cb615"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb688"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/spdep/man/moran.plot.html">moran.plot</a></span><span class="op">(</span><span class="va">feb</span><span class="op">$</span><span class="va">nsick</span>, <span class="va">W</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-24-1.png" width="672"></div>
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-24-1.png" width="100%"></div>
 <p>На диаграмме рассеяния Морана линиями отмечаются средние значения по обеим осям, а наклонной линией представляется линейная регрессия этих значений, при этом тангенс угла наклона прямой равен значению индекса Морана. Поскольку в данном случае распределение явно не случайно, можно приступать к его моделированию.</p>
 </div>
-<div id="autocorrelation_autoregression" class="section level3" number="16.7.4">
+<div id="autocorrelation_autoregression" class="section level3" number="18.7.4">
 <h3>
-<span class="header-section-number">16.7.4</span> Пространственная авторегрессия<a class="anchor" aria-label="anchor" href="#autocorrelation_autoregression"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.7.4</span> Пространственная авторегрессия<a class="anchor" aria-label="anchor" href="#autocorrelation_autoregression"><i class="fas fa-link"></i></a>
 </h3>
 <p>Поиск уравнения пространственной регрессии и его авторегрессионной составляющей может быть выполнен посредством функций <code><a href="https://rdrr.io/pkg/spdep/man/spdep-deprecated.html">spautolm()</a></code> и <code><a href="https://rdrr.io/pkg/spdep/man/spdep-deprecated.html">lagsarlm()</a></code> из пакета <strong>spatialreg</strong>. В качестве первого параметра каждой из этих функций выступает формула, которая работает по следующему принципу:</p>
 <ul>
@@ -780,7 +782,7 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 <li><p><code>Y ~ X</code> позволит найти коэффициенты <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\rho\)</span> и остатки <span class="math inline">\(\epsilon\)</span> пространственной регрессии вида <span class="math display">\[\mathbf{y} = \mu + \mathbf{X} \mathbf{\beta} + \rho\mathbf{Wy} +  \mathbf{\epsilon}.\]</span></p></li>
 <li><p><code>Y ~ X - 1</code> позволит найти коэффициенты <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\rho\)</span> и остатки <span class="math inline">\(\epsilon\)</span> пространственной регрессии вида <span class="math display">\[\mathbf{y} = \mathbf{X} \mathbf{\beta} + \rho\mathbf{Wy} + \mathbf{\epsilon}\]</span> без свободного члена <span class="math inline">\(\mu\)</span></p></li>
 </ul>
-<div class="sourceCode" id="cb616"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb689"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/spdep-deprecated.html">lagsarlm</a></span><span class="op">(</span><span class="va">nsick</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">feb</span>, listw <span class="op">=</span> <span class="va">W</span><span class="op">)</span>
 <span class="va">model</span>
 <span class="co">## </span>
@@ -802,7 +804,7 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 </li>
 </ul>
 <p>Извлекаем модельные значения <span class="math inline">\(Z\)</span> и записываем в таблицу</p>
-<div class="sourceCode" id="cb617"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb690"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Извлекаем результаты пространственной авторегрессии</span>
 <span class="va">feb_spreg</span> <span class="op">=</span> <span class="va">feb</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>fitted <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>,
@@ -825,26 +827,26 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
                     guide <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op">(</span>reverse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
                     drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">type</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-26-1.png" width="672"></div>
+<div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-26-1.png" width="100%"></div>
 </div>
 </div>
-<div id="spreg_review" class="section level2" number="16.8">
+<div id="spreg_review" class="section level2" number="18.8">
 <h2>
-<span class="header-section-number">16.8</span> Краткий обзор<a class="anchor" aria-label="anchor" href="#spreg_review"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.8</span> Краткий обзор<a class="anchor" aria-label="anchor" href="#spreg_review"><i class="fas fa-link"></i></a>
 </h2>
 <p>Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
-<iframe src="https://tsamsonov.github.io/r-geo-course/slides/15-SpatialRegression_slides.html#1" width="672" height="500px"></iframe></p>
+<iframe src="https://tsamsonov.github.io/r-geo-course/slides/15-SpatialRegression_slides.html#1" width="100%" height="500px"></iframe></p>
 <blockquote>
 <p>Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.</p>
 </blockquote>
 </div>
-<div id="questions_tasks_spreg" class="section level2" number="16.9">
+<div id="questions_tasks_spreg" class="section level2" number="18.9">
 <h2>
-<span class="header-section-number">16.9</span> Контрольные вопросы и упражнения<a class="anchor" aria-label="anchor" href="#questions_tasks_spreg"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.9</span> Контрольные вопросы и упражнения<a class="anchor" aria-label="anchor" href="#questions_tasks_spreg"><i class="fas fa-link"></i></a>
 </h2>
-<div id="questions_spreg" class="section level3" number="16.9.1">
+<div id="questions_spreg" class="section level3" number="18.9.1">
 <h3>
-<span class="header-section-number">16.9.1</span> Вопросы<a class="anchor" aria-label="anchor" href="#questions_spreg"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.9.1</span> Вопросы<a class="anchor" aria-label="anchor" href="#questions_spreg"><i class="fas fa-link"></i></a>
 </h3>
 <ol style="list-style-type: decimal">
 <li>Дайте определение пространственной автокорреляции.</li>
@@ -872,9 +874,9 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 <li>Для каких целей используется локальный анализ пространственной автокорреляции (LISA)? Какой коэффициент можно использовать для квантификации локальных оценок автокорреляции? Как он связан с индексом Морана?</li>
 </ol>
 </div>
-<div id="tasks_spreg" class="section level3" number="16.9.2">
+<div id="tasks_spreg" class="section level3" number="18.9.2">
 <h3>
-<span class="header-section-number">16.9.2</span> Упражнения<a class="anchor" aria-label="anchor" href="#tasks_spreg"><i class="fas fa-link"></i></a>
+<span class="header-section-number">18.9.2</span> Упражнения<a class="anchor" aria-label="anchor" href="#tasks_spreg"><i class="fas fa-link"></i></a>
 </h3>
 <ol style="list-style-type: decimal">
 <li>Выполните анализ пространственной зависимости (автокорреляции) для данных Росстата по урожайности зерновых культур по муниципалитетам Ростовской, Волгоградской и Саратовской областей. Для этого загрузите <a href="https://github.com/tsamsonov/r-geo-course/blob/master/data/Yield_Shapes.gpkg">границы муниципалитетов</a> и <a href="https://github.com/tsamsonov/r-geo-course/blob/master/data/Yield_Data.xlsx">статистику</a> за 2012 и 2013 гг. В процессе выполнения анализа необходимо:
@@ -899,37 +901,37 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 </div>
 
   <div class="chapter-nav">
-<div class="prev"><a href="gstat.html"><span class="header-section-number">15</span> Геостатистика</a></div>
-<div class="next"><a href="gwr.html"><span class="header-section-number">17</span> Географически взвешенная регрессия</a></div>
+<div class="prev"><a href="gstat.html"><span class="header-section-number">17</span> Геостатистика</a></div>
+<div class="next"><a href="gwr.html"><span class="header-section-number">19</span> Географически взвешенная регрессия</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
-<li><a class="nav-link" href="#spreg"><span class="header-section-number">16</span> Пространственная регрессия</a></li>
-<li><a class="nav-link" href="#autocorrelation_intro"><span class="header-section-number">16.1</span> Введение</a></li>
-<li><a class="nav-link" href="#%D0%BB%D0%B8%D0%BD%D0%B5%D0%B9%D0%BD%D0%B0%D1%8F-%D1%80%D0%B5%D0%B3%D1%80%D0%B5%D1%81%D1%81%D0%B8%D1%8F"><span class="header-section-number">16.2</span> Линейная регрессия</a></li>
-<li><a class="nav-link" href="#%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F-%D1%80%D0%B5%D0%B3%D1%80%D0%B5%D1%81%D1%81%D0%B8%D1%8F"><span class="header-section-number">16.3</span> Пространственная регрессия</a></li>
-<li><a class="nav-link" href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7"><span class="header-section-number">16.4</span> Практический анализ</a></li>
+<li><a class="nav-link" href="#spreg"><span class="header-section-number">18</span> Пространственная регрессия</a></li>
+<li><a class="nav-link" href="#autocorrelation_intro"><span class="header-section-number">18.1</span> Введение</a></li>
+<li><a class="nav-link" href="#%D0%BB%D0%B8%D0%BD%D0%B5%D0%B9%D0%BD%D0%B0%D1%8F-%D1%80%D0%B5%D0%B3%D1%80%D0%B5%D1%81%D1%81%D0%B8%D1%8F"><span class="header-section-number">18.2</span> Линейная регрессия</a></li>
+<li><a class="nav-link" href="#%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F-%D1%80%D0%B5%D0%B3%D1%80%D0%B5%D1%81%D1%81%D0%B8%D1%8F"><span class="header-section-number">18.3</span> Пространственная регрессия</a></li>
+<li><a class="nav-link" href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7"><span class="header-section-number">18.4</span> Практический анализ</a></li>
 <li>
-<a class="nav-link" href="#autocorrelation_neighbors"><span class="header-section-number">16.5</span> Пространственное соседство</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#autocorrelation_neighbors_contguity"><span class="header-section-number">16.5.1</span> Соседи по смежности</a></li>
-<li><a class="nav-link" href="#autocorrelation_neighbors_graph"><span class="header-section-number">16.5.2</span> Соседи по графу</a></li>
-<li><a class="nav-link" href="#autocorrelation_neighbors_metrics"><span class="header-section-number">16.5.3</span> Соседи по метрике</a></li>
+<a class="nav-link" href="#autocorrelation_neighbors"><span class="header-section-number">18.5</span> Пространственное соседство</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#autocorrelation_neighbors_contguity"><span class="header-section-number">18.5.1</span> Соседи по смежности</a></li>
+<li><a class="nav-link" href="#autocorrelation_neighbors_graph"><span class="header-section-number">18.5.2</span> Соседи по графу</a></li>
+<li><a class="nav-link" href="#autocorrelation_neighbors_metrics"><span class="header-section-number">18.5.3</span> Соседи по метрике</a></li>
 </ul>
 </li>
-<li><a class="nav-link" href="#autocorrelation_weights"><span class="header-section-number">16.6</span> Пространственные веса</a></li>
+<li><a class="nav-link" href="#autocorrelation_weights"><span class="header-section-number">18.6</span> Пространственные веса</a></li>
 <li>
-<a class="nav-link" href="#autocorrelation_measures"><span class="header-section-number">16.7</span> Пространственная автокорреляция</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#autocorrelation_moran"><span class="header-section-number">16.7.1</span> Индекс Морана (Moran’s I)</a></li>
-<li><a class="nav-link" href="#autocorrelation_permutation"><span class="header-section-number">16.7.2</span> Перестановочный тест Морана</a></li>
-<li><a class="nav-link" href="#autocorrelation_moranscatter"><span class="header-section-number">16.7.3</span> Диаграмма рассеяния Морана</a></li>
-<li><a class="nav-link" href="#autocorrelation_autoregression"><span class="header-section-number">16.7.4</span> Пространственная авторегрессия</a></li>
+<a class="nav-link" href="#autocorrelation_measures"><span class="header-section-number">18.7</span> Пространственная автокорреляция</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#autocorrelation_moran"><span class="header-section-number">18.7.1</span> Индекс Морана (Moran’s I)</a></li>
+<li><a class="nav-link" href="#autocorrelation_permutation"><span class="header-section-number">18.7.2</span> Перестановочный тест Морана</a></li>
+<li><a class="nav-link" href="#autocorrelation_moranscatter"><span class="header-section-number">18.7.3</span> Диаграмма рассеяния Морана</a></li>
+<li><a class="nav-link" href="#autocorrelation_autoregression"><span class="header-section-number">18.7.4</span> Пространственная авторегрессия</a></li>
 </ul>
 </li>
-<li><a class="nav-link" href="#spreg_review"><span class="header-section-number">16.8</span> Краткий обзор</a></li>
+<li><a class="nav-link" href="#spreg_review"><span class="header-section-number">18.8</span> Краткий обзор</a></li>
 <li>
-<a class="nav-link" href="#questions_tasks_spreg"><span class="header-section-number">16.9</span> Контрольные вопросы и упражнения</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#questions_spreg"><span class="header-section-number">16.9.1</span> Вопросы</a></li>
-<li><a class="nav-link" href="#tasks_spreg"><span class="header-section-number">16.9.2</span> Упражнения</a></li>
+<a class="nav-link" href="#questions_tasks_spreg"><span class="header-section-number">18.9</span> Контрольные вопросы и упражнения</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#questions_spreg"><span class="header-section-number">18.9.1</span> Вопросы</a></li>
+<li><a class="nav-link" href="#tasks_spreg"><span class="header-section-number">18.9.2</span> Упражнения</a></li>
 </ul>
 </li>
 </ul>
@@ -949,7 +951,7 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-01-26.</p>
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-01-27.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

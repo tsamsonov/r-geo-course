@@ -42,14 +42,6 @@ __ggplot2__ | Построение графиков на основе прави
 library(readxl)
 library(writexl)
 library(tidyverse)
-## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──
-## ✓ ggplot2 3.3.3     ✓ purrr   0.3.4
-## ✓ tibble  3.0.4     ✓ dplyr   1.0.2
-## ✓ tidyr   1.1.2     ✓ stringr 1.4.0
-## ✓ readr   1.4.0     ✓ forcats 0.5.0
-## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()
 library(conflicted)
 
 tibble(
@@ -208,17 +200,6 @@ N,Region,Year05,Year10,Year11,Year12,Year13
 
 ```r
 (okruga = read_csv('data/okruga.csv'))
-## 
-## ── Column specification ────────────────────────────────────────────────────────
-## cols(
-##   `№` = col_double(),
-##   Регион = col_character(),
-##   `2005` = col_double(),
-##   `2010` = col_double(),
-##   `2011` = col_double(),
-##   `2012` = col_double(),
-##   `2013` = col_double()
-## )
 ## # A tibble: 8 x 7
 ##     `№` Регион            `2005` `2010` `2011` `2012` `2013`
 ##   <dbl> <chr>              <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
@@ -259,15 +240,6 @@ N,Region,Year05,Year10,Year11,Year12,Year13
 
 ```r
 (wenergy = read_table('data/wind_energy.txt', col_names = c('id', 'lat', 'lon', 'energy50', 'energy110')))
-## 
-## ── Column specification ────────────────────────────────────────────────────────
-## cols(
-##   id = col_double(),
-##   lat = col_double(),
-##   lon = col_double(),
-##   energy50 = col_double(),
-##   energy110 = col_double()
-## )
 ## # A tibble: 92 x 5
 ##       id   lat   lon energy50 energy110
 ##    <dbl> <dbl> <dbl>    <dbl>     <dbl>
@@ -755,7 +727,6 @@ regdf_arr = arrange(regdf_gr, desc(y2015))
 ```r
 regdf_gr = group_by(regdf, okrug)
 summarise(regdf_gr, total = sum(y2015, na.rm = TRUE))
-## `summarise()` ungrouping output (override with `.groups` argument)
 ## # A tibble: 8 x 2
 ##   okrug                               total
 ##   <chr>                               <dbl>
@@ -1162,7 +1133,7 @@ write_xlsx(compare, "data/output/timber_compare.xlsx")
 ## Краткий обзор {#tables_review}
 
 Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
-<iframe src="https://tsamsonov.github.io/r-geo-course/slides/03-Tables_slides.html#1" width="672" height="500px"></iframe>
+<iframe src="https://tsamsonov.github.io/r-geo-course/slides/03-Tables_slides.html#1" width="100%" height="500px"></iframe>
 
 > Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.
 

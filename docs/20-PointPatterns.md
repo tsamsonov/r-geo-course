@@ -1,5 +1,7 @@
 # Точечные процессы {#points}
 
+
+
 [Программный код главы](https://github.com/tsamsonov/r-geo-course/blob/master/code/16-PointPatterns.R)
 
 
@@ -192,7 +194,7 @@ __Свойства__ пуассоновского процесса:
 
 $$\lambda(x,y) = x + y^2$$
 
-<img src="20-PointPatterns_files/figure-html/unnamed-chunk-1-1.png" width="3000" />
+<img src="20-PointPatterns_files/figure-html/unnamed-chunk-1-1.png" width="100%" />
 
 ### Процесс Кокса (Cox process)
 
@@ -287,7 +289,7 @@ __Процесс Матерна II__:
 ## Краткий обзор {#point_review}
 
 Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
-<iframe src="https://tsamsonov.github.io/r-geo-course/slides/16-PointPatterns_slides.html#1" width="672" height="500px"></iframe>
+<iframe src="https://tsamsonov.github.io/r-geo-course/slides/16-PointPatterns_slides.html#1" width="100%" height="500px"></iframe>
 
 > Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.
 

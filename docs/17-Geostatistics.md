@@ -608,7 +608,7 @@ ggplot() +
   theme_bw()
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-2-1.png" width="2100" style="display: block; margin: auto;" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-2-1.png" width="100%" style="display: block; margin: auto;" />
 
 Данная модель достигает плато в точке $h = a$.
 
@@ -638,7 +638,7 @@ pl = ggplot() +
 (pl)
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-3-1.png" width="2100" style="display: block; margin: auto;" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" />
 
 - Данная модель достигает плато асимптотически.
 - В точке $h = a$ достигается $95\%$ уровня плато.
@@ -663,7 +663,7 @@ pl = ggplot() +
 (pl)
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-4-1.png" width="2100" style="display: block; margin: auto;" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" />
 
 - Данная модель достигает плато асимптотически.
 - В точке $h = a$ достигается $95\%$ уровня плато.
@@ -690,7 +690,7 @@ pl = ggplot() +
 (pl)
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-5-1.png" width="2100" style="display: block; margin: auto;" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" />
 
 - Автокорреляция присутствует на всех расстояниях: $a \rightarrow \infty$
 - Предположение о стационарности второго порядка не выполняется
@@ -718,7 +718,7 @@ ggplot() +
   theme_bw()
 ```
 
-<img src="17-Geostatistics_files/figure-html/sam-1.png" width="2100" style="display: block; margin: auto;" />
+<img src="17-Geostatistics_files/figure-html/sam-1.png" width="100%" style="display: block; margin: auto;" />
 
 - Наличие у данных вариограммы типа наггет означает отсутствие пространственной корреляции.
 - Возможные причины:
@@ -736,46 +736,22 @@ __Lagged scatterplot__ — вариант диаграммы рассеяния,
 options(scipen = 999)
 
 cities = st_read("data/Italy_Cities.gpkg")
-```
-
-```
 ## Reading layer `Italy_Cities' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/Italy_Cities.gpkg' using driver `GPKG'
 ## Simple feature collection with 8 features and 37 fields
 ## geometry type:  POINT
 ## dimension:      XY
 ## bbox:           xmin: 368910.4 ymin: 4930119 xmax: 686026 ymax: 5115936
 ## projected CRS:  WGS 84 / UTM zone 32N
-```
 
-```r
 rainfall = read_table2("data/Rainfall.dat") %>% 
   st_as_sf(coords = c('x', 'y'), 
            crs = st_crs(cities),
            remove = FALSE)
-```
 
-```
-## 
-## ── Column specification ────────────────────────────────────────────────────────
-## cols(
-##   PK_Station = col_double(),
-##   name_stat = col_character(),
-##   location = col_character(),
-##   region = col_character(),
-##   x = col_double(),
-##   y = col_double(),
-##   PK_Sensor = col_double(),
-##   descra = col_double(),
-##   date = col_character(),
-##   rain_24 = col_double()
-## )
-```
-
-```r
 hscat(rain_24~1, data = rainfall, 1000 * c(0, 10, 20, 50, 100), pch = 19)
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-6-1.png" width="2100" style="display: block; margin: auto;" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" />
 
 ### Вариограммное облако
 
@@ -790,7 +766,7 @@ ggplot(varcl) +
   theme_bw()
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-7-1.png" width="2100" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-7-1.png" width="100%" />
   
 
 ### Эмпирическая вариограмма
@@ -807,7 +783,7 @@ intervals = width * 0:15
 vargr = variogram(rain_24~1, data=rainfall, cutoff = 150000, width = width)
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-9-1.png" width="100%" />
 
 Оставив только вариограмму, получим:
 
@@ -819,7 +795,7 @@ ggplot() +
   theme_bw()
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-10-1.png" width="2100" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-10-1.png" width="100%" />
 Размер точки означает количество пар значений, которые попали в каждый лаг.
 
 Поскольку вариограмма есть _дисперсия разности значений_, ее рост при увеличении расстояния можно оценить также по увеличению размера «ящика» на диаграмме размаха $\sqrt\gamma$:
@@ -834,7 +810,7 @@ ggplot(varcl) +
   geom_boxplot(aes(lag, sqrt(gamma)), outlier.alpha = 0.1)
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-11-1.png" width="2100" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-11-1.png" width="100%" />
 
 ### Вариокарта
 
@@ -846,7 +822,7 @@ $$\hat{\gamma} (\Delta x, \Delta y) = \frac{1}{2N_{\substack{\Delta x\\ \Delta y
 varmp = variogram(rain_24~1, data=rainfall, cutoff = 150000, width = width, map = TRUE)[['map']]
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-13-1.png" width="100%" />
 
 
 Вариокарта используется для выявления _пространственной анизотропии_. Профиль по линии из центра к краю вариокарты даст эмпирическую вариограмму
@@ -858,7 +834,7 @@ __Приближение__ (_fitting_) модели вариограммы пр�
 1. Выбор теоретической модели
 2. Подбор параметров модели: эффект самородка (nugget), радиус корреляции и плато.
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-14-1.png" width="2100" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-14-1.png" width="100%" />
 
 Дана вариограмма семейства $\gamma (h; \mathbf{b})$, где $\mathbf{b} = (b_1, ..., b_k)$ — вектор из $k$ параметров модели. Параметры $\mathbf{b}$ подбираются таким образом, чтобы минимизировать следующий функционал:
 
@@ -903,7 +879,7 @@ ggplot() +
   theme_bw()
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-15-1.png" width="2100" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-15-1.png" width="100%" />
 
 ### Обычный кригинг
 
@@ -920,7 +896,7 @@ ggplot() +
   geom_sf(data = st_as_sf(px_grid), size = 0.5, fill = NA)
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-16-1.png" width="2100" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-16-1.png" width="100%" />
 
 ### Обычный кригинг
 
@@ -930,25 +906,19 @@ ggplot() +
 plot(vargr, model = varmd)
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-17-1.png" width="672" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-17-1.png" width="100%" />
 
 ```r
 plot(varmp)
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-17-2.png" width="672" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-17-2.png" width="100%" />
 
 Проинтерполируем, используя приближенную модель вариограммы:
 
 ```r
 (px_grid = krige(rain_24~1, rainfall, px_grid, model = varmd))
-```
-
-```
 ## [using ordinary kriging]
-```
-
-```
 ## stars object with 2 dimensions and 2 attributes
 ## attribute(s):
 ##    var1.pred         var1.var      
@@ -991,13 +961,10 @@ ggplot() +
   theme_bw()
 ```
 
-```
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-```
-
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-19-1.png" width="2100" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-19-1.png" width="100%" />
 
 ```r
+
 ggplot() +
   geom_stars(data = cut(px_grid['var1.var'], breaks = err_levels)) +
   scale_fill_manual(name = 'мм',
@@ -1010,11 +977,7 @@ ggplot() +
   theme_bw()
 ```
 
-```
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-```
-
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-19-2.png" width="2100" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-19-2.png" width="100%" />
 
 Дисперсия кригинга высока там, где мало данных.
 
@@ -1028,9 +991,6 @@ cvl = krige.cv(rain_24~1, rainfall, varmd) %>%
   mutate(sterr = residual / sqrt(var1.var))
 
 head(cvl %>% st_set_geometry(NULL), 10)
-```
-
-```
 ##    var1.pred var1.var observed     residual      zscore fold       sterr
 ## 1   5.743730 34.84033      6.0   0.25627005  0.04341669    1  0.04341669
 ## 2  11.137129 60.24070     10.0  -1.13712865 -0.14650910    2 -0.14650910
@@ -1054,7 +1014,7 @@ ggplot(cvl, aes(x = sterr)) +
   theme_bw()
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-21-1.png" width="2100" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-21-1.png" width="100%" />
 
 Ошибки должны быть независимы от значений:
 
@@ -1066,13 +1026,11 @@ ggplot(cvl, aes(x = var1.pred, sterr)) +
   theme_bw()
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-22-1.png" width="2100" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-22-1.png" width="100%" />
 
 ```r
-cor.test(~ sterr + var1.pred, data = cvl)
-```
 
-```
+cor.test(~ sterr + var1.pred, data = cvl)
 ## 
 ## 	Pearson's product-moment correlation
 ## 
@@ -1096,14 +1054,12 @@ ggplot(cvl, aes(x = var1.pred, observed)) +
   theme_bw()
 ```
 
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-23-1.png" width="2100" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-23-1.png" width="100%" />
 
 ```r
+
 # Диагностика модели линейной регрессии
 summary(lm(observed ~ var1.pred, cvl))
-```
-
-```
 ## 
 ## Call:
 ## lm(formula = observed ~ var1.pred, data = cvl)
@@ -1159,16 +1115,12 @@ ggplot() +
   theme_bw()
 ```
 
-```
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-```
-
-<img src="17-Geostatistics_files/figure-html/unnamed-chunk-24-1.png" width="2100" />
+<img src="17-Geostatistics_files/figure-html/unnamed-chunk-24-1.png" width="100%" />
 
 ## Краткий обзор {#geostat_review}
 
 Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
-<iframe src="https://tsamsonov.github.io/r-geo-course/slides/14-Geostatistics_slides.html#1" width="672" height="500px"></iframe>
+<iframe src="https://tsamsonov.github.io/r-geo-course/slides/14-Geostatistics_slides.html#1" width="100%" height="500px"></iframe>
 
 > Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.
 

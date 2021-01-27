@@ -67,7 +67,7 @@ plot(sub$МетЭкспорт,
      main = "Экспорт/импорт металлов и изделий из них по субъектам РФ")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-3-1.png" width="100%" />
 
 В данном случае четко выделяется группа субъектов вблизи начала координат, не отличающихся интенсивным экспортом и импортом продукции металлургии, а также очевидно преобладание экспорта над импортом при больших объемах товарооборота.
 
@@ -83,7 +83,7 @@ plot(sub$МетЭкспорт,
      asp = 1)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-4-1.png" width="100%" />
 
 Попробуйте изменить размер окна на вкладке _Plots_. Вы увидите, что масштаб по осям сохраняется пропорциональным.
 
@@ -104,7 +104,7 @@ plot(sub$МетЭкспорт,
      cex = 0.5)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-5-1.png" width="100%" />
 
 ```r
 plot(sub$МетЭкспорт, 
@@ -118,7 +118,7 @@ plot(sub$МетЭкспорт,
      cex = 1.2)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-5-2.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-5-2.png" width="100%" />
 
 ### Линейные графики {#linear_graphs}
 
@@ -132,7 +132,7 @@ plot(tab$Год, tab$Каспийское, pch=20) # для начала нан�
 lines(tab$Год, tab$Каспийское) # теперь нанесем линии
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-6-1.png" width="100%" />
 
 По умолчанию функция `plot()` рисует именно точки. Однако если точки не нужны, а достаточно только линий, или требуется иной подход к построению графиков, можно задать параметр `type = `, который принимает следующие значения:
 
@@ -152,49 +152,49 @@ lines(tab$Год, tab$Каспийское) # теперь нанесем лин
 plot(tab$Год, tab$Карское,pch=20)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-7-1.png" width="100%" />
 
 ```r
 plot(tab$Год, tab$Каспийское, type="p")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-7-2.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-7-2.png" width="100%" />
 
 ```r
 plot(tab$Год, tab$Каспийское, type="l")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-7-3.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-7-3.png" width="100%" />
 
 ```r
 plot(tab$Год, tab$Каспийское, type="b")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-7-4.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-7-4.png" width="100%" />
 
 ```r
 plot(tab$Год, tab$Каспийское, type="c")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-7-5.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-7-5.png" width="100%" />
 
 ```r
 plot(tab$Год, tab$Каспийское, type="o")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-7-6.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-7-6.png" width="100%" />
 
 ```r
 plot(tab$Год, tab$Каспийское, type="h")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-7-7.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-7-7.png" width="100%" />
 
 ```r
 plot(tab$Год, tab$Каспийское, type="s")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-7-8.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-7-8.png" width="100%" />
 
 _Толщину и тип линии_ можно изменить, используя параметры `lwd =` и `lty =` соответственно. Работают они аналогично параметрам pch и cex для точечных символов. Типов линий по умолчанию в стандартной библиотеке R не так много, но в сочетании с цветовым кодированием и толщиной их оказывается вполне достаточно:
 ![_Типы линий в R_](images/lty.png)
@@ -205,19 +205,19 @@ _Толщину и тип линии_ можно изменить, исполь�
 plot(tab$Год, tab$Каспийское, type="l", lwd = 2, lty = 1)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-8-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-8-1.png" width="100%" />
 
 ```r
 plot(tab$Год, tab$Каспийское, type="l", lwd = 3, lty = 2)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-8-2.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-8-2.png" width="100%" />
 
 ```r
 plot(tab$Год, tab$Каспийское, type="l", lwd = 1, lty = 3)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-8-3.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-8-3.png" width="100%" />
 
 ### Совмещение графиков {#graph_combining}
 
@@ -244,7 +244,7 @@ points(tab$Год, tab$Карское, pch=20, col="forestgreen")
 lines(tab$Год, tab$Карское, pch=20, col="forestgreen")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-9-1.png" width="100%" />
 
 > Обратите внимание на то, что если бы мы вызвали еще одну инструкцию `plot()` с новым рядом данных, это привело бы к построению нового графика, а не к добавлению его на существующий.
 
@@ -274,7 +274,7 @@ points(tab$Год, tab$Азовское, pch=20, col="steelblue")
 lines(tab$Год, tab$Азовское, pch=20, col="steelblue")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-10-1.png" width="100%" />
 
 ### Функциональные параметры {#func_parameters}
 
@@ -293,7 +293,7 @@ plot(okr$МетЭкспорт,
      cex = 2+log(sub$МетИмпорт/sub$МетЭкспорт)) # размер кружка зависит от соотношения импорта и экспорта
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-11-1.png" width="100%" />
 
 ## Гистограммы {#histograms}
 
@@ -304,14 +304,14 @@ plot(okr$МетЭкспорт,
 hist(sub$ПродЭкспорт)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-12-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-12-1.png" width="100%" />
 
 ```r
 # Карманы будут от 0 до 3000 через 100. Заодно добавим цвет:
 hist(sub$ПродЭкспорт, breaks = seq(0,3000,100), col="olivedrab3")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-12-2.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-12-2.png" width="100%" />
 
 При построении гистограммы (как и любого другого типа графика) вы можете использовать не весь массив данных, а только его подмножество Например, можно посмотреть гистограмму только для субъектов с объемом экспорта менее 300:
 
@@ -319,7 +319,7 @@ hist(sub$ПродЭкспорт, breaks = seq(0,3000,100), col="olivedrab3")
 hist(sub$ПродЭкспорт[sub$ПродЭкспорт < 300], col = "olivedrab3", breaks = seq(0, 300, 20))
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-13-1.png" width="100%" />
 
 Наконец, вы можете осуществить преобразование ряда данных перед построением гистограммы. Например, взять логарифм, чтобы проверить,похоже ли распределение на логнормальное:
 
@@ -327,7 +327,7 @@ hist(sub$ПродЭкспорт[sub$ПродЭкспорт < 300], col = "olived
 hist(log(sub$ПродЭкспорт), col = "olivedrab3")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-14-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-14-1.png" width="100%" />
 
 ## Столбчатые графики {#barplots}
 
@@ -337,7 +337,7 @@ hist(log(sub$ПродЭкспорт), col = "olivedrab3")
 barplot(okr$ХимЭкспорт)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-15-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-15-1.png" width="100%" />
 
 ```r
 
@@ -345,7 +345,7 @@ barplot(okr$ХимЭкспорт)
 barplot(-5:5)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-15-2.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-15-2.png" width="100%" />
 
 ```r
 
@@ -354,7 +354,7 @@ barplot(-5:5)
 barplot(okr$ХимЭкспорт, names.arg = okr$Регион)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-15-3.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-15-3.png" width="100%" />
 
 ```r
 
@@ -362,7 +362,7 @@ barplot(okr$ХимЭкспорт, names.arg = okr$Регион)
 barplot(okr$ХимЭкспорт, names.arg = okr$Регион, horiz=TRUE)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-15-4.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-15-4.png" width="100%" />
 
 Чтобы развернуть подписи перпендикулярно столбцам, следует использовать параметр `las = `. Справка__R__говорит нам о том, что этот параметр дает следующее поведение подписей:
 
@@ -377,7 +377,7 @@ barplot(okr$ХимЭкспорт, names.arg = okr$Регион, horiz=TRUE)
 barplot(okr$ХимЭкспорт, names.arg = okr$Регион, horiz=TRUE, las = 1)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-16-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-16-1.png" width="100%" />
 
 В данном случае очень массивные названия федеральных не умещаются в пространство графика. Можно было бы вполне убрать словосочетание "федеральный округ". Для этого используем уже знакомую нам `sub()`.
 
@@ -386,7 +386,7 @@ names = sub("федеральный округ", "", okr$Регион) # "" - о
 barplot(okr$ХимЭкспорт, names.arg = names, horiz = TRUE, las = 1)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-17-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-17-1.png" width="100%" />
 
 И снова содержимое не поместилось в поле графика. Проблема в том, что вокруг любого графика резервируются поля ограниченного размера для размещения подписей координат и т.д. Автоматически эти поля не пересчитываются, зарезервировать их --- ваша задача.
 
@@ -404,7 +404,7 @@ par(mar = c(5, 10, 4, 2)) # увеличим поле left до 10 условн�
 barplot(okr$ХимЭкспорт, names.arg = names, horiz=TRUE, las = 1)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-19-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-19-1.png" width="100%" />
 
 Добавим заголовок с помощью параметра `main = `, а подпись единиц измерения по оси $X$ — с помощью параметра `xlab = `. Поскольку количество параметров функции уже достаточно велико, введем каждый из них с новой строчки, чтобы улучшить читаемость кода:
 
@@ -417,7 +417,7 @@ barplot(okr$ХимЭкспорт,
         las = 1)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-20-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-20-1.png" width="100%" />
 
 ```r
 
@@ -431,7 +431,7 @@ barplot(okr$ХимЭкспорт,
         xlim = c(0,12000))
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-20-2.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-20-2.png" width="100%" />
 
 Работа с цветом на столбчатых диаграммах рассмотрена ниже в отдельном разделе.
 
@@ -445,7 +445,7 @@ par(mar = c(5, 5, 5, 5)) # установим поля
 pie(okr$ХимЭкспорт)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-21-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-21-1.png" width="100%" />
 
 ```r
 
@@ -453,7 +453,7 @@ pie(okr$ХимЭкспорт)
 pie(okr$ХимЭкспорт, names)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-21-2.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-21-2.png" width="100%" />
 
 ```r
 
@@ -474,7 +474,7 @@ names2=paste(names, " (", percentage, "%)", sep = "")
 pie(okr$ХимЭкспорт, names2)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-22-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-22-1.png" width="100%" />
 
 ```r
 
@@ -482,7 +482,7 @@ pie(okr$ХимЭкспорт, names2)
 pie(okr$ХимЭкспорт, names2, main = "Доля федеральных округов в экспорте продукции химической промышленности")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-22-2.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-22-2.png" width="100%" />
 
 Чтобы перенести часть заголовка на вторую строку, вы можете использовать __управляющий символ__ перевода строки `\n`, вставив его в требуемое место:
 
@@ -490,7 +490,7 @@ pie(okr$ХимЭкспорт, names2, main = "Доля федеральных о
 pie(okr$ХимЭкспорт, names2, main = "Доля федеральных округов в экспорте \n продукции химической промышленности")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-23-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-23-1.png" width="100%" />
 
 > Управляющие символы играют большое значение в программировании и используются для управления поведением текстового вывода. Нотация `\n` называется _escape-последовательностью_. Помимо перевода строки, есть и другие полезные [управляющие символы](https://ru.wikipedia.org/wiki/Управляющие_символы). Кстати, именно из-за того, что escape-последовательности начинаются с обратной косой черты (`\`), при указании системных путей в функции `setwd()` всегда следует использовать прямую косую черту (`/`). Например, следующий путь не будет найдет, поскольку он содержит управляющие последовательности `\n` и `\t`: `C:\data\tables\new`.
 
@@ -503,7 +503,7 @@ pie(okr$ХимЭкспорт,
     clockwise = TRUE)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-24-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-24-1.png" width="100%" />
 
 Работа с цветом на круговых диаграммах рассмотрена ниже в отдельном разделе.
 
@@ -533,7 +533,7 @@ barplot(okr$ХимЭкспорт,
         col = "steelblue")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-26-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-26-1.png" width="100%" />
 Помимо этого вы можете задать цвет с помощью цветовых компонент в различных пространствах. Для этого вы должны быть знакомы с основами теории цвета (посмотрите презентацию [UsingColorInR.pdf](http://research.stowers-institute.org/efg/Report/UsingColorInR.pdf). Например, фиолетовый цвет в пространстве [RGB](https://ru.wikipedia.org/wiki/RGB) можно задать с помощью функции `rgb()`, смешав синюю и красную компоненты:
 
 ```r
@@ -548,7 +548,7 @@ barplot(okr$ХимЭкспорт,
         col = violet)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-27-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-27-1.png" width="100%" />
 
 Чтобы сделать цвет __полупрозрачным__, есть две возможности: 
 
@@ -569,7 +569,7 @@ barplot(okr$ХимЭкспорт,
         col = violet.transp)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-28-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-28-1.png" width="100%" />
 
 ```r
 
@@ -584,7 +584,7 @@ barplot(okr$ХимЭкспорт,
         col = green.transp)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-28-2.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-28-2.png" width="100%" />
 
 > Функция `adjustcolor()` позволяет модифицировать все компоненты цвета, не только прозрачность. 
 
@@ -603,7 +603,7 @@ barplot(okr$ХимЭкспорт,
         col = colors)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-29-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-29-1.png" width="100%" />
 
 На самом деле, такой винегрет из цветов на столбчатых диаграммах использовать не принято. Но вы должны понимать, что при необходимости можно поменять цвет отдельно выбранных столбиков. Например, мы можем показать красным цветом Центральный и Приволжский округа, которые являются лидерами по экспорту продукции химической промышленности:
 
@@ -621,7 +621,7 @@ barplot(okr$ХимЭкспорт,
         col = colors)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-30-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-30-1.png" width="100%" />
 
 Еще одна интересная особенность использования цвета заключается в том, что количество указанных цветом может не совпадать с количеством рядов данных. Вы можете указать 2 или 3 цвета, и они будут циклически повторяться при визуализации данных:
 
@@ -637,7 +637,7 @@ barplot(okr$ХимЭкспорт,
         col = colors)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-31-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-31-1.png" width="100%" />
 
 Наконец, вещь, которой совершенно необходимо уметь пользоваться при работе с цветом в __R__ --- это цветовые палитры. Палитры чрезвычайно удобны, когда необходимо сгенерировать множество цветов, зная лишь основные оттенки. Для этого нужно создать палитру, используя функцию `colorRampPalette()`:
 
@@ -659,7 +659,7 @@ barplot(okr$ХимЭкспорт,
         col= colors)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-32-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-32-1.png" width="100%" />
 
 ```r
 
@@ -676,7 +676,7 @@ barplot(okr$ХимЭкспорт,
         col= colors)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-32-2.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-32-2.png" width="100%" />
 
 В __R__ существует множество стандартных палитр, их список можно найти в справке и документации. Наиболее полезные из них:
 
@@ -693,13 +693,13 @@ barplot(okr$ХимЭкспорт,
 pie(okr$ХимЭкспорт, names2, main = "Доля федеральных округов в экспорте \n продукции химической промышленности", col=rainbow(length(names2)))
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-33-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-33-1.png" width="100%" />
 
 ```r
 pie(okr$ХимЭкспорт, names2, main = "Доля федеральных округов в экспорте \n продукции химической промышленности", col=sample(colors(),5))
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-33-2.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-33-2.png" width="100%" />
 
 Более богатый набор палитр можно найти в библиотеке `RColorBrewer`, которая представляет собой интерпретацию палитр, доступных на сайте [colorbrewer2.org](http://colorbrewer2.org/)
 
@@ -709,7 +709,7 @@ library(RColorBrewer) # Откроем библиотеку RColorBrewer:
 display.brewer.all() # Посмотрим, какие в ней имеются палитры
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-35-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-35-1.png" width="100%" />
 
 
 К каждой из этих палитр можно обратиться по названию с помощью функции `brewer.pal()`. Поскольку нам необходимы цвета для категориальных данных, следует использовать палитры из средней части (_Set3 - Accent_)
@@ -724,7 +724,7 @@ par(mar = c(5, 5, 5, 5)) # установим поля
 pie(okr$ХимЭкспорт, names2, main = "Доля федеральных округов в экспорте \n продукции химической промышленности", col=colors)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-37-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-37-1.png" width="100%" />
 
 ```r
 
@@ -732,7 +732,7 @@ pie(okr$ХимЭкспорт, names2, main = "Доля федеральных о
 pie(okr$ХимЭкспорт, names2, main = "Доля федеральных округов в экспорте \n продукции химической промышленности", col=brewer.pal(length(names2),"Accent"))
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-37-2.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-37-2.png" width="100%" />
 
 ## Настройки отображения {#disp_settings}
 
@@ -771,7 +771,7 @@ points(tab$Год, tab$Азовское, pch=20, col="steelblue",cex = 0.8)
 lines(tab$Год, tab$Азовское, pch=20, col="steelblue")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-38-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-38-1.png" width="100%" />
 
 Аналогично происходит тонкая настройка __цвета__:
 
@@ -805,7 +805,7 @@ points(tab$Год, tab$Азовское, pch=20, col="steelblue")
 lines(tab$Год, tab$Азовское, pch=20, col="steelblue")
 ```
 
-<img src="05-BaseGraphics_files/figure-html/plotcolors-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/plotcolors-1.png" width="100%" />
 
 ### Разметка осей, рамка, сетка координат и произвольные линии {#axes}
 
@@ -854,7 +854,7 @@ axis(side = 2,
 box() # добавим рамку для красоты
 ```
 
-<img src="05-BaseGraphics_files/figure-html/manual-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/manual-1.png" width="100%" />
 
 Для размещения сетки координат существует функция `grid(nx = NULL, ny = nx, col = "lightgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)`. Как видно из набора ее параметров, сетка определяется количеством линий в горизонтальном и вертикальном направлении. Это не всегда бывает удобно, поскольку как правило мы хотим задать шаг сетки конкретной величины. По умолчанию, однако, линии сетки выбираются автоматически, как и метки:
 
@@ -866,7 +866,7 @@ plot(tab$Год,
 grid()
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-39-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-39-1.png" width="100%" />
 
 Вы, разумеется, можете поменять их количество, однако __R__ не будет за вас согласовывать шаг сетки и шаг меток осей, поскольку метки генерируются на стадии рисования `plot()` или `axis()` и не запоминаются.
 
@@ -878,7 +878,7 @@ plot(tab$Год,
 grid(10, 5)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-40-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-40-1.png" width="100%" />
 
 Функция `grid()` на самом деле является оберткой функции `abline()`, которая позволяет рисовать произвольные линии на графике. Дана функция предоставляет следующие возможности построения линий и серий линий:
 
@@ -919,7 +919,7 @@ abline(h = 10, col = "blue", lwd = 2)
 box()
 ```
 
-<img src="05-BaseGraphics_files/figure-html/manualaxes-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/manualaxes-1.png" width="100%" />
 
 ### Аннотации данных (текст на графике) {#annotations}
 
@@ -932,7 +932,7 @@ text(tab$Год,
      cex = 0.75,
      pos = 3)
 ```
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-41-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-41-1.png" width="100%" />
 
 > К сожалению, стандартный механизм размещения аннотаций пакета `graphics` не обладает возможностью устранения конфликтов подписей. Однако это возможно для графиков, построенных с помощью библиотек [lattice](https://cran.r-project.org/web/packages/lattice/index.html) и [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html). Для этого можно воспользоваться пакетом [directlabels](https://cran.r-project.org/web/packages/directlabels/index.html) или  [ggrepel](https://cran.r-project.org/web/packages/ggrepel/index.html).
 
@@ -987,7 +987,7 @@ colors = c("red3", "forestgreen", "steelblue")
 legend(location, labels, title = main, fill=colors)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/caspianlegend-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/caspianlegend-1.png" width="100%" />
 
 
 ```r
@@ -998,7 +998,7 @@ lns = c(1, 1, 1) # каждый элемент показывается лини
 legend(location, labels, title = main, col = colors, pch = pts, lwd = lns)
 ```
 
-<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-42-1.png" width="672" />
+<img src="05-BaseGraphics_files/figure-html/unnamed-chunk-42-1.png" width="100%" />
 
 Более подробно с разнообразными опциями размещения легенды на графике вы можете познакомиться, набрав в консоли команду `?legend`.
 
@@ -1048,7 +1048,7 @@ legend(location, labels, title = main, col = colors, pch = pts, lwd = lns)
     В качестве образца используйте рисунок ниже, построенный для урагана Катрина:
 
     <div class="figure">
-    <img src="images/katrina.png" alt="Пример выполнения задания №5" width="849" />
+    <img src="images/katrina.png" alt="Пример выполнения задания №5" width="100%" />
     <p class="caption">(\#fig:unnamed-chunk-43)Пример выполнения задания №5</p>
     </div>
     > __Подсказка:__ Скорость ветра и диаметр в таблице приведены в _узлах_ и _милях_ соответственно. Их необходимо перевести в _м/с_ и _км_. Для отрисовки стрелок используйте функцию [`arrows()`](https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/arrows.html). Прочтите справку к ней, чтобы разобраться как она работает. Чтобы стрелка рисовалась посередине отрезка, а не в конце, используйте `diff()` для получения разностей в давлении и скорости между соседними наблюдениями циклона.

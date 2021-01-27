@@ -25,14 +25,12 @@ library(soilDB)
 
 Таблицы данных Евростата имеют уникальные коды, по которым их можно загружать, используя API (Application programming interface). В этой лекции мы будем работать с данными о крупнейших международных партнерах Евросоюза по импорту и экспорту основных видов товаров. Например, [таблица данных по продуктам питания, напиткам и табаку](https://ec.europa.eu/eurostat/databrowser/view/tet00034/default/table?lang=en) имеет код __tet00034__:
 
-<img src="images/eurostat.png" width="1335" />
+<img src="images/eurostat.png" width="100%" />
 
 
 Для чтения таблиц по кодам в пакете eurostat имеется функция `get_eurostat()`. Чтобы год измерения получить в виде числа, а не объекта типа `Date`, используем второй параметр `time_format = num`. Для перехода от кодов продукции и стран к их полным наименованиям, дополнительно вызовем функцию `label_eurostat()` из того же пакета:
 
 ```r
-library(eurostat)
-
 tables = c('tet00034', 'tet00033', 'tet00032', 'tet00031','tet00030', 'tet00029')
 
 trades = lapply(tables, function(X) { # прочтем несколько таблиц в список
@@ -71,7 +69,6 @@ NASA [__POWER__](https://power.larc.nasa.gov/) — это проект _NASA_, �
 
 
 ```r
-library(nasapower)
 daily_single_ag <- get_power(
   community = "AG",
   lonlat = c(60.59, 56.84),
@@ -90,8 +87,8 @@ daily_single_ag # посмотрим, что получилось
 ##  
 ##  Parameters: 
 ##  PRECTOT MERRA2 1/2x1/2 Precipitation (mm day-1) ;
-##  RH2M MERRA2 1/2x1/2 Relative Humidity at 2 Meters (%) ;
-##  T2M MERRA2 1/2x1/2 Temperature at 2 Meters (C)  
+##  T2M MERRA2 1/2x1/2 Temperature at 2 Meters (C) ;
+##  RH2M MERRA2 1/2x1/2 Relative Humidity at 2 Meters (%)  
 ##  
 ## # A tibble: 30 x 10
 ##      LON   LAT  YEAR    MM    DD   DOY YYYYMMDD    RH2M   T2M PRECTOT
@@ -130,8 +127,8 @@ interannual_sse # посмотрим, что получилось
 ##  Value for missing model data cannot be computed or out of model availability range: NA  
 ##  
 ##  Parameters: 
-##  CLRSKY_SFC_SW_DWN SRB/FLASHFlux 1/2x1/2 Clear Sky Insolation Incident on a Horizontal Surface (kW-hr/m^2/day) ;
-##  ALLSKY_SFC_SW_DWN SRB/FLASHFlux 1/2x1/2 All Sky Insolation Incident on a Horizontal Surface (kW-hr/m^2/day)  
+##  ALLSKY_SFC_SW_DWN SRB/FLASHFlux 1/2x1/2 All Sky Insolation Incident on a Horizontal Surface (kW-hr/m^2/day) ;
+##  CLRSKY_SFC_SW_DWN SRB/FLASHFlux 1/2x1/2 Clear Sky Insolation Incident on a Horizontal Surface (kW-hr/m^2/day)  
 ##  
 ## # A tibble: 4 x 17
 ##     LON   LAT PARAMETER  YEAR   JAN   FEB   MAR   APR   MAY   JUN   JUL   AUG
@@ -153,7 +150,6 @@ __Soil Data Access__ — это онлайн-сервис департамент
 Для запросов данных по почвенным сериям достаточно вызвать функцию `fetchOSD` и передать ей имя одной или более серий:
 
 ```r
-library(soilDB)
 soils = c('wilkes',  'chewacla', 'congaree')
 series = fetchOSD(soils, extended = TRUE)
 ```
@@ -278,12 +274,12 @@ str(series)
 ##  $ pmkind          :'data.frame':	6 obs. of  5 variables:
 ##   ..$ series: chr [1:6] "CHEWACLA" "CHEWACLA" "CONGAREE" "CONGAREE" ...
 ##   ..$ pmkind: chr [1:6] "Alluvium" "Residuum" "Alluvium" "Fluviomarine deposits" ...
-##   ..$ n     : int [1:6] 206 1 72 13 1 267
-##   ..$ total : int [1:6] 207 207 86 86 86 267
+##   ..$ n     : int [1:6] 207 1 72 13 1 264
+##   ..$ total : int [1:6] 208 208 86 86 86 264
 ##   ..$ P     : num [1:6] 0.9952 0.0048 0.8372 0.1512 0.0116 ...
 ##  $ pmorigin        :'data.frame':	24 obs. of  5 variables:
 ##   ..$ series  : chr [1:24] "CHEWACLA" "CHEWACLA" "CHEWACLA" "CHEWACLA" ...
-##   ..$ pmorigin: chr [1:24] "Igneous and metamorphic rock" "Sedimentary rock" "Mixed" "Granite and gneiss" ...
+##   ..$ pmorigin: chr [1:24] "Igneous and metamorphic rock" "Sedimentary rock" "Granite and gneiss" "Mixed" ...
 ##   ..$ n       : int [1:24] 29 11 2 2 1 1 1 1 1 1 ...
 ##   ..$ total   : int [1:24] 51 51 51 51 51 51 51 51 51 51 ...
 ##   ..$ P       : num [1:24] 0.5686 0.2157 0.0392 0.0392 0.0196 ...
@@ -320,9 +316,9 @@ str(series)
 ##   ..$ n          : int [1:72] 32689 32689 32689 32689 32689 32689 32689 32689 32689 32689 ...
 ##   ..$ month      : Factor w/ 12 levels "1","2","3","4",..: 1 2 3 4 5 6 7 8 9 10 ...
 ##   ..$ variable   : Factor w/ 2 levels "Potential ET (mm)",..: 2 2 2 2 2 2 2 2 2 2 ...
-##  $ soilweb.metadata:'data.frame':	17 obs. of  2 variables:
-##   ..$ product    : chr [1:17] "block diagram archive" "component pedons" "KSSL snapshot" "MLRA membership" ...
-##   ..$ last_update: chr [1:17] "2019-12-17" "2020-12-08" "2020-03-18" "2020-07-15" ...
+##  $ soilweb.metadata:'data.frame':	19 obs. of  2 variables:
+##   ..$ product    : chr [1:19] "block diagram archive" "component pedons" "KSSL snapshot" "MLRA membership" ...
+##   ..$ last_update: chr [1:19] "2019-12-17" "2020-12-08" "2020-03-13" "2020-07-14" ...
 ```
 
 
@@ -340,7 +336,7 @@ ggplot(data = trades_total) +
   geom_point(mapping = aes(x = time, y = export))
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-8-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-8-1.png" width="100%" />
 
 Базовый (минимально необходимый) шаблон построения графика через __ggplot__ выглядит следующим образом:
 
@@ -366,7 +362,7 @@ ggplot(data = trades_total) +
   geom_line(mapping = aes(x = time, y = export))
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-10-1.png" width="100%" />
 
 Поскольку в данном случае величина является агрегированной за год, более правильным может быть показ ее изменений в виде ступенчатого линейного графика, который получается через геометрию `geom_step()`:
 
@@ -376,7 +372,7 @@ ggplot(data = trades_total) +
   geom_step(mapping = aes(x = time, y = export))
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-11-1.png" width="100%" />
 
 Можно совместить несколько геометрий, добавив их последовательно на график:
 
@@ -386,7 +382,7 @@ ggplot(data = trades_total) +
   geom_point(mapping = aes(x = time, y = export))
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-12-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-12-1.png" width="100%" />
 
 Если у нескольких геометрий одинаковые отображения, их можно вынести в вызов функции `ggplot()` (чтобы не дублировать):
 
@@ -396,7 +392,7 @@ ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
   geom_point()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-13-1.png" width="100%" />
 
 Наглядность линейного графика можно усилить, добавив "заливку" области с использованием `geom_area()`:
 
@@ -407,7 +403,7 @@ ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
   geom_point()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-14-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-14-1.png" width="100%" />
 
 Для построения столбчатой диаграммы следует использовать геометрию `geom_col()`. Например, вот так выглядит структура экспорта продукции машиностроения из Евросоюза по ведущим партнерам:
 
@@ -418,7 +414,7 @@ trades %>%
   geom_col()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-15-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-15-1.png" width="100%" />
 
 Развернуть диаграмму можно, используя функцию `coord_flip()`:
 
@@ -430,7 +426,7 @@ trades %>%
   coord_flip()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-16-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-16-1.png" width="100%" />
 
 ## Графические переменные и группировки {#advgraphics_aes}
 
@@ -445,7 +441,7 @@ ggplot(trades_total) +
     geom_line(mapping = aes(x = time, y = export), color = 'blue')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-17-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-17-1.png" width="100%" />
 
 ```r
 
@@ -455,7 +451,7 @@ ggplot(trade_russia) + # у каждой группы данных свой цв
   geom_line(mapping = aes(x = time, y = export, color = sitc06))
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-17-2.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-17-2.png" width="100%" />
 
 ```r
 
@@ -464,7 +460,7 @@ ggplot(trade_russia, mapping = aes(x = time, y = export, color = sitc06)) + # а
   geom_point()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-17-3.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-17-3.png" width="100%" />
 
 Аналогичным образом работает параметр формы значка:
 
@@ -474,7 +470,7 @@ ggplot(trades_total) +
     geom_point(mapping = aes(x = time, y = export), shape = 15)
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-18-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-18-1.png" width="100%" />
 
 ```r
     
@@ -483,7 +479,7 @@ ggplot(trade_russia) + # у каждой группы данных свой зн
     geom_point(mapping = aes(x = time, y = export, shape = sitc06))
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-18-2.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-18-2.png" width="100%" />
 
 Для изменения размера значка или линии используйте параметр `size`:
 
@@ -494,7 +490,7 @@ ggplot(trades_total, mapping = aes(x = time, y = export)) +
     geom_line(size = 2)
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-19-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-19-1.png" width="100%" />
 
 Если вы используете зависимые от значений графические переменные и при этом хотите добавить на график еще одну геометрию (c постоянными параметрами), то вам необходимо сгруппировать объекты второй геометрии по той же переменной, по которой вы осуществляете разбиение в первой геометрии. Для этого используйте параметр `group`:
 
@@ -504,7 +500,7 @@ ggplot(trade_russia, aes(x = time, y = export)) +
     geom_line(aes(group = sitc06))
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-20-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-20-1.png" width="100%" />
 
 Для изменения цвета столбчатых диаграмм следует использовать параметр `fill`, а цвет и толщина обводки определяются параметрами `color` и `size`:
 
@@ -516,7 +512,7 @@ trades %>%
   coord_flip()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-21-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-21-1.png" width="100%" />
 
 Цвет на столбчатых диаграммах можно использовать для отображения дополнительных переменных, например типа экспортируемой продукции. По умолчанию столбики будут образовывать стек
 
@@ -528,7 +524,7 @@ trades %>%
   coord_flip()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-22-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-22-1.png" width="100%" />
 
 Если вам важно не абсолютное количество, а процентное соотношение величин, вы можете применить вид группировки `position == 'fill`:
 
@@ -540,7 +536,7 @@ trades %>%
     coord_flip()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-23-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-23-1.png" width="100%" />
 
 Еще один вид группировки — это группировка по соседству. Чтобы использовать ее, применить метод `position == 'dodge`:
 
@@ -551,7 +547,7 @@ trade_russia %>%
     geom_col(color = 'black', size = 0.2, position = 'dodge')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-24-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-24-1.png" width="100%" />
 
 ## Системы координат {#advgraphics_coords}
 
@@ -569,7 +565,7 @@ ggplot(trades_type) +
     geom_point(mapping = aes(x = export, y = import, color = sitc06, size = time), alpha = 0.5)
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-25-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-25-1.png" width="100%" />
 
 ```r
 
@@ -578,7 +574,7 @@ ggplot(trades_type) +
     coord_flip()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-25-2.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-25-2.png" width="100%" />
 
 Поскольку объемы продукции различаются _на порядки_, для различимости малых объемов целесообразно перейти к логарифмической шкале. Для этого используем `scale_log_x()` и `scale_log_y()`:
 
@@ -589,7 +585,7 @@ ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size =
   scale_y_log10()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-26-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-26-1.png" width="100%" />
 
 Преобразование в полярную систему координат используется для того чтобы получить круговую секторную диаграмму Найтингейл (_coxcomb chart_):
 
@@ -601,7 +597,7 @@ trades %>%
   coord_polar()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-27-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-27-1.png" width="100%" />
  
 Разумеется, здесь тоже можно использовать преобразование шкалы по оси _Y_ (которая теперь отвечает за радиус). Применим правило квадратного корня, добавив вызов функции `scale_y_sqrt()`:
 
@@ -614,7 +610,7 @@ trades %>%
   scale_y_sqrt()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-28-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-28-1.png" width="100%" />
 
 Чтобы построить классическую секторную диаграмму, необходимо, чтобы угол поворота соответствовал величине показателя (оси _Y_), а не названию категории (оси _X_). Для этого при вызове функции `coord_polar()` следует указать параметр `theta = 'y'`, а при вызове `geom_col()` оставить параметр `x` пустым:
 
@@ -626,7 +622,7 @@ trades %>%
   coord_polar(theta = 'y')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-29-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-29-1.png" width="100%" />
 
 ## Названия осей и легенды {#advgraphics_titles}
 
@@ -645,7 +641,7 @@ ggplot(trades_type) +
   labs(color = "Вид продукции", size = 'Год')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-30-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-30-1.png" width="100%" />
 
 Добавим заголовок и подзаголовок графика:
 
@@ -657,7 +653,7 @@ ggplot(trades_type) +
           subtitle = 'Данные по ключевым партнерам')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-31-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-31-1.png" width="100%" />
 
 Изменим подписи осей:
 
@@ -671,7 +667,7 @@ ggplot(trades_type) +
   ylab('Импорт')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-32-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-32-1.png" width="100%" />
 
 ## Разметка осей {#advgraphics_axes}
 
@@ -688,7 +684,7 @@ ggplot(trades_type) +
   ylab('Импорт')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-33-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-33-1.png" width="100%" />
 
 Для управления разметкой осей необходимо использовать функции `scale_x_continuous()`, `scale_y_continuous()`, `scale_x_log10(...)`, `scale_y_log10(...)`, `scale_x_reverse(...)`, `scale_y_reverse(...)`, `scale_x_sqrt(...)`, `scale_y_sqrt(...)`, которые, с одной стороны, указывают тип оси, а с другой стороны — позволяют управлять параметрами сетки координат и подписями.
 
@@ -701,7 +697,7 @@ ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size =
   scale_y_log10(breaks = seq(0, 500000, 100000))
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-34-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-34-1.png" width="100%" />
 
 В данном случае, как раз, будет достаточно полезным параметр `labels`, поскольку метки можно сделать более компактными, поделив их на 1000 (и не забыть потом указать, что объемы теперь указаны не в миллионах, а в миллиардах долларов):
 
@@ -713,7 +709,7 @@ ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size =
   scale_y_log10(breaks = brks, labels = brks / 1000)
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-35-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-35-1.png" width="100%" />
 
 Для обычной шкалы используйте функции `scale_x_continuous()` и `scale_y_continuous()`:
 
@@ -724,7 +720,7 @@ ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size =
   scale_y_continuous(breaks = brks, labels = brks / 1000)
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-36-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-36-1.png" width="100%" />
 
 Для того чтобы принудительно указать диапазоны осей и графических переменных, следует использовать функции `lims(...)`, `xlim(...)` и `ylim(...)`. Например, мы можем приблизиться в левый нижний угол графика, задав диапазон 0-200000 по обеим осям:
 
@@ -735,7 +731,7 @@ ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size =
   ylim(0, 75000)
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-37-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-37-1.png" width="100%" />
 
 Функция `lims()` работает еще хитрее: она позволяет применять графические переменные только к ограниченному набору значений исходных данных. Например, таким путем я могу выделить на графике продукцию машиностроения:
 
@@ -745,7 +741,7 @@ ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size =
   lims(color = 'Machinery and transport equipment')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-38-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-38-1.png" width="100%" />
 
 ## Подписи и аннотации {#advgraphics_labels}
 
@@ -759,7 +755,7 @@ ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
   geom_text(aes(label = floor(export / 1000))) # добавляем подписи
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-39-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-39-1.png" width="100%" />
 
 Выравнивание подписи относительно якорной точки (снизу, сверху, справа, слева) по горизонтали и вертикали управляется параметрами `hjust` и `vjust`, а смещения по осям X (в координатах графика) — параметрами `nudge_x` и `nudge_y`:
 
@@ -772,7 +768,7 @@ ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
             vjust = 0, nudge_y = 40000) # добавляем подписи
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-40-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-40-1.png" width="100%" />
 
 Подписи с фоновой плашкой добавляются через функцию `geom_label()`, которая имеет аналогичный синтаксис:
 
@@ -785,7 +781,7 @@ trades %>%
   geom_label(aes(y = export / 2, label = floor(export / 1000))) # добавляем подписи
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-41-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-41-1.png" width="100%" />
 
 __Аннотации__ представляют собой объекты, размещаемые на графике вручную, и используемые, как правило, для выделения объектов и областей. Для размещения аннотаций используется функция `annotate()`:
 
@@ -799,7 +795,7 @@ ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
   annotate("text", x = as.Date('2009-01-01'), y = 550000, label = "Это провал", color = 'red')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-42-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-42-1.png" width="100%" />
 
 Аннотировать можно не только подписями, но и регионами. Например, мы можем выделить область, которая соответствует импорту/экспорту продукции химической промышленности:
 
@@ -810,7 +806,7 @@ ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size =
   annotate("text", x = 175000, y = 190000, label = "Chemicals", color = 'coral')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-43-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-43-1.png" width="100%" />
 
 
 ## Фасеты {#advgraphics_facets}
@@ -830,7 +826,7 @@ trades %>%
   facet_wrap(~time)
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-44-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-44-1.png" width="100%" />
 
 ## Темы {#advgraphics_themes}
 
@@ -846,7 +842,7 @@ ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
   theme_bw()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-45-1.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-45-1.png" width="100%" />
 
 ```r
 
@@ -860,7 +856,7 @@ ggplot(trades_type) +
   theme_bw()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-45-2.png" width="672" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-45-2.png" width="100%" />
 
 ## Контрольные вопросы и упражнения {#questions_tasks_advgraphics}
 

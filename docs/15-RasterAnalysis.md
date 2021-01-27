@@ -69,7 +69,7 @@ plot(bed,
      legend = F)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-2-1.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-2-1.png" width="100%" />
 
 ```r
 plot(ice, 
@@ -79,7 +79,7 @@ plot(ice,
      legend = F)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-2-2.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-2-2.png" width="100%" />
 
 ```r
 
@@ -94,7 +94,7 @@ plot(borders,
      add = TRUE)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-2-3.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-2-3.png" width="100%" />
 
 ```r
 
@@ -110,7 +110,7 @@ plot(borders,
      add = TRUE)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-2-4.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-2-4.png" width="100%" />
 
 ### Фокальные операции {#raster_focal}
 
@@ -134,7 +134,7 @@ dem = crop(ice, extent(-120, -75, 10, 40))
 spplot(dem)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-3-1.png" width="100%" />
 
 ```r
 
@@ -152,7 +152,7 @@ spplot(stack(dem, filtered),
        names.attr=c('Исходный рельеф', 'Сглаживание средним'))
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-3-2.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-3-2.png" width="100%" />
 
 Более мягким эффектом сглаживания, который к тому же не нарушает дифференцируемость поверхности, является гауссово сглаживание. Коэффициенты в матрице Гаусса убывают от центральной ячейки к краям матрицы по закону Гаусса-Лапласа, что позволяет придать центральной ячейке более высокий вес по сравнению с ячейками, располагающимися на краю анализируемой окрестности:
 
@@ -164,7 +164,7 @@ spplot(stack(dem, filtered),
        names.attr=c('Исходный рельеф', 'Гауссово сглаживание'))
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-4-1.png" width="100%" />
 
 Еще одна интересная область применения фильтрации --- это обнаружение границ (change detection). Границы на изображении возникают в тех местах, где его яркость резко меняет свое значение (в одном или нескольких каналах). Например, на фотографии контур лица может быть распознан по перепаду яркости между его изображением и фоном (если он имеет существенно отличный цвет). Поскольку перепад яркости соответствует экстремальным значениям производной поверхности (отрицательным или положительным), его также можно определить путем фокального анализа, а затем отсечь ячейки растра, в которых значение этой производной по модулю превышает заданный порог (то есть, имеет необходимый контраст). 
 
@@ -184,7 +184,7 @@ plot(filtered,
      main = 'Производная поверхности')
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-5-1.png" width="100%" />
 
 ```r
 
@@ -203,7 +203,7 @@ plot(faults,
      add = TRUE)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-5-2.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-5-2.png" width="100%" />
 
 Еще один распространенный случай использования фокальных операций --- это морфометрический анализ поверхностей. Квадратная окрестность $3\times3$ вокруг каждой ячейки формирует локальную поверхность, производные которой дают представление об уклоне, экспозиции и прочих морфометрических параметрах. Их можно вычислить с помощью функции `terrain()` из пакета `raster`:
 
@@ -214,7 +214,7 @@ dem = raster('data/dem_fergana.tif')
 spplot(dem)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-6-1.png" width="100%" />
 
 ```r
 
@@ -225,7 +225,7 @@ spplot(slope,
        names.attr=c('Углы наклона'))
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-6-2.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-6-2.png" width="100%" />
 
 ```r
 
@@ -236,7 +236,7 @@ spplot(aspect,
        names.attr=c('Экспозиции склона'))
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-6-3.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-6-3.png" width="100%" />
 
 Вычисление производных поверхности позволяет не только исследовать рельеф, но также строить его изображения. Например, хорошо знакомую всем по картам аналитическую отмывку рельефа (_hillshade_). Яркость поверхности в этом способе изображения зависит от угла между направлением на источник освещения (откуда светит Солнце) и нормалью к поверхности. Нормаль можно вычислить как напрямую через производные поверхности, так и восстановить на основе значений угла наклона и экспозиции в точке, что и используется в пакете __raster__. Обратите внимание на то, что для того чтобы повысить наглядность (контрастность) изображения, мы умножаем высоты рельефа на 20. Это стандартная практика для мелкомасштабных карт:
 
@@ -252,7 +252,7 @@ plot(hill,
      main = 'Отмывка рельефа')
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-7-1.png" width="100%" />
 
 #### Расширенная окрестность {#raster_focal_extended}
 
@@ -322,7 +322,7 @@ ggplot() +
   theme_bw()
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-8-1.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-8-1.png" width="100%" />
 
 ### Зональные операции {#raster_zonal}
 
@@ -336,7 +336,7 @@ temp = raster::getData("worldclim", var = "tmean", res = 10) %>%
 plot(temp)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-9-1.png" width="384" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-9-1.png" width="100%" />
 
 ```r
 
@@ -355,7 +355,7 @@ ggplot() +
   theme(legend.position = 'bottom')
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-9-2.png" width="384" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-9-2.png" width="100%" />
 
 > Оператор `@` означает обращение к _слоту_ объекта. Слоты представляют собой объекты, являющиеся внутри других объектов, являющихся экземплярами классов S4. 
 
@@ -454,7 +454,7 @@ ggplot(zonal_stats) +
   scale_x_continuous(breaks = months)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-12-1.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-12-1.png" width="100%" />
 
 Перед вычислением целесообразно разделить растр землепользования на северное и южное полушарие (т.к. ход температур в них противоположный):
 
@@ -493,7 +493,7 @@ ggplot(mtemp_tidy2) +
   facet_wrap(~hemisphere, ncol = 1)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-13-1.png" width="100%" />
 
 ### Глобальные операции {#raster_global}
 
@@ -525,7 +525,7 @@ points(coords)
 text(coords, labels = z, pos = 4)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-15-1.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-15-1.png" width="100%" />
 
 
 Одна из наиболее распространенных задач по извлечению растровых данных — это построение профиля вдоль заданной линии. Воспользуемся интерактивным редактором для проведения линии профиля
@@ -591,7 +591,7 @@ tm_shape(pts) +
 tm_layout(legend.position = c('left', 'bottom'))
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-19-1.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-19-1.png" width="100%" />
 
 ```r
 
@@ -605,7 +605,7 @@ tempdf %>%
     ggtitle('Профиль среднемесячной температуры июня по линии A—B')
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-19-2.png" width="672" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-19-2.png" width="100%" />
 
 ## Контрольные вопросы и упражнения {#questions_tasks_raster}
 

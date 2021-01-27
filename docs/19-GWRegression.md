@@ -2,6 +2,16 @@
 
 
 
+
+```r
+library(sf)
+library(RColorBrewer)
+library(readxl)
+library(tidyverse)
+library(tmap)
+library(GWmodel)
+```
+
 [Программный код главы](https://github.com/tsamsonov/r-geo-course/blob/master/code/15-SpatstatAutocorrelation.R)
 
 ## Географически взвешенная регрессия (GWR) {#autocorrelation_gwr}
@@ -47,8 +57,8 @@ $$\mathbf{W}(i) = \begin{bmatrix}
 Весовая функция должна быть убывающей. Существует множество вариантов таких функций, но наиболее часто используются гауссоподобные варианты:
 
 <div class="figure">
-<img src="slides/images/gwr_wlocal.png" alt="Весовая функция" width="469" />
-<p class="caption">(\#fig:unnamed-chunk-1)Весовая функция</p>
+<img src="slides/images/gwr_wlocal.png" alt="Весовая функция" width="100%" />
+<p class="caption">(\#fig:unnamed-chunk-2)Весовая функция</p>
 </div>
 
 В случае _фиксированной_ весовой функции окрестность всегда имеет фиксированный размер:
@@ -58,15 +68,15 @@ $$w_{ij} = \operatorname{exp}\{-\frac{1}{2} (d_{ij}/h)^2\},$$
 где $d_{ij}$ есть расстояние, $h$ — полоса пропускания.
 
 <div class="figure">
-<img src="slides/images/wfixed.png" alt="Фиксированная весовая функция" width="492" />
-<p class="caption">(\#fig:unnamed-chunk-2)Фиксированная весовая функция</p>
+<img src="slides/images/wfixed.png" alt="Фиксированная весовая функция" width="100%" />
+<p class="caption">(\#fig:unnamed-chunk-3)Фиксированная весовая функция</p>
 </div>
 
 В случае _адаптивной_ весовой функции окрестность ограничивается $N$ ближайшими точками. За пределами этой окрестности веса принимаются равными нулю:
 
 <div class="figure">
-<img src="slides/images/wadaptive.png" alt="Адаптивная весовая функция" width="531" />
-<p class="caption">(\#fig:unnamed-chunk-3)Адаптивная весовая функция</p>
+<img src="slides/images/wadaptive.png" alt="Адаптивная весовая функция" width="100%" />
+<p class="caption">(\#fig:unnamed-chunk-4)Адаптивная весовая функция</p>
 </div>
 
 __Полоса пропускания__ $h$ обладает следующими особенностями:
@@ -100,7 +110,7 @@ tm_shape(realest) +
   tm_view(symbol.size.fixed = TRUE)
 ```
 
-<img src="19-GWRegression_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+<img src="19-GWRegression_files/figure-html/unnamed-chunk-5-1.png" width="100%" />
 
 Для того чтобы оценить пространственую неравномерность реакции стоимости жилья на увеличение количества комнат, построим модель географически взвешенной регрессии:
 
@@ -111,7 +121,7 @@ samples = realest %>% dplyr::sample_n(1000) %>% as('Spatial')
 ##    ***********************************************************************
 ##    *                       Package   GWmodel                             *
 ##    ***********************************************************************
-##    Program starts at: 2021-01-26 14:47:39 
+##    Program starts at: 2021-01-27 17:24:03 
 ##    Call:
 ##    gwr.basic(formula = price ~ rooms, data = samples, bw = 1000, 
 ##     kernel = "gaussian")
@@ -128,24 +138,24 @@ samples = realest %>% dplyr::sample_n(1000) %>% as('Spatial')
 ## 
 ##    Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -3119.1  -808.2  -386.4   401.9 10005.8 
+## -1711.1  -731.6  -294.3   283.9 10626.4 
 ## 
 ##    Coefficients:
 ##                Estimate Std. Error t value Pr(>|t|)    
-##    (Intercept)  2375.53      79.53   29.87   <2e-16 ***
-##    rooms         410.89      32.29   12.72   <2e-16 ***
+##    (Intercept)  2290.63      70.89   32.31   <2e-16 ***
+##    rooms         420.48      29.07   14.47   <2e-16 ***
 ## 
 ##    ---Significance stars
 ##    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
-##    Residual standard error: 1337 on 998 degrees of freedom
-##    Multiple R-squared: 0.1396
-##    Adjusted R-squared: 0.1387 
-##    F-statistic: 161.9 on 1 and 998 DF,  p-value: < 2.2e-16 
+##    Residual standard error: 1225 on 998 degrees of freedom
+##    Multiple R-squared: 0.1733
+##    Adjusted R-squared: 0.1725 
+##    F-statistic: 209.3 on 1 and 998 DF,  p-value: < 2.2e-16 
 ##    ***Extra Diagnostic information
-##    Residual sum of squares: 1784149023
-##    Sigma(hat): 1337.058
-##    AIC:  17238.33
-##    AICc:  17238.35
+##    Residual sum of squares: 1496669184
+##    Sigma(hat): 1224.61
+##    AIC:  17062.63
+##    AICc:  17062.65
 ##    ***********************************************************************
 ##    *          Results of Geographically Weighted Regression              *
 ##    ***********************************************************************
@@ -157,21 +167,21 @@ samples = realest %>% dplyr::sample_n(1000) %>% as('Spatial')
 ##    Distance metric: Euclidean distance metric is used.
 ## 
 ##    ****************Summary of GWR coefficient estimates:******************
-##                  Min.  1st Qu.   Median  3rd Qu.   Max.
-##    Intercept -1525.15  1764.41  2110.58  2487.23 4725.0
-##    rooms      -645.40   439.63   545.43   680.04 2055.6
+##                 Min. 1st Qu.  Median 3rd Qu.   Max.
+##    Intercept -571.72 1698.13 2057.86 2321.47 4170.0
+##    rooms     -191.53  458.19  528.09  644.14 1550.7
 ##    ************************Diagnostic information*************************
 ##    Number of data points: 1000 
-##    Effective number of parameters (2trace(S) - trace(S'S)): 124.3264 
-##    Effective degrees of freedom (n-2trace(S) + trace(S'S)): 875.6736 
-##    AICc (GWR book, Fotheringham, et al. 2002, p. 61, eq 2.33): 17068.95 
-##    AIC (GWR book, Fotheringham, et al. 2002,GWR p. 96, eq. 4.22): 16952.35 
-##    Residual sum of squares: 1227115572 
-##    R-square value:  0.4082272 
-##    Adjusted R-square value:  0.3241124 
+##    Effective number of parameters (2trace(S) - trace(S'S)): 126.7873 
+##    Effective degrees of freedom (n-2trace(S) + trace(S'S)): 873.2127 
+##    AICc (GWR book, Fotheringham, et al. 2002, p. 61, eq 2.33): 16873.06 
+##    AIC (GWR book, Fotheringham, et al. 2002,GWR p. 96, eq. 4.22): 16752.58 
+##    Residual sum of squares: 1002237376 
+##    R-square value:  0.4464363 
+##    Adjusted R-square value:  0.3659687 
 ## 
 ##    ***********************************************************************
-##    Program stops at: 2021-01-26 14:47:39
+##    Program stops at: 2021-01-27 17:24:03
 
 tm_shape(gwr_res$SDF) +
   tm_bubbles(col = 'rooms', # это не количество комнат, а коэффициент регрессии
@@ -182,14 +192,14 @@ tm_shape(gwr_res$SDF) +
   tm_view(symbol.size.fixed = TRUE)
 ```
 
-<img src="19-GWRegression_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+<img src="19-GWRegression_files/figure-html/unnamed-chunk-6-1.png" width="100%" />
 
 Как видно, модель GWR наглядно показывает наличие пространственной гетерогенности (неоднороности) в распределении показателя. Четко видны районы (в основном цеентральные, но также и часть окраинных), где стоимость жилья резко возрастает при увеличении количества комнат.
 
 ## Краткий обзор {#gwr_review}
 
 Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
-<iframe src="https://tsamsonov.github.io/r-geo-course/slides/15-SpatialRegression_slides.html#1" width="672" height="500px"></iframe>
+<iframe src="https://tsamsonov.github.io/r-geo-course/slides/15-SpatialRegression_slides.html#1" width="100%" height="500px"></iframe>
 
 > Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.
 

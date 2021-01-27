@@ -225,7 +225,7 @@ lines(kden, shrink = 3, # параметр shrink отвечает за масш
       col = 'steelblue')
 ```
 
-<img src="09-CircularStats_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+<img src="09-CircularStats_files/figure-html/unnamed-chunk-9-1.png" width="100%" />
 
 > Параметр `shrink` отвечает за масштаб радиус-вектора на графиках из пакета __circular__. Чем больше его величина, тем сильнее будет сжат график относительно центра круга.
 
@@ -276,7 +276,7 @@ text(x = 1.4 * xp, y = 1.4 * yp,
      labels = paste0(round(180 * modal / pi, 0), '°')) # приводим к целым градусам
 ```
 
-<img src="09-CircularStats_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+<img src="09-CircularStats_files/figure-html/unnamed-chunk-10-1.png" width="100%" />
 
 Проведем анализ направлений для всех станций. Для этого рассчитаем функции плотности распределения и разместим их в новом фрейме данных с лист-колонкой.
 
@@ -361,7 +361,7 @@ for (obs_name in dens$name) {
 }
 ```
 
-<img src="09-CircularStats_files/figure-html/unnamed-chunk-12-1.png" width="672" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-2.png" width="672" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-3.png" width="672" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-4.png" width="672" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-5.png" width="672" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-6.png" width="672" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-7.png" width="672" />
+<img src="09-CircularStats_files/figure-html/unnamed-chunk-12-1.png" width="100%" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-2.png" width="100%" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-3.png" width="100%" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-4.png" width="100%" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-5.png" width="100%" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-6.png" width="100%" /><img src="09-CircularStats_files/figure-html/unnamed-chunk-12-7.png" width="100%" />
 
 Таким образом, мы провели графический и статистический анализ среднемноголетних направлений ветра по данным полярных аэрологических станций России. Выявлены модальные направлений, выполнена аппроксимация функции плотности вероятности направлений ветра.
 
@@ -421,7 +421,7 @@ summary(tiksi_wind$wind)
 
 1. Загрузите [файл](https://github.com/tsamsonov/r-geo-course/blob/master/data/gem_faults.xlsx) с фрагментом базы данных [__GEM Global Active Faults__](https://github.com/GEMScienceTools/gem-global-active-faults) по линеаментам сейсмически активных разломов:
 
-    <img src="images/gem_faults.png" width="1004" />
+    <img src="images/gem_faults.png" width="100%" />
 
     Данный файл содержит информацию по разломам Байкальской рифтовой зоны (каталог `EMME`) и Большого Кавказского хребта (каталог `GEM_NE_Asia`). При его построении исходные линии были разбиты на отрезки одинаковой длины и азимут каждого отрезка вычислен в поле `dir`. Преобразуйте эти данные к типу `circular`, вычислите описательные статистики направлений разломов для двух участков, а также постройте для них розы-диаграммы с выделенным модальным направлением и функцией плотности распределения направлений. Выведите в подзаголовок графика название участка.
 

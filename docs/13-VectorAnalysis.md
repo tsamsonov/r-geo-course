@@ -102,7 +102,7 @@ plot(poi %>% st_geometry(),
      add = TRUE)
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-1-1.png" width="672" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-1-1.png" width="100%" />
 
 Теперь приступим к изучению данных, хранящихся в слое `poi` (от англ. POI --- Point Of Interest). Данный слой содержит все точечные маркеры OSM, которыми были отмечены на карте объекты, представляющие (по мнению создателей данных) интерес для пользователей. В POI включаются самые разнообразные объекты, такие как: объекты сферы услуг (amenity), места для отдыха (leisure), офисные здания (office), магазины и торговые центры (shop), туристические достопримечательности (tourism), спортивные объекты (sport), примечательные инженерные сооружения (man_made). В наших данных информация разнесена по соответствующим полям, каждый объект снабжен уникальным идентификатором:
 
@@ -382,7 +382,7 @@ legendGradLines(title.txt = "Пункты питания",
                 col = "red")
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-10-1.png" width="100%" />
 
 ## Анализ взаимного положения (топологический) {#topology_analysis}
 
@@ -456,7 +456,7 @@ legendChoro(breaks = intervals$brks,
             title.txt = "Заведений\nна 1 кв.км")
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-14-1.png" width="672" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-14-1.png" width="100%" />
 
 Итак, используя топологический пространственный запрос "Содержит", мы смогли агрегировать точечные объекты внутри площадных и построить картограммы плотности распределения пунктов питания по районам центра Москвы.
 
@@ -548,7 +548,7 @@ plot(selected.poi %>% st_geometry(),
      add = TRUE)
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-16-1.png" width="672" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-16-1.png" width="100%" />
 
 
 ```
@@ -598,7 +598,7 @@ plot(selected.poi %>% st_geometry(),
      add = TRUE)
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-18-1.png" width="672" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-18-1.png" width="100%" />
 
 
 ```
@@ -643,7 +643,7 @@ plot(zones %>% st_geometry())
 plot(stations, add = TRUE, pch = 19, col = 'black')
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-20-1.png" width="672" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-20-1.png" width="100%" />
 
 Для визуализации результатов мы будем использовать метод картодиаграмм (пропорциональных символов), реализованный в функции `propSymbolsLayer()` пакета `cartography`. Размером кружка покажем количество пунктов питания, оказавшихся в каждой зоне окружения:
 
@@ -673,7 +673,7 @@ text(zones %>% st_centroid() %>% st_coordinates(),
      cex = log(zones.poi$count)/4)
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-21-1.png" width="672" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-21-1.png" width="100%" />
 
 ## Анализ зон транспортной доступности  {#transport_zones}
 
@@ -733,7 +733,7 @@ plot(psel %>% st_geometry(),
      add = TRUE)
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-22-1.png" width="672" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-22-1.png" width="100%" />
 
 Итак, в данном разделе мы научились строить зоны транспортной доступности в виде полигонов, ограниченных изохроной времени движения.
 
@@ -796,7 +796,7 @@ text(destination %>% st_coordinates(),
      cex = 0.7)
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-23-1.png" width="672" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-23-1.png" width="100%" />
 
 ## Контрольные вопросы и упражнения {#qtasks_vector_analysis}
 
