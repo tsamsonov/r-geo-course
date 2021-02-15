@@ -79,7 +79,7 @@
 <span class="header-section-number">11.1</span> Предварительные условия<a class="anchor" aria-label="anchor" href="#mapping_prerequisites"><i class="fas fa-link"></i></a>
 </h2>
 <p>Для выполнения кода данной лекции вам понадобятся следующие пакеты:</p>
-<div class="sourceCode" id="cb509"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb501"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/stars/">stars</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mtennekes/tmap">tmap</a></span><span class="op">)</span>
@@ -113,7 +113,7 @@
 <code><a href="https://rdrr.io/pkg/rnaturalearth/man/ne_coastline.html">ne_coastline()</a></code> береговая линия</li>
 </ul>
 <p>Для загрузки других слоев необходимо использовать функцию <code><a href="https://rdrr.io/pkg/rnaturalearth/man/ne_download.html">ne_download()</a></code>, передав ей масштаб, название слоя и его категорию:</p>
-<div class="sourceCode" id="cb510"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb502"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">countries</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/rnaturalearth/man/ne_countries.html">ne_countries</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="va">coast</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/rnaturalearth/man/ne_coastline.html">ne_coastline</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span>
@@ -147,7 +147,7 @@
 <span class="co">## It has 31 fields</span>
 <span class="co">## Integer64 fields read as strings:  scalerank ne_id</span></code></pre></div>
 <p>Познакомимся с загруженными данными:</p>
-<div class="sourceCode" id="cb511"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb503"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">ocean</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">'lightblue'</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">countries</span>, col <span class="op">=</span> <span class="st">'white'</span>, border <span class="op">=</span> <span class="st">'grey'</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">coast</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">'steelblue'</span><span class="op">)</span>
@@ -155,7 +155,7 @@
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">cities</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">'black'</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-3-1.png" width="100%"></div>
 <p>Перед построением карт мира данные целесообразно спроецировать. Чтобы не трансформировать каждый слой отдельно, можно объединить слои в список и воспользоваться функционалом <code>lapply</code> для множественного трансформирования. Для создания списка воспользуемся функцией <code><a href="https://tibble.tidyverse.org/reference/lst.html">lst()</a></code> из пакета <code>tibble</code>, которая присваивает компонентам списка имена, соответствующие названиям входных переменных (чтобы не писать <code>ocean = ocean</code>):</p>
-<div class="sourceCode" id="cb512"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb504"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lyr</span> <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/lst.html">lst</a></span><span class="op">(</span><span class="va">ocean</span>, <span class="va">coast</span>, <span class="va">countries</span>, <span class="va">rivers</span>, <span class="va">cities</span><span class="op">)</span>
 <span class="va">lyrp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">lyr</span>, <span class="va">st_transform</span>, crs <span class="op">=</span> <span class="st">"+proj=eck3"</span><span class="op">)</span> <span class="co"># Псевдоцилиндрическая проекция Эккерта</span>
 
@@ -171,7 +171,7 @@
 </h3>
 <p><a href="http://www.worldclim.org/">WorldClim</a> — это открытые сеточные наборы климатических характеристик с пространственным разрешением от <span class="math inline">\(30''\)</span> (около 1 км) до <span class="math inline">\(10'\)</span> (около 20 км). Данные можно выгрузить в виде файлов GeoTiff, однако эту операцию можно сделать и программным путем через пакет <strong>raster</strong> — используя функцию <code><a href="https://rdrr.io/pkg/raster/man/getData.html">getData()</a></code>.</p>
 <p>Выполним загрузку 10-минутного растра с суммарным количеством осадков за год:</p>
-<div class="sourceCode" id="cb513"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb505"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">prec</span> <span class="op">=</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/getData.html">getData</a></span><span class="op">(</span><span class="st">"worldclim"</span>, var <span class="op">=</span> <span class="st">"prec"</span>, res <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_as_stars.html">st_as_stars</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># преобразуем в stars для удобства работы</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">prec</span><span class="op">)</span> <span class="co"># это 12-канальный растр</span></code></pre></div>
@@ -180,14 +180,14 @@
 <p>Использовать программную загрузку целесообразно для небольших наборов данных. Если счет пошел на десятки мегабайт и выше, следует все-таки выкачать данные в виде файла и работать с ним.</p>
 </blockquote>
 <p>Выполним трансформирование данных в <a href="https://proj4.org/operations/projections/mill.html"><strong>проекцию Миллера</strong></a>. Для того чтобы карта не обрезалась по охвату растра (он не включает данные на Антарктиду), необходимо расширить его охват на весь земной шар. Для этого используем функцию <code><a href="https://rdrr.io/pkg/raster/man/extend.html">extend()</a></code> из пакета <strong>raster</strong>:</p>
-<div class="sourceCode" id="cb514"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb506"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">precm</span> <span class="op">=</span> <span class="va">prec</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_warp.html">st_warp</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="st">"+proj=mill"</span><span class="op">)</span>
   <span class="co"># extend(extent(-180, 180, -90, 90)) %&gt;% </span>
   <span class="co"># projectRaster(crs = "+proj=mill")</span>
 <span class="va">lyrm</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">lyr</span>, <span class="va">st_transform</span>, crs <span class="op">=</span> <span class="st">"+proj=mill"</span><span class="op">)</span> <span class="co"># Цилиндрическая проекция Миллера</span></code></pre></div>
 <p>Визуализируем полученные данные на карте:</p>
-<div class="sourceCode" id="cb515"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb507"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ramp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html">colorRampPalette</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="st">"violetred"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># Визуализируем данные на январь:</span>
@@ -208,8 +208,8 @@
 <p>В этом разделе изложение сосредоточено на параметрах способов изображения. Приведение легенд и компоновки карты в аккуратный вид рассматривается далее в разделе <a href="#thematic_mapping_layout">Компоновка</a>.</p>
 </blockquote>
 <p>Пакет <strong>tmap</strong> предоставляет простой в использовании и достаточно мощный механизм формирования тематических карт. Шаблон построения карты в этом пакете напоминает <em>ggplot</em> и выглядит следующим образом:</p>
-<div class="sourceCode" id="cb516"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb516-1"><a href="mapping.html#cb516-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(<span class="sc">&lt;</span>DATA<span class="sc">&gt;</span>) <span class="sc">+</span></span>
-<span id="cb516-2"><a href="mapping.html#cb516-2" aria-hidden="true" tabindex="-1"></a>  tm_<span class="sc">&lt;</span>METHOD<span class="sc">&gt;</span>(<span class="sc">&lt;</span>PARAMETERS<span class="sc">&gt;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb508"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb508-1"><a href="mapping.html#cb508-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(<span class="sc">&lt;</span>DATA<span class="sc">&gt;</span>) <span class="sc">+</span></span>
+<span id="cb508-2"><a href="mapping.html#cb508-2" aria-hidden="true" tabindex="-1"></a>  tm_<span class="sc">&lt;</span>METHOD<span class="sc">&gt;</span>(<span class="sc">&lt;</span>PARAMETERS<span class="sc">&gt;</span>)</span></code></pre></div>
 <p>где:</p>
 <ul>
 <li>
@@ -224,7 +224,7 @@
 <span class="header-section-number">11.3.1</span> Векторные данные<a class="anchor" aria-label="anchor" href="#thematic_mapping_vectors"><i class="fas fa-link"></i></a>
 </h3>
 <p>Для реализации качественного и количественного фона, а также картограмм используется метод <code><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_polygons()</a></code>. Он автоматически определяет тип переменной и строит соответствующую шкалу:</p>
-<div class="sourceCode" id="cb517"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb509"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">lyrp</span><span class="op">$</span><span class="va">countries</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="st">'economy'</span><span class="op">)</span> <span class="op">+</span> <span class="co"># качественная переменная</span>
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">lyrp</span><span class="op">$</span><span class="va">ocean</span><span class="op">)</span><span class="op">+</span>
@@ -232,7 +232,7 @@
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_borders</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'steelblue'</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-9-1.png" width="100%"></div>
 <p><strong>Количественный фон</strong> или <strong>картограммы</strong> получаются при картографировании числового показателя применением той же функции <code><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_polygons()</a></code>:</p>
-<div class="sourceCode" id="cb518"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb510"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/googlesheets4/man/range_read.html">read_sheet</a></span><span class="op">(</span><span class="st">'1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo'</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># продолжительность жизни</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>name <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">lifexp</span>, <span class="op">-</span><span class="va">name</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -265,7 +265,7 @@
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_borders</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'steelblue4'</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-10-1.png" width="100%"></div>
 <p>Для реализации способа <strong>картодиаграмм</strong> используется геометрия <code><a href="https://rdrr.io/pkg/tmap/man/tm_symbols.html">tm_bubbles()</a></code>. Чтобы оставить отображение границ полигонов, нам необходимо к одной геометрии применить несколько способов изображения:</p>
-<div class="sourceCode" id="cb519"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb511"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">coun</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_fill</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'white'</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_borders</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'grey'</span><span class="op">)</span> <span class="op">+</span>
@@ -278,7 +278,7 @@
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_borders</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'steelblue'</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-11-1.png" width="100%"></div>
 <p>Аналогичным образом реализуется <strong>значковый способ</strong> применительно к объектам, локализованным по точкам. Картографируем численность населения по крупнейшим городам:</p>
-<div class="sourceCode" id="cb520"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb512"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">lyrp</span><span class="op">$</span><span class="va">countries</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_fill</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'white'</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_borders</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'grey'</span><span class="op">)</span> <span class="op">+</span>
@@ -289,7 +289,7 @@
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_symbols.html">tm_bubbles</a></span><span class="op">(</span><span class="st">'POP2015'</span>, col <span class="op">=</span> <span class="st">'olivedrab'</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-12-1.png" width="100%"></div>
 <p><strong>Надписи</strong> объектов на карте размещаются с помощью функции <code>tm_text</code>. Данная функция содержит весьма полезные параметры <code>remove.overlap</code> и <code>auto.placement</code>, которые позволяют убрать перекрывающиеся подписи и автоматически разместить из вокруг точек так, чтобы уменьшить перекрытия с самими знаками и другими подписями. Дополним предыдущую карту названиями городов:</p>
-<div class="sourceCode" id="cb521"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb513"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">lyrp</span><span class="op">$</span><span class="va">countries</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_fill</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'white'</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_borders</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'grey'</span><span class="op">)</span> <span class="op">+</span>
@@ -306,7 +306,7 @@
 <span class="header-section-number">11.3.2</span> Растровые данные<a class="anchor" aria-label="anchor" href="#thematic_mapping_rasters"><i class="fas fa-link"></i></a>
 </h3>
 <p>При отображении растровых данных используется способ отображения <code><a href="https://rdrr.io/pkg/tmap/man/tm_raster.html">tm_raster()</a></code>. В случае отображения количественных растров Параметр <code>breaks</code> определяет границы интервалов, для которых будут использованы цвета, взятые из параметра <code>palette</code>:</p>
-<div class="sourceCode" id="cb522"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb514"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">box</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="op">-</span><span class="fl">180</span>, xmax <span class="op">=</span> <span class="fl">180</span>, ymax <span class="op">=</span> <span class="fl">90</span>, ymin <span class="op">=</span> <span class="op">-</span><span class="fl">90</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">precm</span><span class="op">[</span>,,,<span class="fl">1</span><span class="op">]</span>,
          bbox <span class="op">=</span> <span class="va">box</span><span class="op">)</span> <span class="op">+</span>
@@ -318,7 +318,7 @@
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_borders</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'steelblue'</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-14-1.png" width="100%"></div>
 <p>Растровые данные могут хранить и качественную информацию: например, тип почв или вид землепользования. В качестве примера визуализируем типы земельного покрова (land cover) из растрового стека <code>land</code>, который есть в пакете <strong>tmap</strong>. Цвета здесь выбираются автоматически, их настройка рассматривается в следующем параграфе:</p>
-<div class="sourceCode" id="cb523"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb515"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">land</span>, package <span class="op">=</span> <span class="st">'tmap'</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">land</span><span class="op">)</span> <span class="op">+</span>
@@ -331,13 +331,13 @@
 <span class="header-section-number">11.4</span> Цветовые шкалы<a class="anchor" aria-label="anchor" href="#thematic_color_scales"><i class="fas fa-link"></i></a>
 </h2>
 <p>Для изменения цветовой шкалы при определении способа изображения вы можете определить параметр <code>palette</code>. Пакет <strong>tmap</strong> позволяет работать с цветовыми палитрами <em>Color Brewer</em> или задавать цвета вручную. Очень удобным инструментом подбора шкалы является функция <code>palette_explorer()</code> из пакета <strong>tmaptools</strong>. При вызове функции открывается интерактивное приложение, позволяющее менять настройки цветовых палитр:</p>
-<div class="sourceCode" id="cb524"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb516"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">tmaptools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tmaptools/man/palette_explorer.html">palette_explorer</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <img src="images/palette_explorer.png" alt=""><p class="caption">Приложение Palette Explorer из пакета <strong>tmaptools</strong></p>
 </div>
 <p>Данных палитр хватит для решения большинства задач по картографической визуализации. Применим категориальную палитру <em>Dark2</em>:</p>
-<div class="sourceCode" id="cb525"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb517"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">lyrp</span><span class="op">$</span><span class="va">countries</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="st">'economy'</span>, palette <span class="op">=</span> <span class="st">'Dark2'</span><span class="op">)</span> <span class="op">+</span> <span class="co"># качественная переменная</span>
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">lyrp</span><span class="op">$</span><span class="va">ocean</span><span class="op">)</span><span class="op">+</span>
@@ -345,7 +345,7 @@
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_borders</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'steelblue'</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-17-1.png" width="100%"></div>
 <p>Для количественного показателя (количество осадков) применим палитру <em>PuBuGn</em>:</p>
-<div class="sourceCode" id="cb526"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb518"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">precm</span><span class="op">[</span>,,,<span class="fl">1</span><span class="op">]</span>,
          bbox <span class="op">=</span> <span class="va">box</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_raster.html">tm_raster</a></span><span class="op">(</span><span class="st">'prec1'</span>,
@@ -356,7 +356,7 @@
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_borders</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'steelblue'</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-18-1.png" width="100%"></div>
 <p>Вы всегда можете, конечно, определить цвета вручную. В этом случае их количество должно совпадать с количеством интервалов классификации:</p>
-<div class="sourceCode" id="cb527"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb519"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">precm</span><span class="op">[</span>,,,<span class="fl">1</span><span class="op">]</span>,
          bbox <span class="op">=</span> <span class="va">box</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_raster.html">tm_raster</a></span><span class="op">(</span><span class="st">'prec1'</span>,
@@ -367,7 +367,7 @@
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_borders</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'steelblue'</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-19-1.png" width="100%"></div>
 <p>Для категориальных данных необходимо тщательно подбирать цвета, стандартные шкалы тут могут не подойти (более подробно о шкалах — далее). Для вышеприведенного примера с растром типов земельного покрова можно подобрать следующие цвета:</p>
-<div class="sourceCode" id="cb528"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb520"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pal</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"#003200"</span>, <span class="st">"#3C9600"</span>, <span class="st">"#006E00"</span>, <span class="st">"#556E19"</span>, <span class="st">"#00C800"</span>, <span class="st">"#8CBE8C"</span>,
            <span class="st">"#467864"</span>, <span class="st">"#B4E664"</span>, <span class="st">"#9BC832"</span>, <span class="st">"#EBFF64"</span>, <span class="st">"#F06432"</span>, <span class="st">"#9132E6"</span>,
            <span class="st">"#E664E6"</span>, <span class="st">"#9B82E6"</span>, <span class="st">"#B4FEF0"</span>, <span class="st">"#646464"</span>, <span class="st">"#C8C8C8"</span>, <span class="st">"#FF0000"</span>,
@@ -388,7 +388,7 @@
 <p>Классификация данных — важнейший этап картографирования, который во многом определяет, как данные будут представлены на карте и какие географические выводы читатель сделает на ее основе. Существует множество методов классификации числовых рядов. Классифицировать данные автоматически можно с помощью функции <code><a href="https://r-spatial.github.io/classInt/reference/classIntervals.html">classIntervals()</a></code> из пакета <code>classInt</code>. Наберите в консоли <code>?classInt</code> чтобы прочитать справку о методах классификации.</p>
 <p>Посмотрим несколько методов классификации. Первый параметр функции <code>classInt</code> — это числовой ряд. Число классов следует передать в параметр <code>n =</code>, метод классификации указывается в параметре <code>style =</code>.</p>
 <p>Для начала попробуем метод равных интервалов, который просто делит размах вариации (диапазон от минимума до максимум) на <span class="math inline">\(n\)</span> равных интервалов. Функция <code><a href="https://r-spatial.github.io/sf/reference/plot.html">plot()</a></code> применительно к созданной классификации рисует замечательный график, на котором показаны границы классов и эмпирическая функция распределения показателя. В параметр <code>pal</code> можно передать цветовую палитру:</p>
-<div class="sourceCode" id="cb529"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb521"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Запишем число классов в переменную</span>
 <span class="va">nclasses</span> <span class="op">=</span> <span class="fl">5</span>
 
@@ -401,21 +401,21 @@
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">intervals</span>, pal <span class="op">=</span> <span class="fu">ramp</span><span class="op">(</span><span class="va">nclasses</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">0.5</span>, main <span class="op">=</span> <span class="st">"Равные интервалы MIN/MAX"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-21-1.png" width="100%"></div>
 <p>Созданные интервалы хоть и равны, но не аккуратны. Зато метод классификации <code>"pretty"</code> создает также равные интервалы, но может слегка расширить диапазон или добавить 1 класс, чтобы получить границы интервалов, округленные до целых чисел:</p>
-<div class="sourceCode" id="cb530"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb522"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">intervals</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/classInt/reference/classIntervals.html">classIntervals</a></span><span class="op">(</span><span class="va">coun</span><span class="op">$</span><span class="va">lifexp</span>, n <span class="op">=</span> <span class="va">nclasses</span>, style <span class="op">=</span> <span class="st">"pretty"</span><span class="op">)</span>
 <span class="va">intervals</span><span class="op">$</span><span class="va">brks</span>
 <span class="co">## [1] 45 50 55 60 65 70 75 80 85</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">intervals</span>, pal <span class="op">=</span> <span class="fu">ramp</span><span class="op">(</span><span class="va">nclasses</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">0.5</span>, main <span class="op">=</span> <span class="st">"Округленные равные интервалы"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-22-1.png" width="100%"></div>
 <p>Квантили — равноколичественные интервалы. В каждом классе содержится одинаковое число объектов:</p>
-<div class="sourceCode" id="cb531"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb523"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">intervals</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/classInt/reference/classIntervals.html">classIntervals</a></span><span class="op">(</span><span class="va">coun</span><span class="op">$</span><span class="va">lifexp</span>, n <span class="op">=</span> <span class="va">nclasses</span>, style <span class="op">=</span> <span class="st">"quantile"</span><span class="op">)</span>
 <span class="va">intervals</span><span class="op">$</span><span class="va">brks</span>
 <span class="co">## [1] 48.860 64.488 71.300 75.440 79.360 83.300</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">intervals</span>, pal <span class="op">=</span> <span class="fu">ramp</span><span class="op">(</span><span class="va">nclasses</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">0.5</span>, main <span class="op">=</span> <span class="st">"Квантили (равноколичественные)"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-23-1.png" width="100%"></div>
 <p>Метод “естественных интервалов,” или метод Фишера-Дженкса позволяет найти классы, максимально однородные внутри и при этом максимально отличающиеся друг от друга:</p>
-<div class="sourceCode" id="cb532"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb524"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">intervals</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/classInt/reference/classIntervals.html">classIntervals</a></span><span class="op">(</span><span class="va">coun</span><span class="op">$</span><span class="va">lifexp</span>, n <span class="op">=</span> <span class="va">nclasses</span>, style <span class="op">=</span> <span class="st">"jenks"</span><span class="op">)</span>
 <span class="va">intervals</span><span class="op">$</span><span class="va">brks</span>
 <span class="co">## [1] 48.86 55.90 63.70 70.40 77.10 83.30</span>
@@ -427,7 +427,7 @@
 <span class="header-section-number">11.5.2</span> Применение на картах<a class="anchor" aria-label="anchor" href="#thematic_mapping_class_application"><i class="fas fa-link"></i></a>
 </h3>
 <p>Чтобы использовать заранее вычисленные интервалы классификации, их необходимо подать в параметр <code>breaks</code> при построении карты:</p>
-<div class="sourceCode" id="cb533"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb525"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">brks</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/classInt/reference/classIntervals.html">classIntervals</a></span><span class="op">(</span><span class="va">coun</span><span class="op">$</span><span class="va">lifexp</span>, n <span class="op">=</span> <span class="fl">4</span>, style <span class="op">=</span> <span class="st">"pretty"</span><span class="op">)</span><span class="op">$</span><span class="va">brks</span>
 
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">coun</span><span class="op">)</span> <span class="op">+</span>
@@ -440,7 +440,7 @@
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_borders</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'steelblue4'</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-25-1.png" width="100%"></div>
 <p>Аналогичным путем работают шкалы для растровых данных:</p>
-<div class="sourceCode" id="cb534"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb526"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">precm</span><span class="op">[</span>,,,<span class="fl">1</span><span class="op">]</span>,
          bbox <span class="op">=</span> <span class="va">box</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_raster.html">tm_raster</a></span><span class="op">(</span><span class="st">'prec1'</span>,
@@ -454,7 +454,7 @@
 <p>Учтите, что метод естественных интервалов — ресурсоемкий в вычислительном плане. Поэтому если вы хотите с его помощью классифицировать растровые данные, целесообразно сделать выборку не более чем из нескольких тысяч пикселов. Иначе придется долго ждать.</p>
 </blockquote>
 <p>Для классификации естественными интервалами сделаем выборку в 2 000 значений с растра c помощью функции <code><a href="https://rdrr.io/pkg/raster/man/sampleRandom.html">sampleRandom()</a></code> из пакета <strong>raster</strong>:</p>
-<div class="sourceCode" id="cb535"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb527"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">smpl</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">precm</span><span class="op">[</span>,,,<span class="fl">1</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fl">2000</span><span class="op">)</span> 
 
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">precm</span><span class="op">[</span>,,,<span class="fl">1</span><span class="op">]</span>,
@@ -485,7 +485,7 @@
 <code>midpoint</code> — нейтральное значение, которое используется для сопоставления с центральным цветом в расходящихся цветовых палитрах</li>
 </ul>
 <p>Построим карту продолжительности жизни, используя классификацию при отображении:</p>
-<div class="sourceCode" id="cb536"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb528"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">coun</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="st">'lifexp'</span>, 
               palette <span class="op">=</span> <span class="st">'YlGn'</span>,
@@ -497,7 +497,7 @@
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_borders</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'steelblue4'</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-28-1.png" width="100%"></div>
 <p>Установка средней точки при классификации оказывается очень полезной в тех случаях, когда данные являются биполярными. Покажем это на примере данных WorldClim по температуре:</p>
-<div class="sourceCode" id="cb537"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb529"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">temp</span> <span class="op">=</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/getData.html">getData</a></span><span class="op">(</span><span class="st">"worldclim"</span>, var <span class="op">=</span> <span class="st">"tmean"</span>, res <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_as_stars.html">st_as_stars</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>tmean1 <span class="op">=</span> <span class="va">tmean1</span> <span class="op">/</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -508,7 +508,7 @@
  <span class="co"># не забываем поделить результат на 10, </span>
  <span class="co"># так как данные хранятся в виде целых чисел!</span></code></pre></div>
 <p>Визуализируем данные по температуре, используя классическую красно-бело-синюю палитру <em>RdBu</em> и нейтральную точку 0 градусов по Цельсию. По умолчанию в данной палитре красный цвет соответствует малым значениям. пакет <strong>tmap</strong> позволяет инвертировать цвета палитры, добавив знак минус перед ее названием. Помимо этого, для размещения положительных значений наверху выполним обратную сортировку элементов легенды, используя параметр <code>legend.reverse = TRUE</code>:</p>
-<div class="sourceCode" id="cb538"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb530"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">temp</span><span class="op">[</span>,,,<span class="fl">1</span><span class="op">]</span>,
          bbox <span class="op">=</span> <span class="va">box</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_raster.html">tm_raster</a></span><span class="op">(</span><span class="st">'tmean1'</span>,
@@ -527,7 +527,7 @@
 <span class="header-section-number">11.5.4</span> Пропущенные данные<a class="anchor" aria-label="anchor" href="#thematic_mapping_na"><i class="fas fa-link"></i></a>
 </h3>
 <p>Весьма важно отметить на карте области, для которых данные отсутствуют. Вы могли обратить внимание, что для способов изображения, применимых к векторным данным, <em>tmap</em> автоматически добавляет класс легенды, который отвечает за пропуски. Для растров, однако, он это не делает. Чтобы принудительно вывести в легенду и на карту символ, отвечающий за пропущенные значения, необходимо определить параметр <code>colorNA</code>. Обычно, в зависимости от цветовой палитры легенды, для этого используют серый или белый цвет:</p>
-<div class="sourceCode" id="cb539"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb531"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">temp</span><span class="op">[</span>,,,<span class="fl">1</span><span class="op">]</span>,
          bbox <span class="op">=</span> <span class="va">box</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_raster.html">tm_raster</a></span><span class="op">(</span><span class="st">'tmean1'</span>,
@@ -556,7 +556,7 @@
 <li>убрать заголовок легенды (<code>title</code>),</li>
 <li>заменить стандартный шрифт на <em>Open Sans</em> (<code>fontfamily</code>):</li>
 </ul>
-<div class="sourceCode" id="cb540"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb532"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">lyrp</span><span class="op">$</span><span class="va">countries</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="st">'economy'</span>, title <span class="op">=</span> <span class="st">''</span><span class="op">)</span> <span class="op">+</span> <span class="co"># убираем заголовок легенды</span>
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">lyrp</span><span class="op">$</span><span class="va">ocean</span><span class="op">)</span><span class="op">+</span>
@@ -572,7 +572,7 @@
           legend.bg.color <span class="op">=</span> <span class="st">'white'</span><span class="op">)</span> <span class="co"># цвет фона легенды</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-32-1.png" width="100%"></div>
 <p>Для того чтобы определить заголовок легенды размера значка или диаграммы, необходимо задать параметр <code>title.size</code>. Помимо этого, легенду можно пристыковать непосредственно к рамке карты, если задать значения параметра <code>legend.position</code> в верхнем регистре:</p>
-<div class="sourceCode" id="cb541"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb533"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">coun</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_fill</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'white'</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_borders</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'grey'</span><span class="op">)</span> <span class="op">+</span>
@@ -600,7 +600,7 @@
 <li>убрать рамку карты (<code>frame</code>),</li>
 <li>сдвинуть заголовок вдоль строки, выровняв его с центром карты (<code>main.title.position</code>):</li>
 </ul>
-<div class="sourceCode" id="cb542"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb534"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">coun</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="st">'lifexp'</span>, 
               border.col <span class="op">=</span> <span class="st">'gray20'</span>, 
@@ -624,7 +624,7 @@
           legend.bg.color <span class="op">=</span> <span class="st">'white'</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-34-1.png" width="100%"></div>
 <p>Для отображения <strong>координатной сетки</strong> вы можете использовать функцию <code><a href="https://rdrr.io/pkg/tmap/man/tm_grid.html">tm_grid()</a></code>. По умолчанию она строит координатную сетку в единицах измерения проекции. Однако если требуется градусная сетка, то ее можно определить, используя параметр <code>projection = 4326</code>:</p>
-<div class="sourceCode" id="cb543"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb535"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">temp</span><span class="op">[</span>,,,<span class="fl">1</span><span class="op">]</span>,
          bbox <span class="op">=</span> <span class="va">box</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_raster.html">tm_raster</a></span><span class="op">(</span><span class="st">'tmean1'</span>,
@@ -657,7 +657,7 @@
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-35-1.png" width="100%"></div>
 <p>Если вам необходимо обеспечить значки градуса, вы можете сделать это, используя параметр <code>labels.format</code>, определив в нем анонимную функцию, добавляющую значок градуса в переданный ей вектор подписей.</p>
 <p>Помимо этого, вам может понадобиться увеличить поля вокруг карты, чтобы освободить пространство для размещения меток (на предыдущей карте они не влезли). Это делается через параметр <code>outer.margins</code>, который ожидает получить вектор из четырех значений (по умолчанию все они равны 0.02, т.е. 2% от размера окна).</p>
-<div class="sourceCode" id="cb544"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb536"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">temp</span><span class="op">[</span>,,,<span class="fl">1</span><span class="op">]</span>,
          bbox <span class="op">=</span> <span class="va">box</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_raster.html">tm_raster</a></span><span class="op">(</span><span class="st">'tmean1'</span>,
@@ -692,7 +692,7 @@
         labels.format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">X</span>, <span class="st">'°'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-36-1.png" width="100%"></div>
 <p>Подписи сетки координат можно добавить и для более сложных проекций, однако располагаться они будут по-прежнему вдоль осей <em>X</em> и <em>Y</em>. В примере ниже также показано как можно увеличить расстояние между заголовком и картой, определив более крупный отступ от верхней стороны в параметре <code>inner.margins</code>:</p>
-<div class="sourceCode" id="cb545"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb537"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">coun</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="st">'lifexp'</span>, 
               palette <span class="op">=</span> <span class="st">'YlGn'</span>,
@@ -732,7 +732,7 @@
 </h2>
 <p>Фасетная компоновка предполагает, упорядочение элементов в матричной форме на одной странице. Как правило, картографические фасеты идентичны по содержанию, но показывают одно и то же явление при различных заданных условиях: за разные года, по разным странам и т.д. Создание фасет с помощью <strong>tmap</strong> осуществляется с помощью специальной функции <code><a href="https://rdrr.io/pkg/tmap/man/tm_facets.html">tm_facets()</a></code>, которой необходимо передать название переменной, отвечающей за разделение. В свою очередь, это означает, что данные должны быть приведены к «длинной» форме (если информация за разные года содержится в разных столбцах, то нужно год записать в отдельную переменную). Здесь вам пригодится знание пакета <strong>tidyr</strong>.</p>
 <p>Рассмотрим создание фасет на примере данных Gapminder по средней продолжительности жизни c 1960 по 2010 г:</p>
-<div class="sourceCode" id="cb546"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb538"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="st">'1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo'</span> <span class="op">%&gt;%</span> <span class="co"># продолжительность жизни</span>
   <span class="fu"><a href="https://rdrr.io/pkg/googlesheets4/man/range_read.html">read_sheet</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>name <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -759,7 +759,7 @@
 
 <span class="va">coun2</span> <span class="op">=</span> <span class="va">lyrp</span><span class="op">$</span><span class="va">countries</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">lifedf2</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'adm0_a3'</span> <span class="op">=</span> <span class="st">'geo'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Создадим серию карт за разные года:</p>
-<div class="sourceCode" id="cb547"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb539"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">coun2</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="st">'lifexp'</span>, 
               palette <span class="op">=</span> <span class="st">'YlGnBu'</span>,
@@ -797,7 +797,7 @@
 <li>упорядочить карты по регулярной сетке с двумя столбцами и полями отступа каждой фасеты (параметр <code>outer.margins</code>), используя <code><a href="https://rdrr.io/pkg/tmap/man/tmap_arrange.html">tmap_arrange()</a></code>
 </li>
 </ul>
-<div class="sourceCode" id="cb548"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb540"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">minval</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">temp</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">maxval</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">temp</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
@@ -839,7 +839,7 @@
           labels.inside.frame <span class="op">=</span> <span class="cn">FALSE</span>,
           labels.format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">Z</span>, <span class="st">'°'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-40-1.png" width="100%"></div>
-<div class="sourceCode" id="cb549"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb541"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># tmap_arrange(maps, asp = NA, ncol = 2,</span>
 <span class="co">#              outer.margins = 0.05)</span></code></pre></div>
@@ -858,7 +858,7 @@
 <p><strong>Внимание:</strong> для того чтобы работало построение анимаций средствами <strong>tmap</strong>, на вашем компьютере должна быть установлена библиотека <a href="https://www.imagemagick.org/"><strong>ImageMagick</strong></a>.</p>
 </blockquote>
 <p>Для примера построим анимацию по данным изменения средней продолжительности жизни:</p>
-<div class="sourceCode" id="cb550"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb542"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">map</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">coun2</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="st">'lifexp'</span>, 
               palette <span class="op">=</span> <span class="st">'YlGnBu'</span>,
@@ -885,7 +885,7 @@
 <span class="header-section-number">11.9</span> Интерактивные карты<a class="anchor" aria-label="anchor" href="#thematic_mapping_interactive"><i class="fas fa-link"></i></a>
 </h2>
 <p>Любую карту tmap можно перевести в интерактивный режим с помощью функции <code><a href="https://rdrr.io/pkg/tmap/man/tmap_mode.html">tmap_mode()</a></code> с параметром <code>'view'</code>. Управлять дополнительными параметрами, специфичными для интерактивного режима, можно используя функцию <code><a href="https://rdrr.io/pkg/tmap/man/tm_view.html">tm_view()</a></code>. В частности, можно установить координаты центра карты и масштабный уровень в параметре <code>set.view</code> и ограничить диапазон масштабных уровней в параметре <code>set.zoom.limits</code>. Состав полей, значения которых отображаются во всплывающем окне при щелчке на символе, определяются параметром <code>popup.vars</code>:</p>
-<div class="sourceCode" id="cb551"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb543"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tmap_mode.html">tmap_mode</a></span><span class="op">(</span><span class="st">'view'</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">coun</span><span class="op">)</span> <span class="op">+</span>
@@ -902,7 +902,7 @@
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_view.html">tm_view</a></span><span class="op">(</span>set.view <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">45</span>, <span class="fl">2</span><span class="op">)</span>,    <span class="co"># центр карты и масштабный уровень</span>
         set.zoom.limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Чтобы добавить карту-подложку, необходимо предварительно вызвать функцию <code><a href="https://rdrr.io/pkg/tmap/man/tm_tiles.html">tm_basemap()</a></code>, передав ей название картографического сервиса. В примере ниже также показано, как можно сделать размер кружка постоянным во всех масштабах (параметр <code>symbol.size.fixed</code>):</p>
-<div class="sourceCode" id="cb552"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb544"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tmap_mode.html">tmap_mode</a></span><span class="op">(</span><span class="st">'view'</span><span class="op">)</span>
 
 <span class="va">coun</span> <span class="op">=</span> <span class="va">coun</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>gdp_scaled <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">0.001</span> <span class="op">*</span> <span class="va">gdp_md_est</span><span class="op">)</span><span class="op">)</span>
@@ -1027,7 +1027,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-01-27.</p>
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-02-15.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

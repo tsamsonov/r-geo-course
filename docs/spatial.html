@@ -817,130 +817,14 @@
 <div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-31-1.png" width="100%"></div>
 <p>Потрясающе просто, не правда ли? Вдобавок, мы еще и получили границы континентов (достаточно условные, конечно), которых у нас раньше не было. Данный пример также показывает, что атрибутивные операции над пространственными объектами всегда учитывают их геометрию.</p>
 </div>
-<div id="sf_spat_selection" class="section level3" number="10.4.7">
+<div id="sf_creation" class="section level3" number="10.4.7">
 <h3>
-<span class="header-section-number">10.4.7</span> Пространственные операции<a class="anchor" aria-label="anchor" href="#sf_spat_selection"><i class="fas fa-link"></i></a>
-</h3>
-<p>Поиск объектов по местоположению базируется на проверке топологических отношений между объектами. Топологические отношения описывают взаимное расположение объектов. Различные варианты топологических отношений для площадных объектов представлены на следующем рисунке, где серым цветом показаны пересечения <em>внутренних областей</em> объектов <span class="math inline">\(A\)</span> и <span class="math inline">\(B\)</span>, синим цветом — пересечения <em>границ</em> объектов <span class="math inline">\(A\)</span> и <span class="math inline">\(B\)</span>:
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-32-1.png" width="100%"></p>
-<p>Отношение <em>Пересекает (intersects)</em> будет истинно для любого случая когда две геометрии имеют хотя бы одну общую точку, то есть во всех случаях кроме <em>Не пересекает (disjoint)</em>. Для проверки этих, а также некоторых других отношений, в пакете <code>sf</code> существует ряд функций:</p>
-<div class="inline-table"><table class="table table-sm">
-<colgroup>
-<col width="30%">
-<col width="69%">
-</colgroup>
-<thead><tr class="header">
-<th>Функция</th>
-<th>Топологическое отношение</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td><code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_intersects(x, y)</a></code></td>
-<td>
-<code>x</code> имеет общие точки с <code>y</code>
-</td>
-</tr>
-<tr class="even">
-<td><code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_disjoint(x, y)</a></code></td>
-<td>
-<code>x</code> не имеет общих точек с <code>y</code>
-</td>
-</tr>
-<tr class="odd">
-<td><code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_touches(x, y)</a></code></td>
-<td>
-<code>x</code> касается <code>y</code> (граница <code>x</code> имеет общие точки с границей <code>y</code> И внутренняя область <code>x</code> не имеет имеет общих точек с внутренней областью <code>y</code>)</td>
-</tr>
-<tr class="even">
-<td><code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_crosses(x, y)</a></code></td>
-<td>
-<code>x</code> пересекает <code>y</code> (граница <code>x</code> имеет общие точки с границей <code>y</code>, при этом размерность их пересечения меньше размерности хотя бы одного из исходных объектов)</td>
-</tr>
-<tr class="odd">
-<td><code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_within(x, y)</a></code></td>
-<td>
-<code>x</code> внутри <code>y</code> (все точки <code>x</code> содержатся в <code>y</code> И внутренняя область <code>x</code> имеет общие точки с внутренней областью <code>y</code>)</td>
-</tr>
-<tr class="even">
-<td><code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_contains(x, y)</a></code></td>
-<td>
-<code>x</code> содержит <code>y</code> (все точки <code>y</code> содержатся в <code>x</code> И внутренняя область <code>y</code> имеет общие точки с внутренней областью <code>x</code>)</td>
-</tr>
-<tr class="odd">
-<td><code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_contains_properly(x, y)</a></code></td>
-<td>
-<code>x</code> содержит <code>y</code> полностью (все точки <code>y</code> содержатся в <code>x</code> И граница <code>x</code> не имеет общих точек с границей <code>y</code>)</td>
-</tr>
-<tr class="even">
-<td><code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_overlaps(x, y)</a></code></td>
-<td>
-<code>x</code> перекрывает <code>y</code> (внутренняя область <code>x</code> имеет как общие, так и не общие точки с внутренней областью <code>y</code>)</td>
-</tr>
-<tr class="odd">
-<td><code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_equals(x, y)</a></code></td>
-<td>
-<code>x</code> совпадает <code>y</code> (множества точек <code>x</code> и <code>y</code> совпадают)</td>
-</tr>
-<tr class="even">
-<td><code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_covers(x, y)</a></code></td>
-<td>
-<code>x</code> покрывает <code>y</code> (все точки <code>y</code> содержатся в <code>x</code>)</td>
-</tr>
-<tr class="odd">
-<td><code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_covered_by(x, y)</a></code></td>
-<td>
-<code>x</code> покрыт <code>y</code> (все точки <code>x</code> содержатся в <code>y</code>)</td>
-</tr>
-<tr class="even">
-<td><code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_equals_exact(x, y)</a></code></td>
-<td>
-<code>x</code> совпадает <code>y</code> точно (упорядоченные множества точек <code>x</code> и <code>y</code> совпадают)</td>
-</tr>
-</tbody>
-</table></div>
-<p>Между <code>covered_by</code> и <code>within</code>, а также <code>covers</code> и <code>contains</code> нет разницы в случае, когда оба объекта являются площадными. Эта разница будет сказываться если хотя бы один из объектов является линией либо точкой. В этом случае <code>within</code>, <code>contains</code> и <code>contains_properly</code> будут давать ложный результат (FALSE), поскольку ни у линий, ни у точек нет внутренней области.</p>
-<p>Проверка топологических отношений используется для выполнения выборки объектов по местоположению — <em>пространственной выборки</em>. Наиболее простой способ выбрать объекты по пространственному местоположению — это использовать один слой в качестве фильтра для другого слоя. В этом случае будет по умолчанию использовано отношение <code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_intersects()</a></code> (пересекает). Никаких отличий от работы с обычными таблицами нет. Например, вот так можно выбрать точки, находящиеся внутри ранее отобранных стран с максимальным ВВП:</p>
-<div class="sourceCode" id="cb460"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cities</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="st">'data/ne/cities.gpkg'</span><span class="op">)</span>
-<span class="co">## Reading layer `populated_places' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/cities.gpkg' using driver `GPKG'</span>
-<span class="co">## Simple feature collection with 243 features and 103 fields</span>
-<span class="co">## geometry type:  POINT</span>
-<span class="co">## dimension:      XY</span>
-<span class="co">## bbox:           xmin: -175.2206 ymin: -41.29999 xmax: 179.2166 ymax: 64.15002</span>
-<span class="co">## geographic CRS: WGS 84</span>
-<span class="va">city.pts</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">cities</span><span class="op">)</span>
-
-<span class="co"># Наносим исходную конфигурацию</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">outlines</span>, lwd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">cities</span>, col <span class="op">=</span> <span class="st">'black'</span>, pch <span class="op">=</span> <span class="fl">20</span>, cex <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-33-1.png" width="100%"></div>
-<div class="sourceCode" id="cb461"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="co"># Отбираем точки внутри стран с максимальным ВВП</span>
-<span class="va">sel</span> <span class="op">=</span> <span class="va">cities</span><span class="op">[</span><span class="va">largest</span>, <span class="op">]</span>
-
-<span class="co"># Смотрим что получилось</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">outlines</span>, lwd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">largest</span>, col <span class="op">=</span> <span class="st">'gray'</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">sel</span>, pch <span class="op">=</span> <span class="fl">20</span>, col <span class="op">=</span> <span class="st">'black'</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-33-2.png" width="100%"></div>
-<p>Разумеется, при выполнении пространственных запросов могут возникать и другие пространственные отношения. Например, мы можем выбрать все страны, имеющие общую границу с Чехией. Для этого можно использовать топологическое отношение <code>st_touches</code> вместо <code>st_intersects</code> — это будет гарантировать, что сама Чехия в результате не выберется (касающиеся объекты не могут перекрываться). Тип отношения необходимо поставить в параметр <code>op =</code> при выполнении фильтрации фрейма данных:</p>
-<div class="sourceCode" id="cb462"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cz</span> <span class="op">=</span> <span class="va">countries</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">sovereignt</span> <span class="op">==</span> <span class="st">'Czechia'</span><span class="op">)</span>
-<span class="va">neighbors</span> <span class="op">=</span> <span class="va">countries</span><span class="op">[</span><span class="va">cz</span>, op <span class="op">=</span> <span class="va">st_touches</span><span class="op">]</span>
-
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">neighbors</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">'lightgray'</span>, lwd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">cz</span>, col <span class="op">=</span> <span class="st">'darkgray'</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-34-1.png" width="100%"></div>
-</div>
-<div id="sf_creation" class="section level3" number="10.4.8">
-<h3>
-<span class="header-section-number">10.4.8</span> Создание пространственных объектов<a class="anchor" aria-label="anchor" href="#sf_creation"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.4.7</span> Создание пространственных объектов<a class="anchor" aria-label="anchor" href="#sf_creation"><i class="fas fa-link"></i></a>
 </h3>
 <p>Пространственные объекты в R можно собирать “вручную,” если есть такая необходимость. Например, вам известны координаты границ участков полевого обследования, полученные посредством GPS, а вам необходимо превратить их в полигоны, чтобы выполнить анализ и картографирование. Придется из координат собрать полигоны программным путем. Процесс создания пространственных объектов осуществляется в последовательности их иерархического соподчинения: <strong>sfg</strong> &gt; <strong>sfc</strong> &gt; <strong>sf</strong>.</p>
-<div id="sf_sfg" class="section level4" number="10.4.8.1">
+<div id="sf_sfg" class="section level4" number="10.4.7.1">
 <h4>
-<span class="header-section-number">10.4.8.1</span> Геометрические объекты (sfg)<a class="anchor" aria-label="anchor" href="#sf_sfg"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.4.7.1</span> Геометрические объекты (sfg)<a class="anchor" aria-label="anchor" href="#sf_sfg"><i class="fas fa-link"></i></a>
 </h4>
 <p>Для создания геометрических объектов в пакете sf существует ряд функций с говорящими названиями:</p>
 <div class="inline-table"><table class="table table-sm">
@@ -986,14 +870,14 @@
 <li>Список (для всех остальных типов)</li>
 </ul>
 <p>Проще всего создаются отдельные <strong>точки</strong> (<em>POINT</em>):</p>
-<div class="sourceCode" id="cb463"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb460"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="co"># XY POINT</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="co"># XYZ POINT</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span>, dim <span class="op">=</span> <span class="st">'XYM'</span><span class="op">)</span> <span class="co"># XYM POINT</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="op">-</span><span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span> <span class="co"># XYZM POINT</span></code></pre></div>
 <p>Дополнительный параметр <code>dim=</code> служит для уточнения типа геометрии точек и по сути нужен только тогда, когда необходимо создать редко используемые точки типа <em>XYM</em>. во всех остальных случаях (<em>XY</em>, <em>XYZ</em>, <em>XYZM</em>) размерность геометрии распознается по умолчанию.</p>
 <p>При создании <strong>мультиточек</strong> (<em>MULTIPOINT</em>) и <strong>линий</strong> (<em>LINESTRING</em>) необходимо подавать на вход функции уже матрицу координат:</p>
-<div class="sourceCode" id="cb464"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb461"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">coords</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
   <span class="fl">0</span>, <span class="fl">2</span>,
   <span class="fl">1</span>, <span class="fl">3</span>,
@@ -1007,11 +891,11 @@
 <span class="va">ls</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_linestring</a></span><span class="op">(</span><span class="va">coords</span><span class="op">)</span> <span class="co"># XY LINESTRING</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">ls</span><span class="op">)</span></code></pre></div>
 <p>В первом случае геометрия состоит из отдельных точек. Во втором случае те же самые точки соединены линией:</p>
-<div class="sourceCode" id="cb465"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb462"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">ls</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">mp</span>, col <span class="op">=</span> <span class="st">'red'</span>, pch <span class="op">=</span> <span class="fl">19</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-37-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-34-1.png" width="100%"></div>
 <p>Создание трех-(<em>XYZ</em>, <em>XYM</em>) и четырехмерных (<em>ZYXM</em>) мультиточек и линий выполняется аналогично, но матрица должна содержать не 2, а, соответственно 3 или 4 столбца, и при необходимости параметр <code>dim = 'XYM'</code>.</p>
 <p>Создание <strong>полигонов</strong> (<em>POLYGON</em>), <strong>мультиполигонов</strong> (<em>MULTIPOLYGON</em>) и <strong>мультилиний</strong> (<em>MULTILINESTRING</em>) требует уже создания списков из матриц.</p>
 <p>Почему нельзя представить обычный (не мульти) полигон просто матрицей координат? Потому что полигон может содержать дырки. Например, контур леса может содержать дырку в том месте, где находится озеро. Или озеро может содержать дырку в том месте, где находится остров. Природа предлагает нам бесконечное число таких примеров. В целях универсализации приходится закладываться на возможность наличия дырок в полигонах, поэтому даже полигоны без дырок представляются в виде списков. При этом действу.т следующее правила:</p>
@@ -1021,7 +905,7 @@
 <li>Координаты первой и последней точки в каждой матрице должны совпадать</li>
 </ul>
 <p>Если дыр в полигоне нет, его список будет содержать только одну матрицу. Рассмотрим оба примера построения <strong>полигонов</strong>:</p>
-<div class="sourceCode" id="cb466"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb463"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">coords</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="co"># Координаты главного полигона</span>
   <span class="fl">1</span>, <span class="fl">0</span>,
   <span class="fl">0</span>, <span class="fl">2</span>,
@@ -1035,8 +919,8 @@
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">pol</span><span class="op">)</span>
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">pol</span>, col <span class="op">=</span> <span class="st">'lightblue'</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-38-1.png" width="100%"></div>
-<div class="sourceCode" id="cb467"><pre class="downlit sourceCode r">
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-35-1.png" width="100%"></div>
+<div class="sourceCode" id="cb464"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">hole</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="co"># Координаты дыры</span>
   <span class="fl">2</span>, <span class="fl">1</span>,
@@ -1051,10 +935,10 @@
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">pol2</span><span class="op">)</span>
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">pol2</span>, col <span class="op">=</span> <span class="st">'lightblue'</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-38-2.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-35-2.png" width="100%"></div>
 <p>Мультиполигоны (<em>MULTIPOLYGON</em>) и мультилинии (<em>MULTILINESTRING</em>) требуются тогда, когда один и тот же географический объект состоит из нескольких геометрических объектов. Простейший пример — островные государства. Чтобы представить страну, занимающую архипелаг (Багамские острова, Индонезия, Япония и т.д.) как один пространственный объект, необходимо создать мультиполигон. Все компоненты мультиполигона будут иметь общий набор атрибутов (непространственных характеристик). Мультилинии используются реже мультиполигонов и необходимы для представления линейных объектов, разорванных в пространстве. Примером такого объекта может быть любая река или канал, которые разорваны в тех местах, где они протекают через озеро или водохранилище, представленное полигональным объектом.</p>
 <p>В мультиполигонах добавляется еще один уровень списка, то есть искомые матрицы координат будут располагаться как минимум на втором уровне вложенности:</p>
-<div class="sourceCode" id="cb468"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb465"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">coords1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
   <span class="fl">0.5</span>, <span class="fl">0</span>,
   <span class="fl">0</span>, <span class="fl">1</span>,
@@ -1079,9 +963,9 @@
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">pol</span>, col <span class="op">=</span> <span class="st">'grey'</span><span class="op">)</span> <span class="co"># Обычный полигон (серый)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">mpol</span>, col <span class="op">=</span> <span class="st">'pink'</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># Мультиполигон (розовый)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-39-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-36-1.png" width="100%"></div>
 <p>Как насчет острова на озере? Если остров и суша, окружающая озеро, составляют единое целое (например, подлежат учету как единый массив леса), их можно собрать как мультиполигон. В этом случае первая компонента мультиполигона будет представлять собой полигон с дыркой, а вторая компонента — остров. Порядок компонент в данном случае роли не играет:</p>
-<div class="sourceCode" id="cb469"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb466"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">coords4</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
   <span class="fl">2.2</span>, <span class="fl">1.2</span>,
   <span class="fl">2.8</span>, <span class="fl">1.5</span>,
@@ -1098,10 +982,10 @@
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">mpol2</span><span class="op">)</span>
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">mpol2</span>, col <span class="op">=</span> <span class="st">'darkolivegreen4'</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-40-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-37-1.png" width="100%"></div>
 <p>Из данного примера также видно, что при сборе мультиполигона на самом нижнем уровне вложенности можно подавать не списки матриц координат, а готовые полигоны.</p>
 <p>Мультилиния, в отличие от мультиполигона, не требует дополнительного списка верхнего уровня, поскольку линии не могут содержать дыр. Например, можно собрать мультилинию из двух частей, соответствующих участкам реки до и после озера:</p>
-<div class="sourceCode" id="cb470"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb467"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">coords1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
   <span class="op">-</span><span class="fl">3</span>, <span class="fl">0</span>,
   <span class="op">-</span><span class="fl">1</span>, <span class="fl">2</span>,
@@ -1119,20 +1003,20 @@
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">mline</span>, lwd <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">'blue'</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">pol2</span>, col <span class="op">=</span> <span class="st">'lightblue'</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-41-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-38-1.png" width="100%"></div>
 <p>Наконец, еще один вид геометрии — это геометрическая коллекция (GEOMETRYCOLLECTION), который позволяет хранить вместе любые виды геометрий. Эта возможность используется достаточно редко, тем не менее, рассмотреть ее нужно. Геометрическая коллекция собирается из списка объектов с простыми типами геометрии (мы создали их ранее):</p>
-<div class="sourceCode" id="cb471"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb468"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">col</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_geometrycollection</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">ls</span>, <span class="va">mp</span>, <span class="va">mline</span>, <span class="va">pol2</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">col</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">col</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-42-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-39-1.png" width="100%"></div>
 </div>
-<div id="sf_sfc" class="section level4" number="10.4.8.2">
+<div id="sf_sfc" class="section level4" number="10.4.7.2">
 <h4>
-<span class="header-section-number">10.4.8.2</span> Списки геометрических объектов (sfc)<a class="anchor" aria-label="anchor" href="#sf_sfc"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.4.7.2</span> Списки геометрических объектов (sfc)<a class="anchor" aria-label="anchor" href="#sf_sfc"><i class="fas fa-link"></i></a>
 </h4>
 <p>Списки геометрических объектов (класс <code>sfc</code>) используются в таблицах пространственных объектов в качестве столбца, который хранит геометрию объектов. Создание таких списков осуществляется функцией <code><a href="https://r-spatial.github.io/sf/reference/sfc.html">st_sfc()</a></code>, которой достаточно передать в качестве перечня параметров объекты типа <code>sfg</code>. Рассмотрим создание списка геометрий на примере точечных объектов (для остальных типов объектов порядок действий не меняется):</p>
-<div class="sourceCode" id="cb472"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb469"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">moscow.sfg</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">37.615</span>, <span class="fl">55.752</span><span class="op">)</span><span class="op">)</span>
 <span class="va">irkutsk.sfg</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">104.296</span>, <span class="fl">52.298</span><span class="op">)</span><span class="op">)</span>
 <span class="va">petro.sfg</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">158.651</span>, <span class="fl">53.044</span><span class="op">)</span><span class="op">)</span>
@@ -1145,7 +1029,7 @@
 <span class="co">## bbox:           xmin: 37.615 ymin: 52.298 xmax: 158.651 ymax: 55.752</span>
 <span class="co">## CRS:            NA</span></code></pre></div>
 <p>При создании списка геометрий для него может быть определена система координат (это можно сделать и позднее при создании таблицы пространственных объектов). Для этого используем уже знакомую нам функцию <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs()</a></code>:</p>
-<div class="sourceCode" id="cb473"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb470"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">cities.sfc</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span> <span class="co"># WGS84</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">cities.sfc</span><span class="op">)</span>
 <span class="co">## Geometry set for 3 features </span>
@@ -1157,20 +1041,20 @@
 <p>Для списка геометрий может быть определена только одна система координат</p>
 </blockquote>
 <p>Можно посмотреть, куда легли наши точки:</p>
-<div class="sourceCode" id="cb474"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb471"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">cities.sfc</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span>
 <span class="va">countries</span> <span class="op">%&gt;%</span> 
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">sovereignt</span> <span class="op">==</span> <span class="st">'Russia'</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span>add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-45-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-42-1.png" width="100%"></div>
 </div>
-<div id="sf_sf" class="section level4" number="10.4.8.3">
+<div id="sf_sf" class="section level4" number="10.4.7.3">
 <h4>
-<span class="header-section-number">10.4.8.3</span> Пространственные объекты (sf)<a class="anchor" aria-label="anchor" href="#sf_sf"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.4.7.3</span> Пространственные объекты (sf)<a class="anchor" aria-label="anchor" href="#sf_sf"><i class="fas fa-link"></i></a>
 </h4>
 <p>Пространственные объекты (класс <code>sf</code>) организуются в виде фрейма данных, один из столбцов которого имеет класс <code>sfc</code>. Для этого следует сначала создать обычный фрейм данных с атрибутами, а затем соединить его со списком геометрий посредством функции <code>st_sf</code>:</p>
-<div class="sourceCode" id="cb475"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb472"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">city.attr</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
   name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Москва'</span>, <span class="st">'Иркутск'</span>, <span class="st">'Петропавловск-Камчатский'</span><span class="op">)</span>,
   established <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1147</span>, <span class="fl">1661</span>, <span class="fl">1740</span><span class="op">)</span>,
@@ -1189,12 +1073,12 @@
 <span class="co">## 2                  Иркутск        1661        620 POINT (104.296 52.298)</span>
 <span class="co">## 3 Петропавловск-Камчатский        1740        180 POINT (158.651 53.044)</span></code></pre></div>
 </div>
-<div id="sf_geom_points" class="section level4" number="10.4.8.4">
+<div id="sf_geom_points" class="section level4" number="10.4.7.4">
 <h4>
-<span class="header-section-number">10.4.8.4</span> Точки по координатам<a class="anchor" aria-label="anchor" href="#sf_geom_points"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.4.7.4</span> Точки по координатам<a class="anchor" aria-label="anchor" href="#sf_geom_points"><i class="fas fa-link"></i></a>
 </h4>
 <p>Достаточно распространенной является следующая задача: имеются координаты точек в табличной форме, необходимо создать на их основе набор пространственных объектов. Для решения этой задачи можно воспользоваться функцией <code><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf()</a></code>. Рассмотрим задачу на примере файла координат станций из базы метеорологических данных <a href="http://meteo.ru/"><strong>ВНИИГМИ-МЦД</strong></a>:</p>
-<div class="sourceCode" id="cb476"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb473"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">stations</span> <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_fwf.html">read_fwf</a></span><span class="op">(</span><span class="st">'data/vniigmi/stations.txt'</span>, 
                     col_positions <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_fwf.html">fwf_widths</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html">diff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">7</span>, <span class="fl">42</span>, <span class="fl">47</span>, <span class="fl">53</span>, <span class="fl">59</span>, <span class="fl">67</span>, <span class="fl">71</span><span class="op">)</span><span class="op">)</span>, 
                                                col_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'id'</span>, <span class="st">'name'</span>, <span class="st">'lat'</span>, <span class="st">'t1'</span>, <span class="st">'lon'</span>, <span class="st">'t2'</span>, <span class="st">'z'</span><span class="op">)</span><span class="op">)</span>,
@@ -1214,20 +1098,20 @@
 <span class="co">## 10 20674 Остров_Диксон        73.5 с.ш.   80.4 в.д.     42</span>
 <span class="co">## # … with 1,114 more rows</span></code></pre></div>
 <p>Теперь создадим пространственные точки на основе этой таблицы, взяв координаты из столбцов <em>lat</em> и <em>lon</em> соответственно и указав код системы координат:</p>
-<div class="sourceCode" id="cb477"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb474"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sf_stations</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="va">stations</span>, coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">sf_stations</span><span class="op">)</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">'red'</span>, cex <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">countries</span><span class="op">)</span>, border <span class="op">=</span> <span class="st">'grey'</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/box.html">box</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-48-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-45-1.png" width="100%"></div>
 </div>
-<div id="sf_cast" class="section level4" number="10.4.8.5">
+<div id="sf_cast" class="section level4" number="10.4.7.5">
 <h4>
-<span class="header-section-number">10.4.8.5</span> Преобразование типов геометрии<a class="anchor" aria-label="anchor" href="#sf_cast"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.4.7.5</span> Преобразование типов геометрии<a class="anchor" aria-label="anchor" href="#sf_cast"><i class="fas fa-link"></i></a>
 </h4>
 <p>Для преобразования типов геометрии существует функция <code><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast()</a></code>. Функция принимает объекты классов <code>sfg</code>, <code>sfc</code> или <code>sf</code>, а также название типа геометрии, к которому необходимо привести входные объекты. Довольно часто возникает задача конвертации площадного объекта в линейный и обратно, а также задача получения координат вершин линейного или площадного объекта в виде точек. Примеры преобразований:</p>
-<div class="sourceCode" id="cb478"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb475"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">italy.borders</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast</a></span><span class="op">(</span><span class="va">italy</span>, <span class="st">'MULTILINESTRING'</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">italy.borders</span><span class="op">)</span><span class="op">)</span>
 <span class="co">## [1] "sfc_MULTILINESTRING" "sfc"</span>
@@ -1242,11 +1126,11 @@
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">italy.regions</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">italy.points</span>, pch <span class="op">=</span> <span class="fl">20</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-49-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-46-1.png" width="100%"></div>
 </div>
-<div id="sf_polygonize" class="section level4" number="10.4.8.6">
+<div id="sf_polygonize" class="section level4" number="10.4.7.6">
 <h4>
-<span class="header-section-number">10.4.8.6</span> Полигонизация и разбиение линий<a class="anchor" aria-label="anchor" href="#sf_polygonize"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.4.7.6</span> Полигонизация и разбиение линий<a class="anchor" aria-label="anchor" href="#sf_polygonize"><i class="fas fa-link"></i></a>
 </h4>
 <p><strong>Полигонизация</strong> — это процесс преобразования линии или мультилинии в полигон(ы). Полигон может быть образован последовательностью из одной и более линий, для которых выполняются следующие условия:</p>
 <ol style="list-style-type: decimal">
@@ -1256,7 +1140,7 @@
 </ol>
 <p>Полигонизация может применяться только к одному геометрическому объекту (simple feature geometry). Соответственно, это должна быть либо просто замкнутая линия, либо мультилиния, компоненты которой образуют замкнутую последовательность.</p>
 <p>Рассмотрим операции полигонизации и добавления узлов на простом примере трех пересекающихся отрезков:</p>
-<div class="sourceCode" id="cb479"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb476"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Создадим три линии</span>
 <span class="va">coords1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span>
 <span class="va">line1</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_linestring</a></span><span class="op">(</span><span class="va">coords1</span><span class="op">)</span>
@@ -1274,12 +1158,12 @@
 <span class="co"># Посмотрим на ее точки</span>
 <span class="va">points</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast</a></span><span class="op">(</span><span class="va">mls</span>, <span class="st">'MULTIPOINT'</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">points</span>, pch <span class="op">=</span> <span class="fl">20</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-50-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-47-1.png" width="100%"></div>
 <p>Из рисунка видно, что линии образуют треугольную замкнутую область. Также рисунок показывает, что у компонент мультилинии нет вершин в точках пересечения. Мы можем попытаться найти замкнутые области и превратить их в полигоны, используя <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_polygonize()</a></code>:</p>
-<div class="sourceCode" id="cb480"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb477"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_polygonize</a></span><span class="op">(</span><span class="va">mls</span><span class="op">)</span></code></pre></div>
 <p>Операция завершилась возвратом пустой геометрической коллекции, то есть программа не смогла выделить замкнутые области. Это произошло по причине того, что линии не разбиты в точках пересечения. Разбить их на компоненты можно, используя функцию <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_node()</a></code>:</p>
-<div class="sourceCode" id="cb481"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb478"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mls2</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_node</a></span><span class="op">(</span><span class="va">mls</span><span class="op">)</span>
 <span class="va">poly2</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_polygonize</a></span><span class="op">(</span><span class="va">mls2</span><span class="op">)</span>
 <span class="va">points2</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast</a></span><span class="op">(</span><span class="va">mls2</span>, <span class="st">'MULTIPOINT'</span><span class="op">)</span>
@@ -1287,16 +1171,16 @@
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">mls2</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">poly2</span>, col <span class="op">=</span> <span class="st">'grey'</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">points2</span>, pch <span class="op">=</span> <span class="fl">20</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-52-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-49-1.png" width="100%"></div>
 <p>Таким образом, после разбиения линий на куски в точках пересечения стала возможной операция полигонизации.</p>
 </div>
 </div>
-<div id="sf_geom_attrs" class="section level3" number="10.4.9">
+<div id="sf_geom_attrs" class="section level3" number="10.4.8">
 <h3>
-<span class="header-section-number">10.4.9</span> Геометрические атрибуты<a class="anchor" aria-label="anchor" href="#sf_geom_attrs"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.4.8</span> Геометрические атрибуты<a class="anchor" aria-label="anchor" href="#sf_geom_attrs"><i class="fas fa-link"></i></a>
 </h3>
 <p>К описательным характеристикам геометрии относятся ограничивающий прямоугольник, периметр (для линий и полигонов), площадь (для полигонов), центроид и список координат, которые можно получить с помощью функций <code><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox()</a></code>, <code><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_length()</a></code>, <code><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_area()</a></code>, <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid()</a></code> и <code><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html">st_coordinates()</a></code> соответственно. Функции корректно работают для простых объектов, мультиобъектов, списков геометрий и пространственных объектов. Применительно к полигону Италии эти параметры будут учитывать части геометрии, занимаемые островами:</p>
-<div class="sourceCode" id="cb482"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb479"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="va">italy</span><span class="op">)</span>        <span class="co"># Координаты органичивающего прямоугольника</span>
 <span class="co">##      xmin      ymin      xmax      ymax </span>
 <span class="co">##  6.749955 36.619987 18.480247 47.115393</span>
@@ -1329,7 +1213,7 @@
 <p>Если данные находятся в плоской прямоугольной системе координат, то единицы измерения как правило указываются в параметрах проекции — следовательно, они могут быть использованы при вычислении геометрических параметров объектов. Если же данные хранятся в широтах и долготах, то вычисление геометрических параметров осуществляется пакетом <em>sf</em> по формулам сферической тригонометрии через пакет <a href="https://cran.r-project.org/web/packages/geosphere/index.html">geosphere</a>. Это позволяет выводить результат в плоских единицах измерения.</p>
 </blockquote>
 <p>Ограничивающий прямоугольник можно быстро преобразовать в полигон и нанести на карту, применив функцию <code><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html">st_as_sfc()</a></code>:</p>
-<div class="sourceCode" id="cb483"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb480"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">box</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html">st_as_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="va">italy</span><span class="op">)</span><span class="op">)</span> <span class="co"># Ограничивающий прямоугольник</span>
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">italy</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="op">)</span>, 
@@ -1345,9 +1229,9 @@
      col <span class="op">=</span> <span class="st">'steelblue4'</span>, 
      pch <span class="op">=</span> <span class="fl">19</span>,
      add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-54-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-51-1.png" width="100%"></div>
 <p>Как видно, в данном случае центроид и характерная точка расположились относительно рядом. Однако так бывает далеко не всегда. Выполним аналогичные вычисления для Индонезии:</p>
-<div class="sourceCode" id="cb484"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb481"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">indonesia</span> <span class="op">=</span> <span class="va">countries</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">sovereignt</span> <span class="op">==</span> <span class="st">'Indonesia'</span><span class="op">)</span>
 
 <span class="va">box</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html">st_as_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="va">indonesia</span><span class="op">)</span><span class="op">)</span>
@@ -1365,15 +1249,15 @@
      col <span class="op">=</span> <span class="st">'steelblue4'</span>, 
      pch <span class="op">=</span> <span class="fl">19</span>,
      add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-55-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-52-1.png" width="100%"></div>
 <p>Как видно, в данном случае центроид мультиполигона оказался за пределами какой-либо из его полигональных компонент, в то время как характерная точка находится внутри одного из полигонов. Таким образом, если необходимо получить точку, находящуюся гарантированно в пределах исходного множества, следует использовать <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_point_on_surface()</a></code>. При этом следует помнить, что характерная точка, в отличие от центроида, может не располагаться в визуальном центре тяжести множества объектов, и выбор между этими способами описания геометрии остается за разработчиком.</p>
 </div>
-<div id="sf_export" class="section level3" number="10.4.10">
+<div id="sf_export" class="section level3" number="10.4.9">
 <h3>
-<span class="header-section-number">10.4.10</span> Экспорт<a class="anchor" aria-label="anchor" href="#sf_export"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.4.9</span> Экспорт<a class="anchor" aria-label="anchor" href="#sf_export"><i class="fas fa-link"></i></a>
 </h3>
 <p>Для экспорта векторных пространственных данных можно воспользоваться функцией <code><a href="https://r-spatial.github.io/sf/reference/st_write.html">st_write()</a></code>, которая определит формат выходного файла по указанному вами расширению:</p>
-<div class="sourceCode" id="cb485"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb482"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html">st_write</a></span><span class="op">(</span><span class="va">cites.sf</span>, <span class="st">'data/mycities.shp'</span><span class="op">)</span> <span class="co"># Шейп-файл</span></code></pre></div>
 </div>
 </div>
@@ -1388,7 +1272,7 @@
 <span class="header-section-number">10.5.1</span> Чтение<a class="anchor" aria-label="anchor" href="#raster_read"><i class="fas fa-link"></i></a>
 </h3>
 <p>Для чтения одноканальных растров (например, цифровых моделей рельефа или полей распределения метеорологических величин) используется функция <code><a href="https://rdrr.io/pkg/raster/man/raster.html">raster()</a></code>, она создает <em>растровый слой</em> (Raster Layer). Многоканальные растры (например, космические снимки или файлы NetCDF) читаются с помощью функции <code><a href="https://rdrr.io/pkg/raster/man/stack.html">stack()</a></code>, она создает <em>растровый стек</em> (Raster Stack):</p>
-<div class="sourceCode" id="cb486"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb483"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster">raster</a></span><span class="op">)</span>
 
 <span class="va">dem</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="st">'data/world/gebco.tif'</span><span class="op">)</span> <span class="co"># Цифровая модель рельефа</span>
@@ -1407,7 +1291,7 @@
 <span class="co">## attr(,"package")</span>
 <span class="co">## [1] "raster"</span></code></pre></div>
 <p>Вы также можете прочитать каналы многоканального растра по отдельности. Для этого необходимо использовать функцию <code><a href="https://rdrr.io/pkg/raster/man/raster.html">raster()</a></code>, указав ей в качестве второго параметра номер канала, который вы хотите прочитать. Если потом потребуется собрать поканальные растры в один стек, для этого можно снова использовать функцию <code><a href="https://rdrr.io/pkg/raster/man/stack.html">stack()</a></code>:</p>
-<div class="sourceCode" id="cb487"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb484"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ch1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="st">'data/world/BlueMarbleJuly.tif'</span>, <span class="fl">1</span><span class="op">)</span>
 <span class="va">ch2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="st">'data/world/BlueMarbleJuly.tif'</span>, <span class="fl">2</span><span class="op">)</span>
 <span class="va">ch3</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="st">'data/world/BlueMarbleJuly.tif'</span>, <span class="fl">3</span><span class="op">)</span>
@@ -1423,12 +1307,12 @@
 <span class="header-section-number">10.5.2.1</span> Одноканальные растры<a class="anchor" aria-label="anchor" href="#raster_viz_single"><i class="fas fa-link"></i></a>
 </h4>
 <p>Для визуализации одноканальных растров используется функция <code><a href="https://rdrr.io/pkg/raster/man/plot.html">plot()</a></code>. В простейшем виде ей достаточно просто передать визуализируемый растр:</p>
-<div class="sourceCode" id="cb488"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb485"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">dem</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-59-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-56-1.png" width="100%"></div>
 <p>Поскольку растры часто используют в классифицированном виде, вы можете сформировать вектор граничных значений классов, вектор цветов классов, и передать их в параметры <code>breaks</code> и <code>col</code> функции <code><a href="https://rdrr.io/pkg/raster/man/plot.html">plot()</a></code> соответственно. Если параметр <code>breaks</code> не определять, то весь диапазон значений растра будет разбит на равные интервалы соответственно количеству цветов. Если не определять параметр <code>col</code>, то будет применена стандартная палитра <code>terrain.colors</code>. Вы также можете использовать одну из готовых палитр цветов или создать ее вручную (см. посвященную графической подсистеме R):</p>
-<div class="sourceCode" id="cb489"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb486"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">brks</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">12000</span>, <span class="fl">0</span>, <span class="fl">200</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2000</span>, <span class="fl">4000</span>, <span class="fl">8000</span><span class="op">)</span>
 <span class="va">clrs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
   <span class="st">"steelblue4"</span>,
@@ -1440,26 +1324,26 @@
   <span class="st">"firebrick3"</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">dem</span>, breaks <span class="op">=</span> <span class="va">brks</span>, col <span class="op">=</span> <span class="va">clrs</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-60-1.png" width="100%"></div>
-<div class="sourceCode" id="cb490"><pre class="downlit sourceCode r">
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-57-1.png" width="100%"></div>
+<div class="sourceCode" id="cb487"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">ch1</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html">colorRampPalette</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="st">"white"</span><span class="op">)</span><span class="op">)</span><span class="op">(</span><span class="fl">255</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-60-2.png" width="100%"></div>
-<div class="sourceCode" id="cb491"><pre class="downlit sourceCode r">
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-57-2.png" width="100%"></div>
+<div class="sourceCode" id="cb488"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">ch1</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">rainbow</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-60-3.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-57-3.png" width="100%"></div>
 </div>
 <div id="raster_viz_multi" class="section level4" number="10.5.2.2">
 <h4>
 <span class="header-section-number">10.5.2.2</span> Многоканальные растры<a class="anchor" aria-label="anchor" href="#raster_viz_multi"><i class="fas fa-link"></i></a>
 </h4>
 <p>Для визуализации растрового стека (многоканального растра) следует использовать функцию <code>plotRBG()</code>:</p>
-<div class="sourceCode" id="cb492"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb489"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/raster/man/plotRGB.html">plotRGB</a></span><span class="op">(</span><span class="va">img</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-61-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-58-1.png" width="100%"></div>
 <p>Поскольку при визуализации космических снимков часто используют различные варианты синтеза каналов (чтобы лучше дешифрировать те или иные категории объектов), функция <code><a href="https://rdrr.io/pkg/raster/man/plotRGB.html">plotRGB()</a></code> предоставляет такую возможность. Достаточно перечислить последовательность каналов растрового стека (по умолчанию эти каналы будут подставлены в каналы R, G и B соответственно):</p>
-<div class="sourceCode" id="cb493"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb490"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plotRGB.html">plotRGB</a></span><span class="op">(</span><span class="va">img</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plotRGB.html">plotRGB</a></span><span class="op">(</span><span class="va">img</span>, <span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span>
@@ -1467,8 +1351,8 @@
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plotRGB.html">plotRGB</a></span><span class="op">(</span><span class="va">img</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">1</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plotRGB.html">plotRGB</a></span><span class="op">(</span><span class="va">img</span>, <span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plotRGB.html">plotRGB</a></span><span class="op">(</span><span class="va">img</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-62-1.png" width="100%"></div>
-<div class="sourceCode" id="cb494"><pre class="downlit sourceCode r">
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-59-1.png" width="100%"></div>
+<div class="sourceCode" id="cb491"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="raster_combine" class="section level4" number="10.5.2.3">
@@ -1476,10 +1360,10 @@
 <span class="header-section-number">10.5.2.3</span> Совмещение слоев<a class="anchor" aria-label="anchor" href="#raster_combine"><i class="fas fa-link"></i></a>
 </h4>
 <p>Вы можете совмещать на картах несколько растровых и векторных слоев точно так же как и при совмещении векторных данных (указав параметр <code>add = TRUE</code> при вызове функции <code><a href="https://rdrr.io/pkg/raster/man/plot.html">plot()</a></code>):</p>
-<div class="sourceCode" id="cb495"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb492"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/raster/man/plotRGB.html">plotRGB</a></span><span class="op">(</span><span class="va">img</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">outlines</span>, border <span class="op">=</span> <span class="st">"white"</span>, lwd <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-63-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-60-1.png" width="100%"></div>
 </div>
 </div>
 <div id="raster_proj" class="section level3" number="10.5.3">
@@ -1487,7 +1371,7 @@
 <span class="header-section-number">10.5.3</span> Системы координат и проекции<a class="anchor" aria-label="anchor" href="#raster_proj"><i class="fas fa-link"></i></a>
 </h3>
 <p>Как и в случае с векторными данными, работа с проекцией растровых данных предполагает четыре возможных процедуры: чтение, создание, замена и проецирование. Для чтения и замены информации о системе координат растра используется функция <code><a href="https://rdrr.io/pkg/raster/man/projection.html">crs()</a></code>. Она возвращает и принимает строку в формате <em>PROJ.4</em>. Для создания информации о системе координат можно использовать уже знакомую нам функцию <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs()</a></code> из пакета <code>sf</code>. Данная функция возвращает список, вторая компонента которого и есть искомая строка:</p>
-<div class="sourceCode" id="cb496"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb493"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html">crs</a></span><span class="op">(</span><span class="va">dem</span><span class="op">)</span> <span class="co"># читаем систему координат</span>
 <span class="co">## CRS arguments: +proj=longlat +datum=WGS84 +no_defs</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html">crs</a></span><span class="op">(</span><span class="va">dem</span><span class="op">)</span> <span class="op">=</span> <span class="cn">NA</span> <span class="co"># очищаем систему координат</span>
@@ -1498,70 +1382,27 @@
 <span class="co">## CRS arguments: +proj=longlat +datum=WGS84 +no_defs</span></code></pre></div>
 <p>Для проецирования растра в новую систему координат необходимо использовать функцию <code><a href="https://rdrr.io/pkg/raster/man/projectRaster.html">projectRaster()</a></code>. В эту функцию необходимо передать как минимум два параметра: <code>from=</code> отвечает за входной растр и <code>crs=</code> отвечает за выходную систему координат в формате PROJ.4. Дополнительно можно указать разрешение растра (<code>res=</code>), метод передискретизации (<code>method=</code>) и растр-шаблон (<code>to=</code> — можно создать растр в выходной системе координат заранее и как бы “перенести” значения пикселей входного растра на пиксели шаблона). Есть и другие параметры, с которыми можно ознакомиться в справке функции <code><a href="https://rdrr.io/pkg/raster/man/projectRaster.html">projectRaster()</a></code>.</p>
 <p>Приведем несколько примеров проецирования:</p>
-<div class="sourceCode" id="cb497"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb494"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Проекция Меркатора:</span>
 <span class="va">img.merc</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projectRaster.html">projectRaster</a></span><span class="op">(</span><span class="va">img</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">3857</span><span class="op">)</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plotRGB.html">plotRGB</a></span><span class="op">(</span><span class="va">img.merc</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">countries.merc</span><span class="op">)</span>, 
      border <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html">rgb</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0.2</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-65-1.png" width="100%"></div>
-<div class="sourceCode" id="cb498"><pre class="downlit sourceCode r">
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-62-1.png" width="100%"></div>
+<div class="sourceCode" id="cb495"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Проекция Робинсона:</span>
 <span class="va">img.merc</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projectRaster.html">projectRaster</a></span><span class="op">(</span><span class="va">img</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="st">'+proj=robin'</span><span class="op">)</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plotRGB.html">plotRGB</a></span><span class="op">(</span><span class="va">img.merc</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">countries.rob</span><span class="op">)</span>, 
      border <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html">rgb</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0.2</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-66-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-63-1.png" width="100%"></div>
 </div>
-<div id="raster_values" class="section level3" number="10.5.4">
+<div id="raster_export" class="section level3" number="10.5.4">
 <h3>
-<span class="header-section-number">10.5.4</span> Операции со значениями<a class="anchor" aria-label="anchor" href="#raster_values"><i class="fas fa-link"></i></a>
-</h3>
-<p>Операции со значениями растров чрезвычайно разнообразны, поэтому подробно они разбираются в одной из последующих глав. Здесь же мы кратко познакомимся с <em>локальными операциями</em> над растром, такими как фильтрация и арифметические преобразования. В локальных операциях каждый пиксел растра анализируется отдельно, независимо от остальных пикселов. Поэтому локальные операции наиболее просты в применении. Но это не означает, что они менее важны, чем более сложные операции. Как раз наоборот: фильтрация и арифметика представляют собой важнейшие операции растровой алгебры.</p>
-<p>Особенность растровой алгебры заключается в том, что растры используются в выражениях как обычные переменные — это делает преобразования растров простыми и наглядными.</p>
-<p>Чтобы произвести <strong>фильрацию</strong> (выбор) ячеек по значениям, необходимо соорудить логическое выражение с участием растра. Все пикселы, удовлетворяющие критерию, получат в результирующем растре значение <code>1</code>, а все остальные — <code>0</code>. Несколько примеров:</p>
-<div class="sourceCode" id="cb499"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">below.zero</span> <span class="op">=</span> <span class="va">dem</span> <span class="op">&lt;</span> <span class="fl">0</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">below.zero</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-67-1.png" width="100%"></div>
-<div class="sourceCode" id="cb500"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">highlands</span> <span class="op">=</span> <span class="va">dem</span> <span class="op">&gt;</span> <span class="fl">100</span> <span class="op">&amp;</span> <span class="va">dem</span> <span class="op">&lt;</span> <span class="fl">500</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">highlands</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-67-2.png" width="100%"></div>
-<div class="sourceCode" id="cb501"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">mountains</span> <span class="op">=</span> <span class="va">dem</span> <span class="op">&gt;</span> <span class="fl">1000</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">mountains</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-67-3.png" width="100%"></div>
-<p>С помощью локальных операций растровой алгебры можно складывать, вычитать, перемножать и делить растры (а также брать из них квадратные корни, логарифмы, тригонометрические функции), точно так же как это происходит с обычными числами. Соответственно, бывают бинарные (два растра) и унарные (один растр) операции.</p>
-<blockquote>
-<p>Чтобы получать предсказуемые результаты бинарных операций растровой алгебры, необходимо, чтобы геометрия растров совпадала.</p>
-</blockquote>
-<p>Покажем возможности растровой алгебры на примере определения толщины покровного оледенения. Глобальная цифровая модель рельефа <a href="https://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.ngdc.mgg.dem:316">ETOPO1</a> поставляется в двух вариантах: Ice Surface (поверхность с учетом покровного оледенения) и Bedrock (подстилающая поверхность). Если вычесть из первой вторую, можно узнать толщину льда в Гренландии и на Антарктиде:</p>
-<div class="sourceCode" id="cb502"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bed</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="st">'data/world/etopo1_bed.tif'</span><span class="op">)</span>
-<span class="va">ice</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="st">'data/world/etopo1_ice.tif'</span><span class="op">)</span>
-
-<span class="va">ice.depth</span> <span class="op">=</span> <span class="va">ice</span> <span class="op">-</span> <span class="va">bed</span>
-
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">ice.depth</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">cm.colors</a></span><span class="op">(</span><span class="fl">255</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">outlines</span>, border <span class="op">=</span> <span class="st">'black'</span>, lwd <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-68-1.png" width="100%"></div>
-<p>Чтобы маскировать значения растра, необходимо воспользоваться функцией <code><a href="https://rdrr.io/pkg/raster/man/getValues.html">values()</a></code>, которая обнажает список значений растра. Например, можно превратить в NA все пикселы, в которых толщина льда меньше или равна нулю:</p>
-<div class="sourceCode" id="cb503"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ice.depth</span><span class="op">[</span><span class="va">ice.depth</span> <span class="op">&lt;=</span> <span class="fl">0</span><span class="op">]</span> <span class="op">=</span> <span class="cn">NA</span>
-
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">ice.depth</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">cm.colors</a></span><span class="op">(</span><span class="fl">255</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">outlines</span>, border <span class="op">=</span> <span class="st">'black'</span>, lwd <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-69-1.png" width="100%"></div>
-</div>
-<div id="raster_export" class="section level3" number="10.5.5">
-<h3>
-<span class="header-section-number">10.5.5</span> Экспорт<a class="anchor" aria-label="anchor" href="#raster_export"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.5.4</span> Экспорт<a class="anchor" aria-label="anchor" href="#raster_export"><i class="fas fa-link"></i></a>
 </h3>
 <p>Чтобы экспортировать (сохранить в файл) любой растр, можно воспользоваться функцией <code><a href="https://rdrr.io/pkg/raster/man/writeRaster.html">writeRaster()</a></code>, указав имя выходного файла:</p>
-<div class="sourceCode" id="cb504"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb496"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/raster/man/writeRaster.html">writeRaster</a></span><span class="op">(</span><span class="va">ice.depth</span>, <span class="st">'data/world/ice_depth.tif'</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
@@ -1583,16 +1424,16 @@
 <code><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf_text()</a></code> позволяет размещзать подписи объектов без плашки.</li>
 </ul>
 <p>Отобразим для примера границы России в конической проекции:</p>
-<div class="sourceCode" id="cb505"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb497"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">russia</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">countries</span>, <span class="va">adm0_a3</span> <span class="op">==</span> <span class="st">'RUS'</span><span class="op">)</span>
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">russia</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf_label</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">name</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="st">'+proj=eqdc +lon_0=100 +lat_1=42 +lat_2=60 +datum=WGS84 +units=m'</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">30</span>, <span class="fl">180</span>, by <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-71-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-65-1.png" width="100%"></div>
 <p>Так же как ив случае стандартной подсистемы, можно указать атрибутивное поле, по которому будет строиться тематическая карта. Покажем это на примере выгруженных ранее Европейских стран:</p>
-<div class="sourceCode" id="cb506"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb498"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">brks</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span>, <span class="fl">10</span><span class="op">)</span>
 <span class="va">nbrks</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">brks</span><span class="op">)</span>
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">europe.conic</span><span class="op">)</span> <span class="op">+</span>
@@ -1604,7 +1445,7 @@
       guide <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op">(</span>keyheight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="st">"cm"</span><span class="op">)</span>, reverse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">'Валовый внутренний продукт'</span>, fill <span class="op">=</span> <span class="st">'\n$ тыс/чел.'</span> <span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-72-1.png" width="100%"></div>
+<div class="inline-figure"><img src="10-SpatialData_files/figure-html/unnamed-chunk-66-1.png" width="100%"></div>
 </div>
 <div id="spatial_interactive" class="section level2" number="10.7">
 <h2>
@@ -1612,10 +1453,10 @@
 </h2>
 <p>R предоставляет возможности для интерактивного просмотра пространственных данных средствами библиотек веб-картографирования. В данном разделе мы кратко познакомимся с возможностями пакета <a href="https://r-spatial.github.io/mapview/"><strong>mapview</strong></a>, который использует возможности библиотеки <a href="https://leafletjs.com/">Leaflet</a>. Функции данного пакета не предназначены для создания тематических карт высокого качества и рассчитаны на выполнение исследовательского анализа данных.</p>
 <p>Чтобы отобразить векторный или растровый слой средствами mapview, достаточно вызвать одноименную функцию данного пакета:</p>
-<div class="sourceCode" id="cb507"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb499"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/mapview/man/mapView.html">mapview</a></span><span class="op">(</span><span class="va">sf_stations</span><span class="op">)</span></code></pre></div>
 <p>Чтобы скомбинировать несколько слоев, необходимо сложить несколько вызовов <code><a href="https://rdrr.io/pkg/mapview/man/mapView.html">mapview()</a></code>:</p>
-<div class="sourceCode" id="cb508"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb500"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/mapview/man/mapView.html">mapview</a></span><span class="op">(</span><span class="va">countries</span>, col.regions <span class="op">=</span> <span class="st">'white'</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/mapview/man/mapView.html">mapview</a></span><span class="op">(</span><span class="va">sf_stations</span>, col.regions <span class="op">=</span> <span class="st">'red'</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="questions_tasks_spatial" class="section level2" number="10.8">
@@ -1724,10 +1565,9 @@
 <li><a class="nav-link" href="#sf_plotting"><span class="header-section-number">10.4.4</span> Визуализация</a></li>
 <li><a class="nav-link" href="#sf_crs"><span class="header-section-number">10.4.5</span> Системы координат и проекции</a></li>
 <li><a class="nav-link" href="#sf_attrs"><span class="header-section-number">10.4.6</span> Атрибутивные операции</a></li>
-<li><a class="nav-link" href="#sf_spat_selection"><span class="header-section-number">10.4.7</span> Пространственные операции</a></li>
-<li><a class="nav-link" href="#sf_creation"><span class="header-section-number">10.4.8</span> Создание пространственных объектов</a></li>
-<li><a class="nav-link" href="#sf_geom_attrs"><span class="header-section-number">10.4.9</span> Геометрические атрибуты</a></li>
-<li><a class="nav-link" href="#sf_export"><span class="header-section-number">10.4.10</span> Экспорт</a></li>
+<li><a class="nav-link" href="#sf_creation"><span class="header-section-number">10.4.7</span> Создание пространственных объектов</a></li>
+<li><a class="nav-link" href="#sf_geom_attrs"><span class="header-section-number">10.4.8</span> Геометрические атрибуты</a></li>
+<li><a class="nav-link" href="#sf_export"><span class="header-section-number">10.4.9</span> Экспорт</a></li>
 </ul>
 </li>
 <li>
@@ -1735,8 +1575,7 @@
 <li><a class="nav-link" href="#raster_read"><span class="header-section-number">10.5.1</span> Чтение</a></li>
 <li><a class="nav-link" href="#raster_viz"><span class="header-section-number">10.5.2</span> Визуализация</a></li>
 <li><a class="nav-link" href="#raster_proj"><span class="header-section-number">10.5.3</span> Системы координат и проекции</a></li>
-<li><a class="nav-link" href="#raster_values"><span class="header-section-number">10.5.4</span> Операции со значениями</a></li>
-<li><a class="nav-link" href="#raster_export"><span class="header-section-number">10.5.5</span> Экспорт</a></li>
+<li><a class="nav-link" href="#raster_export"><span class="header-section-number">10.5.4</span> Экспорт</a></li>
 </ul>
 </li>
 <li><a class="nav-link" href="#spatial_ggplot2"><span class="header-section-number">10.6</span> Визуализация средствами ggplot2</a></li>
@@ -1764,7 +1603,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-01-27.</p>
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-02-15.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

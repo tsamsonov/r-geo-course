@@ -756,76 +756,6 @@ plot(continents['gdp'])
 
 Потрясающе просто, не правда ли? Вдобавок, мы еще и получили границы континентов (достаточно условные, конечно), которых у нас раньше не было. Данный пример также показывает, что атрибутивные операции над пространственными объектами всегда учитывают их геометрию.
 
-### Пространственные операции {#sf_spat_selection}
-
-Поиск объектов по местоположению базируется на проверке топологических отношений между объектами. Топологические отношения описывают взаимное расположение объектов. Различные варианты топологических отношений для площадных объектов представлены на следующем рисунке, где серым цветом показаны пересечения _внутренних областей_ объектов $A$ и $B$, синим цветом --- пересечения _границ_ объектов $A$ и $B$:
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-32-1.png" width="100%" />
-
-Отношение _Пересекает (intersects)_ будет истинно для любого случая когда две геометрии имеют хотя бы одну общую точку, то есть во всех случаях кроме _Не пересекает (disjoint)_. Для проверки этих, а также некоторых других отношений, в пакете `sf` существует ряд функций:
-
-Функция                       | Топологическое отношение
-------------------------------|--------------------------------------------------------------------
-`st_intersects(x, y)`         | `x` имеет общие точки с `y`
-`st_disjoint(x, y)`           | `x` не имеет общих точек с `y`
-`st_touches(x, y)`            | `x` касается `y` (граница `x` имеет общие точки с границей `y` И внутренняя область `x` не имеет имеет общих точек с внутренней областью `y`)
-`st_crosses(x, y)`            | `x` пересекает `y` (граница `x` имеет общие точки с границей `y`, при этом размерность их пересечения меньше размерности хотя бы одного из исходных объектов)
-`st_within(x, y)`             | `x` внутри `y` (все точки `x` содержатся в `y` И внутренняя область `x` имеет общие точки с внутренней областью `y`)
-`st_contains(x, y)`           | `x` содержит `y` (все точки `y` содержатся в `x` И внутренняя область `y` имеет общие точки с внутренней областью `x`)
-`st_contains_properly(x, y)`  | `x` содержит `y` полностью (все точки `y` содержатся в `x` И граница `x` не имеет общих точек с границей `y`)
-`st_overlaps(x, y)`           | `x` перекрывает `y` (внутренняя область `x` имеет как общие, так и не общие точки с внутренней областью `y`)
-`st_equals(x, y)`             | `x` совпадает `y` (множества точек `x` и `y` совпадают)
-`st_covers(x, y)`             | `x` покрывает `y` (все точки `y` содержатся в `x`)
-`st_covered_by(x, y)`         | `x` покрыт `y` (все точки `x` содержатся в `y`)
-`st_equals_exact(x, y)`       | `x` совпадает `y` точно (упорядоченные множества точек `x` и `y` совпадают)
-
-Между `covered_by` и `within`, а также `covers` и `contains` нет разницы в случае, когда оба объекта являются площадными. Эта разница будет сказываться если хотя бы один из объектов является линией либо точкой. В этом случае `within`, `contains` и `contains_properly` будут давать ложный результат (FALSE), поскольку ни у линий, ни у точек нет внутренней области.
-
-Проверка топологических отношений используется для выполнения выборки объектов по местоположению — _пространственной выборки_. Наиболее простой способ выбрать объекты по пространственному местоположению --- это использовать один слой в качестве фильтра для другого слоя. В этом случае будет по умолчанию использовано отношение `st_intersects()` (пересекает). Никаких отличий от работы с обычными таблицами нет. Например, вот так можно выбрать точки, находящиеся внутри ранее отобранных стран с максимальным ВВП:
-
-
-```r
-cities = st_read('data/ne/cities.gpkg')
-## Reading layer `populated_places' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/cities.gpkg' using driver `GPKG'
-## Simple feature collection with 243 features and 103 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: -175.2206 ymin: -41.29999 xmax: 179.2166 ymax: 64.15002
-## geographic CRS: WGS 84
-city.pts = st_geometry(cities)
-
-# Наносим исходную конфигурацию
-plot(outlines, lwd = 0.5)
-plot(cities, col = 'black', pch = 20, cex = 0.5, add = TRUE)
-```
-
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-33-1.png" width="100%" />
-
-```r
-
-# Отбираем точки внутри стран с максимальным ВВП
-sel = cities[largest, ]
-
-# Смотрим что получилось
-plot(outlines, lwd = 0.5)
-plot(largest, col = 'gray', add = TRUE)
-plot(sel, pch = 20, col = 'black', add = TRUE)
-```
-
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-33-2.png" width="100%" />
-
-Разумеется, при выполнении пространственных запросов могут возникать и другие пространственные отношения. Например, мы можем выбрать все страны, имеющие общую границу с Чехией. Для этого можно использовать топологическое отношение `st_touches` вместо `st_intersects` --- это будет гарантировать, что сама Чехия в результате не выберется (касающиеся объекты не могут перекрываться). Тип отношения необходимо поставить в параметр `op = ` при выполнении фильтрации фрейма данных:
-
-
-```r
-cz = countries %>% dplyr::filter(sovereignt == 'Czechia')
-neighbors = countries[cz, op = st_touches]
-
-plot(st_geometry(neighbors), col = 'lightgray', lwd = 0.5)
-plot(cz, col = 'darkgray', add = TRUE)
-```
-
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-34-1.png" width="100%" />
-
 ### Создание пространственных объектов {#sf_creation}
 
 Пространственные объекты в R можно собирать "вручную", если есть такая необходимость. Например, вам известны координаты границ участков полевого обследования, полученные посредством GPS, а вам необходимо превратить их в полигоны, чтобы выполнить анализ и картографирование. Придется из координат собрать полигоны программным путем. Процесс создания пространственных объектов осуществляется в последовательности их иерархического соподчинения: __sfg__ > __sfc__ > __sf__.
@@ -885,7 +815,7 @@ plot(ls)
 plot(mp, col = 'red', pch = 19, add = TRUE)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-37-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-34-1.png" width="100%" />
 
 Создание трех-(_XYZ_, _XYM_) и четырехмерных (_ZYXM_) мультиточек и линий выполняется аналогично, но матрица должна содержать не 2, а, соответственно 3 или 4 столбца, и при необходимости параметр `dim = 'XYM'`.
 
@@ -915,7 +845,7 @@ print(pol)
 plot(pol, col = 'lightblue')
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-38-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-35-1.png" width="100%" />
 
 ```r
 
@@ -934,7 +864,7 @@ print(pol2)
 plot(pol2, col = 'lightblue')
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-38-2.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-35-2.png" width="100%" />
 
 Мультиполигоны (_MULTIPOLYGON_) и мультилинии (_MULTILINESTRING_) требуются тогда, когда один и тот же географический объект состоит из нескольких геометрических объектов. Простейший пример --- островные государства. Чтобы представить страну, занимающую архипелаг (Багамские острова, Индонезия, Япония и т.д.) как один пространственный объект, необходимо создать мультиполигон. Все компоненты мультиполигона будут иметь общий набор атрибутов (непространственных характеристик). Мультилинии используются реже мультиполигонов и необходимы для представления линейных объектов, разорванных в пространстве. Примером такого объекта может быть любая река или канал, которые разорваны в тех местах, где они протекают через озеро или водохранилище, представленное полигональным объектом.
 
@@ -968,7 +898,7 @@ plot(pol, col = 'grey') # Обычный полигон (серый)
 plot(mpol, col = 'pink', add = TRUE) # Мультиполигон (розовый)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-39-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-36-1.png" width="100%" />
 
 Как насчет острова на озере? Если остров и суша, окружающая озеро, составляют единое целое (например, подлежат учету как единый массив леса), их можно собрать как мультиполигон. В этом случае первая компонента мультиполигона будет представлять собой полигон с дыркой, а вторая компонента — остров. Порядок компонент в данном случае роли не играет:
 
@@ -991,7 +921,7 @@ print(mpol2)
 plot(mpol2, col = 'darkolivegreen4')
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-40-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-37-1.png" width="100%" />
 
 Из данного примера также видно, что при сборе мультиполигона на самом нижнем уровне вложенности можно подавать не списки матриц координат, а готовые полигоны.
 
@@ -1017,7 +947,7 @@ plot(mline, lwd = 3, col = 'blue')
 plot(pol2, col = 'lightblue', add = TRUE)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-41-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-38-1.png" width="100%" />
 
 Наконец, еще один вид геометрии --- это геометрическая коллекция (GEOMETRYCOLLECTION), который позволяет хранить вместе любые виды геометрий. Эта возможность используется достаточно редко, тем не менее, рассмотреть ее нужно. Геометрическая коллекция собирается из списка объектов с простыми типами геометрии (мы создали их ранее):
 
@@ -1027,7 +957,7 @@ print(col)
 plot(col)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-42-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-39-1.png" width="100%" />
 
 ####  Списки геометрических объектов (sfc) {#sf_sfc}
 
@@ -1072,7 +1002,7 @@ countries %>%
   plot(add = TRUE)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-45-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-42-1.png" width="100%" />
 
 ####  Пространственные объекты (sf) {#sf_sf}
 
@@ -1133,7 +1063,7 @@ plot(st_geometry(countries), border = 'grey', add = TRUE)
 box()
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-48-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-45-1.png" width="100%" />
 
 #### Преобразование типов геометрии {#sf_cast}
 
@@ -1157,7 +1087,7 @@ plot(st_geometry(italy.regions), lwd = 0.5)
 plot(italy.points, pch = 20, add = TRUE)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-49-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-46-1.png" width="100%" />
 
 #### Полигонизация и разбиение линий {#sf_polygonize}
 
@@ -1191,7 +1121,7 @@ points = st_cast(mls, 'MULTIPOINT')
 plot(points, pch = 20, add = TRUE)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-50-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-47-1.png" width="100%" />
 
 Из рисунка видно, что линии образуют треугольную замкнутую область. Также рисунок показывает, что у компонент мультилинии нет вершин в точках пересечения. Мы можем попытаться найти замкнутые области и превратить их в полигоны, используя `st_polygonize()`:
 
@@ -1210,7 +1140,7 @@ plot(poly2, col = 'grey', add = TRUE)
 plot(points2, pch = 20, add = TRUE)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-52-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-49-1.png" width="100%" />
 
 Таким образом, после разбиения линий на куски в точках пересечения стала возможной операция полигонизации.
 
@@ -1274,7 +1204,7 @@ plot(st_point_on_surface(italy),
      add = TRUE)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-54-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-51-1.png" width="100%" />
 
 Как видно, в данном случае центроид и характерная точка расположились относительно рядом. Однако так бывает далеко не всегда. Выполним аналогичные вычисления для Индонезии:
 
@@ -1298,7 +1228,7 @@ plot(st_point_on_surface(indonesia),
      add = TRUE)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-55-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-52-1.png" width="100%" />
 
 Как видно, в данном случае центроид мультиполигона оказался за пределами какой-либо из его полигональных компонент, в то время как характерная точка находится внутри одного из полигонов. Таким образом, если необходимо получить точку, находящуюся гарантированно в пределах исходного множества, следует использовать `st_point_on_surface()`. При этом следует помнить, что характерная точка, в отличие от центроида, может не располагаться в визуальном центре тяжести множества объектов, и выбор между этими способами описания геометрии остается за разработчиком.
 
@@ -1362,7 +1292,7 @@ par(mfrow = c(1,1))
 plot(dem)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-59-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-56-1.png" width="100%" />
 
 Поскольку растры часто используют в классифицированном виде, вы можете сформировать вектор граничных значений классов, вектор цветов классов, и передать их в параметры `breaks` и `col` функции `plot()` соответственно. Если параметр `breaks` не определять, то весь диапазон значений растра будет разбит на равные интервалы соответственно количеству цветов. Если не определять параметр `col`, то будет применена стандартная палитра `terrain.colors`. Вы также можете использовать одну из готовых палитр цветов или создать ее вручную (см. посвященную графической подсистеме R):
 
@@ -1380,21 +1310,21 @@ clrs = c(
 plot(dem, breaks = brks, col = clrs)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-60-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-57-1.png" width="100%" />
 
 ```r
 
 plot(ch1, col = colorRampPalette(c("black", "white"))(255))
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-60-2.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-57-2.png" width="100%" />
 
 ```r
 
 plot(ch1, col = rainbow(10))
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-60-3.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-57-3.png" width="100%" />
 
 #### Многоканальные растры {#raster_viz_multi}
 
@@ -1404,7 +1334,7 @@ plot(ch1, col = rainbow(10))
 plotRGB(img)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-61-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-58-1.png" width="100%" />
 
 Поскольку при визуализации космических снимков часто используют различные варианты синтеза каналов (чтобы лучше дешифрировать те или иные категории объектов), функция `plotRGB()` предоставляет такую возможность. Достаточно перечислить последовательность каналов растрового стека (по умолчанию эти каналы будут подставлены в каналы R, G и B соответственно):
 
@@ -1418,7 +1348,7 @@ plotRGB(img, 3, 1, 2)
 plotRGB(img, 3, 2, 1)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-62-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-59-1.png" width="100%" />
 
 ```r
 par(mfrow = c(1,1))
@@ -1433,7 +1363,7 @@ plotRGB(img)
 plot(outlines, border = "white", lwd = 0.5, add = TRUE)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-63-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-60-1.png" width="100%" />
 
 ### Системы координат и проекции {#raster_proj}
 
@@ -1464,7 +1394,7 @@ plot(st_geometry(countries.merc),
      border = rgb(1,1,1,0.2), lwd = 0.5, add = TRUE)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-65-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-62-1.png" width="100%" />
 
 
 ```r
@@ -1475,68 +1405,7 @@ plot(st_geometry(countries.rob),
      border = rgb(1,1,1,0.2), lwd = 0.5, add = TRUE)
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-66-1.png" width="100%" />
-
-### Операции со значениями {#raster_values}
-
-Операции со значениями растров чрезвычайно разнообразны, поэтому подробно они разбираются в одной из последующих глав. Здесь же мы кратко познакомимся с _локальными операциями_ над растром, такими как фильтрация и арифметические преобразования. В локальных операциях каждый пиксел растра анализируется отдельно, независимо от остальных пикселов. Поэтому локальные операции наиболее просты в применении. Но это не означает, что они менее важны, чем более сложные операции. Как раз наоборот: фильтрация и арифметика представляют собой важнейшие операции растровой алгебры. 
-
-Особенность растровой алгебры заключается в том, что растры используются в выражениях как обычные переменные --- это делает преобразования растров простыми и наглядными. 
-
-Чтобы произвести __фильрацию__ (выбор) ячеек по значениям, необходимо соорудить логическое выражение с участием растра. Все пикселы, удовлетворяющие критерию, получат в результирующем растре значение `1`, а все остальные — `0`. Несколько примеров:
-
-
-```r
-below.zero = dem < 0
-plot(below.zero)
-```
-
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-67-1.png" width="100%" />
-
-```r
-
-highlands = dem > 100 & dem < 500
-plot(highlands)
-```
-
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-67-2.png" width="100%" />
-
-```r
-
-mountains = dem > 1000
-plot(mountains)
-```
-
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-67-3.png" width="100%" />
-
-С помощью локальных операций растровой алгебры можно складывать, вычитать, перемножать и делить растры (а также брать из них квадратные корни, логарифмы, тригонометрические функции), точно так же как это происходит с обычными числами. Соответственно, бывают бинарные (два растра) и унарные (один растр) операции.
-
-> Чтобы получать предсказуемые результаты бинарных операций растровой алгебры, необходимо, чтобы геометрия растров совпадала.
-
-Покажем возможности растровой алгебры на примере определения толщины покровного оледенения. Глобальная цифровая модель рельефа [ETOPO1](https://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.ngdc.mgg.dem:316) поставляется в двух вариантах: Ice Surface (поверхность с учетом покровного оледенения) и Bedrock (подстилающая поверхность). Если вычесть из первой вторую, можно узнать толщину льда в Гренландии и на Антарктиде:
-
-```r
-bed = raster('data/world/etopo1_bed.tif')
-ice = raster('data/world/etopo1_ice.tif')
-
-ice.depth = ice - bed
-
-plot(ice.depth, col = cm.colors(255))
-plot(outlines, border = 'black', lwd = 0.5, add = TRUE)
-```
-
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-68-1.png" width="100%" />
-
-Чтобы маскировать значения растра, необходимо воспользоваться функцией `values()`, которая обнажает список значений растра. Например, можно превратить в NA все пикселы, в которых толщина льда меньше или равна нулю:
-
-```r
-ice.depth[ice.depth <= 0] = NA
-
-plot(ice.depth, col = cm.colors(255))
-plot(outlines, border = 'black', lwd = 0.5, add = TRUE)
-```
-
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-69-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-63-1.png" width="100%" />
 
 ### Экспорт {#raster_export}
 
@@ -1568,7 +1437,7 @@ ggplot(russia) +
   scale_x_continuous(breaks = seq(-30, 180, by = 30))
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-71-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-65-1.png" width="100%" />
 
 Так же как ив случае стандартной подсистемы, можно указать атрибутивное поле, по которому будет строиться тематическая карта. Покажем это на примере выгруженных ранее Европейских стран:
 
@@ -1586,7 +1455,7 @@ ggplot(europe.conic) +
   labs(title = 'Валовый внутренний продукт', fill = '\n$ тыс/чел.' )
 ```
 
-<img src="10-SpatialData_files/figure-html/unnamed-chunk-72-1.png" width="100%" />
+<img src="10-SpatialData_files/figure-html/unnamed-chunk-66-1.png" width="100%" />
 
 ## Интерактивные карты {#spatial_interactive}
 

@@ -8,6 +8,87 @@
 
 Геометрический подход связан с вычислением расстояний между географическими локациями, а также агрегированием объектов/интегрированием показателей в пределах заданных областей, вдоль линий или в окрестности точек. Поиск входной информации для агрегирования решается путем выполнения _пространственных запросов_.
 
+### Метрические отношение {#sf_spat_metric}
+### Топологические отношения {#sf_spat_topology}
+
+Поиск объектов по местоположению базируется на проверке топологических отношений между объектами. Топологические отношения описывают взаимное расположение объектов. Различные варианты топологических отношений для площадных объектов представлены на следующем рисунке, где серым цветом показаны пересечения _внутренних областей_ объектов $A$ и $B$, синим цветом --- пересечения _границ_ объектов $A$ и $B$:
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-1-1.png" width="100%" />
+
+Отношение _Пересекает (intersects)_ будет истинно для любого случая когда две геометрии имеют хотя бы одну общую точку, то есть во всех случаях кроме _Не пересекает (disjoint)_. Для проверки этих, а также некоторых других отношений, в пакете `sf` существует ряд функций:
+
+Функция                       | Топологическое отношение
+------------------------------|--------------------------------------------------------------------
+`st_intersects(x, y)`         | `x` имеет общие точки с `y`
+`st_disjoint(x, y)`           | `x` не имеет общих точек с `y`
+`st_touches(x, y)`            | `x` касается `y` (граница `x` имеет общие точки с границей `y` И внутренняя область `x` не имеет имеет общих точек с внутренней областью `y`)
+`st_crosses(x, y)`            | `x` пересекает `y` (граница `x` имеет общие точки с границей `y`, при этом размерность их пересечения меньше размерности хотя бы одного из исходных объектов)
+`st_within(x, y)`             | `x` внутри `y` (все точки `x` содержатся в `y` И внутренняя область `x` имеет общие точки с внутренней областью `y`)
+`st_contains(x, y)`           | `x` содержит `y` (все точки `y` содержатся в `x` И внутренняя область `y` имеет общие точки с внутренней областью `x`)
+`st_contains_properly(x, y)`  | `x` содержит `y` полностью (все точки `y` содержатся в `x` И граница `x` не имеет общих точек с границей `y`)
+`st_overlaps(x, y)`           | `x` перекрывает `y` (внутренняя область `x` имеет как общие, так и не общие точки с внутренней областью `y`)
+`st_equals(x, y)`             | `x` совпадает `y` (множества точек `x` и `y` совпадают)
+`st_covers(x, y)`             | `x` покрывает `y` (все точки `y` содержатся в `x`)
+`st_covered_by(x, y)`         | `x` покрыт `y` (все точки `x` содержатся в `y`)
+`st_equals_exact(x, y)`       | `x` совпадает `y` точно (упорядоченные множества точек `x` и `y` совпадают)
+
+Между `covered_by` и `within`, а также `covers` и `contains` нет разницы в случае, когда оба объекта являются площадными. Эта разница будет сказываться если хотя бы один из объектов является линией либо точкой. В этом случае `within`, `contains` и `contains_properly` будут давать ложный результат (FALSE), поскольку ни у линий, ни у точек нет внутренней области.
+
+Проверка топологических отношений используется для выполнения выборки объектов по местоположению — _пространственной выборки_. Наиболее простой способ выбрать объекты по пространственному местоположению --- это использовать один слой в качестве фильтра для другого слоя. В этом случае будет по умолчанию использовано отношение `st_intersects()` (пересекает). Никаких отличий от работы с обычными таблицами нет. Например, вот так можно выбрать точки, находящиеся внутри ранее отобранных стран с максимальным ВВП:
+
+
+```r
+countries = st_read('data/ne/countries.gpkg')
+## Reading layer `admin_0_map_units' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/countries.gpkg' using driver `GPKG'
+## Simple feature collection with 183 features and 72 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
+## geographic CRS: WGS 84
+outlines = st_geometry(countries)
+cities = st_read('data/ne/cities.gpkg')
+## Reading layer `populated_places' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/cities.gpkg' using driver `GPKG'
+## Simple feature collection with 243 features and 103 fields
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: -175.2206 ymin: -41.29999 xmax: 179.2166 ymax: 64.15002
+## geographic CRS: WGS 84
+city.pts = st_geometry(cities)
+
+largest = countries %>% dplyr::select(pop_est) %>% dplyr::filter(pop_est > 100000000)
+
+# Наносим исходную конфигурацию
+plot(outlines, lwd = 0.5)
+plot(cities, col = 'black', pch = 20, cex = 0.5, add = TRUE)
+```
+
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-2-1.png" width="100%" />
+
+```r
+
+# Отбираем точки внутри стран с максимальным ВВП
+sel = cities[largest, ]
+
+# Смотрим что получилось
+plot(outlines, lwd = 0.5)
+plot(largest, col = 'gray', add = TRUE)
+plot(sel, pch = 20, col = 'black', add = TRUE)
+```
+
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-2-2.png" width="100%" />
+
+Разумеется, при выполнении пространственных запросов могут возникать и другие пространственные отношения. Например, мы можем выбрать все страны, имеющие общую границу с Чехией. Для этого можно использовать топологическое отношение `st_touches` вместо `st_intersects` --- это будет гарантировать, что сама Чехия в результате не выберется (касающиеся объекты не могут перекрываться). Тип отношения необходимо поставить в параметр `op = ` при выполнении фильтрации фрейма данных:
+
+
+```r
+cz = countries %>% dplyr::filter(sovereignt == 'Czechia')
+neighbors = countries[cz, op = st_touches]
+
+plot(st_geometry(neighbors), col = 'lightgray', lwd = 0.5)
+plot(cz, col = 'darkgray', add = TRUE)
+```
+
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-3-1.png" width="100%" />
+
 ## Пространственные запросы  {#spatial_queries}
 
 __Пространственные запросы__ связаны с поиском объектов (географических локаций), удовлетворяющих условию, заданному на множестве пространственных отношений. В свою очередь, пространственные отношения бывают трех типов: _дирекционные_ (направления), _метрические_ (расстояния) и _топологические_ (взаимное размещение). Примеры пространственных запросов знакомы любому географу:
@@ -62,12 +143,6 @@ __Пространственные запросы__ связаны с поиск
 Начнем наше исследование с визуального анализа исходных данных
 
 ```r
-library(sf)
-library(tidyverse)
-library(classInt)
-library(osrm) # Использование онлайн-сервиса маршрутизации OSRM
-library(cartography) # Удобное построение тематических карт средствами plot()
-
 # Чтение данных
 roads = st_read("data/roads.gpkg") # Дороги
 poi = st_read("data/poi_point.gpkg") # Точки интереса
@@ -102,7 +177,7 @@ plot(poi %>% st_geometry(),
      add = TRUE)
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-1-1.png" width="100%" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-4-1.png" width="100%" />
 
 Теперь приступим к изучению данных, хранящихся в слое `poi` (от англ. POI --- Point Of Interest). Данный слой содержит все точечные маркеры OSM, которыми были отмечены на карте объекты, представляющие (по мнению создателей данных) интерес для пользователей. В POI включаются самые разнообразные объекты, такие как: объекты сферы услуг (amenity), места для отдыха (leisure), офисные здания (office), магазины и торговые центры (shop), туристические достопримечательности (tourism), спортивные объекты (sport), примечательные инженерные сооружения (man_made). В наших данных информация разнесена по соответствующим полям, каждый объект снабжен уникальным идентификатором:
 
@@ -382,7 +457,7 @@ legendGradLines(title.txt = "Пункты питания",
                 col = "red")
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-10-1.png" width="100%" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-13-1.png" width="100%" />
 
 ## Анализ взаимного положения (топологический) {#topology_analysis}
 
@@ -456,7 +531,7 @@ legendChoro(breaks = intervals$brks,
             title.txt = "Заведений\nна 1 кв.км")
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-14-1.png" width="100%" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-17-1.png" width="100%" />
 
 Итак, используя топологический пространственный запрос "Содержит", мы смогли агрегировать точечные объекты внутри площадных и построить картограммы плотности распределения пунктов питания по районам центра Москвы.
 
@@ -548,7 +623,7 @@ plot(selected.poi %>% st_geometry(),
      add = TRUE)
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-16-1.png" width="100%" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-19-1.png" width="100%" />
 
 
 ```
@@ -598,7 +673,7 @@ plot(selected.poi %>% st_geometry(),
      add = TRUE)
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-18-1.png" width="100%" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-21-1.png" width="100%" />
 
 
 ```
@@ -643,7 +718,7 @@ plot(zones %>% st_geometry())
 plot(stations, add = TRUE, pch = 19, col = 'black')
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-20-1.png" width="100%" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-23-1.png" width="100%" />
 
 Для визуализации результатов мы будем использовать метод картодиаграмм (пропорциональных символов), реализованный в функции `propSymbolsLayer()` пакета `cartography`. Размером кружка покажем количество пунктов питания, оказавшихся в каждой зоне окружения:
 
@@ -673,130 +748,76 @@ text(zones %>% st_centroid() %>% st_coordinates(),
      cex = log(zones.poi$count)/4)
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-21-1.png" width="100%" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-24-1.png" width="100%" />
 
-## Анализ зон транспортной доступности  {#transport_zones}
+## Интерполяция по ареалам {#areal_interpolation}
 
-Зоны транспортной доступности представляют из себя зоны окружения объектов, построенные не по евклидову расстоянию, а по расстоянию или времени движения по дорожной сети. В задачах логистики и геомаркетинга зоны транспортной доступности часто называют _зонами обслуживания_ (service area), поскольку используются для определения территории, которую может покрыть объект, предоставляющий некоторые услуги. Например, для пожарного депо зона 10-минутной доступности показывает территорию города, в любую точку которой пожарная машина может доехать __из__ данного депо в течение 10 минут. И наоборот, для торгового центра зона 10-минутной доступности показывает территорию города, __из__ любой точки которой можно добраться до ТЦ в течение 10 минут. Очевидно, что продолжительность прямого и обратного маршрута неодинакова, на нее может оказывать влияние схема движения, приоритет дорог и так далее.
+В некоторых случаях необходимо осуществить так называемую интерполяцию по ареалам. Данный метод применяется в тех случаях, когда исходная информация привязана не к точечным, а к площадным объектам. Задача заключается в том, чтобы с одной площадной сетки перенести на другую (как правило, регулярную, обладающую большей дискретностью). Необходимость подобного преобразования может быть обусловлена следующими (но и не только) причинами:
 
-Задача, которую мы решим в данном разделе, звучит так: определить все заведения питания, находящиеся в 7 минутах езды от Центрального детского магазина. Для построения зоны доступности мы будем использовать пакет [osrm](https://cran.r-project.org/web/packages/osrm/index.html), предоставляющий интерфейс __R__ к онлайн-библиотеке маршрутизации [OSRM](http://project-osrm.org), работающей на основе данных OSM. Для построения зоны доступности (изохроны) нам понадобится функция `osrmIsochrone()` из данного пакета.
+- метод анализа (например, моделирование диффузии) предполагает, что данные распределены по регулярной сетке, в то время как исходная сетка нерегулярна.
+- необходимо обеспечить сравнимость пространственных распределений показателя для разных территорий, в то время как дробность исходного территориального деления существенно меняется в пространстве.
 
-> Внимание: для выполнения этого раздела модуля необходимо подключение к Интернету
+Метод интерполяции по ареалам реализуется средствами функции `st_interpolate_aw()` из пакета __sf__. Данной функции необходимо подать исходную и целевую полигональную сетку, а также указать тип параметра: _интенсивный_ или _экстенсивный_:
 
-Поскольку данные, используемые в настоящем модуле, предварительно были конвертированы в проекцию [UTM](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system) и хранятся в метрах, а OSRM решает все задачи в географических координатах (широте и долготе относительно эллипсоида [WGS84](https://en.wikipedia.org/wiki/World_Geodetic_System)), нам необходимо научиться работать с проекциями данных и преобразовывать системы координат между собой.
+— _экстенсивные_ параметры суммируются и делятся при агрегировании/агрегировании территориальных единиц. Например, площадь, покрытая лесом или численность населения --- это экстенсивный параметр.
+- _интенсивные_ параметры осредняются или остаются постоянными при агрегировании/дизагрегировании территориальных единиц. Например, густота древостоя и плотность населения — интенсивные параметры.
 
+Рассмотрим это метод интерполяции на примере данных по графствам Северной Каролины (показатель — количество новорожденных в 1974 году). Для расчета векторной регулярной сетки используем функцию `st_make_grid()` из пакета __sf__. 
+
+```r
+# Данные по Северной Каролине
+nc = sf::st_read(system.file("shape/nc.shp", package="sf"))
+## Reading layer `nc' from data source `/Library/Frameworks/R.framework/Versions/4.0/Resources/library/sf/shape/nc.shp' using driver `ESRI Shapefile'
+## Simple feature collection with 100 features and 14 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -84.32385 ymin: 33.88199 xmax: -75.45698 ymax: 36.58965
+## geographic CRS: NAD27
+
+cells = sf::st_make_grid(nc, cellsize = 0.25)
+
+birth = sf::st_interpolate_aw(nc["BIR74"], 
+                       cells, 
+                       extensive = FALSE)
+
+# исходное распределение
+tm_shape(nc) +
+  tm_polygons('BIR74',
+              style = 'jenks',
+              palette = 'viridis') 
+```
+
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-25-1.png" width="100%" />
 
 ```r
 
-## АНАЛИЗ ЗОН ТРАНСПОРТНОЙ ДОСТУПНОСТИ -------------------------------------
-
-# Инициализируем систему координат WGS84, используемую в OSRM
-WGS84 = st_crs(4326)
-
-# Извлечем информацию о системе координат исходных точек
-UTM = st_crs(poi)
-
-# Выберем целевой объект
-psel = poi %>% dplyr::filter(NAME == "Центральный детский магазин" & SHOP == "toys")
-
-# Преобразуем координаты точки в WGS84
-psel.wgs = st_transform(psel, WGS84)
-
-# Получаем 5-минутную зону транспортной доступности
-# с помощью пакета osrm
-service_area = osrmIsochrone(psel.wgs, breaks = 3)
-
-# Преобразуем зону обратно в UTM для дальнейших операций
-service_area_utm = st_transform(st_as_sf(service_area), UTM)
-
-# Отбираем точки
-selected_poi = poi.food[service_area_utm, ]
-
-# Визуализируем результат
-plotBasemap()
-
-plot(service_area_utm %>% st_geometry(),
-     col = adjustcolor("violetred3", alpha.f = 0.2),
-     border = "violetred3",
-     add = TRUE)
-
-plot(selected_poi  %>% st_geometry(), 
-     col = "violetred3", 
-     pch = 20, 
-     cex = 0.5, 
-     add = TRUE)
-
-plot(psel %>% st_geometry(), 
-     col = "violetred4", 
-     pch = 20, 
-     cex = 4, 
-     add = TRUE)
+# пересчет на регулярную сетку
+tm_shape(birth) +
+  tm_polygons('BIR74',
+              style = 'jenks',
+              palette = 'viridis') +
+tm_shape(nc) +
+  tm_borders(col = 'white')
 ```
 
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-22-1.png" width="100%" />
+<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-25-2.png" width="100%" />
 
-Итак, в данном разделе мы научились строить зоны транспортной доступности в виде полигонов, ограниченных изохроной времени движения.
-
-## Построение маршрутов и матриц времени движения {#routes}
-
-В этом разделе модуля пространственного анализа мы посмотрим, каким образом можно построить оптимальный маршрут между двумя точками, а также получить матрицу времени движения между точками (на примере станций метро). Для решения этих задач используем следующие функции пакета osrm:
-
-* `osrmRoute(src, dest)` --- строит оптимальный маршрут между точками `src` и `dest`
-* `osrmTable(loc)` --- строит матрицу времени движения между всеми парами точек в `loc`
-
-Так же, как и в предыдущем разделе, нам понадобятся преобразования координат. Построим оптимальный маршрут между книжным магазином "Молодая Гвардия" на Полянке и чебуречной "Дружба" на метро Сухаревская:
 
 ```r
+nc.sids = maptools::readShapeSpatial(system.file("shapes/sids.shp", 
+                                                  package="maptools")[1], 
+                                      IDvar = "FIPSNO", 
+                                      proj4string = sp::CRS("+proj=longlat +ellps=clrk66"))
 
-## ПОСТРОЕНИЕ МАРШРУТОВ -------------------------------------
+births74 = pycno::pycno(nc.sids, nc.sids$BIR74, 0.05, converge=1)
 
-# Выбираем и проецируем начальную точку
-origin = poi %>% dplyr::filter(NAME == 'Молодая Гвардия')
-origin_wgs = st_transform(origin, WGS84)
-  
-# Выбираем и проецируем конечную точку
-destination = poi %>% dplyr::filter(NAME == 'Чебуречная "Дружба"')
-destination_wgs = st_transform(destination, WGS84)
+# Draw it
+bstars = stars::st_as_stars(births74)
+plot(bstars)
 
-# Строим маршрут
-route = osrmRoute(origin_wgs, 
-                  destination_wgs, 
-                  overview = "full", # запретить генерализацию линий
-                  sp = TRUE) # вернуть результат в виде объекта класса Spatial
-
-# Преобразуем результат обратно в UTM
-route.utm = st_transform(route %>% st_as_sf(), UTM)
-
-# Визуализируем результат:
-plotBasemap()
-
-plot(route.utm %>% st_geometry(),
-     lwd = 3,
-     col = "orange",
-     add = TRUE)
-
-plot(origin %>% st_geometry(), 
-     col = "tomato3", 
-     pch = 20, 
-     cex = 3, 
-     add = TRUE)
-text(origin %>% st_coordinates(),
-     labels = "O",
-     col = "tomato4",
-     cex = 0.5)
-
-plot(destination %>% st_geometry(), 
-     col = "tomato", 
-     pch = 20, 
-     cex = 4, 
-     add = TRUE)
-text(destination %>% st_coordinates(),
-     labels = "D",
-     col = "tomato4",
-     cex = 0.7)
+# Overlay North Carolina county boundaries for reference
+plot(nc.sids, add = TRUE)
 ```
-
-<img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-23-1.png" width="100%" />
 
 ## Контрольные вопросы и упражнения {#qtasks_vector_analysis}
 

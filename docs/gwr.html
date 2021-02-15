@@ -74,7 +74,7 @@
 <h1>
 <span class="header-section-number">Глава 19</span> Географически взвешенная регрессия<a class="anchor" aria-label="anchor" href="#gwr"><i class="fas fa-link"></i></a>
 </h1>
-<div class="sourceCode" id="cb691"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb694"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">RColorBrewer</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span>
@@ -147,7 +147,7 @@
 <span class="header-section-number">19.1.2</span> Практический анализ<a class="anchor" aria-label="anchor" href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7-1"><i class="fas fa-link"></i></a>
 </h3>
 <p>В качестве примера проанализируем каким образом цена жилья зависит от количества комнат на примере данных по стоимости недвижимости в Бостоне, доступных на <a href="https://www.jefftk.com/apartment_prices/data-listing">данном сайте</a>, и выгруженных с североамериканского информационного портала недвижимости <a href="https://www.padmapper.com/apartments/boston-ma?box=-71.2297689,42.2745193,-70.9215169,42.4531515">padmapper.com</a>:</p>
-<div class="sourceCode" id="cb692"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb695"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">realest</span> <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_delim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/connections.html">url</a></span><span class="op">(</span><span class="st">'https://www.jefftk.com/apartment_prices/apts-1542637382.txt'</span><span class="op">)</span>,
                  delim <span class="op">=</span> <span class="st">' '</span>,
                  col_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'price'</span>, <span class="st">'rooms'</span>, <span class="st">'id'</span>, <span class="st">'lon'</span>, <span class="st">'lat'</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -166,14 +166,14 @@
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_view.html">tm_view</a></span><span class="op">(</span>symbol.size.fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="19-GWRegression_files/figure-html/unnamed-chunk-5-1.png" width="100%"></div>
 <p>Для того чтобы оценить пространственую неравномерность реакции стоимости жилья на увеличение количества комнат, построим модель географически взвешенной регрессии:</p>
-<div class="sourceCode" id="cb693"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb696"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">samples</span> <span class="op">=</span> <span class="va">realest</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/sample_n.html">sample_n</a></span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/coerce-methods.html">as</a></span><span class="op">(</span><span class="st">'Spatial'</span><span class="op">)</span>
 
 <span class="op">(</span><span class="va">gwr_res</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/GWmodel/man/gwr.basic.html">gwr.basic</a></span><span class="op">(</span><span class="va">price</span> <span class="op">~</span> <span class="va">rooms</span>, data <span class="op">=</span> <span class="va">samples</span>, bw <span class="op">=</span> <span class="fl">1000</span>, kernel <span class="op">=</span> <span class="st">'gaussian'</span><span class="op">)</span><span class="op">)</span>
 <span class="co">##    ***********************************************************************</span>
 <span class="co">##    *                       Package   GWmodel                             *</span>
 <span class="co">##    ***********************************************************************</span>
-<span class="co">##    Program starts at: 2021-01-27 17:24:03 </span>
+<span class="co">##    Program starts at: 2021-02-15 20:22:55 </span>
 <span class="co">##    Call:</span>
 <span class="co">##    gwr.basic(formula = price ~ rooms, data = samples, bw = 1000, </span>
 <span class="co">##     kernel = "gaussian")</span>
@@ -190,24 +190,24 @@
 <span class="co">## </span>
 <span class="co">##    Residuals:</span>
 <span class="co">##     Min      1Q  Median      3Q     Max </span>
-<span class="co">## -1711.1  -731.6  -294.3   283.9 10626.4 </span>
+<span class="co">## -1820.7  -754.1  -320.8   279.2 13475.3 </span>
 <span class="co">## </span>
 <span class="co">##    Coefficients:</span>
 <span class="co">##                Estimate Std. Error t value Pr(&gt;|t|)    </span>
-<span class="co">##    (Intercept)  2290.63      70.89   32.31   &lt;2e-16 ***</span>
-<span class="co">##    rooms         420.48      29.07   14.47   &lt;2e-16 ***</span>
+<span class="co">##    (Intercept)  2287.32      79.36   28.82   &lt;2e-16 ***</span>
+<span class="co">##    rooms         433.38      31.99   13.55   &lt;2e-16 ***</span>
 <span class="co">## </span>
 <span class="co">##    ---Significance stars</span>
 <span class="co">##    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 </span>
-<span class="co">##    Residual standard error: 1225 on 998 degrees of freedom</span>
-<span class="co">##    Multiple R-squared: 0.1733</span>
-<span class="co">##    Adjusted R-squared: 0.1725 </span>
-<span class="co">##    F-statistic: 209.3 on 1 and 998 DF,  p-value: &lt; 2.2e-16 </span>
+<span class="co">##    Residual standard error: 1337 on 998 degrees of freedom</span>
+<span class="co">##    Multiple R-squared: 0.1553</span>
+<span class="co">##    Adjusted R-squared: 0.1545 </span>
+<span class="co">##    F-statistic: 183.5 on 1 and 998 DF,  p-value: &lt; 2.2e-16 </span>
 <span class="co">##    ***Extra Diagnostic information</span>
-<span class="co">##    Residual sum of squares: 1496669184</span>
-<span class="co">##    Sigma(hat): 1224.61</span>
-<span class="co">##    AIC:  17062.63</span>
-<span class="co">##    AICc:  17062.65</span>
+<span class="co">##    Residual sum of squares: 1784839706</span>
+<span class="co">##    Sigma(hat): 1337.317</span>
+<span class="co">##    AIC:  17238.72</span>
+<span class="co">##    AICc:  17238.74</span>
 <span class="co">##    ***********************************************************************</span>
 <span class="co">##    *          Results of Geographically Weighted Regression              *</span>
 <span class="co">##    ***********************************************************************</span>
@@ -220,20 +220,20 @@
 <span class="co">## </span>
 <span class="co">##    ****************Summary of GWR coefficient estimates:******************</span>
 <span class="co">##                 Min. 1st Qu.  Median 3rd Qu.   Max.</span>
-<span class="co">##    Intercept -571.72 1698.13 2057.86 2321.47 4170.0</span>
-<span class="co">##    rooms     -191.53  458.19  528.09  644.14 1550.7</span>
+<span class="co">##    Intercept  151.58 1791.09 1998.30 2323.63 4253.5</span>
+<span class="co">##    rooms     -210.12  448.84  539.34  695.19 1428.0</span>
 <span class="co">##    ************************Diagnostic information*************************</span>
 <span class="co">##    Number of data points: 1000 </span>
-<span class="co">##    Effective number of parameters (2trace(S) - trace(S'S)): 126.7873 </span>
-<span class="co">##    Effective degrees of freedom (n-2trace(S) + trace(S'S)): 873.2127 </span>
-<span class="co">##    AICc (GWR book, Fotheringham, et al. 2002, p. 61, eq 2.33): 16873.06 </span>
-<span class="co">##    AIC (GWR book, Fotheringham, et al. 2002,GWR p. 96, eq. 4.22): 16752.58 </span>
-<span class="co">##    Residual sum of squares: 1002237376 </span>
-<span class="co">##    R-square value:  0.4464363 </span>
-<span class="co">##    Adjusted R-square value:  0.3659687 </span>
+<span class="co">##    Effective number of parameters (2trace(S) - trace(S'S)): 116.9521 </span>
+<span class="co">##    Effective degrees of freedom (n-2trace(S) + trace(S'S)): 883.0479 </span>
+<span class="co">##    AICc (GWR book, Fotheringham, et al. 2002, p. 61, eq 2.33): 17063.91 </span>
+<span class="co">##    AIC (GWR book, Fotheringham, et al. 2002,GWR p. 96, eq. 4.22): 16956.18 </span>
+<span class="co">##    Residual sum of squares: 1239492307 </span>
+<span class="co">##    R-square value:  0.4133962 </span>
+<span class="co">##    Adjusted R-square value:  0.3356175 </span>
 <span class="co">## </span>
 <span class="co">##    ***********************************************************************</span>
-<span class="co">##    Program stops at: 2021-01-27 17:24:03</span>
+<span class="co">##    Program stops at: 2021-02-15 20:22:55</span>
 
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">gwr_res</span><span class="op">$</span><span class="va">SDF</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_symbols.html">tm_bubbles</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'rooms'</span>, <span class="co"># это не количество комнат, а коэффициент регрессии</span>
@@ -318,7 +318,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-01-27.</p>
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-02-15.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
