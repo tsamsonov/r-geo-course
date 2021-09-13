@@ -929,7 +929,7 @@ plot(varmp)
 ##  3rd Qu.:32.0739   3rd Qu.: 65.48  
 ##  Max.   :67.2664   Max.   :186.22  
 ## dimension(s):
-##   from  to  offset delta                refsys point values    
+##   from  to  offset delta                refsys point values x/y
 ## x    1 213  332239  2000 WGS 84 / UTM zone 32N    NA   NULL [x]
 ## y    1  99 5121556 -2000 WGS 84 / UTM zone 32N    NA   NULL [y]
 ```

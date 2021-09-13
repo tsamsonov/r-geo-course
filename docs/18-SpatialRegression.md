@@ -832,8 +832,8 @@ model
 ```r
 # Извлекаем результаты пространственной авторегрессии
 feb_spreg = feb %>% 
-  mutate(fitted = fitted(model),
-         residual = residuals(model)) %>% 
+  mutate(fitted = model$fitted.values,
+         residual = model$residuals) %>% 
   pivot_longer(cols = c(nsick, fitted, residual), 
                names_to = 'type',
                values_to = 'value') %>% 

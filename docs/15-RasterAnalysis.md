@@ -420,7 +420,7 @@ temp
 ## x       1 2160   -180  0.166667 +proj=longlat +datum=WGS8...    NA
 ## y       1  900     90 -0.166667 +proj=longlat +datum=WGS8...    NA
 ## band    1   12     NA        NA                           NA    NA
-##                  values    
+##                  values x/y
 ## x                  NULL [x]
 ## y                  NULL [y]
 ## band tmean1,...,tmean12
@@ -444,9 +444,12 @@ land
 ##  Max.   :100.0    Max.   :6410    
 ##  NA's   :393060   NA's   :389580  
 ## dimension(s):
-##   from   to offset     delta                       refsys point values    
-## x    1 1080   -180  0.333333 +proj=longlat +ellps=WGS8...  NULL   NULL [x]
-## y    1  540     90 -0.333333 +proj=longlat +ellps=WGS8...  NULL   NULL [y]
+##   from   to offset.xmin delta.xmax                       refsys point values
+## x    1 1080        -180   0.333333 +proj=longlat +ellps=WGS8...  NULL   NULL
+## y    1  540          90  -0.333333 +proj=longlat +ellps=WGS8...  NULL   NULL
+##   x/y
+## x [x]
+## y [y]
 
 (cover = st_warp(land['cover'], temp %>% slice(band, 1), method = 'near'))
 ## stars object with 2 dimensions and 1 attribute
@@ -460,7 +463,7 @@ land
 ##  Broadleaf Deciduous Forest          :    0  
 ##  (Other)                             :    0  
 ## dimension(s):
-##   from   to offset     delta                       refsys point values    
+##   from   to offset     delta                       refsys point values x/y
 ## x    1 2160   -180  0.166667 +proj=longlat +datum=WGS8...    NA   NULL [x]
 ## y    1  900     90 -0.166667 +proj=longlat +datum=WGS8...    NA   NULL [y]
 # используем 'near', поскольку растр категориальный
@@ -585,20 +588,20 @@ profile = mapedit::drawFeatures(mp)
 temprof = raster::extract(as(temp, 'Raster'), as(profile, 'Spatial'),
                           along = TRUE, cellnumbers = TRUE)
 head(temprof[[1]])
-##        cell layer.1 layer.2 layer.3 layer.4 layer.5 layer.6 layer.7 layer.8
-## [1,] 252105   -26.1   -26.3   -22.4   -16.0    -7.3     1.8     8.0     7.8
-## [2,] 254265   -26.2   -26.4   -22.5   -16.1    -7.4     1.8     8.1     7.8
-## [3,] 256425   -26.2   -26.4   -22.4   -15.9    -7.2     1.9     8.3     8.0
-## [4,] 258585   -26.1   -26.4   -22.2   -15.7    -7.0     2.2     8.6     8.1
-## [5,] 260745   -26.2   -26.4   -22.1   -15.6    -7.0     2.3     8.8     8.2
-## [6,] 262905   -26.1   -26.3   -21.9   -15.4    -6.7     2.5     9.0     8.5
-##      layer.9 layer.10 layer.11 layer.12
-## [1,]     2.6     -7.4    -17.9    -22.4
-## [2,]     2.5     -7.5    -18.0    -22.5
-## [3,]     2.7     -7.4    -18.0    -22.6
-## [4,]     2.8     -7.3    -17.9    -22.6
-## [5,]     2.9     -7.3    -17.9    -22.6
-## [6,]     3.0     -7.1    -17.9    -22.6
+##        cell tmean1 tmean2 tmean3 tmean4 tmean5 tmean6 tmean7 tmean8 tmean9
+## [1,] 252105  -26.1  -26.3  -22.4  -16.0   -7.3    1.8    8.0    7.8    2.6
+## [2,] 254265  -26.2  -26.4  -22.5  -16.1   -7.4    1.8    8.1    7.8    2.5
+## [3,] 256425  -26.2  -26.4  -22.4  -15.9   -7.2    1.9    8.3    8.0    2.7
+## [4,] 258585  -26.1  -26.4  -22.2  -15.7   -7.0    2.2    8.6    8.1    2.8
+## [5,] 260745  -26.2  -26.4  -22.1  -15.6   -7.0    2.3    8.8    8.2    2.9
+## [6,] 262905  -26.1  -26.3  -21.9  -15.4   -6.7    2.5    9.0    8.5    3.0
+##      tmean10 tmean11 tmean12
+## [1,]    -7.4   -17.9   -22.4
+## [2,]    -7.5   -18.0   -22.5
+## [3,]    -7.4   -18.0   -22.6
+## [4,]    -7.3   -17.9   -22.6
+## [5,]    -7.3   -17.9   -22.6
+## [6,]    -7.1   -17.9   -22.6
 ```
 
 Для построения линии профиля далее нам необходимо преобразовать идентификаторы ячеек растра в расстояние от начала профиля:
@@ -613,10 +616,10 @@ tempdf = temprof[[1]] %>%
                              cumsum() %>% 
                              head(-1))) %>% 
   dplyr::select(-c(x, y, cell, band)) %>% 
-  pivot_longer(layer.1:layer.12, 
+  pivot_longer(tmean1:tmean12, 
                names_to = 'month', 
                values_to = 'tmean', 
-               names_prefix = 'layer.',
+               names_prefix = 'tmean',
                names_transform = list(month = factor, ordered = TRUE, levels = 1:12))
 
 pts = profile %>% 

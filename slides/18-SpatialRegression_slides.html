@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Пространственная регрессия</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Тимофей Самсонов" />
+    <meta name="date" content="2021-03-29" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Пространственная регрессия
+## Пространственная статистика
+### Тимофей Самсонов
+### 2021-03-29
+
+---
+
+
+
+
+## Особенности случайных процессов в пространстве
+
+- __Пространственная зависимость__ _(spatial dependence)_ — наличие автокорреляции наблюдений. Выражается в невыполнении условия независимости остатков линейной регрессии. Устраняется посредством _пространственной регрессии (spatial regression)_.
+
+- __Пространственная гетерогенность__ _(spatial heterogeneity)_ — нестационарность процессов, порождающих наблюдаемую переменную. Выражается в неэффективности постоянных коэффициентов линейной регрессии. Устраняется постредством _географически взвешенной регрессии (geographically weighted regression)_.
+
+---
+
+## Линейная регрессия
+
+Пусть дан вектор `\(\mathbf{y} = \{y_1, y_2, ... y_n\}\)` измерений зависимой переменной, а также матрица `\(\mathbf{X} = \{x_{ij}\}\)` размером `\(n \times m\)`, состоящая из значений `\(m\)` независимых переменных для `\(n\)` измерений. В этом случае модель линейной регрессии может быть записана как
+
+`$$\mathbf{y} = \mathbf{X} \boldsymbol\beta + \boldsymbol\epsilon,$$`
+
+где:
+
+- `\(\boldsymbol\beta\)` — вектор коэффициентов регрессии;
+
+- `\(\boldsymbol\epsilon\)` — вектор случайных ошибок, независимо распределенных относительно среднего значения в нуле.
+
+---
+
+## Многомерное нормальное распределение
+
+Многомерное нормальное распределение (МНР) `\(k\)`-мерного случайного вектора `\(\mathbf{X} = (X_1, ..., X_k)^T\)` обозначается как:
+
+`$$\mathbf{X}\ \sim \mathcal{N}_k(\boldsymbol\mu,\, \boldsymbol\Sigma)$$`
+
+МНР определяется двумя параметрами:
+
+- __математическое ожидание__ ( `\(k\)`-мерный вектор):
+
+`$$\boldsymbol\mu = \operatorname{E}[\mathbf{X}] = [ \operatorname{E}[X_1], \operatorname{E}[X_2], \ldots, \operatorname{E}[X_k]]^{\rm T}$$`
+
+- __ковариационная матрица__ (размером `\(k \times k\)`):
+
+`$$\boldsymbol\Sigma = \operatorname{E} [(\mathbf{X} - \boldsymbol\mu)( \mathbf{X} - \boldsymbol \mu)^{\rm T}] =  [ \operatorname{Cov}[X_i, X_j]; 1 \le i,j \le k ]$$`
+
+---
+
+## Стандартный нормальный случайный вектор
+
+Вещественнозначный случайный вектор `\(\mathbf{X} = (X_1, ..., X_k)^T\)` называется __стандартным нормальным случайным вектором__, если все его компоненты `\(X_n\)` независимы друг от друга и подчиняются стандартному случаю нормального закона распределения с нулевым математическим ожиданием и единичной дисперсией для всех `\(n\)`:
+
+`$$X_n \sim \mathcal{N}(0, 1)$$`
+
+В модели линейной регрессии:
+
+`$$\boldsymbol\epsilon \sim \mathcal{N}_k(0, \sigma^2 \mathbf{I}),$$`
+
+где `\(I\)` — единичная матрица размером `\(k \times k\)`.
+
+---
+
+## Расширение класса регрессионных моделей
+
+`$$\boldsymbol\epsilon \sim \mathcal{N}_k(0, \sigma^2 \mathbf{I})$$`
+
+Однако если данные получены измерениями по пространству, остатки регрессии могут демонстрировать пространственную ассоциацию (зависимость), как правило свидетельствующую о наличии дополнительных неучтённых факторов. Это означает, что обычная модель регрессии недостаточно хорошо объясняет зависимость.
+
+Чтобы моделировать зависимость остатков, необходим более широкий класс моделей:
+
+`$$\boldsymbol\epsilon \sim \mathcal{N}_k(0, \mathbf{C}),$$`
+
+где `\(\mathbf{C}\)` — любая допустимая ковариационная матрица.
+
+---
+
+&lt;!-- ## Пример --&gt;
+
+&lt;!-- Процент домохозяйств, находящихся во владении --&gt;
+
+&lt;!-- ![:scale 65%](images/tyne_ownerocc.png) --&gt;
+
+&lt;!-- --- --&gt;
+
+&lt;!-- ## Пример --&gt;
+
+&lt;!-- Уровень безработицы --&gt;
+
+&lt;!-- ![:scale 65%](images/tyne_unempl.png) --&gt;
+
+&lt;!-- --- --&gt;
+
+&lt;!-- ## Пример --&gt;
+
+&lt;!-- Обычная линейная регрессия --&gt;
+
+&lt;!-- ![:scale 75%](images/tyne_regr.png) --&gt;
+
+&lt;!-- --- --&gt;
+
+&lt;!-- ## Пример --&gt;
+
+&lt;!-- Остатки регрессии --&gt;
+
+&lt;!-- ![:scale 65%](images/tyne_resid.png) --&gt;
+
+## Пример
+
+Данные по преступности в городе Колумбус, штата Огайо, США
+
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+
+## Обычная регрессия
+
+Построим модель, связывающую уровень преступности с уровнем дохода и стоимостью жилья:
+
+```
+## 
+## Call:
+## lm(formula = CRIME ~ INC + HOVAL, data = reg_sf)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -34.418  -6.388  -1.580   9.052  28.649 
+## 
+## Coefficients:
+##             Estimate Std. Error t value             Pr(&gt;|t|)    
+## (Intercept)  68.6190     4.7355  14.490 &lt; 0.0000000000000002 ***
+## INC          -1.5973     0.3341  -4.780            0.0000183 ***
+## HOVAL        -0.2739     0.1032  -2.654               0.0109 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 11.43 on 46 degrees of freedom
+## Multiple R-squared:  0.5524,	Adjusted R-squared:  0.5329 
+## F-statistic: 28.39 on 2 and 46 DF,  p-value: 0.000000009341
+```
+
+---
+
+## Остатки регрессии
+
+Проанализируем остатки графически:
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+
+## Расширение класса регрессионных моделей
+
+`$$\boldsymbol\epsilon \sim \mathcal{N}_k(0, \mathbf{C})$$`
+
+Данная модель решает проблему независимости остатков, однако порождает две других проблемы:
+
+- Если зависимость остатков имеет пространственный характер (ассоциированы остатки в территориально близких локациях), то матрица `\(\mathbf{C}\)` характер этой зависимости не отражает в явном виде.
+
+- Вектор коэффициентов регрессии `\(\boldsymbol\beta\)` может быть получен путем минимизации `\(\mathbf{y} - \mathbf{X}\boldsymbol\beta\)` путем решения `\(\beta = \big(\mathbf{X}^T \mathbf{CX} \big)^{-1} \mathbf{X}^T \mathbf{X y}\)`. Однако это требует знания ковариационной матрицы, которая обычно неизвестна. Поэтому как `\(\mathbf{C}\)`, так и `\(\boldsymbol\beta\)` калибруются по выборке.
+
+---
+
+## Пространственная регрессия
+
+Для того чтобы учесть пространственную автокорреляцию остатков, в модель линейной регрессии добавляется компонента __пространственной авторегрессии__ _(spatial autoregression)_, которая моделирует _пространстенный лаг_:
+
+`$$\mathbf{y} = \underbrace{\mathbf{X} \mathbf{\beta}}_{тренд} + \underbrace{\color{red}{\rho\mathbf{Wy}}}_{сигнал} +  \underbrace{\mathbf{\epsilon}}_{шум},$$`
+
+- `\(\rho\)` — коэффициент регрессии, отражающий степень пространственной автокорреляции
+
+- `\(\mathbf{W}\)` — матрица пространственных весов
+
+&gt; Полученная модель называется моделью __пространственной регрессии__ (_spatial regression_).
+
+Компоненты модели (тренд, сигнал и шум) называются __предикторами__.
+
+---
+
+## Пространственная регрессия
+
+Для получения коэффициентов `\(\boldsymbol\beta\)` и `\(\rho\)` выполним ряд преобразований:
+
+`$$\mathbf{y} = \mathbf{X} \mathbf{\beta} + \rho\mathbf{Wy} +  \mathbf{\epsilon}\\
+\mathbf{y} - \rho\mathbf{Wy} = \mathbf{X} \mathbf{\beta} + \mathbf{\epsilon}\\
+(\mathbf{I} - \rho\mathbf{W})\mathbf{y} = \mathbf{X} \mathbf{\beta} + \mathbf{\epsilon}$$`
+
+Предполагая, что матрица `\((\mathbf{I} - \rho\mathbf{W})\)` инвертируема, получаем систему уравнений пространственной регрессии:
+
+`$$\color{red}{\boxed{\color{blue}{\mathbf{y} = (\mathbf{I} - \rho\mathbf{W})^{-1}\mathbf{X}\mathbf{\beta} + (\mathbf{I} - \rho\mathbf{W})^{-1}\mathbf{\epsilon}}}}$$`
+
+Данная модель идентична обычной регрессии `\(\mathbf{y} = \mathbf{X} \mathbf{\beta} + \mathbf{\epsilon}\)`, но в ней независимые переменные и ошибки линейно трансформированы умножением на `\((\mathbf{I} - \rho\mathbf{W})^{-1}\)`.
+
+---
+
+## Пространственная регрессия
+
+`$$\mathbf{y} = (\mathbf{I} - \rho\mathbf{W})^{-1}\mathbf{X}\mathbf{\beta} + (\mathbf{I} - \rho\mathbf{W})^{-1}\mathbf{\epsilon}$$`
+
+Трансформированная ошибка модели будет иметь ковариационную матрицу
+
+`$$\mathbf{C} = \sigma^2 \Big[\big(\mathbf{I} - \rho \mathbf{W}\big)^{-1}\Big]^T (\mathbf{I} - \rho\mathbf{W})^{-1}$$`
+
+- Если ковариационная матрица функционально зависит от параметра `\(\rho\)`, то она отражает пространственную структуру автокорреляции ошибок.
+
+- Ковариационная матрица должна быть положительно определенной. Для полученного выражения это будет выполняться в случае если `\(|\rho| \leq 1\)` (Griffith, 1988).
+
+---
+
+## Пространственная регрессия
+
+`$$\mathbf{y} = \mathbf{X} \mathbf{\beta} + \rho\mathbf{Wy} +  \mathbf{\epsilon}$$`
+
+Для нахождения коэффициентов `\(\boldsymbol\beta\)` и `\(\rho\)` используется минимизация квадрата случайной компоненты, которую можно представить как `\(\mathbf{\epsilon} = \mathbf{y} - \mathbf{X} \mathbf{\beta} - \rho\mathbf{Wy}\)`:
+
+`$$\sum_i \Bigg(y_i - \sum_j \beta_j x_{ij} - \rho \sum_j w_{ij} y_j \Bigg)^2$$`
+
+Задача решается в 2 этапа:
+
+- находится оптимальное значение `\(\rho\)`;
+- находится оптимальное значение `\(\boldsymbol\beta\)` путем подстановки в вышеуказанное выражение.
+
+---
+
+## Пространственная фильтрация
+
+Модель пространственной регрессии может быть использована для осуществления __пространственной фильтрации__ — убирания автокорреляционной составляющей. Для этого необходимо авторегрессионную компоненту (пространственный лаг) перенести в левую часть уравнения:
+
+`$$\mathbf{y} = \mathbf{X} \mathbf{\beta} + \rho\mathbf{Wy} + \mathbf{\epsilon}\\
+\mathbf{y}^* = \mathbf{y} - \rho\mathbf{Wy} = \mathbf{X} \mathbf{\beta} + \mathbf{\epsilon}$$`
+
+Данная модель представляет собой стандартную (непространственную) регрессию для независимой переменной `\(\mathbf{y}^*\)`, в которой пространственная корреляция убрана (подвергнута фильтрации).
+
+---
+
+## Пространственная фильтрация
+
+`$$\mathbf{y}^* = \mathbf{y} - \rho\mathbf{Wy} = \mathbf{X} \mathbf{\beta} + \mathbf{\epsilon}$$`
+
+- Пространственная фильтрация бывает полезна, когда наблюдается несоответствие масштаба наблюдений и масштаба процесса. 
+
+- Например, статистика по показателю, контролируемому на региональном уровне, собирается по муниципалитетам. В этом случае фильтрация позволяет подобрать параметры `\(\mathbf{\beta}\)`, учитывающие наличие высокой пространственной автокорреляци.
+
+---
+
+## Оценка географического соседства
+
+В целом, можно выделить три большие группы методов:
+
+* Соседи по смежности
+
+* Соседи по графу
+
+* Соседи по метрике
+
+---
+
+## Соседство по смежности
+
+&lt;img src="images/QueenRook.png" width="2347" style="display: block; margin: auto auto auto 0;" /&gt;
+__Соседство по смежности__ основано на топологических отношениях между объектами и применяется при анализе данных, приуроченных к площадным единицам.
+
+---
+
+## Соседство по смежности
+
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+
+## Соседство по графу
+
+__Соседство по графу__ основано на отношениях объектов в [триангуляции Делоне](https://ru.wikipedia.org/wiki/Триангуляция_Делоне). В эту же категорию попадают всевозможные фильтрации триангуляции Делоне, которые удаляют из нее ребра, не удовлетворяющие заданным критериям. Более подбробно о них будет сказано ниже.
+
+Частные случаи:
+
+- сфера влияния
+
+- граф Гэбриела
+
+- относительное соседство
+
+---
+
+## Соседство по триангуляции Делоне
+
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+
+## Сфера влияния
+
+&lt;img src="images/SphereOfInfluence.png" width="3109" style="display: block; margin: auto auto auto 0;" /&gt;
+Ребра триангуляции, инцидентные (примыкающие к) данной вершине, сохраняются только если `\(D \leq 2D_{min}\)`
+
+---
+
+## Соседство по сфере влияния
+
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+
+## Граф Гэбриела
+
+&lt;img src="images/Gabriel.png" width="2864" style="display: block; margin: auto auto auto 0;" /&gt;
+
+В каждом треугольнике ребро сохранятся только тогда, когда построенная на нем окружность не включает третью точку треугольника
+
+---
+
+## Соседство по графу Гэбриела
+
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-11-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+
+## Граф относительного соседства
+
+Получается путем фильтрации триангуляции Делоне по следующему правилу: 
+
+&gt; ребро `\(A\)`, соединяющее две вершины `\(p\)` и `\(q\)`, будет удалено, если найдется третья вершина `\(r\)`, такая что расстояния от нее до `\(p\)` и `\(q\)` ( `\(B\)` и `\(C\)` соответственно) окажутся короче, чем `\(A\)`, то есть: `\(A &gt; B\)` __and__ `\(A &gt; C\)`. 
+
+---
+
+## Относительное соседство
+
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+
+## Соседи по метрике
+
+Поиск соседей по метрике — наиболее простой способ определения соседства. Для его использования необходимо задать метрику (как правило, расстояние между точками), а также критерий фильтрации связей: 
+
+- по количеству ( `\(k\)` ближайших)
+
+- по расстоянию (не ближе чем `\(d_1\)`, но и не далее чем `\(d_2\)`).
+
+---
+
+## Соседи по количеству
+
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+
+## Соседи по расстоянию
+
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+
+## Пространственные веса
+
+- Пространственные веса характеризуют силу связи между единицами. 
+
+- Если единицы не являются соседними (по выбранному правилу), то пространственный вес их связи будет равен нулю. Во всех остальных случаях веса будут ненулевыми. 
+
+- Поскольку теоретически каждая единица может быть связана с любой другой единицей, распространена форма представления весов в виде матрицы `\(W\)` размером `\(N \times N\)`, где `\(N\)` -- число единиц. 
+
+- На пересечении `\(i\)`-й строки и `\(j\)`-го столбца матрицы располагается вес связи между `\(i\)`-й и `\(j\)`-й единицей.
+
+---
+
+## Бинарная матрица
+
+Если связь есть, то ее вес равен единице (1), если нет — нулю (0)
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+
+## Нормированная матрица
+
+Вес `\(j\)`-й единицы по отношению к `\(i\)`-й равен `\(1/n_i\)`, где `\(n_i\)` — количество соседей у `\(i\)`.
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+
+## Пространственная автокорреляция
+
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+
+## Индекс Морана (Moran's I)
+
+Анализ пространственной автокорреляции осуществляется, как правило, путем вычисления индекса Морана (Moran's I):
+
+`$$I = \frac{n \sum^n_{i=1} \sum^n_{j=i} w_{ij} (y_i - \bar y)(y_j - \bar y)}{ \Big[\sum^n_{i=1} \sum^n_{j=i} w_{ij}\Big] \Big[\sum^n_{i=1} (y_i - \bar y)^2\Big]}$$`
+
+где: 
+
+- `\(n\)` — количество единиц, 
+- `\(w_{ij}\)` — вес пространственной связи между `\(i\)`-й и `\(j\)`-й единицей, 
+- `\(y_i\)` — значение в `\(i\)`-й единице, 
+- `\(\bar y\)` — выборочное среднее по всем единицам
+
+---
+
+## Коэффициент корреляции Пирсона
+
+Обратим внимание на то, что индекс Морана по сути и форме записи похож на линейный коэффициент корреляции Пирсона, в котором перебираются все пары соответствующих друг другу значений из рядов `\(X = \{x_i\}\)` и `\(Y = \{y_i\}\)`: 
+
+`$$r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(x_i - \bar x)^2} \sqrt{\sum_{i=1}^{n}(y_i - \bar y)^2}}$$`
+
+---
+
+## Индекс Морана (Moran's I)
+
+Индекс Морана для нормально распределенных данных лежит в диапазоне от -1 до 1:
+
+* +1 означает детерминированную прямую зависимость — группировку схожих (низких
+   или высоких) значений. 
+   
+* 0 означает абсолютно случайное распределение (_CSR — complete spatial randomness_)
+
+* -1 означает детерминированную обратную зависимость — идеальное перемешивание
+   низких и высоких значений, напоминающее шахматную доску
+   
+__Математическое ожидание__ индекса Морана для случайных данных равно `\(E[I] = -1/(n-1)\)`
+
+---
+
+## Индекс Морана (Moran's I)
+
+Индекс Морана для остатков линейной регрессии:
+
+```r
+# Вычисление индекса (тест) Морана
+moran.test(reg_temp$res, W)
+## 
+## 	Moran I test under randomisation
+## 
+## data:  reg_temp$res  
+## weights: W    
+## 
+## Moran I statistic standard deviate = 2.6521, p-value = 0.003999
+## alternative hypothesis: greater
+## sample estimates:
+## Moran I statistic       Expectation          Variance 
+##       0.222109407      -0.020833333       0.008391173
+```
+
+---
+
+## Перестановочный тест Морана
+
+Значения перемешиваются между территориальными единицами и далее строится гистограмма распределения. Значимость индека Морана оценивается по отклонению
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-19-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+
+## Перестановочный тест Морана
+
+Значения перемешиваются между территориальными единицами и далее строится гистограмма распределения. Значимость индека Морана оценивается по отклонению
+
+
+```
+## 
+## 	Monte-Carlo simulation of Moran I
+## 
+## data:  reg_temp$res 
+## weights: W  
+## number of simulations + 1: 10001 
+## 
+## statistic = 0.22211, observed rank = 9925, p-value = 0.007599
+## alternative hypothesis: greater
+```
+
+---
+
+## Диаграмма рассеяния Морана
+
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-21-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+По оси `\(X\)` откладывается значение в каждой территориальной единице, в по оси `\(Y\)` — ее пространственный лаг, который представляет собой средневзвешенное значение по всем ее соседям. _Тангенс угла наклона прямой равен значению индекса Морана_.
+
+---
+
+## Пространственная авторегрессия
+
+Поиск уравнения пространственной регрессии и его авторегрессионной составляющей может быть выполнен посредством функций `spautolm()` и `lagsarlm()` из пакета __spatialreg__:
+
+
+```r
+(model = lagsarlm(CRIME ~ INC + HOVAL, data = reg_sf, listw = W))
+## 
+## Call:
+## lagsarlm(formula = CRIME ~ INC + HOVAL, data = reg_sf, listw = W)
+## Type: lag 
+## 
+## Coefficients:
+##         rho (Intercept)         INC       HOVAL 
+##   0.4233254  45.6032503  -1.0487282  -0.2663348 
+## 
+## Log likelihood: -182.674
+```
+
+---
+
+## Пространственная авторегрессия
+
+На основе полученной модели можно построить карты пространственной авторегрессии и остатков:
+
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-23-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+
+## Пространственная авторегрессия
+
+В заключение необходимо проверить корреляцию остатков:
+
+```r
+# Вычисление индекса (тест) Морана
+moran.test(residuals(model), W)
+## 
+## 	Moran I test under randomisation
+## 
+## data:  residuals(model)  
+## weights: W    
+## 
+## Moran I statistic standard deviate = 0.60285, p-value = 0.2733
+## alternative hypothesis: greater
+## sample estimates:
+## Moran I statistic       Expectation          Variance 
+##       0.033068316      -0.020833333       0.007994341
+```
+
+---
+
+## Предсказание на основе пространственной регрессии
+
+Различают три вида предсказания:
+
+- __Внутривыборочное__ (in-sample) используется для вычисления предикторов на основе данных, использованных для построения модели пространственной регрессии.
+
+- __Прогнозное__ (prevision/forecast) используется для вычисления предикторов на основе новых данных по тем же выборочным единицам
+
+- __Вневыборочное__ (out-of-sample) используется для вычисления предикторов с включением новых выборочных единиц
+
+---
+
+## Внутривыборочное предсказание
+
+__Внутривыброчное__ (in-sample) предсказание не требует дополнительных действий, поскольку оно осуществляется непосредственно моделью пространственной регрессии:
+
+`$$\underbrace{\mathbf{y}}_{отклик} = \underbrace{\mathbf{X} \mathbf{\beta}}_{тренд} + \underbrace{\rho\mathbf{Wy}}_{сигнал} + \underbrace{\mathbf{\epsilon}}_{шум}$$`
+
+---
+
+## Прогнозное предсказание
+
+__Прогонозное__ (forecast) предсказание требует последовательного вычисления тренда, переменной отклика и сигнала. Для этого необходимо выполнить следующие преобразования:
+
+`$$\mathbf{y} = \mathbf{X} \mathbf{\beta} + \rho\mathbf{Wy} + \mathbf{\epsilon}\\
+(\mathbf{I} - \rho\mathbf{W})\mathbf{y} = \mathbf{X}\mathbf{\beta} + \mathbf{\epsilon}\\
+\mathbf{y} = (\mathbf{I} - \rho\mathbf{W})^{-1}\mathbf{X}\mathbf{\beta} + (\mathbf{I} - \rho\mathbf{W})^{-1}\mathbf{\epsilon}$$`
+
+Прогноз с использованием полученного выражения делается в предположении, что `\(\mathbf{\epsilon} = 0\)`. В этом случае, имея новые данные тренда `\(\mathbf{X}\mathbf{\beta}\)`, вычисляем сначала `\(\mathbf{y} = (\mathbf{I} - \rho\mathbf{W})^{-1}\mathbf{X}\mathbf{\beta}\)` и далее находим сигнал их умножением:
+
+`$$\rho\mathbf{Wy} = \rho\mathbf{W} (\mathbf{I} - \rho\mathbf{W})^{-1}\mathbf{X}\mathbf{\beta}$$`
+---
+
+## Прогнозное предсказание
+
+Предположим, что стоимость домовладений в некоторых районах понизилась. Как это отразится на уровне преступности?
+
+__Было:__
+
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-25-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+
+## Прогнозное предсказание
+
+Предположим, что стоимость домовладений в некоторых районах понизилась. Как это отразится на уровне преступности?
+
+__Стало:__
+
+&lt;img src="18-SpatialRegression_slides_files/figure-html/unnamed-chunk-26-1.png" style="display: block; margin: auto auto auto 0;" /&gt;
+
+---
+
+## Вневыборочное предсказание
+
+![:scale 50%](images/outsample.png)
+
+_Goulard, M., Laurent, T., Thomas-Agnan, C._, 2017. __About predictions in spatial autoregressive models: optimal and almost optimal strategies__. Spatial Economic Analysis 12, 304–325. https://doi.org/10.1080/17421772.2017.1300679
+
+---
+
+## Вневыборочное предсказание
+
+__Вневыборочное__ (out-of-sample) предсказание связано с решением ситуации, когда есть данные по независимым переменным `\(\mathbf{X_S}\)` и отклику `\(\mathbf{Y_S}\)` по одним единицам и данные только по независимым переменным `\(\mathbf{X_O}\)` для другой части единиц. Требуется найти отклик `\(\mathbf{Y_O}\)` для этих единиц.
+
+Для решения этой задачи необходимо стратифицировать вектора данных и матрицу весов:
+
+`$$\begin{bmatrix}\mathbf{Y_S}\\ \color{red}{\mathbf{Y_O}}\end{bmatrix} = \rho \begin{bmatrix}\mathbf{W_{SS}} &amp; \mathbf{W_{SO}} \\ \mathbf{W_{OS}} &amp; \mathbf{W_{OO}}\end{bmatrix} \begin{bmatrix}\mathbf{Y_S}\\\color{red}{\mathbf{Y_O}}\end{bmatrix} + \begin{bmatrix}\mathbf{X_S}\\\mathbf{X_O}\end{bmatrix} \mathbf{\beta} + \begin{bmatrix}\mathbf{\epsilon_S}\\\mathbf{\epsilon_O}\end{bmatrix}$$`
+Красным цветом выделены неизвестные данные.
+
+---
+
+## Предсказание на основе пространственной регрессии
+
+Для вневыборочного предсказания используется ранее полученная модель прогнозирования `\(\mathbf{y} = (\mathbf{I} - \rho\mathbf{W})^{-1}\mathbf{X}\mathbf{\beta}\)`. Однако ее необходимо также представить в стратифицированном виде:
+
+`$$\begin{bmatrix}\mathbf{Y_S}\\ \mathbf{Y_O}\end{bmatrix} = (\mathbf{I} - \rho\mathbf{W})^{-1}\mathbf{X}\mathbf{\beta}=\\=\begin{bmatrix}\mathbf{I_{SS}} - \rho\mathbf{W_{SS}} &amp; -\rho\mathbf{W_{SO}} \\ -\rho\mathbf{W_{OS}} &amp; \mathbf{I_{OO}} - \rho\mathbf{W_{OO}}\end{bmatrix}^{-1} \begin{bmatrix}\mathbf{X_S}\\\mathbf{X_O}\end{bmatrix}\beta=\\=\begin{bmatrix}\mathbf{A} &amp; \mathbf{B} \\ \mathbf{C} &amp; \mathbf{D}\end{bmatrix}^{-1} \begin{bmatrix}\mathbf{X_S}\\\mathbf{X_O}\end{bmatrix}\beta$$`
+---
+
+## Предсказание на основе пространственной регрессии
+
+`$$\begin{bmatrix}\mathbf{Y_S}\\ \mathbf{Y_O}\end{bmatrix} = \begin{bmatrix}\mathbf{A} &amp; \mathbf{B} \\ \mathbf{C} &amp; \mathbf{D}\end{bmatrix}^{-1} \begin{bmatrix}\mathbf{X_S}\\\mathbf{X_O}\end{bmatrix}\beta$$`
+Раскрыв данное выражение, можно получить предсказания для выборочных и вневыборочных единиц:
+
+`$$\mathbf{Y_S} = (\mathbf{A} - \mathbf{BD}^{-1} \mathbf{C})^{-1} \mathbf{X_S} \mathbf{\beta} -(\mathbf{A} - \mathbf{BD}^{-1} \mathbf{C})^{-1} \mathbf{BD}^{-1} \mathbf{X_O} \mathbf{\beta}$$`
+
+`$$\mathbf{Y_O} = (\mathbf{D} - \mathbf{CA}^{-1} \mathbf{B})^{-1} \mathbf{X_O} \mathbf{\beta} - (\mathbf{D} - \mathbf{CA}^{-1} \mathbf{B})^{-1} \mathbf{C} \mathbf{A}^{-1} \mathbf{X_S} \mathbf{\beta}$$`
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

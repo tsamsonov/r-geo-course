@@ -6,14 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Глава 15 Растровый анализ | Визуализация и анализ географических данных на языке R</title>
 <meta name="author" content="Тимофей Самсонов">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.6/header-attrs.js"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.7/header-attrs.js"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.4.9000/tabs.js"></script><script src="libs/bs3compat-0.2.4.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script><link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
 <script src="libs/datatables-binding-0.17/datatables.js"></script><link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet">
-<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script><link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet">
-<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script><script src="libs/plotly-binding-4.9.3/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/plotly-htmlwidgets-css-1.57.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script><link href="libs/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet">
+<script src="libs/crosstalk-1.1.1/js/crosstalk.min.js"></script><script src="libs/plotly-binding-4.9.3/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/plotly-htmlwidgets-css-1.57.1/plotly-htmlwidgets.css" rel="stylesheet">
 <script src="libs/plotly-main-1.57.1/plotly-latest.min.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -434,7 +434,7 @@
 <span class="co">## x       1 2160   -180  0.166667 +proj=longlat +datum=WGS8...    NA</span>
 <span class="co">## y       1  900     90 -0.166667 +proj=longlat +datum=WGS8...    NA</span>
 <span class="co">## band    1   12     NA        NA                           NA    NA</span>
-<span class="co">##                  values    </span>
+<span class="co">##                  values x/y</span>
 <span class="co">## x                  NULL [x]</span>
 <span class="co">## y                  NULL [y]</span>
 <span class="co">## band tmean1,...,tmean12</span>
@@ -458,9 +458,12 @@
 <span class="co">##  Max.   :100.0    Max.   :6410    </span>
 <span class="co">##  NA's   :393060   NA's   :389580  </span>
 <span class="co">## dimension(s):</span>
-<span class="co">##   from   to offset     delta                       refsys point values    </span>
-<span class="co">## x    1 1080   -180  0.333333 +proj=longlat +ellps=WGS8...  NULL   NULL [x]</span>
-<span class="co">## y    1  540     90 -0.333333 +proj=longlat +ellps=WGS8...  NULL   NULL [y]</span>
+<span class="co">##   from   to offset.xmin delta.xmax                       refsys point values</span>
+<span class="co">## x    1 1080        -180   0.333333 +proj=longlat +ellps=WGS8...  NULL   NULL</span>
+<span class="co">## y    1  540          90  -0.333333 +proj=longlat +ellps=WGS8...  NULL   NULL</span>
+<span class="co">##   x/y</span>
+<span class="co">## x [x]</span>
+<span class="co">## y [y]</span>
 
 <span class="op">(</span><span class="va">cover</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_warp.html">st_warp</a></span><span class="op">(</span><span class="va">land</span><span class="op">[</span><span class="st">'cover'</span><span class="op">]</span>, <span class="va">temp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="va">band</span>, <span class="fl">1</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">'near'</span><span class="op">)</span><span class="op">)</span>
 <span class="co">## stars object with 2 dimensions and 1 attribute</span>
@@ -474,7 +477,7 @@
 <span class="co">##  Broadleaf Deciduous Forest          :    0  </span>
 <span class="co">##  (Other)                             :    0  </span>
 <span class="co">## dimension(s):</span>
-<span class="co">##   from   to offset     delta                       refsys point values    </span>
+<span class="co">##   from   to offset     delta                       refsys point values x/y</span>
 <span class="co">## x    1 2160   -180  0.166667 +proj=longlat +datum=WGS8...    NA   NULL [x]</span>
 <span class="co">## y    1  900     90 -0.166667 +proj=longlat +datum=WGS8...    NA   NULL [y]</span>
 <span class="co"># используем 'near', поскольку растр категориальный</span></code></pre></div>
@@ -578,20 +581,20 @@
 <code class="sourceCode R"><span class="va">temprof</span> <span class="op">=</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/extract.html">extract</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/coerce-methods.html">as</a></span><span class="op">(</span><span class="va">temp</span>, <span class="st">'Raster'</span><span class="op">)</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/coerce-methods.html">as</a></span><span class="op">(</span><span class="va">profile</span>, <span class="st">'Spatial'</span><span class="op">)</span>,
                           along <span class="op">=</span> <span class="cn">TRUE</span>, cellnumbers <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="va">temprof</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
-<span class="co">##        cell layer.1 layer.2 layer.3 layer.4 layer.5 layer.6 layer.7 layer.8</span>
-<span class="co">## [1,] 252105   -26.1   -26.3   -22.4   -16.0    -7.3     1.8     8.0     7.8</span>
-<span class="co">## [2,] 254265   -26.2   -26.4   -22.5   -16.1    -7.4     1.8     8.1     7.8</span>
-<span class="co">## [3,] 256425   -26.2   -26.4   -22.4   -15.9    -7.2     1.9     8.3     8.0</span>
-<span class="co">## [4,] 258585   -26.1   -26.4   -22.2   -15.7    -7.0     2.2     8.6     8.1</span>
-<span class="co">## [5,] 260745   -26.2   -26.4   -22.1   -15.6    -7.0     2.3     8.8     8.2</span>
-<span class="co">## [6,] 262905   -26.1   -26.3   -21.9   -15.4    -6.7     2.5     9.0     8.5</span>
-<span class="co">##      layer.9 layer.10 layer.11 layer.12</span>
-<span class="co">## [1,]     2.6     -7.4    -17.9    -22.4</span>
-<span class="co">## [2,]     2.5     -7.5    -18.0    -22.5</span>
-<span class="co">## [3,]     2.7     -7.4    -18.0    -22.6</span>
-<span class="co">## [4,]     2.8     -7.3    -17.9    -22.6</span>
-<span class="co">## [5,]     2.9     -7.3    -17.9    -22.6</span>
-<span class="co">## [6,]     3.0     -7.1    -17.9    -22.6</span></code></pre></div>
+<span class="co">##        cell tmean1 tmean2 tmean3 tmean4 tmean5 tmean6 tmean7 tmean8 tmean9</span>
+<span class="co">## [1,] 252105  -26.1  -26.3  -22.4  -16.0   -7.3    1.8    8.0    7.8    2.6</span>
+<span class="co">## [2,] 254265  -26.2  -26.4  -22.5  -16.1   -7.4    1.8    8.1    7.8    2.5</span>
+<span class="co">## [3,] 256425  -26.2  -26.4  -22.4  -15.9   -7.2    1.9    8.3    8.0    2.7</span>
+<span class="co">## [4,] 258585  -26.1  -26.4  -22.2  -15.7   -7.0    2.2    8.6    8.1    2.8</span>
+<span class="co">## [5,] 260745  -26.2  -26.4  -22.1  -15.6   -7.0    2.3    8.8    8.2    2.9</span>
+<span class="co">## [6,] 262905  -26.1  -26.3  -21.9  -15.4   -6.7    2.5    9.0    8.5    3.0</span>
+<span class="co">##      tmean10 tmean11 tmean12</span>
+<span class="co">## [1,]    -7.4   -17.9   -22.4</span>
+<span class="co">## [2,]    -7.5   -18.0   -22.5</span>
+<span class="co">## [3,]    -7.4   -18.0   -22.6</span>
+<span class="co">## [4,]    -7.3   -17.9   -22.6</span>
+<span class="co">## [5,]    -7.3   -17.9   -22.6</span>
+<span class="co">## [6,]    -7.1   -17.9   -22.6</span></code></pre></div>
 <p>Для построения линии профиля далее нам необходимо преобразовать идентификаторы ячеек растра в расстояние от начала профиля:</p>
 <div class="sourceCode" id="cb602"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tempdf</span> <span class="op">=</span> <span class="va">temprof</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">%&gt;%</span> 
@@ -603,10 +606,10 @@
                              <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
                              <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">cell</span>, <span class="va">band</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span><span class="va">layer.1</span><span class="op">:</span><span class="va">layer.12</span>, 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span><span class="va">tmean1</span><span class="op">:</span><span class="va">tmean12</span>, 
                names_to <span class="op">=</span> <span class="st">'month'</span>, 
                values_to <span class="op">=</span> <span class="st">'tmean'</span>, 
-               names_prefix <span class="op">=</span> <span class="st">'layer.'</span>,
+               names_prefix <span class="op">=</span> <span class="st">'tmean'</span>,
                names_transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>month <span class="op">=</span> <span class="va">factor</span>, ordered <span class="op">=</span> <span class="cn">TRUE</span>, levels <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">pts</span> <span class="op">=</span> <span class="va">profile</span> <span class="op">%&gt;%</span> 
@@ -723,7 +726,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-02-15.</p>
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-03-01.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

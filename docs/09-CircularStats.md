@@ -297,7 +297,7 @@ text(x = 1.4 * xp, y = 1.4 * yp,
 )
 ## # A tibble: 13 x 3
 ##    name            kden         peak
-##    <chr>           <list>      <dbl>
+##  * <chr>           <list>      <dbl>
 ##  1 Верхоянск       <dnsty.cr> -2.97 
 ##  2 Жиганск         <dnsty.cr> -3.20 
 ##  3 Кандалакша      <dnsty.cr> -0.347
