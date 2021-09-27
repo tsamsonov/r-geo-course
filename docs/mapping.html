@@ -6,14 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Глава 11 Тематические карты | Визуализация и анализ географических данных на языке R</title>
 <meta name="author" content="Тимофей Самсонов">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.7/header-attrs.js"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.4.9000/tabs.js"></script><script src="libs/bs3compat-0.2.4.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.9/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script><link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
-<script src="libs/datatables-binding-0.17/datatables.js"></script><link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
+<script src="libs/datatables-binding-0.18/datatables.js"></script><link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet">
 <script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script><link href="libs/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet">
-<script src="libs/crosstalk-1.1.1/js/crosstalk.min.js"></script><script src="libs/plotly-binding-4.9.3/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/plotly-htmlwidgets-css-1.57.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="libs/crosstalk-1.1.1/js/crosstalk.min.js"></script><script src="libs/plotly-binding-4.9.4.1/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/plotly-htmlwidgets-css-1.57.1/plotly-htmlwidgets.css" rel="stylesheet">
 <script src="libs/plotly-main-1.57.1/plotly-latest.min.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -88,7 +88,7 @@
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-spatial/mapview">mapview</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/classInt/">classInt</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jennybc/gapminder">gapminder</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidyverse/googlesheets4">googlesheets4</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ropenscilabs/rnaturalearth">rnaturalearth</a></span><span class="op">)</span></code></pre></div>
 </div>
@@ -118,34 +118,49 @@
 
 <span class="va">coast</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/rnaturalearth/man/ne_coastline.html">ne_coastline</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span>
 
-<span class="va">ocean</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/rnaturalearth/man/ne_download.html">ne_download</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">110</span>, 
-                    type <span class="op">=</span> <span class="st">'ocean'</span>, 
-                    category <span class="op">=</span> <span class="st">'physical'</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">## OGR data source with driver: ESRI Shapefile </span>
-<span class="co">## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpngHVlu", layer: "ne_110m_ocean"</span>
-<span class="co">## with 2 features</span>
-<span class="co">## It has 3 fields</span>
+<span class="co"># ocean = ne_download(scale = 110, </span>
+<span class="co">#                     type = 'ocean', </span>
+<span class="co">#                     category = 'physical', </span>
+<span class="co">#                     returnclass = 'sf')</span>
+<span class="co"># </span>
+<span class="co"># cities = ne_download(scale = 110, </span>
+<span class="co">#                      type = 'populated_places', </span>
+<span class="co">#                      category = 'cultural', </span>
+<span class="co">#                      returnclass = 'sf')</span>
+<span class="co"># </span>
+<span class="co"># rivers = ne_download(scale = 110, </span>
+<span class="co">#                      type = 'rivers_lake_centerlines', </span>
+<span class="co">#                      category = 'physical', </span>
+<span class="co">#                      returnclass = 'sf')</span>
 
-<span class="va">cities</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/rnaturalearth/man/ne_download.html">ne_download</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">110</span>, 
-                     type <span class="op">=</span> <span class="st">'populated_places'</span>, 
-                     category <span class="op">=</span> <span class="st">'cultural'</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">## OGR data source with driver: ESRI Shapefile </span>
-<span class="co">## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpngHVlu", layer: "ne_110m_populated_places"</span>
-<span class="co">## with 243 features</span>
-<span class="co">## It has 119 fields</span>
-<span class="co">## Integer64 fields read as strings:  wof_id ne_id</span>
-
-<span class="va">rivers</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/rnaturalearth/man/ne_download.html">ne_download</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">110</span>, 
-                     type <span class="op">=</span> <span class="st">'rivers_lake_centerlines'</span>, 
-                     category <span class="op">=</span> <span class="st">'physical'</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">## OGR data source with driver: ESRI Shapefile </span>
-<span class="co">## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpngHVlu", layer: "ne_110m_rivers_lake_centerlines"</span>
-<span class="co">## with 13 features</span>
-<span class="co">## It has 31 fields</span>
-<span class="co">## Integer64 fields read as strings:  scalerank ne_id</span></code></pre></div>
+<span class="va">ne</span> <span class="op">=</span> <span class="st">'/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg'</span>
+<span class="va">ocean</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_ocean'</span><span class="op">)</span>
+<span class="co">## Reading layer `ne_110m_ocean' from data source </span>
+<span class="co">##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' </span>
+<span class="co">##   using driver `GPKG'</span>
+<span class="co">## Simple feature collection with 2 features and 3 fields</span>
+<span class="co">## Geometry type: POLYGON</span>
+<span class="co">## Dimension:     XY</span>
+<span class="co">## Bounding box:  xmin: -180 ymin: -85.60904 xmax: 180 ymax: 90</span>
+<span class="co">## Geodetic CRS:  WGS 84</span>
+<span class="va">cities</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_populated_places'</span><span class="op">)</span>
+<span class="co">## Reading layer `ne_110m_populated_places' from data source </span>
+<span class="co">##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' </span>
+<span class="co">##   using driver `GPKG'</span>
+<span class="co">## Simple feature collection with 243 features and 119 fields</span>
+<span class="co">## Geometry type: POINT</span>
+<span class="co">## Dimension:     XY</span>
+<span class="co">## Bounding box:  xmin: -175.2206 ymin: -41.29999 xmax: 179.2166 ymax: 64.15002</span>
+<span class="co">## Geodetic CRS:  WGS 84</span>
+<span class="va">rivers</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_rivers_lake_centerlines'</span><span class="op">)</span>
+<span class="co">## Reading layer `ne_110m_rivers_lake_centerlines' from data source </span>
+<span class="co">##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' </span>
+<span class="co">##   using driver `GPKG'</span>
+<span class="co">## Simple feature collection with 13 features and 31 fields</span>
+<span class="co">## Geometry type: LINESTRING</span>
+<span class="co">## Dimension:     XY</span>
+<span class="co">## Bounding box:  xmin: -135.3134 ymin: -33.99358 xmax: 129.956 ymax: 72.90651</span>
+<span class="co">## Geodetic CRS:  WGS 84</span></code></pre></div>
 <p>Познакомимся с загруженными данными:</p>
 <div class="sourceCode" id="cb503"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">ocean</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">'lightblue'</span><span class="op">)</span>
@@ -195,6 +210,7 @@
      col <span class="op">=</span> <span class="fu">ramp</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>,
      main <span class="op">=</span> <span class="st">'Количество осадков в январе, мм'</span>,
      reset <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># разрешаем добавлять объекты на карту.</span>
+<span class="co">## downsample set to c(3,3,1)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">lyrm</span><span class="op">$</span><span class="va">ocean</span><span class="op">)</span>, border <span class="op">=</span> <span class="st">'steelblue'</span>, 
      col <span class="op">=</span> <span class="st">'lightblue'</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-7-1.png" width="100%"></div>
@@ -233,30 +249,24 @@
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-9-1.png" width="100%"></div>
 <p><strong>Количественный фон</strong> или <strong>картограммы</strong> получаются при картографировании числового показателя применением той же функции <code><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_polygons()</a></code>:</p>
 <div class="sourceCode" id="cb510"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/googlesheets4/man/range_read.html">read_sheet</a></span><span class="op">(</span><span class="st">'1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo'</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># продолжительность жизни</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>name <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">lifexp</span>, <span class="op">-</span><span class="va">name</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2016</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel</a></span><span class="op">(</span><span class="st">'data/gapminder.xlsx'</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>geo <span class="op">=</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/case.html">str_to_upper</a></span><span class="op">(</span><span class="va">geo</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">lifedf</span><span class="op">)</span> <span class="co"># выгружаем данные по продолжительности и сохраняем в переменную lifedf</span>
-<span class="co">## # A tibble: 260 x 13</span>
-<span class="co">##    name  year  lifexp geo   four_regions eight_regions six_regions</span>
-<span class="co">##    &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;        &lt;chr&gt;         &lt;chr&gt;      </span>
-<span class="co">##  1 Abkh… 2016    NA   &lt;NA&gt;  &lt;NA&gt;         &lt;NA&gt;          &lt;NA&gt;       </span>
-<span class="co">##  2 Afgh… 2016    52.7 AFG   asia         asia_west     south_asia </span>
-<span class="co">##  3 Akro… 2016    NA   &lt;NA&gt;  &lt;NA&gt;         &lt;NA&gt;          &lt;NA&gt;       </span>
-<span class="co">##  4 Alba… 2016    78.1 ALB   europe       europe_east   europe_cen…</span>
-<span class="co">##  5 Alge… 2016    76.5 DZA   africa       africa_north  middle_eas…</span>
-<span class="co">##  6 Amer… 2016    73   &lt;NA&gt;  &lt;NA&gt;         &lt;NA&gt;          &lt;NA&gt;       </span>
-<span class="co">##  7 Ando… 2016    84.8 AND   europe       europe_west   europe_cen…</span>
-<span class="co">##  8 Ango… 2016    60   AGO   africa       africa_sub_s… sub_sahara…</span>
-<span class="co">##  9 Angu… 2016    NA   &lt;NA&gt;  &lt;NA&gt;         &lt;NA&gt;          &lt;NA&gt;       </span>
-<span class="co">## 10 Anti… 2016    76.5 ATG   americas     america_north america    </span>
-<span class="co">## # … with 250 more rows, and 6 more variables: members_oecd_g77 &lt;chr&gt;,</span>
-<span class="co">## #   Latitude &lt;dbl&gt;, Longitude &lt;dbl&gt;, `UN member since` &lt;dttm&gt;, `World bank</span>
-<span class="co">## #   region` &lt;chr&gt;, `World bank income group 2017` &lt;chr&gt;</span>
+<code class="sourceCode R"><span class="va">lifexp</span> <span class="op">=</span> <span class="fu">WDI</span><span class="fu">::</span><span class="fu"><a href="https://vincentarelbundock.github.io/WDI/reference/WDI.html">WDI</a></span><span class="op">(</span>indicator <span class="op">=</span> <span class="st">'SP.DYN.LE00.IN'</span><span class="op">)</span>
+<span class="va">gap</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel</a></span><span class="op">(</span><span class="st">'data/gapminder.xlsx'</span>, <span class="fl">2</span><span class="op">)</span>
 
-<span class="va">coun</span> <span class="op">=</span> <span class="va">lyrp</span><span class="op">$</span><span class="va">countries</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">lifedf</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'adm0_a3'</span> <span class="op">=</span> <span class="st">'geo'</span><span class="op">)</span><span class="op">)</span>
+<span class="va">lifedf</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">gap</span>, 
+                   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">lifexp</span>, <span class="va">year</span> <span class="op">==</span> <span class="fl">2016</span><span class="op">)</span>, 
+                   by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'name'</span> <span class="op">=</span> <span class="st">'country'</span><span class="op">)</span><span class="op">)</span> |&gt;
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>lifexp <span class="op">=</span> <span class="va">SP.DYN.LE00.IN</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>geo <span class="op">=</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/case.html">str_to_upper</a></span><span class="op">(</span><span class="va">geo</span><span class="op">)</span><span class="op">)</span>
+
+<span class="co"># (read_sheet('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo') %&gt;% # продолжительность жизни</span>
+<span class="co">#   rename(name = 1) %&gt;% </span>
+<span class="co">#   gather(year, lifexp, -name) %&gt;% </span>
+<span class="co">#   dplyr::filter(year == 2016) %&gt;% </span>
+<span class="co">#   left_join(read_excel('data/gapminder.xlsx', 2)) %&gt;% </span>
+<span class="co">#   mutate(geo = stringr::str_to_upper(geo)) -&gt; lifedf) # выгружаем данные по продолжительности и сохраняем в переменную lifedf</span>
+
+<span class="va">coun</span> <span class="op">=</span> <span class="va">lyrp</span><span class="op">$</span><span class="va">countries</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">lifedf</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'adm0_a3'</span> <span class="op">=</span> <span class="st">'geo'</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">coun</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="st">'lifexp'</span>, border.col <span class="op">=</span> <span class="st">'gray20'</span><span class="op">)</span> <span class="op">+</span> <span class="co"># количественная переменная</span>
@@ -396,7 +406,7 @@
 
 <span class="co"># извлечь полученные границы можно через $brks</span>
 <span class="va">intervals</span><span class="op">$</span><span class="va">brks</span>
-<span class="co">## [1] 48.860 55.748 62.636 69.524 76.412 83.300</span>
+<span class="co">## [1] 51.59300 58.07138 64.54975 71.02813 77.50650 83.98488</span>
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">intervals</span>, pal <span class="op">=</span> <span class="fu">ramp</span><span class="op">(</span><span class="va">nclasses</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">0.5</span>, main <span class="op">=</span> <span class="st">"Равные интервалы MIN/MAX"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-21-1.png" width="100%"></div>
@@ -404,21 +414,21 @@
 <div class="sourceCode" id="cb522"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">intervals</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/classInt/reference/classIntervals.html">classIntervals</a></span><span class="op">(</span><span class="va">coun</span><span class="op">$</span><span class="va">lifexp</span>, n <span class="op">=</span> <span class="va">nclasses</span>, style <span class="op">=</span> <span class="st">"pretty"</span><span class="op">)</span>
 <span class="va">intervals</span><span class="op">$</span><span class="va">brks</span>
-<span class="co">## [1] 45 50 55 60 65 70 75 80 85</span>
+<span class="co">## [1] 50 55 60 65 70 75 80 85</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">intervals</span>, pal <span class="op">=</span> <span class="fu">ramp</span><span class="op">(</span><span class="va">nclasses</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">0.5</span>, main <span class="op">=</span> <span class="st">"Округленные равные интервалы"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-22-1.png" width="100%"></div>
 <p>Квантили — равноколичественные интервалы. В каждом классе содержится одинаковое число объектов:</p>
 <div class="sourceCode" id="cb523"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">intervals</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/classInt/reference/classIntervals.html">classIntervals</a></span><span class="op">(</span><span class="va">coun</span><span class="op">$</span><span class="va">lifexp</span>, n <span class="op">=</span> <span class="va">nclasses</span>, style <span class="op">=</span> <span class="st">"quantile"</span><span class="op">)</span>
 <span class="va">intervals</span><span class="op">$</span><span class="va">brks</span>
-<span class="co">## [1] 48.860 64.488 71.300 75.440 79.360 83.300</span>
+<span class="co">## [1] 51.59300 63.70640 70.89153 75.18710 78.64560 83.98488</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">intervals</span>, pal <span class="op">=</span> <span class="fu">ramp</span><span class="op">(</span><span class="va">nclasses</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">0.5</span>, main <span class="op">=</span> <span class="st">"Квантили (равноколичественные)"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-23-1.png" width="100%"></div>
 <p>Метод “естественных интервалов,” или метод Фишера-Дженкса позволяет найти классы, максимально однородные внутри и при этом максимально отличающиеся друг от друга:</p>
 <div class="sourceCode" id="cb524"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">intervals</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/classInt/reference/classIntervals.html">classIntervals</a></span><span class="op">(</span><span class="va">coun</span><span class="op">$</span><span class="va">lifexp</span>, n <span class="op">=</span> <span class="va">nclasses</span>, style <span class="op">=</span> <span class="st">"jenks"</span><span class="op">)</span>
 <span class="va">intervals</span><span class="op">$</span><span class="va">brks</span>
-<span class="co">## [1] 48.86 55.90 63.70 70.40 77.10 83.30</span>
+<span class="co">## [1] 51.59300 58.30900 66.20500 72.64400 78.60700 83.98488</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">intervals</span>, pal <span class="op">=</span> <span class="fu">ramp</span><span class="op">(</span><span class="va">nclasses</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">0.5</span>, main <span class="op">=</span> <span class="st">"Естественные интервалы"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-24-1.png" width="100%"></div>
 </div>
@@ -647,17 +657,16 @@
           legend.frame <span class="op">=</span> <span class="cn">TRUE</span>,
           legend.frame.lwd <span class="op">=</span> <span class="fl">0.2</span>,
           legend.bg.alpha <span class="op">=</span> <span class="fl">0.5</span>,
-          legend.bg.color <span class="op">=</span> <span class="st">'white'</span><span class="op">)</span> <span class="op">+</span>
-<span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_grid.html">tm_grid</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span>, by <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>, 
-        y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">90</span>, <span class="fl">90</span>, by <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>, 
-        lwd <span class="op">=</span> <span class="fl">0.2</span>,
-        col <span class="op">=</span> <span class="st">"black"</span>, 
-        projection <span class="op">=</span> <span class="fl">4326</span>,
-        labels.inside.frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+          legend.bg.color <span class="op">=</span> <span class="st">'white'</span><span class="op">)</span> <span class="co"># +</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-35-1.png" width="100%"></div>
+<div class="sourceCode" id="cb536"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># tm_graticules(x = seq(-180, 180, by = 30), </span>
+<span class="co">#         y = seq(-90, 90, by = 30), </span>
+<span class="co">#         lwd = 0.2,</span>
+<span class="co">#         col = "black")</span></code></pre></div>
 <p>Если вам необходимо обеспечить значки градуса, вы можете сделать это, используя параметр <code>labels.format</code>, определив в нем анонимную функцию, добавляющую значок градуса в переданный ей вектор подписей.</p>
 <p>Помимо этого, вам может понадобиться увеличить поля вокруг карты, чтобы освободить пространство для размещения меток (на предыдущей карте они не влезли). Это делается через параметр <code>outer.margins</code>, который ожидает получить вектор из четырех значений (по умолчанию все они равны 0.02, т.е. 2% от размера окна).</p>
-<div class="sourceCode" id="cb536"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb537"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">temp</span><span class="op">[</span>,,,<span class="fl">1</span><span class="op">]</span>,
          bbox <span class="op">=</span> <span class="va">box</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_raster.html">tm_raster</a></span><span class="op">(</span><span class="st">'tmean1'</span>,
@@ -682,17 +691,18 @@
           legend.bg.alpha <span class="op">=</span> <span class="fl">0.8</span>,
           legend.bg.color <span class="op">=</span> <span class="st">'white'</span>,
           outer.margins <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.02</span>, <span class="fl">0.02</span>, <span class="fl">0.02</span><span class="op">)</span>,
-          inner.margins <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-<span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_grid.html">tm_grid</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span>, by <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>, 
-        y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">90</span>, <span class="fl">90</span>, by <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>, 
-        lwd <span class="op">=</span> <span class="fl">0.2</span>,
-        col <span class="op">=</span> <span class="st">"black"</span>, 
-        projection <span class="op">=</span> <span class="fl">4326</span>,
-        labels.inside.frame <span class="op">=</span> <span class="cn">FALSE</span>,
-        labels.format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">X</span>, <span class="st">'°'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+          inner.margins <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="co"># +</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-36-1.png" width="100%"></div>
+<div class="sourceCode" id="cb538"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># tm_grid(x = seq(-180, 180, by = 30), </span>
+<span class="co">#         y = seq(-90, 90, by = 30), </span>
+<span class="co">#         lwd = 0.2,</span>
+<span class="co">#         col = "black", </span>
+<span class="co">#         projection = 4326,</span>
+<span class="co">#         labels.inside.frame = FALSE,</span>
+<span class="co">#         labels.format = list(fun = function(X) paste0(X, '°')))</span></code></pre></div>
 <p>Подписи сетки координат можно добавить и для более сложных проекций, однако располагаться они будут по-прежнему вдоль осей <em>X</em> и <em>Y</em>. В примере ниже также показано как можно увеличить расстояние между заголовком и картой, определив более крупный отступ от верхней стороны в параметре <code>inner.margins</code>:</p>
-<div class="sourceCode" id="cb537"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb539"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">coun</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="st">'lifexp'</span>, 
               palette <span class="op">=</span> <span class="st">'YlGn'</span>,
@@ -732,35 +742,27 @@
 </h2>
 <p>Фасетная компоновка предполагает, упорядочение элементов в матричной форме на одной странице. Как правило, картографические фасеты идентичны по содержанию, но показывают одно и то же явление при различных заданных условиях: за разные года, по разным странам и т.д. Создание фасет с помощью <strong>tmap</strong> осуществляется с помощью специальной функции <code><a href="https://rdrr.io/pkg/tmap/man/tm_facets.html">tm_facets()</a></code>, которой необходимо передать название переменной, отвечающей за разделение. В свою очередь, это означает, что данные должны быть приведены к «длинной» форме (если информация за разные года содержится в разных столбцах, то нужно год записать в отдельную переменную). Здесь вам пригодится знание пакета <strong>tidyr</strong>.</p>
 <p>Рассмотрим создание фасет на примере данных Gapminder по средней продолжительности жизни c 1960 по 2010 г:</p>
-<div class="sourceCode" id="cb538"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="st">'1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo'</span> <span class="op">%&gt;%</span> <span class="co"># продолжительность жизни</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/googlesheets4/man/range_read.html">read_sheet</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>name <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">lifexp</span>, <span class="op">-</span><span class="va">name</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1960</span>, <span class="fl">1970</span>, <span class="fl">1980</span>, <span class="fl">1990</span>, <span class="fl">2000</span>, <span class="fl">2010</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel</a></span><span class="op">(</span><span class="st">'data/gapminder.xlsx'</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>geo <span class="op">=</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/case.html">str_to_upper</a></span><span class="op">(</span><span class="va">geo</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">lifedf2</span><span class="op">)</span> <span class="co"># выгружаем данные по ВВП на душу населения и сохраняем в переменную lifedf</span>
-<span class="co">## # A tibble: 1,560 x 13</span>
-<span class="co">##    name  year  lifexp geo   four_regions eight_regions six_regions</span>
-<span class="co">##    &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;        &lt;chr&gt;         &lt;chr&gt;      </span>
-<span class="co">##  1 Abkh… 1960    NA   &lt;NA&gt;  &lt;NA&gt;         &lt;NA&gt;          &lt;NA&gt;       </span>
-<span class="co">##  2 Afgh… 1960    31.9 AFG   asia         asia_west     south_asia </span>
-<span class="co">##  3 Akro… 1960    NA   &lt;NA&gt;  &lt;NA&gt;         &lt;NA&gt;          &lt;NA&gt;       </span>
-<span class="co">##  4 Alba… 1960    62.9 ALB   europe       europe_east   europe_cen…</span>
-<span class="co">##  5 Alge… 1960    47.5 DZA   africa       africa_north  middle_eas…</span>
-<span class="co">##  6 Amer… 1960    NA   &lt;NA&gt;  &lt;NA&gt;         &lt;NA&gt;          &lt;NA&gt;       </span>
-<span class="co">##  7 Ando… 1960    NA   AND   europe       europe_west   europe_cen…</span>
-<span class="co">##  8 Ango… 1960    36.0 AGO   africa       africa_sub_s… sub_sahara…</span>
-<span class="co">##  9 Angu… 1960    NA   &lt;NA&gt;  &lt;NA&gt;         &lt;NA&gt;          &lt;NA&gt;       </span>
-<span class="co">## 10 Anti… 1960    63.0 ATG   americas     america_north america    </span>
-<span class="co">## # … with 1,550 more rows, and 6 more variables: members_oecd_g77 &lt;chr&gt;,</span>
-<span class="co">## #   Latitude &lt;dbl&gt;, Longitude &lt;dbl&gt;, `UN member since` &lt;dttm&gt;, `World bank</span>
-<span class="co">## #   region` &lt;chr&gt;, `World bank income group 2017` &lt;chr&gt;</span>
+<div class="sourceCode" id="cb540"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">lifexp_dec</span> <span class="op">=</span> <span class="va">lifexp</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1960</span>, <span class="fl">1970</span>, <span class="fl">1980</span>, <span class="fl">1990</span>, <span class="fl">2000</span>, <span class="fl">2010</span><span class="op">)</span><span class="op">)</span>
 
-<span class="va">coun2</span> <span class="op">=</span> <span class="va">lyrp</span><span class="op">$</span><span class="va">countries</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">lifedf2</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'adm0_a3'</span> <span class="op">=</span> <span class="st">'geo'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="va">lifedf_dec</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">gap</span>, <span class="va">lifexp_dec</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'name'</span> <span class="op">=</span> <span class="st">'country'</span><span class="op">)</span><span class="op">)</span> |&gt;
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>lifexp <span class="op">=</span> <span class="va">SP.DYN.LE00.IN</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>geo <span class="op">=</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/case.html">str_to_upper</a></span><span class="op">(</span><span class="va">geo</span><span class="op">)</span><span class="op">)</span>
+
+<span class="co"># ('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo' %&gt;% # продолжительность жизни</span>
+<span class="co">#   read_sheet() %&gt;% </span>
+<span class="co">#   rename(name = 1) %&gt;% </span>
+<span class="co">#   gather(year, lifexp, -name) %&gt;% </span>
+<span class="co">#   dplyr::filter(year %in% c(1960, 1970, 1980, 1990, 2000, 2010)) %&gt;% </span>
+<span class="co">#   left_join(read_excel('data/gapminder.xlsx', 2)) %&gt;% </span>
+<span class="co">#   mutate(geo = stringr::str_to_upper(geo)) -&gt; lifedf2) # выгружаем данные по ВВП на душу населения и сохраняем в переменную lifedf</span>
+
+<span class="va">coun_dec</span> <span class="op">=</span> <span class="va">lyrp</span><span class="op">$</span><span class="va">countries</span> |&gt;  
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">lifedf_dec</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'adm0_a3'</span> <span class="op">=</span> <span class="st">'geo'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Создадим серию карт за разные года:</p>
-<div class="sourceCode" id="cb539"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">coun2</span><span class="op">)</span> <span class="op">+</span>
+<div class="sourceCode" id="cb541"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">coun_dec</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="st">'lifexp'</span>, 
               palette <span class="op">=</span> <span class="st">'YlGnBu'</span>,
               n <span class="op">=</span> <span class="fl">3</span>,
@@ -797,11 +799,11 @@
 <li>упорядочить карты по регулярной сетке с двумя столбцами и полями отступа каждой фасеты (параметр <code>outer.margins</code>), используя <code><a href="https://rdrr.io/pkg/tmap/man/tmap_arrange.html">tmap_arrange()</a></code>
 </li>
 </ul>
-<div class="sourceCode" id="cb540"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb542"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">minval</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">temp</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">maxval</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">temp</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
-<span class="va">brks</span> <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org//reference/fullseq.html">fullseq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">minval</span>, <span class="va">maxval</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span>
+<span class="va">brks</span> <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/fullseq.html">fullseq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">minval</span>, <span class="va">maxval</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span>
 
 <span class="va">months</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Январь'</span>, <span class="st">'Февраль'</span>, <span class="st">'Март'</span>, <span class="st">'Апрель'</span>, 
            <span class="st">'Март'</span>, <span class="st">'Июнь'</span>, <span class="st">'Июль'</span>, <span class="st">'Август'</span>, 
@@ -830,17 +832,17 @@
             legend.frame.lwd <span class="op">=</span> <span class="fl">0.2</span>,
             legend.bg.alpha <span class="op">=</span> <span class="fl">0.8</span>,
             legend.bg.color <span class="op">=</span> <span class="st">'white'</span>,
-            inner.margins <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_grid.html">tm_grid</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span>, by <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>, 
-          y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">90</span>, <span class="fl">90</span>, by <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>, 
-          lwd <span class="op">=</span> <span class="fl">0.2</span>,
-          col <span class="op">=</span> <span class="st">"black"</span>, 
-          projection <span class="op">=</span> <span class="fl">4326</span>,
-          labels.inside.frame <span class="op">=</span> <span class="cn">FALSE</span>,
-          labels.format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">Z</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">Z</span>, <span class="st">'°'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+            inner.margins <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="co">#+</span></code></pre></div>
 <div class="inline-figure"><img src="11-ThematicMapping_files/figure-html/unnamed-chunk-40-1.png" width="100%"></div>
-<div class="sourceCode" id="cb541"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
+<div class="sourceCode" id="cb543"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="co"># tm_grid(x = seq(-180, 180, by = 30), </span>
+  <span class="co">#         y = seq(-90, 90, by = 30), </span>
+  <span class="co">#         lwd = 0.2,</span>
+  <span class="co">#         col = "black", </span>
+  <span class="co">#         projection = 4326,</span>
+  <span class="co">#         labels.inside.frame = FALSE,</span>
+  <span class="co">#         labels.format = list(fun = function(Z) paste0(Z, '°')))</span>
+
 <span class="co"># tmap_arrange(maps, asp = NA, ncol = 2,</span>
 <span class="co">#              outer.margins = 0.05)</span></code></pre></div>
 </div>
@@ -858,8 +860,8 @@
 <p><strong>Внимание:</strong> для того чтобы работало построение анимаций средствами <strong>tmap</strong>, на вашем компьютере должна быть установлена библиотека <a href="https://www.imagemagick.org/"><strong>ImageMagick</strong></a>.</p>
 </blockquote>
 <p>Для примера построим анимацию по данным изменения средней продолжительности жизни:</p>
-<div class="sourceCode" id="cb542"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">map</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">coun2</span><span class="op">)</span> <span class="op">+</span>
+<div class="sourceCode" id="cb544"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">map</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">coun_dec</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="st">'lifexp'</span>, 
               palette <span class="op">=</span> <span class="st">'YlGnBu'</span>,
               n <span class="op">=</span> <span class="fl">3</span>,
@@ -885,8 +887,9 @@
 <span class="header-section-number">11.9</span> Интерактивные карты<a class="anchor" aria-label="anchor" href="#thematic_mapping_interactive"><i class="fas fa-link"></i></a>
 </h2>
 <p>Любую карту tmap можно перевести в интерактивный режим с помощью функции <code><a href="https://rdrr.io/pkg/tmap/man/tmap_mode.html">tmap_mode()</a></code> с параметром <code>'view'</code>. Управлять дополнительными параметрами, специфичными для интерактивного режима, можно используя функцию <code><a href="https://rdrr.io/pkg/tmap/man/tm_view.html">tm_view()</a></code>. В частности, можно установить координаты центра карты и масштабный уровень в параметре <code>set.view</code> и ограничить диапазон масштабных уровней в параметре <code>set.zoom.limits</code>. Состав полей, значения которых отображаются во всплывающем окне при щелчке на символе, определяются параметром <code>popup.vars</code>:</p>
-<div class="sourceCode" id="cb543"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb545"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tmap_mode.html">tmap_mode</a></span><span class="op">(</span><span class="st">'view'</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tmap_options.html">tmap_options</a></span><span class="op">(</span>check.and.fix <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">coun</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="st">'lifexp'</span>, 
@@ -902,8 +905,9 @@
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_view.html">tm_view</a></span><span class="op">(</span>set.view <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">45</span>, <span class="fl">2</span><span class="op">)</span>,    <span class="co"># центр карты и масштабный уровень</span>
         set.zoom.limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Чтобы добавить карту-подложку, необходимо предварительно вызвать функцию <code><a href="https://rdrr.io/pkg/tmap/man/tm_tiles.html">tm_basemap()</a></code>, передав ей название картографического сервиса. В примере ниже также показано, как можно сделать размер кружка постоянным во всех масштабах (параметр <code>symbol.size.fixed</code>):</p>
-<div class="sourceCode" id="cb544"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb546"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tmap_mode.html">tmap_mode</a></span><span class="op">(</span><span class="st">'view'</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tmap_options.html">tmap_options</a></span><span class="op">(</span>check.and.fix <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
 <span class="va">coun</span> <span class="op">=</span> <span class="va">coun</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>gdp_scaled <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">0.001</span> <span class="op">*</span> <span class="va">gdp_md_est</span><span class="op">)</span><span class="op">)</span>
 
@@ -1027,7 +1031,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-03-01.</p>
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-09-27.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

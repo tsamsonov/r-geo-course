@@ -410,7 +410,7 @@ ggplot(tabreg, aes(x = Region, y = lifexp)) +
             lifexp_sd = sd(lifexp)))
 ## # A tibble: 8 x 5
 ##   Region             gdp_mean gdp_sd lifexp_mean lifexp_sd
-## * <chr>                 <dbl>  <dbl>       <dbl>     <dbl>
+##   <chr>                 <dbl>  <dbl>       <dbl>     <dbl>
 ## 1 africa_north          6897.  3386.        73        4.97
 ## 2 africa_sub_saharan    3583.  4553.        62.3      5.31
 ## 3 america_north        13835. 11451.        74.9      4.00

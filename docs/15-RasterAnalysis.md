@@ -49,12 +49,14 @@ library(tidyverse)
 bed = raster('data/etopo1_bed.tif')
 ice = raster('data/etopo1_ice.tif')
 countries = st_read('data/countries.gpkg')
-## Reading layer `admin_0_map_units' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/countries.gpkg' using driver `GPKG'
+## Reading layer `admin_0_map_units' from data source 
+##   `/Users/tsamsonov/GitHub/r-geo-course/data/countries.gpkg' 
+##   using driver `GPKG'
 ## Simple feature collection with 183 features and 72 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
-## geographic CRS: WGS 84
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
+## Geodetic CRS:  WGS 84
 borders = countries %>% st_geometry()
 
 # отображение данных
@@ -309,40 +311,49 @@ plot(hill,
 
 # Чтение данных
 roads = st_read("data/roads.gpkg") # Дороги
-## Reading layer `roads' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/roads.gpkg' using driver `GPKG'
+## Reading layer `roads' from data source 
+##   `/Users/tsamsonov/GitHub/r-geo-course/data/roads.gpkg' using driver `GPKG'
 ## Simple feature collection with 2213 features and 12 fields
-## geometry type:  MULTILINESTRING
-## dimension:      XY
-## bbox:           xmin: 410946.9 ymin: 6176676 xmax: 415890.8 ymax: 6181910
-## projected CRS:  WGS 84 / UTM zone 37N
+## Geometry type: MULTILINESTRING
+## Dimension:     XY
+## Bounding box:  xmin: 410946.9 ymin: 6176676 xmax: 415890.8 ymax: 6181910
+## Projected CRS: WGS 84 / UTM zone 37N
 poi = st_read("data/poi_point.gpkg") # Точки интереса
-## Reading layer `poi_point' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/poi_point.gpkg' using driver `GPKG'
+## Reading layer `poi_point' from data source 
+##   `/Users/tsamsonov/GitHub/r-geo-course/data/poi_point.gpkg' 
+##   using driver `GPKG'
 ## Simple feature collection with 6623 features and 9 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: 410947.3 ymin: 6176678 xmax: 415889.9 ymax: 6181909
-## projected CRS:  WGS 84 / UTM zone 37N
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 410947.3 ymin: 6176678 xmax: 415889.9 ymax: 6181909
+## Projected CRS: WGS 84 / UTM zone 37N
 rayons = st_read("data/boundary_polygon.gpkg") # Границы районов
-## Reading layer `boundary_polygon' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/boundary_polygon.gpkg' using driver `GPKG'
+## Reading layer `boundary_polygon' from data source 
+##   `/Users/tsamsonov/GitHub/r-geo-course/data/boundary_polygon.gpkg' 
+##   using driver `GPKG'
 ## Simple feature collection with 11 features and 5 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: 410946.9 ymin: 6176676 xmax: 415890.8 ymax: 6181910
-## projected CRS:  WGS 84 / UTM zone 37N
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 410946.9 ymin: 6176676 xmax: 415890.8 ymax: 6181910
+## Projected CRS: WGS 84 / UTM zone 37N
 stations = st_read("data/metro_stations.gpkg") # Станции метро
-## Reading layer `metro_stations' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/metro_stations.gpkg' using driver `GPKG'
+## Reading layer `metro_stations' from data source 
+##   `/Users/tsamsonov/GitHub/r-geo-course/data/metro_stations.gpkg' 
+##   using driver `GPKG'
 ## Simple feature collection with 45 features and 3 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: 411007.5 ymin: 6176747 xmax: 415852.2 ymax: 6181892
-## projected CRS:  WGS 84 / UTM zone 37N
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 411007.5 ymin: 6176747 xmax: 415852.2 ymax: 6181892
+## Projected CRS: WGS 84 / UTM zone 37N
 water = st_read("data/water_polygon.gpkg") # Водные объекты
-## Reading layer `water_polygon' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/water_polygon.gpkg' using driver `GPKG'
+## Reading layer `water_polygon' from data source 
+##   `/Users/tsamsonov/GitHub/r-geo-course/data/water_polygon.gpkg' 
+##   using driver `GPKG'
 ## Simple feature collection with 8 features and 7 fields
-## geometry type:  POLYGON
-## dimension:      XY
-## bbox:           xmin: 411595.6 ymin: 6176676 xmax: 415890.8 ymax: 6180765
-## projected CRS:  WGS 84 / UTM zone 37N
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 411595.6 ymin: 6176676 xmax: 415890.8 ymax: 6180765
+## Projected CRS: WGS 84 / UTM zone 37N
 
 # Создаем пустой растр с охватом, равным охвату станции
 dist_grid = stations %>% 
@@ -376,6 +387,7 @@ __Зональные операции__ связаны с агрегирован
 temp = raster::getData("worldclim", var = "tmean", res = 10) %>% 
   st_as_stars() / 10
 plot(temp)
+## downsample set to c(16,16,1)
 ```
 
 <img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-9-1.png" width="100%" />
@@ -407,14 +419,8 @@ ggplot() +
 temp
 ## stars object with 3 dimensions and 1 attribute
 ## attribute(s), summary of first 1e+05 cells:
-##     tmean1       
-##  Min.   :-42.10  
-##  1st Qu.:-34.08  
-##  Median :-30.85  
-##  Mean   :-31.99  
-##  3rd Qu.:-29.50  
-##  Max.   :-27.80  
-##  NA's   :98298   
+##          Min. 1st Qu. Median      Mean 3rd Qu.  Max.  NA's
+## tmean1  -42.1 -34.075 -30.85 -31.98754   -29.5 -27.8 98298
 ## dimension(s):
 ##      from   to offset     delta                       refsys point
 ## x       1 2160   -180  0.166667 +proj=longlat +datum=WGS8...    NA

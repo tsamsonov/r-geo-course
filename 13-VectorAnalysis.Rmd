@@ -118,11 +118,15 @@ outlines = st_geometry(countries)
 cities = st_read('data/ne/cities.gpkg')
 city.pts = st_geometry(cities)
 
-largest = countries %>% dplyr::select(pop_est) %>% dplyr::filter(pop_est > 100000000)
+largest = countries %>% 
+  dplyr::select(pop_est) %>% 
+  dplyr::filter(pop_est > 100000000)
 
 # Наносим исходную конфигурацию
 plot(outlines, lwd = 0.5)
 plot(cities, col = 'black', pch = 20, cex = 0.5, add = TRUE)
+
+sf::sf_use_s2(FALSE)
 
 # Отбираем точки внутри стран с максимальным ВВП
 sel = cities[largest, ]

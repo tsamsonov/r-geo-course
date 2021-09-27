@@ -174,12 +174,13 @@ library(GWmodel)
 options(scipen = 999)
 
 reg_sf = st_read('data/Kirov.gpkg')
-## Reading layer `Kirov' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/Kirov.gpkg' using driver `GPKG'
+## Reading layer `Kirov' from data source 
+##   `/Users/tsamsonov/GitHub/r-geo-course/data/Kirov.gpkg' using driver `GPKG'
 ## Simple feature collection with 40 features and 20 fields
-## geometry type:  POLYGON
-## dimension:      XY
-## bbox:           xmin: -216808.3 ymin: 2896149 xmax: 227259 ymax: 3455774
-## projected CRS:  unnamed
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -216808.3 ymin: 2896149 xmax: 227259 ymax: 3455774
+## Projected CRS: unnamed
 reg = st_geometry(reg_sf)
 
 par(mar = c(1, 1, 1, 1))

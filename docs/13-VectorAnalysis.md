@@ -38,23 +38,29 @@
 
 ```r
 countries = st_read('data/ne/countries.gpkg')
-## Reading layer `admin_0_map_units' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/countries.gpkg' using driver `GPKG'
+## Reading layer `admin_0_map_units' from data source 
+##   `/Users/tsamsonov/GitHub/r-geo-course/data/ne/countries.gpkg' 
+##   using driver `GPKG'
 ## Simple feature collection with 183 features and 72 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
-## geographic CRS: WGS 84
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
+## Geodetic CRS:  WGS 84
 outlines = st_geometry(countries)
 cities = st_read('data/ne/cities.gpkg')
-## Reading layer `populated_places' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/cities.gpkg' using driver `GPKG'
+## Reading layer `populated_places' from data source 
+##   `/Users/tsamsonov/GitHub/r-geo-course/data/ne/cities.gpkg' 
+##   using driver `GPKG'
 ## Simple feature collection with 243 features and 103 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: -175.2206 ymin: -41.29999 xmax: 179.2166 ymax: 64.15002
-## geographic CRS: WGS 84
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -175.2206 ymin: -41.29999 xmax: 179.2166 ymax: 64.15002
+## Geodetic CRS:  WGS 84
 city.pts = st_geometry(cities)
 
-largest = countries %>% dplyr::select(pop_est) %>% dplyr::filter(pop_est > 100000000)
+largest = countries %>% 
+  dplyr::select(pop_est) %>% 
+  dplyr::filter(pop_est > 100000000)
 
 # Наносим исходную конфигурацию
 plot(outlines, lwd = 0.5)
@@ -64,6 +70,9 @@ plot(cities, col = 'black', pch = 20, cex = 0.5, add = TRUE)
 <img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-2-1.png" width="100%" />
 
 ```r
+
+sf::sf_use_s2(FALSE)
+## Spherical geometry (s2) switched off
 
 # Отбираем точки внутри стран с максимальным ВВП
 sel = cities[largest, ]
@@ -184,10 +193,10 @@ plot(poi %>% st_geometry(),
 
 ```
 ## Simple feature collection with 6623 features and 9 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: 410947.3 ymin: 6176678 xmax: 415889.9 ymax: 6181909
-## projected CRS:  WGS 84 / UTM zone 37N
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 410947.3 ymin: 6176678 xmax: 415889.9 ymax: 6181909
+## Projected CRS: WGS 84 / UTM zone 37N
 ## First 10 features:
 ##        OSM_ID              NAME MAN_MADE LEISURE          AMENITY OFFICE
 ## 1  2932331614       Арт-квартал     <NA>    <NA>             <NA>   <NA>
@@ -304,10 +313,10 @@ poi.food = poi %>%
             dplyr::filter(AMENITY %in% c("restaurant", "bar", "cafe", "pub", "fast_food"))
 head(poi.food)
 ## Simple feature collection with 6 features and 2 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: 410954.9 ymin: 6178842 xmax: 411023.8 ymax: 6181896
-## projected CRS:  WGS 84 / UTM zone 37N
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 410954.9 ymin: 6178842 xmax: 411023.8 ymax: 6181896
+## Projected CRS: WGS 84 / UTM zone 37N
 ##          NAME    AMENITY                 geometry
 ## 1       Аршин restaurant POINT (410975.2 6181661)
 ## 2    Андерсон restaurant POINT (410954.9 6180118)
@@ -376,10 +385,10 @@ roads.poi %>%
   arrange(desc(Freq)) %>% 
   head(10)
 ## Simple feature collection with 10 features and 2 fields
-## geometry type:  MULTILINESTRING
-## dimension:      XY
-## bbox:           xmin: 411105.1 ymin: 6178083 xmax: 414504.1 ymax: 6181734
-## projected CRS:  WGS 84 / UTM zone 37N
+## Geometry type: MULTILINESTRING
+## Dimension:     XY
+## Bounding box:  xmin: 411105.1 ymin: 6178083 xmax: 414504.1 ymax: 6181734
+## Projected CRS: WGS 84 / UTM zone 37N
 ##                       NAME Freq                       geometry
 ## 1              улица Арбат   43 MULTILINESTRING ((412157.9 ...
 ## 2        улица Новый Арбат   24 MULTILINESTRING ((411105.1 ...
@@ -628,10 +637,10 @@ plot(selected.poi %>% st_geometry(),
 
 ```
 ## Simple feature collection with 23 features and 3 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: 412142.7 ymin: 6178370 xmax: 412593.7 ymax: 6178811
-## projected CRS:  WGS 84 / UTM zone 37N
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 412142.7 ymin: 6178370 xmax: 412593.7 ymax: 6178811
+## Projected CRS: WGS 84 / UTM zone 37N
 ## First 10 features:
 ##               NAME    AMENITY                 geometry count
 ## 440      Азия Кафе restaurant POINT (412142.7 6178592)     1
@@ -678,10 +687,10 @@ plot(selected.poi %>% st_geometry(),
 
 ```
 ## Simple feature collection with 39 features and 3 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: 411661.2 ymin: 6176685 xmax: 415287.1 ymax: 6178953
-## projected CRS:  WGS 84 / UTM zone 37N
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 411661.2 ymin: 6176685 xmax: 415287.1 ymax: 6178953
+## Projected CRS: WGS 84 / UTM zone 37N
 ## First 10 features:
 ##                     NAME    AMENITY                 geometry count
 ## 244        Белый журавль restaurant POINT (411661.2 6177029)     1
@@ -767,12 +776,14 @@ text(zones %>% st_centroid() %>% st_coordinates(),
 ```r
 # Данные по Северной Каролине
 nc = sf::st_read(system.file("shape/nc.shp", package="sf"))
-## Reading layer `nc' from data source `/Library/Frameworks/R.framework/Versions/4.0/Resources/library/sf/shape/nc.shp' using driver `ESRI Shapefile'
+## Reading layer `nc' from data source 
+##   `/Library/Frameworks/R.framework/Versions/4.1/Resources/library/sf/shape/nc.shp' 
+##   using driver `ESRI Shapefile'
 ## Simple feature collection with 100 features and 14 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: -84.32385 ymin: 33.88199 xmax: -75.45698 ymax: 36.58965
-## geographic CRS: NAD27
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -84.32385 ymin: 33.88199 xmax: -75.45698 ymax: 36.58965
+## Geodetic CRS:  NAD27
 
 cells = sf::st_make_grid(nc, cellsize = 0.25)
 

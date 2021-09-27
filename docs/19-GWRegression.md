@@ -118,72 +118,6 @@ tm_shape(realest) +
 samples = realest %>% dplyr::sample_n(1000) %>% as('Spatial')
 
 (gwr_res = gwr.basic(price ~ rooms, data = samples, bw = 1000, kernel = 'gaussian'))
-##    ***********************************************************************
-##    *                       Package   GWmodel                             *
-##    ***********************************************************************
-##    Program starts at: 2021-03-01 01:03:10 
-##    Call:
-##    gwr.basic(formula = price ~ rooms, data = samples, bw = 1000, 
-##     kernel = "gaussian")
-## 
-##    Dependent (y) variable:  price
-##    Independent variables:  rooms
-##    Number of data points: 1000
-##    ***********************************************************************
-##    *                    Results of Global Regression                     *
-##    ***********************************************************************
-## 
-##    Call:
-##     lm(formula = formula, data = data)
-## 
-##    Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -1969.2  -812.1  -338.2   287.9  8365.0 
-## 
-##    Coefficients:
-##                Estimate Std. Error t value Pr(>|t|)    
-##    (Intercept)  2276.37      76.55   29.74   <2e-16 ***
-##    rooms         442.88      32.03   13.83   <2e-16 ***
-## 
-##    ---Significance stars
-##    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
-##    Residual standard error: 1317 on 998 degrees of freedom
-##    Multiple R-squared: 0.1607
-##    Adjusted R-squared: 0.1599 
-##    F-statistic: 191.2 on 1 and 998 DF,  p-value: < 2.2e-16 
-##    ***Extra Diagnostic information
-##    Residual sum of squares: 1731630672
-##    Sigma(hat): 1317.232
-##    AIC:  17208.45
-##    AICc:  17208.48
-##    BIC:  16243.9
-##    ***********************************************************************
-##    *          Results of Geographically Weighted Regression              *
-##    ***********************************************************************
-## 
-##    *********************Model calibration information*********************
-##    Kernel function: gaussian 
-##    Fixed bandwidth: 1000 
-##    Regression points: the same locations as observations are used.
-##    Distance metric: Euclidean distance metric is used.
-## 
-##    ****************Summary of GWR coefficient estimates:******************
-##                 Min. 1st Qu.  Median 3rd Qu.   Max.
-##    Intercept -398.49 1636.09 2079.42 2442.61 4239.8
-##    rooms     -793.68  500.46  581.01  702.48 1530.3
-##    ************************Diagnostic information*************************
-##    Number of data points: 1000 
-##    Effective number of parameters (2trace(S) - trace(S'S)): 120.2926 
-##    Effective degrees of freedom (n-2trace(S) + trace(S'S)): 879.7074 
-##    AICc (GWR book, Fotheringham, et al. 2002, p. 61, eq 2.33): 16975.73 
-##    AIC (GWR book, Fotheringham, et al. 2002,GWR p. 96, eq. 4.22): 16862.48 
-##    BIC (GWR book, Fotheringham, et al. 2002,GWR p. 61, eq. 2.34): 16405.79 
-##    Residual sum of squares: 1124257658 
-##    R-square value:  0.4551178 
-##    Adjusted R-square value:  0.380525 
-## 
-##    ***********************************************************************
-##    Program stops at: 2021-03-01 01:03:10
 
 tm_shape(gwr_res$SDF) +
   tm_bubbles(col = 'rooms', # это не количество комнат, а коэффициент регрессии
@@ -193,8 +127,6 @@ tm_shape(gwr_res$SDF) +
              alpha = 0.5) +
   tm_view(symbol.size.fixed = TRUE)
 ```
-
-<img src="19-GWRegression_files/figure-html/unnamed-chunk-6-1.png" width="100%" />
 
 Как видно, модель GWR наглядно показывает наличие пространственной гетерогенности (неоднороности) в распределении показателя. Четко видны районы (в основном цеентральные, но также и часть окраинных), где стоимость жилья резко возрастает при увеличении количества комнат.
 

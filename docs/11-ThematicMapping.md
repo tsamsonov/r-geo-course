@@ -44,34 +44,49 @@ countries = ne_countries() %>% st_as_sf()
 
 coast = ne_coastline() %>% st_as_sf()
 
-ocean = ne_download(scale = 110, 
-                    type = 'ocean', 
-                    category = 'physical') %>% 
-  st_as_sf()
-## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpngHVlu", layer: "ne_110m_ocean"
-## with 2 features
-## It has 3 fields
+# ocean = ne_download(scale = 110, 
+#                     type = 'ocean', 
+#                     category = 'physical', 
+#                     returnclass = 'sf')
+# 
+# cities = ne_download(scale = 110, 
+#                      type = 'populated_places', 
+#                      category = 'cultural', 
+#                      returnclass = 'sf')
+# 
+# rivers = ne_download(scale = 110, 
+#                      type = 'rivers_lake_centerlines', 
+#                      category = 'physical', 
+#                      returnclass = 'sf')
 
-cities = ne_download(scale = 110, 
-                     type = 'populated_places', 
-                     category = 'cultural') %>% 
-  st_as_sf()
-## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpngHVlu", layer: "ne_110m_populated_places"
-## with 243 features
-## It has 119 fields
-## Integer64 fields read as strings:  wof_id ne_id
-
-rivers = ne_download(scale = 110, 
-                     type = 'rivers_lake_centerlines', 
-                     category = 'physical') %>% 
-  st_as_sf()
-## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpngHVlu", layer: "ne_110m_rivers_lake_centerlines"
-## with 13 features
-## It has 31 fields
-## Integer64 fields read as strings:  scalerank ne_id
+ne = '/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg'
+ocean = st_read(ne, 'ne_110m_ocean')
+## Reading layer `ne_110m_ocean' from data source 
+##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
+##   using driver `GPKG'
+## Simple feature collection with 2 features and 3 fields
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -180 ymin: -85.60904 xmax: 180 ymax: 90
+## Geodetic CRS:  WGS 84
+cities = st_read(ne, 'ne_110m_populated_places')
+## Reading layer `ne_110m_populated_places' from data source 
+##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
+##   using driver `GPKG'
+## Simple feature collection with 243 features and 119 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -175.2206 ymin: -41.29999 xmax: 179.2166 ymax: 64.15002
+## Geodetic CRS:  WGS 84
+rivers = st_read(ne, 'ne_110m_rivers_lake_centerlines')
+## Reading layer `ne_110m_rivers_lake_centerlines' from data source 
+##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
+##   using driver `GPKG'
+## Simple feature collection with 13 features and 31 fields
+## Geometry type: LINESTRING
+## Dimension:     XY
+## Bounding box:  xmin: -135.3134 ymin: -33.99358 xmax: 129.956 ymax: 72.90651
+## Geodetic CRS:  WGS 84
 ```
 
 Познакомимся с загруженными данными:
@@ -136,6 +151,7 @@ plot(precm[,,,1],
      col = ramp(10),
      main = 'Количество осадков в январе, мм',
      reset = FALSE) # разрешаем добавлять объекты на карту.
+## downsample set to c(3,3,1)
 plot(st_geometry(lyrm$ocean), border = 'steelblue', 
      col = 'lightblue', add = TRUE)
 ```
@@ -176,30 +192,24 @@ tm_shape(lyrp$ocean)+
 __Количественный фон__ или __картограммы__ получаются при картографировании числового показателя применением той же функции `tm_polygons()`:
 
 ```r
-(read_sheet('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo') %>% # продолжительность жизни
-  rename(name = 1) %>% 
-  gather(year, lifexp, -name) %>% 
-  dplyr::filter(year == 2016) %>% 
-  left_join(read_excel('data/gapminder.xlsx', 2)) %>% 
-  mutate(geo = stringr::str_to_upper(geo)) -> lifedf) # выгружаем данные по продолжительности и сохраняем в переменную lifedf
-## # A tibble: 260 x 13
-##    name  year  lifexp geo   four_regions eight_regions six_regions
-##    <chr> <chr>  <dbl> <chr> <chr>        <chr>         <chr>      
-##  1 Abkh… 2016    NA   <NA>  <NA>         <NA>          <NA>       
-##  2 Afgh… 2016    52.7 AFG   asia         asia_west     south_asia 
-##  3 Akro… 2016    NA   <NA>  <NA>         <NA>          <NA>       
-##  4 Alba… 2016    78.1 ALB   europe       europe_east   europe_cen…
-##  5 Alge… 2016    76.5 DZA   africa       africa_north  middle_eas…
-##  6 Amer… 2016    73   <NA>  <NA>         <NA>          <NA>       
-##  7 Ando… 2016    84.8 AND   europe       europe_west   europe_cen…
-##  8 Ango… 2016    60   AGO   africa       africa_sub_s… sub_sahara…
-##  9 Angu… 2016    NA   <NA>  <NA>         <NA>          <NA>       
-## 10 Anti… 2016    76.5 ATG   americas     america_north america    
-## # … with 250 more rows, and 6 more variables: members_oecd_g77 <chr>,
-## #   Latitude <dbl>, Longitude <dbl>, `UN member since` <dttm>, `World bank
-## #   region` <chr>, `World bank income group 2017` <chr>
+lifexp = WDI::WDI(indicator = 'SP.DYN.LE00.IN')
+gap = read_excel('data/gapminder.xlsx', 2)
 
-coun = lyrp$countries %>% left_join(lifedf, by = c('adm0_a3' = 'geo'))
+lifedf = left_join(gap, 
+                   filter(lifexp, year == 2016), 
+                   by = c('name' = 'country')) |>
+  rename(lifexp = SP.DYN.LE00.IN) |> 
+  mutate(geo = stringr::str_to_upper(geo))
+
+# (read_sheet('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo') %>% # продолжительность жизни
+#   rename(name = 1) %>% 
+#   gather(year, lifexp, -name) %>% 
+#   dplyr::filter(year == 2016) %>% 
+#   left_join(read_excel('data/gapminder.xlsx', 2)) %>% 
+#   mutate(geo = stringr::str_to_upper(geo)) -> lifedf) # выгружаем данные по продолжительности и сохраняем в переменную lifedf
+
+coun = lyrp$countries %>% 
+  left_join(lifedf, by = c('adm0_a3' = 'geo'))
 
 tm_shape(coun) +
   tm_polygons('lifexp', border.col = 'gray20') + # количественная переменная
@@ -374,7 +384,7 @@ intervals = classIntervals(coun$lifexp, n = nclasses, style = "equal")
 
 # извлечь полученные границы можно через $brks
 intervals$brks
-## [1] 48.860 55.748 62.636 69.524 76.412 83.300
+## [1] 51.59300 58.07138 64.54975 71.02813 77.50650 83.98488
 
 plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Равные интервалы MIN/MAX")
 ```
@@ -386,7 +396,7 @@ plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Равные интерв
 ```r
 intervals = classIntervals(coun$lifexp, n = nclasses, style = "pretty")
 intervals$brks
-## [1] 45 50 55 60 65 70 75 80 85
+## [1] 50 55 60 65 70 75 80 85
 plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Округленные равные интервалы")
 ```
 
@@ -397,7 +407,7 @@ plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Округленные р
 ```r
 intervals = classIntervals(coun$lifexp, n = nclasses, style = "quantile")
 intervals$brks
-## [1] 48.860 64.488 71.300 75.440 79.360 83.300
+## [1] 51.59300 63.70640 70.89153 75.18710 78.64560 83.98488
 plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Квантили (равноколичественные)")
 ```
 
@@ -408,7 +418,7 @@ plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Квантили (рав�
 ```r
 intervals = classIntervals(coun$lifexp, n = nclasses, style = "jenks")
 intervals$brks
-## [1] 48.86 55.90 63.70 70.40 77.10 83.30
+## [1] 51.59300 58.30900 66.20500 72.64400 78.60700 83.98488
 plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Естественные интервалы")
 ```
 
@@ -662,16 +672,17 @@ tm_layout(legend.position = c('left', 'bottom'),
           legend.frame = TRUE,
           legend.frame.lwd = 0.2,
           legend.bg.alpha = 0.5,
-          legend.bg.color = 'white') +
-tm_grid(x = seq(-180, 180, by = 30), 
-        y = seq(-90, 90, by = 30), 
-        lwd = 0.2,
-        col = "black", 
-        projection = 4326,
-        labels.inside.frame = FALSE)
+          legend.bg.color = 'white') # +
 ```
 
 <img src="11-ThematicMapping_files/figure-html/unnamed-chunk-35-1.png" width="100%" />
+
+```r
+# tm_graticules(x = seq(-180, 180, by = 30), 
+#         y = seq(-90, 90, by = 30), 
+#         lwd = 0.2,
+#         col = "black")
+```
 
 Если вам необходимо обеспечить значки градуса, вы можете сделать это, используя параметр `labels.format`, определив в нем анонимную функцию, добавляющую значок градуса в переданный ей вектор подписей. 
 
@@ -703,17 +714,20 @@ tm_layout(legend.position = c('LEFT', 'BOTTOM'),
           legend.bg.alpha = 0.8,
           legend.bg.color = 'white',
           outer.margins = c(0.05, 0.02, 0.02, 0.02),
-          inner.margins = c(0, 0, 0, 0)) +
-tm_grid(x = seq(-180, 180, by = 30), 
-        y = seq(-90, 90, by = 30), 
-        lwd = 0.2,
-        col = "black", 
-        projection = 4326,
-        labels.inside.frame = FALSE,
-        labels.format = list(fun = function(X) paste0(X, '°')))
+          inner.margins = c(0, 0, 0, 0)) # +
 ```
 
 <img src="11-ThematicMapping_files/figure-html/unnamed-chunk-36-1.png" width="100%" />
+
+```r
+# tm_grid(x = seq(-180, 180, by = 30), 
+#         y = seq(-90, 90, by = 30), 
+#         lwd = 0.2,
+#         col = "black", 
+#         projection = 4326,
+#         labels.inside.frame = FALSE,
+#         labels.format = list(fun = function(X) paste0(X, '°')))
+```
 
 Подписи сетки координат можно добавить и для более сложных проекций, однако располагаться они будут по-прежнему вдоль осей _X_ и _Y_. В примере ниже также показано как можно увеличить расстояние между заголовком и картой, определив более крупный отступ от верхней стороны в параметре `inner.margins`:
 
@@ -760,37 +774,29 @@ tm_grid(x = seq(-180, 180, by = 60),
 Рассмотрим создание фасет на примере данных Gapminder по средней продолжительности жизни c 1960 по 2010 г:
 
 ```r
-('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo' %>% # продолжительность жизни
-  read_sheet() %>% 
-  rename(name = 1) %>% 
-  gather(year, lifexp, -name) %>% 
-  dplyr::filter(year %in% c(1960, 1970, 1980, 1990, 2000, 2010)) %>% 
-  left_join(read_excel('data/gapminder.xlsx', 2)) %>% 
-  mutate(geo = stringr::str_to_upper(geo)) -> lifedf2) # выгружаем данные по ВВП на душу населения и сохраняем в переменную lifedf
-## # A tibble: 1,560 x 13
-##    name  year  lifexp geo   four_regions eight_regions six_regions
-##    <chr> <chr>  <dbl> <chr> <chr>        <chr>         <chr>      
-##  1 Abkh… 1960    NA   <NA>  <NA>         <NA>          <NA>       
-##  2 Afgh… 1960    31.9 AFG   asia         asia_west     south_asia 
-##  3 Akro… 1960    NA   <NA>  <NA>         <NA>          <NA>       
-##  4 Alba… 1960    62.9 ALB   europe       europe_east   europe_cen…
-##  5 Alge… 1960    47.5 DZA   africa       africa_north  middle_eas…
-##  6 Amer… 1960    NA   <NA>  <NA>         <NA>          <NA>       
-##  7 Ando… 1960    NA   AND   europe       europe_west   europe_cen…
-##  8 Ango… 1960    36.0 AGO   africa       africa_sub_s… sub_sahara…
-##  9 Angu… 1960    NA   <NA>  <NA>         <NA>          <NA>       
-## 10 Anti… 1960    63.0 ATG   americas     america_north america    
-## # … with 1,550 more rows, and 6 more variables: members_oecd_g77 <chr>,
-## #   Latitude <dbl>, Longitude <dbl>, `UN member since` <dttm>, `World bank
-## #   region` <chr>, `World bank income group 2017` <chr>
+lifexp_dec = lifexp |> 
+  filter(year %in% c(1960, 1970, 1980, 1990, 2000, 2010))
 
-coun2 = lyrp$countries %>% left_join(lifedf2, by = c('adm0_a3' = 'geo'))
+lifedf_dec = left_join(gap, lifexp_dec, by = c('name' = 'country')) |>
+  rename(lifexp = SP.DYN.LE00.IN) |> 
+  mutate(geo = stringr::str_to_upper(geo))
+
+# ('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo' %>% # продолжительность жизни
+#   read_sheet() %>% 
+#   rename(name = 1) %>% 
+#   gather(year, lifexp, -name) %>% 
+#   dplyr::filter(year %in% c(1960, 1970, 1980, 1990, 2000, 2010)) %>% 
+#   left_join(read_excel('data/gapminder.xlsx', 2)) %>% 
+#   mutate(geo = stringr::str_to_upper(geo)) -> lifedf2) # выгружаем данные по ВВП на душу населения и сохраняем в переменную lifedf
+
+coun_dec = lyrp$countries |>  
+  left_join(lifedf_dec, by = c('adm0_a3' = 'geo'))
 ```
 
 Создадим серию карт за разные года:
 
 ```r
-tm_shape(coun2) +
+tm_shape(coun_dec) +
   tm_polygons('lifexp', 
               palette = 'YlGnBu',
               n = 3,
@@ -864,19 +870,19 @@ tm_shape(temp,
             legend.frame.lwd = 0.2,
             legend.bg.alpha = 0.8,
             legend.bg.color = 'white',
-            inner.margins = c(0, 0, 0, 0)) +
-  tm_grid(x = seq(-180, 180, by = 30), 
-          y = seq(-90, 90, by = 30), 
-          lwd = 0.2,
-          col = "black", 
-          projection = 4326,
-          labels.inside.frame = FALSE,
-          labels.format = list(fun = function(Z) paste0(Z, '°')))
+            inner.margins = c(0, 0, 0, 0)) #+
 ```
 
 <img src="11-ThematicMapping_files/figure-html/unnamed-chunk-40-1.png" width="100%" />
 
 ```r
+  # tm_grid(x = seq(-180, 180, by = 30), 
+  #         y = seq(-90, 90, by = 30), 
+  #         lwd = 0.2,
+  #         col = "black", 
+  #         projection = 4326,
+  #         labels.inside.frame = FALSE,
+  #         labels.format = list(fun = function(Z) paste0(Z, '°')))
 
 # tmap_arrange(maps, asp = NA, ncol = 2,
 #              outer.margins = 0.05)
@@ -895,7 +901,7 @@ tm_shape(temp,
 Для примера построим анимацию по данным изменения средней продолжительности жизни:
 
 ```r
-map = tm_shape(coun2) +
+map = tm_shape(coun_dec) +
   tm_polygons('lifexp', 
               palette = 'YlGnBu',
               n = 3,
@@ -924,6 +930,7 @@ tmap_animation(map, 'images/lifexp.gif', delay = 100)
 
 ```r
 tmap_mode('view')
+tmap_options(check.and.fix = TRUE)
 
 tm_shape(coun) +
   tm_polygons('lifexp', 
@@ -944,6 +951,7 @@ tm_view(set.view = c(20, 45, 2),    # центр карты и масштабн�
 
 ```r
 tmap_mode('view')
+tmap_options(check.and.fix = TRUE)
 
 coun = coun %>% mutate(gdp_scaled = round(0.001 * gdp_md_est))
 

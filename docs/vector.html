@@ -6,14 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Глава 13 Векторный анализ | Визуализация и анализ географических данных на языке R</title>
 <meta name="author" content="Тимофей Самсонов">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.7/header-attrs.js"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.4.9000/tabs.js"></script><script src="libs/bs3compat-0.2.4.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.9/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script><link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
-<script src="libs/datatables-binding-0.17/datatables.js"></script><link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
+<script src="libs/datatables-binding-0.18/datatables.js"></script><link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet">
 <script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script><link href="libs/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet">
-<script src="libs/crosstalk-1.1.1/js/crosstalk.min.js"></script><script src="libs/plotly-binding-4.9.3/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/plotly-htmlwidgets-css-1.57.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="libs/crosstalk-1.1.1/js/crosstalk.min.js"></script><script src="libs/plotly-binding-4.9.4.1/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/plotly-htmlwidgets-css-1.57.1/plotly-htmlwidgets.css" rel="stylesheet">
 <script src="libs/plotly-main-1.57.1/plotly-latest.min.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -165,32 +165,41 @@
 </table></div>
 <p>Между <code>covered_by</code> и <code>within</code>, а также <code>covers</code> и <code>contains</code> нет разницы в случае, когда оба объекта являются площадными. Эта разница будет сказываться если хотя бы один из объектов является линией либо точкой. В этом случае <code>within</code>, <code>contains</code> и <code>contains_properly</code> будут давать ложный результат (FALSE), поскольку ни у линий, ни у точек нет внутренней области.</p>
 <p>Проверка топологических отношений используется для выполнения выборки объектов по местоположению — <em>пространственной выборки</em>. Наиболее простой способ выбрать объекты по пространственному местоположению — это использовать один слой в качестве фильтра для другого слоя. В этом случае будет по умолчанию использовано отношение <code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_intersects()</a></code> (пересекает). Никаких отличий от работы с обычными таблицами нет. Например, вот так можно выбрать точки, находящиеся внутри ранее отобранных стран с максимальным ВВП:</p>
-<div class="sourceCode" id="cb546"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb548"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">countries</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="st">'data/ne/countries.gpkg'</span><span class="op">)</span>
-<span class="co">## Reading layer `admin_0_map_units' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/countries.gpkg' using driver `GPKG'</span>
+<span class="co">## Reading layer `admin_0_map_units' from data source </span>
+<span class="co">##   `/Users/tsamsonov/GitHub/r-geo-course/data/ne/countries.gpkg' </span>
+<span class="co">##   using driver `GPKG'</span>
 <span class="co">## Simple feature collection with 183 features and 72 fields</span>
-<span class="co">## geometry type:  MULTIPOLYGON</span>
-<span class="co">## dimension:      XY</span>
-<span class="co">## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513</span>
-<span class="co">## geographic CRS: WGS 84</span>
+<span class="co">## Geometry type: MULTIPOLYGON</span>
+<span class="co">## Dimension:     XY</span>
+<span class="co">## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513</span>
+<span class="co">## Geodetic CRS:  WGS 84</span>
 <span class="va">outlines</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">countries</span><span class="op">)</span>
 <span class="va">cities</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="st">'data/ne/cities.gpkg'</span><span class="op">)</span>
-<span class="co">## Reading layer `populated_places' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/cities.gpkg' using driver `GPKG'</span>
+<span class="co">## Reading layer `populated_places' from data source </span>
+<span class="co">##   `/Users/tsamsonov/GitHub/r-geo-course/data/ne/cities.gpkg' </span>
+<span class="co">##   using driver `GPKG'</span>
 <span class="co">## Simple feature collection with 243 features and 103 fields</span>
-<span class="co">## geometry type:  POINT</span>
-<span class="co">## dimension:      XY</span>
-<span class="co">## bbox:           xmin: -175.2206 ymin: -41.29999 xmax: 179.2166 ymax: 64.15002</span>
-<span class="co">## geographic CRS: WGS 84</span>
+<span class="co">## Geometry type: POINT</span>
+<span class="co">## Dimension:     XY</span>
+<span class="co">## Bounding box:  xmin: -175.2206 ymin: -41.29999 xmax: 179.2166 ymax: 64.15002</span>
+<span class="co">## Geodetic CRS:  WGS 84</span>
 <span class="va">city.pts</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">cities</span><span class="op">)</span>
 
-<span class="va">largest</span> <span class="op">=</span> <span class="va">countries</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">pop_est</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">pop_est</span> <span class="op">&gt;</span> <span class="fl">100000000</span><span class="op">)</span>
+<span class="va">largest</span> <span class="op">=</span> <span class="va">countries</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">pop_est</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">pop_est</span> <span class="op">&gt;</span> <span class="fl">100000000</span><span class="op">)</span>
 
 <span class="co"># Наносим исходную конфигурацию</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">outlines</span>, lwd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">cities</span>, col <span class="op">=</span> <span class="st">'black'</span>, pch <span class="op">=</span> <span class="fl">20</span>, cex <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-2-1.png" width="100%"></div>
-<div class="sourceCode" id="cb547"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb549"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
+<span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/s2.html">sf_use_s2</a></span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="co">## Spherical geometry (s2) switched off</span>
+
 <span class="co"># Отбираем точки внутри стран с максимальным ВВП</span>
 <span class="va">sel</span> <span class="op">=</span> <span class="va">cities</span><span class="op">[</span><span class="va">largest</span>, <span class="op">]</span>
 
@@ -200,7 +209,7 @@
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">sel</span>, pch <span class="op">=</span> <span class="fl">20</span>, col <span class="op">=</span> <span class="st">'black'</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-2-2.png" width="100%"></div>
 <p>Разумеется, при выполнении пространственных запросов могут возникать и другие пространственные отношения. Например, мы можем выбрать все страны, имеющие общую границу с Чехией. Для этого можно использовать топологическое отношение <code>st_touches</code> вместо <code>st_intersects</code> — это будет гарантировать, что сама Чехия в результате не выберется (касающиеся объекты не могут перекрываться). Тип отношения необходимо поставить в параметр <code>op =</code> при выполнении фильтрации фрейма данных:</p>
-<div class="sourceCode" id="cb548"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb550"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cz</span> <span class="op">=</span> <span class="va">countries</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">sovereignt</span> <span class="op">==</span> <span class="st">'Czechia'</span><span class="op">)</span>
 <span class="va">neighbors</span> <span class="op">=</span> <span class="va">countries</span><span class="op">[</span><span class="va">cz</span>, op <span class="op">=</span> <span class="va">st_touches</span><span class="op">]</span>
 
@@ -269,7 +278,7 @@
 <a href="https://cran.r-project.org/web/packages/cartography/index.html">cartography</a> — пакет, облегчающий построение тематических карт и легенд средствами стандартной функции <code><a href="https://r-spatial.github.io/sf/reference/plot.html">plot()</a></code>.</li>
 </ul>
 <p>Начнем наше исследование с визуального анализа исходных данных</p>
-<div class="sourceCode" id="cb549"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb551"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Чтение данных</span>
 <span class="va">roads</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="st">"data/roads.gpkg"</span><span class="op">)</span> <span class="co"># Дороги</span>
 <span class="va">poi</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="st">"data/poi_point.gpkg"</span><span class="op">)</span> <span class="co"># Точки интереса</span>
@@ -305,10 +314,10 @@
 <div class="inline-figure"><img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-4-1.png" width="100%"></div>
 <p>Теперь приступим к изучению данных, хранящихся в слое <code>poi</code> (от англ. POI — Point Of Interest). Данный слой содержит все точечные маркеры OSM, которыми были отмечены на карте объекты, представляющие (по мнению создателей данных) интерес для пользователей. В POI включаются самые разнообразные объекты, такие как: объекты сферы услуг (amenity), места для отдыха (leisure), офисные здания (office), магазины и торговые центры (shop), туристические достопримечательности (tourism), спортивные объекты (sport), примечательные инженерные сооружения (man_made). В наших данных информация разнесена по соответствующим полям, каждый объект снабжен уникальным идентификатором:</p>
 <pre><code>## Simple feature collection with 6623 features and 9 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: 410947.3 ymin: 6176678 xmax: 415889.9 ymax: 6181909
-## projected CRS:  WGS 84 / UTM zone 37N
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 410947.3 ymin: 6176678 xmax: 415889.9 ymax: 6181909
+## Projected CRS: WGS 84 / UTM zone 37N
 ## First 10 features:
 ##        OSM_ID              NAME MAN_MADE LEISURE          AMENITY OFFICE
 ## 1  2932331614       Арт-квартал     &lt;NA&gt;    &lt;NA&gt;             &lt;NA&gt;   &lt;NA&gt;
@@ -333,7 +342,7 @@
 ## 9       jewelry    &lt;NA&gt;  &lt;NA&gt; POINT (410982.5 6181905)
 ## 10         &lt;NA&gt;    &lt;NA&gt;  &lt;NA&gt; POINT (410954.9 6180118)</code></pre>
 <p>Заведения общественного питания по классификатору OSM относятся к классу <em>amenity</em>. Поскольку данный классификатор представляет собой множество номинальных (категориальных) данных, можно начать изучение состава данных с помощью таблицы частот, которая строится средствами функции <code><a href="https://rdrr.io/r/base/table.html">table()</a></code>:</p>
-<div class="sourceCode" id="cb551"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb553"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">poi</span><span class="op">$</span><span class="va">AMENITY</span><span class="op">)</span><span class="op">)</span>
 <span class="co">##                  Var1 Freq</span>
 <span class="co">## 1         arts_centre   17</span>
@@ -412,16 +421,16 @@
 <span class="co">## 74       waste_basket   52</span>
 <span class="co">## 75     waste_disposal  102</span></code></pre></div>
 <p>Для дальнейшего анализа отберем из всего множества объектов сферы услуг заведения, где можно поесть: рестораны, кафе, бары, пабы и заведения быстрого питания (фастфуд). В классификаторе OSM эти заведения имеют тип <em>restaurant</em>, <em>bar</em>, <em>cafe</em>, <em>pub</em> и <em>fast_food</em>. Для отбора нужных строк и столбцов используем dplyr:</p>
-<div class="sourceCode" id="cb552"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb554"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">poi.food</span> <span class="op">=</span> <span class="va">poi</span> <span class="op">%&gt;%</span> 
             <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">NAME</span>, <span class="va">AMENITY</span><span class="op">)</span> <span class="op">%&gt;%</span> 
             <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">AMENITY</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"restaurant"</span>, <span class="st">"bar"</span>, <span class="st">"cafe"</span>, <span class="st">"pub"</span>, <span class="st">"fast_food"</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="va">poi.food</span><span class="op">)</span>
 <span class="co">## Simple feature collection with 6 features and 2 fields</span>
-<span class="co">## geometry type:  POINT</span>
-<span class="co">## dimension:      XY</span>
-<span class="co">## bbox:           xmin: 410954.9 ymin: 6178842 xmax: 411023.8 ymax: 6181896</span>
-<span class="co">## projected CRS:  WGS 84 / UTM zone 37N</span>
+<span class="co">## Geometry type: POINT</span>
+<span class="co">## Dimension:     XY</span>
+<span class="co">## Bounding box:  xmin: 410954.9 ymin: 6178842 xmax: 411023.8 ymax: 6181896</span>
+<span class="co">## Projected CRS: WGS 84 / UTM zone 37N</span>
 <span class="co">##          NAME    AMENITY                 geometry</span>
 <span class="co">## 1       Аршин restaurant POINT (410975.2 6181661)</span>
 <span class="co">## 2    Андерсон restaurant POINT (410954.9 6180118)</span>
@@ -443,7 +452,7 @@
 </ol>
 <p>Таким образом, мы получим вектор из идентификаторов улиц, при этом каждый идентификатор будет встречаться в этом векторе столько раз, сколько раз данная улица оказалась ближайшей к какому-то объекту.</p>
 <p>Вычислим матрицу расстояний с помощью функции <code><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_distance()</a></code> из пакета <strong>sf</strong>:</p>
-<div class="sourceCode" id="cb553"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb555"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co">## АНАЛИЗ РАССТОЯНИЙ -------------------------------------</span>
 
@@ -459,29 +468,29 @@
 <span class="co">## [4,] 2197.874  655.4285  475.0629  620.4411 1985.242</span>
 <span class="co">## [5,] 3910.957 2368.5560 2188.1348 1092.5472 3698.246</span></code></pre></div>
 <p>Далее необходимо в каждом столбце матрицы найти номер строки с минимальным расстоянием. Для этого необходимо получить порядок сортировки элементов по возрастанию значений данного столбца и взять номер первого элемента. Операцию можно применить с помощью <code>apply</code> ко всем столбцам:</p>
-<div class="sourceCode" id="cb554"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb556"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ids</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">dist.matrix</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <p>Теперь применим уже знакомую нам функцию <code><a href="https://rdrr.io/r/base/table.html">table()</a></code>, чтобы подсчитать, сколько раз каждая улица оказалась наиболее близкой. Далее присоединим статистику к исходным улицам, однако для этого нам потребуется вынести названия строк (номеров) улиц в отдельный столбец.</p>
-<div class="sourceCode" id="cb555"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb557"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">count.stats</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">ids</span><span class="op">)</span><span class="op">)</span>
 <span class="va">roads</span> <span class="op">=</span> <span class="va">roads</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/row.names.html">row.names</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span>
-<span class="va">roads.poi</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/merge.html">merge</a></span><span class="op">(</span><span class="va">roads</span>, 
+<span class="va">roads.poi</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/merge.html">merge</a></span><span class="op">(</span><span class="va">roads</span>, 
                    <span class="va">count.stats</span>, 
                    by.x <span class="op">=</span> <span class="st">'id'</span>, 
                    by.y <span class="op">=</span> <span class="st">'ids'</span>, 
                    all.x <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></code></pre></div>
 <p>Посмотрим первые 10 улиц по количеству общепита:</p>
-<div class="sourceCode" id="cb556"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb558"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Статистика по улицам в табличном представлении (первые 10)</span>
 <span class="va">roads.poi</span> <span class="op">%&gt;%</span> 
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">NAME</span>, <span class="va">Freq</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">Freq</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>
 <span class="co">## Simple feature collection with 10 features and 2 fields</span>
-<span class="co">## geometry type:  MULTILINESTRING</span>
-<span class="co">## dimension:      XY</span>
-<span class="co">## bbox:           xmin: 411105.1 ymin: 6178083 xmax: 414504.1 ymax: 6181734</span>
-<span class="co">## projected CRS:  WGS 84 / UTM zone 37N</span>
+<span class="co">## Geometry type: MULTILINESTRING</span>
+<span class="co">## Dimension:     XY</span>
+<span class="co">## Bounding box:  xmin: 411105.1 ymin: 6178083 xmax: 414504.1 ymax: 6181734</span>
+<span class="co">## Projected CRS: WGS 84 / UTM zone 37N</span>
 <span class="co">##                       NAME Freq                       geometry</span>
 <span class="co">## 1              улица Арбат   43 MULTILINESTRING ((412157.9 ...</span>
 <span class="co">## 2        улица Новый Арбат   24 MULTILINESTRING ((411105.1 ...</span>
@@ -495,7 +504,7 @@
 <span class="co">## 10 улица Большая Дмитровка   14 MULTILINESTRING ((413262.7 ...</span></code></pre></div>
 <p>Для завершения анализа осталось визуализировать результаты. Чтобы усилить наглядность визуализации, мы не будем каждую улицу утолщать пропорционально количеству привязанных объектов, а разделим это количество на 4 класса. Каждый класс покажем линией соответствующей толщины и интенсивности цвета (чем больше объектов привязано к улице, тем толще линия, темнее и насыщеннее ее цвет).</p>
 <p>Для классификации используем функцию <code><a href="https://rdrr.io/pkg/raster/man/cut.html">cut()</a></code>, позволяющую перекодировать интервальные данные в номинальные, то есть сопоставить каждому элементу вектора некий класс, которому он принадлежит. На выходе будем иметь вектор, который состоит из такого же количества элементов, что и исходный, но вместо исходных значений будут стоять названия классов.</p>
-<div class="sourceCode" id="cb557"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb559"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Получим границы классов</span>
 <span class="va">nclasses</span> <span class="op">=</span> <span class="fl">4</span>
 <span class="va">class.breaks</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/classInt/reference/classIntervals.html">classIntervals</a></span><span class="op">(</span><span class="va">roads.poi</span><span class="op">$</span><span class="va">Freq</span>, 
@@ -512,7 +521,7 @@
              breaks <span class="op">=</span> <span class="va">borders</span>, 
              labels <span class="op">=</span> <span class="va">line.widths</span><span class="op">)</span></code></pre></div>
 <p>Теперь присвоим каждому объекту свой цвет в соответствии с классом, который ему присвоен. Удобная функция <code><a href="https://r-spatial.github.io/classInt/reference/findColours.html">findColours()</a></code> позволяет найти цвет для каждого объекта в соответствии с полученной классификацией:</p>
-<div class="sourceCode" id="cb558"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb560"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">base.colors</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"mistyrose"</span>, <span class="st">"red"</span><span class="op">)</span>
 <span class="va">ramp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html">colorRampPalette</a></span><span class="op">(</span><span class="va">base.colors</span><span class="op">)</span>
 <span class="va">colors</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/classInt/reference/findColours.html">findColours</a></span><span class="op">(</span><span class="va">class.breaks</span>, <span class="va">base.colors</span><span class="op">)</span>
@@ -557,17 +566,17 @@
 <p>Пространственные запросы, основанные на топологических отношениях, позволяют находить объекты, находящиеся внутри других объектов, соприкасающиеся с другими объектами, пересекающиеся с ними и так далее. Топологические отношения сохраняются при взаимно-однозначных и непрерывных преобразованиях плоскости.</p>
 <p>Отличия от метрических отношений легко пояснить на примере преобразования проекции. Представьте, что карту России в <a href="http://geocnt.geonet.ru/projections/html/viewer.html">конической проекции</a> с концентрическими параллелями (известную по учебникам и атласам) вы трансформировали в карту России в проекции Меркатора (такую же как на <a href="https://www.google.ru/maps/place/%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F/">Google Maps</a>). Изогнутые параллели превратились в прямые линии; форма регионов, площади и расстояния между населенными пунктами значительно изменились. Однако Красноярск по-прежнему находится в Красноярском крае, Ярославль — на реке Волге, Нижний Новгород — на правом берегу Волги, озеро Белое — внутри Вологодской области, а Московская область как не граничила с Тамбовской, так и не граничит после трансформации проекции. Это и есть топологические отношения.</p>
 <p>Формально топологические отношения в ГИС описываются с помощью <a href="https://en.wikipedia.org/wiki/DE-9IM">модели девяти пересечений DE-9IM</a>, которая была рассмотрена в предыдущей лекции.</p>
-<div class="sourceCode" id="cb559"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb561"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## АНАЛИЗ ВЗАИМНОГО ПОЛОЖЕНИЯ -------------------------------------</span>
 <span class="va">poi.food</span> <span class="op">=</span> <span class="va">poi.food</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>count <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="va">rayons.poi</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/aggregate.sf.html">aggregate</a></span><span class="op">(</span><span class="va">poi.food</span><span class="op">[</span><span class="st">'count'</span><span class="op">]</span>, <span class="va">rayons</span>, <span class="va">sum</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb560"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb562"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Преобразуем результат в относительный показатель</span>
 <span class="co"># (единиц на кв.км. площади) и запишем в таблицу районов:</span>
 <span class="va">rayons.poi</span><span class="op">$</span><span class="va">density</span> <span class="op">=</span> <span class="fl">1000000</span> <span class="op">*</span> <span class="va">rayons.poi</span><span class="op">$</span><span class="va">count</span> <span class="op">/</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_area</a></span><span class="op">(</span><span class="va">rayons.poi</span><span class="op">)</span></code></pre></div>
 <p>Масштабный множитель 1000000 в коде понадобился чтобы перевести площадь, хранящуюся в поле Shape_Area из квадратных метров в квадратные километры. Обратите внимание на то, что в данном случае мы не стали ограничивать фигурными скобками тело анонимной функции (<code>table(X)[2]</code>) внутри <code><a href="https://rdrr.io/r/base/apply.html">apply()</a></code>, поскольку выполняемая операция достаточно компактна.</p>
 <p>Подготовим параметры отображения:</p>
-<div class="sourceCode" id="cb561"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb563"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Настроим параметры отображения</span>
 <span class="va">choro.pal</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html">colorRampPalette</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"lightgoldenrodyellow"</span>, <span class="st">"orangered"</span><span class="op">)</span><span class="op">)</span>
 
@@ -575,7 +584,7 @@
                             n <span class="op">=</span> <span class="fl">5</span>, 
                             style <span class="op">=</span> <span class="st">"quantile"</span><span class="op">)</span></code></pre></div>
 <p>Далее используем функции <code>choroLayer()</code> и <code>legendChoro()</code> из пакета <code>cartography</code> для построения картограмм плотности пунктов питания и соответствующей им легенды средствами обычной функции <code><a href="https://r-spatial.github.io/sf/reference/plot.html">plot()</a></code>:</p>
-<div class="sourceCode" id="cb562"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb564"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">choroLayer</span><span class="op">(</span><span class="va">rayons.poi</span>, <span class="co"># Исходный слой типа SpatialPolygonsDataFrame</span>
            var <span class="op">=</span> <span class="st">"density"</span>, <span class="co"># Картографируемая переменная (столбец) </span>
            breaks <span class="op">=</span> <span class="va">intervals</span><span class="op">$</span><span class="va">brks</span>, <span class="co"># Границы интервалов</span>
@@ -627,7 +636,7 @@
 <li>Визуализировать на карте полученные точки и буферную зону.</li>
 </ol>
 <p>Определим функцию <code>plotBasemap()</code>, которая будет рисовать объекты картографической основы, ее мы будем использовать далее неоднократно.</p>
-<div class="sourceCode" id="cb563"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb565"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## АНАЛИЗ АБСОЛЮТНЫХ ЗОН ОКРУЖЕНИЯ -------------------------------------</span>
 
 <span class="co"># Функция отвечает за рисование базовой карты</span>
@@ -660,7 +669,7 @@
        cex <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 <p>Определив вспомогательные функции, можем приступать к выполнению анализа:</p>
-<div class="sourceCode" id="cb564"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb566"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Выберем станцию метро и построим буферную зону</span>
 <span class="va">krop</span> <span class="op">=</span> <span class="va">stations</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">NAME</span> <span class="op">==</span> <span class="st">"Кропоткинская"</span><span class="op">)</span>
 <span class="va">zone</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer</a></span><span class="op">(</span><span class="va">krop</span>, dist <span class="op">=</span> <span class="fl">300</span><span class="op">)</span>
@@ -696,10 +705,10 @@
      add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-19-1.png" width="100%"></div>
 <pre><code>## Simple feature collection with 23 features and 3 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: 412142.7 ymin: 6178370 xmax: 412593.7 ymax: 6178811
-## projected CRS:  WGS 84 / UTM zone 37N
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 412142.7 ymin: 6178370 xmax: 412593.7 ymax: 6178811
+## Projected CRS: WGS 84 / UTM zone 37N
 ## First 10 features:
 ##               NAME    AMENITY                 geometry count
 ## 440      Азия Кафе restaurant POINT (412142.7 6178592)     1
@@ -713,7 +722,7 @@
 ## 464        Mr. Pit  fast_food POINT (412193.2 6178610)     1
 ## 469    Шоколадница       cafe POINT (412204.3 6178570)     1</code></pre>
 <p>В качестве примера аналогичного анализа отберем все пункты питания, находящиеся в пределах 100 метров от реки Москвы:</p>
-<div class="sourceCode" id="cb566"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb568"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">river</span> <span class="op">=</span> <span class="va">water</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">NAME</span> <span class="op">==</span> <span class="st">"Москва"</span><span class="op">)</span>
 <span class="va">zone</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer</a></span><span class="op">(</span><span class="va">river</span>, dist <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
 
@@ -738,10 +747,10 @@
      add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-21-1.png" width="100%"></div>
 <pre><code>## Simple feature collection with 39 features and 3 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: 411661.2 ymin: 6176685 xmax: 415287.1 ymax: 6178953
-## projected CRS:  WGS 84 / UTM zone 37N
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 411661.2 ymin: 6176685 xmax: 415287.1 ymax: 6178953
+## Projected CRS: WGS 84 / UTM zone 37N
 ## First 10 features:
 ##                     NAME    AMENITY                 geometry count
 ## 244        Белый журавль restaurant POINT (411661.2 6177029)     1
@@ -761,7 +770,7 @@
 </h2>
 <p>В данном разделе мы решим следующую задачу: разбить всю изучаемую территорию на зоны окружения станций метро и подсчитать количество пунктов питания, попадающих в каждую зону. Полученные зоны должны быть конкурентными: любая точка, находящаяся в зоне окружения конкретной станции метро, должна быть ближе к этой станции, чем к любой другой станции.</p>
 <p>Ранее мы говорили о том, что конкурентные зоны окружения по расстоянию можно реализовать с помощью диаграммы Вороного. Применим функцию <code>voronoi()</code> из пакета <strong>dismo</strong>, чтобы посмотреть, как выглядит диаграмма Вороного для точек станций метро. Нам потребуется для этого конвертировать объекты в тип <code>Spatial</code>, а результат преобразовать вернуть обратно в <code>sf</code>:</p>
-<div class="sourceCode" id="cb568"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb570"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co">## АНАЛИЗ КОНКУРЕНТНЫХ ЗОН ОКРУЖЕНИЯ -------------------------------------</span>
 
@@ -776,7 +785,7 @@
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">stations</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">'black'</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-23-1.png" width="100%"></div>
 <p>Для визуализации результатов мы будем использовать метод картодиаграмм (пропорциональных символов), реализованный в функции <code>propSymbolsLayer()</code> пакета <code>cartography</code>. Размером кружка покажем количество пунктов питания, оказавшихся в каждой зоне окружения:</p>
-<div class="sourceCode" id="cb569"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb571"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Агрегруем данные по каждой зоне</span>
 <span class="va">zones.poi</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/aggregate.sf.html">aggregate</a></span><span class="op">(</span><span class="va">poi.food</span><span class="op">[</span><span class="st">'count'</span><span class="op">]</span>, <span class="va">zones</span>, <span class="va">sum</span><span class="op">)</span>
 
@@ -810,23 +819,25 @@
 <li>метод анализа (например, моделирование диффузии) предполагает, что данные распределены по регулярной сетке, в то время как исходная сетка нерегулярна.</li>
 <li>необходимо обеспечить сравнимость пространственных распределений показателя для разных территорий, в то время как дробность исходного территориального деления существенно меняется в пространстве.</li>
 </ul>
-<p>Метод интерполяции по ареалам реализуется средствами функции <code><a href="https://r-spatial.github.io/sf/reference/st_interpolate_aw.html">st_interpolate_aw()</a></code> из пакета <strong>sf</strong>. Данной функции необходимо подать исходную и целевую полигональную сетку, а также указать тип параметра: <em>интенсивный</em> или <em>экстенсивный</em>:</p>
+<p>Метод интерполяции по ареалам реализуется средствами функции <code><a href="https://r-spatial.github.io/sf/reference/interpolate_aw.html">st_interpolate_aw()</a></code> из пакета <strong>sf</strong>. Данной функции необходимо подать исходную и целевую полигональную сетку, а также указать тип параметра: <em>интенсивный</em> или <em>экстенсивный</em>:</p>
 <p>— <em>экстенсивные</em> параметры суммируются и делятся при агрегировании/агрегировании территориальных единиц. Например, площадь, покрытая лесом или численность населения — это экстенсивный параметр.
 - <em>интенсивные</em> параметры осредняются или остаются постоянными при агрегировании/дизагрегировании территориальных единиц. Например, густота древостоя и плотность населения — интенсивные параметры.</p>
 <p>Рассмотрим это метод интерполяции на примере данных по графствам Северной Каролины (показатель — количество новорожденных в 1974 году). Для расчета векторной регулярной сетки используем функцию <code><a href="https://r-spatial.github.io/sf/reference/st_make_grid.html">st_make_grid()</a></code> из пакета <strong>sf</strong>.</p>
-<div class="sourceCode" id="cb570"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb572"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Данные по Северной Каролине</span>
 <span class="va">nc</span> <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"shape/nc.shp"</span>, package<span class="op">=</span><span class="st">"sf"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## Reading layer `nc' from data source `/Library/Frameworks/R.framework/Versions/4.0/Resources/library/sf/shape/nc.shp' using driver `ESRI Shapefile'</span>
+<span class="co">## Reading layer `nc' from data source </span>
+<span class="co">##   `/Library/Frameworks/R.framework/Versions/4.1/Resources/library/sf/shape/nc.shp' </span>
+<span class="co">##   using driver `ESRI Shapefile'</span>
 <span class="co">## Simple feature collection with 100 features and 14 fields</span>
-<span class="co">## geometry type:  MULTIPOLYGON</span>
-<span class="co">## dimension:      XY</span>
-<span class="co">## bbox:           xmin: -84.32385 ymin: 33.88199 xmax: -75.45698 ymax: 36.58965</span>
-<span class="co">## geographic CRS: NAD27</span>
+<span class="co">## Geometry type: MULTIPOLYGON</span>
+<span class="co">## Dimension:     XY</span>
+<span class="co">## Bounding box:  xmin: -84.32385 ymin: 33.88199 xmax: -75.45698 ymax: 36.58965</span>
+<span class="co">## Geodetic CRS:  NAD27</span>
 
 <span class="va">cells</span> <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_make_grid.html">st_make_grid</a></span><span class="op">(</span><span class="va">nc</span>, cellsize <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span>
 
-<span class="va">birth</span> <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_interpolate_aw.html">st_interpolate_aw</a></span><span class="op">(</span><span class="va">nc</span><span class="op">[</span><span class="st">"BIR74"</span><span class="op">]</span>, 
+<span class="va">birth</span> <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/interpolate_aw.html">st_interpolate_aw</a></span><span class="op">(</span><span class="va">nc</span><span class="op">[</span><span class="st">"BIR74"</span><span class="op">]</span>, 
                        <span class="va">cells</span>, 
                        extensive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
@@ -836,7 +847,7 @@
               style <span class="op">=</span> <span class="st">'jenks'</span>,
               palette <span class="op">=</span> <span class="st">'viridis'</span><span class="op">)</span> </code></pre></div>
 <div class="inline-figure"><img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-25-1.png" width="100%"></div>
-<div class="sourceCode" id="cb571"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb573"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># пересчет на регулярную сетку</span>
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">birth</span><span class="op">)</span> <span class="op">+</span>
@@ -846,7 +857,7 @@
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nc</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html">tm_borders</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">'white'</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="13-VectorAnalysis_files/figure-html/unnamed-chunk-25-2.png" width="100%"></div>
-<div class="sourceCode" id="cb572"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb574"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nc.sids</span> <span class="op">=</span> <span class="fu">maptools</span><span class="fu">::</span><span class="fu"><a href="http://maptools.r-forge.r-project.org/reference/readShapeSpatial.html">readShapeSpatial</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"shapes/sids.shp"</span>, 
                                                   package<span class="op">=</span><span class="st">"maptools"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, 
                                       IDvar <span class="op">=</span> <span class="st">"FIPSNO"</span>, 
@@ -958,7 +969,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-03-01.</p>
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-09-27.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

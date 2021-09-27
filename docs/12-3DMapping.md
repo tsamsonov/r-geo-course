@@ -8,15 +8,7 @@
 
 ```r
 library(sf)
-library(tmap)
-library(readxl)
-library(raster)
-library(mapview)
-library(classInt)
-library(gapminder)
-library(tidyverse)
-library(googlesheets4)
-library(rnaturalearth)
+library(rayshader)
 ```
 
 ## Введение {#three_intro}

@@ -267,20 +267,20 @@ methods(class = "sf") # Посмотрим, какие методы доступ
 ##  [58] st_centroid           st_collection_extract st_convex_hull       
 ##  [61] st_coordinates        st_crop               st_crs               
 ##  [64] st_crs<-              st_difference         st_filter            
-##  [67] st_geometry           st_geometry<-         st_interpolate_aw    
-##  [70] st_intersection       st_intersects         st_is_valid          
-##  [73] st_is                 st_join               st_line_merge        
-##  [76] st_m_range            st_make_valid         st_nearest_points    
-##  [79] st_node               st_normalize          st_point_on_surface  
-##  [82] st_polygonize         st_precision          st_reverse           
-##  [85] st_sample             st_segmentize         st_set_precision     
-##  [88] st_shift_longitude    st_simplify           st_snap              
-##  [91] st_sym_difference     st_transform_proj     st_transform         
-##  [94] st_triangulate        st_union              st_voronoi           
-##  [97] st_wrap_dateline      st_write              st_z_range           
-## [100] st_zm                 summarise             transform            
-## [103] transmute             ungroup               unite                
-## [106] unnest               
+##  [67] st_geometry           st_geometry<-         st_inscribed_circle  
+##  [70] st_interpolate_aw     st_intersection       st_intersects        
+##  [73] st_is_valid           st_is                 st_join              
+##  [76] st_line_merge         st_m_range            st_make_valid        
+##  [79] st_nearest_points     st_node               st_normalize         
+##  [82] st_point_on_surface   st_polygonize         st_precision         
+##  [85] st_reverse            st_sample             st_segmentize        
+##  [88] st_set_precision      st_shift_longitude    st_simplify          
+##  [91] st_snap               st_sym_difference     st_transform_proj    
+##  [94] st_transform          st_triangulate        st_union             
+##  [97] st_voronoi            st_wrap_dateline      st_write             
+## [100] st_z_range            st_zm                 summarise            
+## [103] transform             transmute             ungroup              
+## [106] unite                 unnest               
 ## see '?methods' for accessing help and source code
 ```
 
@@ -296,12 +296,14 @@ methods(class = "sf") # Посмотрим, какие методы доступ
 
 ```r
 countries = st_read('data/ne/countries.gpkg')
-## Reading layer `admin_0_map_units' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/countries.gpkg' using driver `GPKG'
+## Reading layer `admin_0_map_units' from data source 
+##   `/Users/tsamsonov/GitHub/r-geo-course/data/ne/countries.gpkg' 
+##   using driver `GPKG'
 ## Simple feature collection with 183 features and 72 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
-## geographic CRS: WGS 84
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
+## Geodetic CRS:  WGS 84
 ```
 
 Лог функции сообщил нам следующую информацию:
@@ -341,10 +343,10 @@ class(countries)
 ```r
 head(countries[tail(colnames(countries))])
 ## Simple feature collection with 6 features and 5 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: -73.41544 ymin: -55.25 xmax: 75.15803 ymax: 42.68825
-## geographic CRS: WGS 84
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -73.41544 ymin: -55.25 xmax: 75.15803 ymax: 42.68825
+## Geodetic CRS:  WGS 84
 ##   tiny homepart min_zoom min_label max_label                       geometry
 ## 1  -99        1        0         3         7 MULTIPOLYGON (((61.21082 35...
 ## 2  -99        1        0         3         7 MULTIPOLYGON (((23.90415 -1...
@@ -369,10 +371,10 @@ class(outlines)
 ```r
 head(outlines)
 ## Geometry set for 6 features 
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: -73.41544 ymin: -55.25 xmax: 75.15803 ymax: 42.68825
-## geographic CRS: WGS 84
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -73.41544 ymin: -55.25 xmax: 75.15803 ymax: 42.68825
+## Geodetic CRS:  WGS 84
 ## First 5 geometries:
 ```
 
@@ -443,26 +445,31 @@ plot(countries['gdp_md_est'], graticule = TRUE, axes = TRUE)
 
 ```r
 oceans = st_read('data/ne/oceans.gpkg')
-## Reading layer `ocean' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/oceans.gpkg' using driver `GPKG'
+## Reading layer `ocean' from data source 
+##   `/Users/tsamsonov/GitHub/r-geo-course/data/ne/oceans.gpkg' 
+##   using driver `GPKG'
 ## Simple feature collection with 2 features and 4 fields
-## geometry type:  POLYGON
-## dimension:      XY
-## bbox:           xmin: -180 ymin: -85.60904 xmax: 180 ymax: 90
-## geographic CRS: WGS 84
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -180 ymin: -85.60904 xmax: 180 ymax: 90
+## Geodetic CRS:  WGS 84
 rivers = st_read('data/ne/rivers.gpkg')
-## Reading layer `rivers_lake_centerlines' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/rivers.gpkg' using driver `GPKG'
+## Reading layer `rivers_lake_centerlines' from data source 
+##   `/Users/tsamsonov/GitHub/r-geo-course/data/ne/rivers.gpkg' 
+##   using driver `GPKG'
 ## Simple feature collection with 13 features and 8 fields
-## geometry type:  LINESTRING
-## dimension:      XY
-## bbox:           xmin: -135.3134 ymin: -33.99358 xmax: 129.956 ymax: 72.90651
-## geographic CRS: WGS 84
+## Geometry type: LINESTRING
+## Dimension:     XY
+## Bounding box:  xmin: -135.3134 ymin: -33.99358 xmax: 129.956 ymax: 72.90651
+## Geodetic CRS:  WGS 84
 lakes = st_read('data/ne/lakes.gpkg')
-## Reading layer `lakes' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/ne/lakes.gpkg' using driver `GPKG'
+## Reading layer `lakes' from data source 
+##   `/Users/tsamsonov/GitHub/r-geo-course/data/ne/lakes.gpkg' using driver `GPKG'
 ## Simple feature collection with 25 features and 8 fields
-## geometry type:  POLYGON
-## dimension:      XY
-## bbox:           xmin: -124.9536 ymin: -16.53641 xmax: 109.9298 ymax: 66.9693
-## geographic CRS: WGS 84
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -124.9536 ymin: -16.53641 xmax: 109.9298 ymax: 66.9693
+## Geodetic CRS:  WGS 84
 
 plot(countries %>% st_geometry, lwd = 0.5, border = 'gray')
 plot(oceans %>% st_geometry, col = 'steelblue1', border = 'steelblue', add = TRUE)
@@ -506,8 +513,8 @@ st_crs(countries)    # Координатная система
 ##             ORDER[2],
 ##             ANGLEUNIT["degree",0.0174532925199433]],
 ##     USAGE[
-##         SCOPE["unknown"],
-##         AREA["World"],
+##         SCOPE["Horizontal component of 3D system."],
+##         AREA["World."],
 ##         BBOX[-90,-180,90,180]],
 ##     ID["EPSG",4326]]
 ```
@@ -549,8 +556,8 @@ st_crs(3857) # Проекция Меркатора для карт мира
 ##             ORDER[2],
 ##             LENGTHUNIT["metre",1]],
 ##     USAGE[
-##         SCOPE["unknown"],
-##         AREA["World - 85°S to 85°N"],
+##         SCOPE["Web mapping and visualisation."],
+##         AREA["World between 85.06°S and 85.06°N."],
 ##         BBOX[-85.06,-180,85.06,180]],
 ##     ID["EPSG",3857]]
 st_crs('+proj=robin') # Проекция Робинсона для карт мира
@@ -658,8 +665,8 @@ st_crs(countries)
 ##             ORDER[2],
 ##             ANGLEUNIT["degree",0.0174532925199433]],
 ##     USAGE[
-##         SCOPE["unknown"],
-##         AREA["World"],
+##         SCOPE["Horizontal component of 3D system."],
+##         AREA["World."],
 ##         BBOX[-90,-180,90,180]],
 ##     ID["EPSG",4326]]
 ```
@@ -747,7 +754,8 @@ plot(largest, col = 'red', add = TRUE)
 
 ```r
 continents = countries %>% 
-  group_by(continent) %>% 
+  filter(., st_is_valid(.)) |> 
+  group_by(continent) |>  
   summarise(gdp = sum(gdp_md_est))
 plot(continents['gdp'])
 ```
@@ -972,10 +980,10 @@ petro.sfg = st_point(c(158.651, 53.044))
 cities.sfc = st_sfc(moscow.sfg, irkutsk.sfg, petro.sfg)
 print(cities.sfc)
 ## Geometry set for 3 features 
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: 37.615 ymin: 52.298 xmax: 158.651 ymax: 55.752
-## CRS:            NA
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 37.615 ymin: 52.298 xmax: 158.651 ymax: 55.752
+## CRS:           NA
 ```
 
 При создании списка геометрий для него может быть определена система координат (это можно сделать и позднее при создании таблицы пространственных объектов). Для этого используем уже знакомую нам функцию `st_crs()`:
@@ -984,10 +992,10 @@ print(cities.sfc)
 st_crs(cities.sfc) = st_crs(4326) # WGS84
 print(cities.sfc)
 ## Geometry set for 3 features 
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: 37.615 ymin: 52.298 xmax: 158.651 ymax: 55.752
-## geographic CRS: WGS 84
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 37.615 ymin: 52.298 xmax: 158.651 ymax: 55.752
+## Geodetic CRS:  WGS 84
 ```
 
 > Для списка геометрий может быть определена только одна система координат
@@ -1018,10 +1026,10 @@ city.attr = data.frame(
 cites.sf = st_sf(city.attr, geometry = cities.sfc)
 print(cites.sf)
 ## Simple feature collection with 3 features and 3 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: 37.615 ymin: 52.298 xmax: 158.651 ymax: 55.752
-## geographic CRS: WGS 84
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 37.615 ymin: 52.298 xmax: 158.651 ymax: 55.752
+## Geodetic CRS:  WGS 84
 ##                       name established population               geometry
 ## 1                   Москва        1147      12500  POINT (37.615 55.752)
 ## 2                  Иркутск        1661        620 POINT (104.296 52.298)
@@ -1154,21 +1162,21 @@ st_bbox(italy)        # Координаты органичивающего пр
 ##      xmin      ymin      xmax      ymax 
 ##  6.749955 36.619987 18.480247 47.115393
 st_area(italy)        # Площадь
-## 315104851198 [m^2]
+## 314577521836 [m^2]
 st_length(italy)      # Периметр
-## 5323111 [m]
+## 0 [m]
 st_centroid(italy) %>% st_geometry()    # Центроид (может быть не внутри для невыпуклых фигур)
 ## Geometry set for 1 feature 
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: 12.14079 ymin: 42.75118 xmax: 12.14079 ymax: 42.75118
-## geographic CRS: WGS 84
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 12.2687 ymin: 42.67074 xmax: 12.2687 ymax: 42.67074
+## Geodetic CRS:  WGS 84
 st_point_on_surface(italy) %>% st_geometry() # Точка гарантированно внутри, но не обязательно в центре
 ## Geometry set for 1 feature 
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: 12.63118 ymin: 42.55822 xmax: 12.63118 ymax: 42.55822
-## geographic CRS: WGS 84
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 12.63118 ymin: 42.55822 xmax: 12.63118 ymax: 42.55822
+## Geodetic CRS:  WGS 84
 st_coordinates(italy) %>% head() # Список координат
 ##             X        Y L1 L2 L3
 ## [1,] 10.44270 46.89355  1  1  1

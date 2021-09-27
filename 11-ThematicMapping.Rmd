@@ -46,20 +46,25 @@ countries = ne_countries() %>% st_as_sf()
 
 coast = ne_coastline() %>% st_as_sf()
 
-ocean = ne_download(scale = 110, 
-                    type = 'ocean', 
-                    category = 'physical') %>% 
-  st_as_sf()
+# ocean = ne_download(scale = 110, 
+#                     type = 'ocean', 
+#                     category = 'physical', 
+#                     returnclass = 'sf')
+# 
+# cities = ne_download(scale = 110, 
+#                      type = 'populated_places', 
+#                      category = 'cultural', 
+#                      returnclass = 'sf')
+# 
+# rivers = ne_download(scale = 110, 
+#                      type = 'rivers_lake_centerlines', 
+#                      category = 'physical', 
+#                      returnclass = 'sf')
 
-cities = ne_download(scale = 110, 
-                     type = 'populated_places', 
-                     category = 'cultural') %>% 
-  st_as_sf()
-
-rivers = ne_download(scale = 110, 
-                     type = 'rivers_lake_centerlines', 
-                     category = 'physical') %>% 
-  st_as_sf()
+ne = '/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg'
+ocean = st_read(ne, 'ne_110m_ocean')
+cities = st_read(ne, 'ne_110m_populated_places')
+rivers = st_read(ne, 'ne_110m_rivers_lake_centerlines')
 ```
 
 Познакомимся с загруженными данными:
@@ -147,14 +152,24 @@ tm_shape(lyrp$ocean)+
 
 __Количественный фон__ или __картограммы__ получаются при картографировании числового показателя применением той же функции `tm_polygons()`:
 ```{r, cache=TRUE}
-(read_sheet('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo') %>% # продолжительность жизни
-  rename(name = 1) %>% 
-  gather(year, lifexp, -name) %>% 
-  dplyr::filter(year == 2016) %>% 
-  left_join(read_excel('data/gapminder.xlsx', 2)) %>% 
-  mutate(geo = stringr::str_to_upper(geo)) -> lifedf) # выгружаем данные по продолжительности и сохраняем в переменную lifedf
+lifexp = WDI::WDI(indicator = 'SP.DYN.LE00.IN')
+gap = read_excel('data/gapminder.xlsx', 2)
 
-coun = lyrp$countries %>% left_join(lifedf, by = c('adm0_a3' = 'geo'))
+lifedf = left_join(gap, 
+                   filter(lifexp, year == 2016), 
+                   by = c('name' = 'country')) |>
+  rename(lifexp = SP.DYN.LE00.IN) |> 
+  mutate(geo = stringr::str_to_upper(geo))
+
+# (read_sheet('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo') %>% # продолжительность жизни
+#   rename(name = 1) %>% 
+#   gather(year, lifexp, -name) %>% 
+#   dplyr::filter(year == 2016) %>% 
+#   left_join(read_excel('data/gapminder.xlsx', 2)) %>% 
+#   mutate(geo = stringr::str_to_upper(geo)) -> lifedf) # выгружаем данные по продолжительности и сохраняем в переменную lifedf
+
+coun = lyrp$countries %>% 
+  left_join(lifedf, by = c('adm0_a3' = 'geo'))
 
 tm_shape(coun) +
   tm_polygons('lifexp', border.col = 'gray20') + # количественная переменная
@@ -542,13 +557,11 @@ tm_layout(legend.position = c('left', 'bottom'),
           legend.frame = TRUE,
           legend.frame.lwd = 0.2,
           legend.bg.alpha = 0.5,
-          legend.bg.color = 'white') +
-tm_grid(x = seq(-180, 180, by = 30), 
-        y = seq(-90, 90, by = 30), 
-        lwd = 0.2,
-        col = "black", 
-        projection = 4326,
-        labels.inside.frame = FALSE)
+          legend.bg.color = 'white') # +
+# tm_graticules(x = seq(-180, 180, by = 30), 
+#         y = seq(-90, 90, by = 30), 
+#         lwd = 0.2,
+#         col = "black")
 ```
 
 Если вам необходимо обеспечить значки градуса, вы можете сделать это, используя параметр `labels.format`, определив в нем анонимную функцию, добавляющую значок градуса в переданный ей вектор подписей. 
@@ -580,14 +593,14 @@ tm_layout(legend.position = c('LEFT', 'BOTTOM'),
           legend.bg.alpha = 0.8,
           legend.bg.color = 'white',
           outer.margins = c(0.05, 0.02, 0.02, 0.02),
-          inner.margins = c(0, 0, 0, 0)) +
-tm_grid(x = seq(-180, 180, by = 30), 
-        y = seq(-90, 90, by = 30), 
-        lwd = 0.2,
-        col = "black", 
-        projection = 4326,
-        labels.inside.frame = FALSE,
-        labels.format = list(fun = function(X) paste0(X, '°')))
+          inner.margins = c(0, 0, 0, 0)) # +
+# tm_grid(x = seq(-180, 180, by = 30), 
+#         y = seq(-90, 90, by = 30), 
+#         lwd = 0.2,
+#         col = "black", 
+#         projection = 4326,
+#         labels.inside.frame = FALSE,
+#         labels.format = list(fun = function(X) paste0(X, '°')))
 ```
 
 Подписи сетки координат можно добавить и для более сложных проекций, однако располагаться они будут по-прежнему вдоль осей _X_ и _Y_. В примере ниже также показано как можно увеличить расстояние между заголовком и картой, определив более крупный отступ от верхней стороны в параметре `inner.margins`:
@@ -631,20 +644,28 @@ tm_grid(x = seq(-180, 180, by = 60),
 
 Рассмотрим создание фасет на примере данных Gapminder по средней продолжительности жизни c 1960 по 2010 г:
 ```{r, cache=TRUE}
-('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo' %>% # продолжительность жизни
-  read_sheet() %>% 
-  rename(name = 1) %>% 
-  gather(year, lifexp, -name) %>% 
-  dplyr::filter(year %in% c(1960, 1970, 1980, 1990, 2000, 2010)) %>% 
-  left_join(read_excel('data/gapminder.xlsx', 2)) %>% 
-  mutate(geo = stringr::str_to_upper(geo)) -> lifedf2) # выгружаем данные по ВВП на душу населения и сохраняем в переменную lifedf
+lifexp_dec = lifexp |> 
+  filter(year %in% c(1960, 1970, 1980, 1990, 2000, 2010))
 
-coun2 = lyrp$countries %>% left_join(lifedf2, by = c('adm0_a3' = 'geo'))
+lifedf_dec = left_join(gap, lifexp_dec, by = c('name' = 'country')) |>
+  rename(lifexp = SP.DYN.LE00.IN) |> 
+  mutate(geo = stringr::str_to_upper(geo))
+
+# ('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo' %>% # продолжительность жизни
+#   read_sheet() %>% 
+#   rename(name = 1) %>% 
+#   gather(year, lifexp, -name) %>% 
+#   dplyr::filter(year %in% c(1960, 1970, 1980, 1990, 2000, 2010)) %>% 
+#   left_join(read_excel('data/gapminder.xlsx', 2)) %>% 
+#   mutate(geo = stringr::str_to_upper(geo)) -> lifedf2) # выгружаем данные по ВВП на душу населения и сохраняем в переменную lifedf
+
+coun_dec = lyrp$countries |>  
+  left_join(lifedf_dec, by = c('adm0_a3' = 'geo'))
 ```
 
 Создадим серию карт за разные года:
 ```{r, fig.height = 10, fig.width=7}
-tm_shape(coun2) +
+tm_shape(coun_dec) +
   tm_polygons('lifexp', 
               palette = 'YlGnBu',
               n = 3,
@@ -715,14 +736,14 @@ tm_shape(temp,
             legend.frame.lwd = 0.2,
             legend.bg.alpha = 0.8,
             legend.bg.color = 'white',
-            inner.margins = c(0, 0, 0, 0)) +
-  tm_grid(x = seq(-180, 180, by = 30), 
-          y = seq(-90, 90, by = 30), 
-          lwd = 0.2,
-          col = "black", 
-          projection = 4326,
-          labels.inside.frame = FALSE,
-          labels.format = list(fun = function(Z) paste0(Z, '°')))
+            inner.margins = c(0, 0, 0, 0)) #+
+  # tm_grid(x = seq(-180, 180, by = 30), 
+  #         y = seq(-90, 90, by = 30), 
+  #         lwd = 0.2,
+  #         col = "black", 
+  #         projection = 4326,
+  #         labels.inside.frame = FALSE,
+  #         labels.format = list(fun = function(Z) paste0(Z, '°')))
 
 # tmap_arrange(maps, asp = NA, ncol = 2,
 #              outer.margins = 0.05)
@@ -740,7 +761,7 @@ tm_shape(temp,
 
 Для примера построим анимацию по данным изменения средней продолжительности жизни:
 ```{r, eval = FALSE}
-map = tm_shape(coun2) +
+map = tm_shape(coun_dec) +
   tm_polygons('lifexp', 
               palette = 'YlGnBu',
               n = 3,
@@ -768,6 +789,7 @@ tmap_animation(map, 'images/lifexp.gif', delay = 100)
 Любую карту tmap можно перевести в интерактивный режим с помощью функции `tmap_mode()` с параметром `'view'`. Управлять дополнительными параметрами, специфичными для интерактивного режима, можно используя функцию `tm_view()`. В частности, можно установить координаты центра карты и масштабный уровень в параметре `set.view` и ограничить диапазон масштабных уровней в параметре `set.zoom.limits`. Состав полей, значения которых отображаются во всплывающем окне при щелчке на символе, определяются параметром `popup.vars`:
 ```{r, eval=FALSE}
 tmap_mode('view')
+tmap_options(check.and.fix = TRUE)
 
 tm_shape(coun) +
   tm_polygons('lifexp', 
@@ -787,6 +809,7 @@ tm_view(set.view = c(20, 45, 2),    # центр карты и масштабн�
 Чтобы добавить карту-подложку, необходимо предварительно вызвать функцию `tm_basemap()`, передав ей название картографического сервиса. В примере ниже также показано, как можно сделать размер кружка постоянным во всех масштабах (параметр `symbol.size.fixed`):
 ```{r, eval=FALSE}
 tmap_mode('view')
+tmap_options(check.and.fix = TRUE)
 
 coun = coun %>% mutate(gdp_scaled = round(0.001 * gdp_md_est))
 

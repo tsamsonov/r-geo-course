@@ -736,12 +736,14 @@ __Lagged scatterplot__ — вариант диаграммы рассеяния,
 options(scipen = 999)
 
 cities = st_read("data/Italy_Cities.gpkg")
-## Reading layer `Italy_Cities' from data source `/Users/tsamsonov/GitHub/r-geo-course/data/Italy_Cities.gpkg' using driver `GPKG'
+## Reading layer `Italy_Cities' from data source 
+##   `/Users/tsamsonov/GitHub/r-geo-course/data/Italy_Cities.gpkg' 
+##   using driver `GPKG'
 ## Simple feature collection with 8 features and 37 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: 368910.4 ymin: 4930119 xmax: 686026 ymax: 5115936
-## projected CRS:  WGS 84 / UTM zone 32N
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 368910.4 ymin: 4930119 xmax: 686026 ymax: 5115936
+## Projected CRS: WGS 84 / UTM zone 32N
 
 rainfall = read_table2("data/Rainfall.dat") %>% 
   st_as_sf(coords = c('x', 'y'), 
@@ -921,13 +923,9 @@ plot(varmp)
 ## [using ordinary kriging]
 ## stars object with 2 dimensions and 2 attributes
 ## attribute(s):
-##    var1.pred         var1.var      
-##  Min.   :-0.4092   Min.   : 30.99  
-##  1st Qu.: 7.7076   1st Qu.: 45.44  
-##  Median :18.8332   Median : 52.72  
-##  Mean   :21.5098   Mean   : 58.67  
-##  3rd Qu.:32.0739   3rd Qu.: 65.48  
-##  Max.   :67.2664   Max.   :186.22  
+##                  Min.   1st Qu.   Median     Mean  3rd Qu.      Max.
+## var1.pred  -0.4091735  7.707571 18.83325 21.50978 32.07393  67.26636
+## var1.var   30.9929191 45.435980 52.71968 58.67491 65.48474 186.22488
 ## dimension(s):
 ##   from  to  offset delta                refsys point values x/y
 ## x    1 213  332239  2000 WGS 84 / UTM zone 32N    NA   NULL [x]
