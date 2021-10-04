@@ -766,7 +766,7 @@ moran.test(feb$nsick, W)
 ## weights: W  
 ## number of simulations + 1: 10001 
 ## 
-## statistic = 0.52118, observed rank = 10001, p-value = 0.00009999
+## statistic = 0.52118, observed rank = 10000, p-value = 0.00009999
 ## alternative hypothesis: greater
 
 # Построим гистограмму по вычисленным индексам:

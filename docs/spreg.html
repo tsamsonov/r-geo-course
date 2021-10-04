@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Глава 18 Пространственная регрессия | Визуализация и анализ географических данных на языке R</title>
 <meta name="author" content="Тимофей Самсонов">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.9/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script><link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
@@ -41,21 +41,21 @@
 <li><a class="" href="basics.html"><span class="header-section-number">1</span> Типы данных, условия, ввод и вывод</a></li>
 <li><a class="" href="structures.html"><span class="header-section-number">2</span> Структуры данных и циклы</a></li>
 <li><a class="" href="tables.html"><span class="header-section-number">3</span> Табличные данные</a></li>
-<li><a class="" href="controls.html"><span class="header-section-number">4</span> Техники программирования</a></li>
+<li><a class="" href="controls.html"><span class="header-section-number">4</span> Функции</a></li>
 <li class="book-part">Графика и статистика</li>
 <li><a class="" href="graphics.html"><span class="header-section-number">5</span> Базовая графика</a></li>
 <li><a class="" href="advgraphics.html"><span class="header-section-number">6</span> Продвинутая графика</a></li>
 <li><a class="" href="stats.html"><span class="header-section-number">7</span> Основы статистики</a></li>
-<li><a class="" href="temporal.html"><span class="header-section-number">8</span> Временные данные</a></li>
-<li><a class="" href="circular.html"><span class="header-section-number">9</span> Дирекционные данные</a></li>
-<li class="book-part">Пространственные данные</li>
-<li><a class="" href="spatial.html"><span class="header-section-number">10</span> Пространственные данные</a></li>
+<li><a class="" href="temporal.html"><span class="header-section-number">8</span> Временные ряды</a></li>
+<li class="book-part">Пространственные данные и карты</li>
+<li><a class="" href="spatial.html"><span class="header-section-number">9</span> Пространственные данные</a></li>
+<li><a class="" href="maps.html"><span class="header-section-number">10</span> Основы картографии</a></li>
 <li><a class="" href="mapping.html"><span class="header-section-number">11</span> Тематические карты</a></li>
 <li><a class="" href="three.html"><span class="header-section-number">12</span> Трехмерные модели</a></li>
 <li><a class="" href="vector.html"><span class="header-section-number">13</span> Векторный анализ</a></li>
-<li><a class="" href="network.html"><span class="header-section-number">14</span> Cетевой анализ</a></li>
+<li><a class="" href="interp.html"><span class="header-section-number">14</span> Интерполяция геополей</a></li>
 <li><a class="" href="raster.html"><span class="header-section-number">15</span> Растровый анализ</a></li>
-<li><a class="" href="interp.html"><span class="header-section-number">16</span> Интерполяция геополей</a></li>
+<li><a class="" href="network.html"><span class="header-section-number">16</span> Cетевой анализ</a></li>
 <li class="book-part">Пространственная статистика</li>
 <li><a class="" href="gstat.html"><span class="header-section-number">17</span> Геостатистика</a></li>
 <li><a class="active" href="spreg.html"><span class="header-section-number">18</span> Пространственная регрессия</a></li>
@@ -208,7 +208,7 @@
 </h2>
 <p>Как мы уже сказали, исследование ПА начинается с анализа географического соседства. То есть, для каждой анализируемой единицы мы должны определить соседние по отношению к ней единицы. Это не так-то просто,поскольку существует множество способов определить соседство.</p>
 <p>Перед выполнением анализа подключим необходимые библиотеки и визуализируем исходные данные, в качестве которых выступают границы муниципалитетов Кировской области.</p>
-<div class="sourceCode" id="cb679"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb680"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-spatial/spdep/">spdep</a></span><span class="op">)</span>  <span class="co"># оценка соседства, построение матрицы весов, индексы автокорреляции</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-spatial/spatialreg/">spatialreg</a></span><span class="op">)</span> <span class="co"># пространственная регрессия</span>
@@ -261,7 +261,7 @@
 </h3>
 <p>Список соседей по смежности можно получить с помощью функции <code><a href="https://rdrr.io/pkg/spdep/man/poly2nb.html">poly2nb()</a></code>.</p>
 <p>Возвращаемый объект является классом типа <code>nb</code>. Для каждой единицы в нем содержится список номеров соседних по отношению к нему единиц. По умолчанию функция находит соседей по правилу ферзя:</p>
-<div class="sourceCode" id="cb680"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb681"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nb_queen</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/poly2nb.html">poly2nb</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span> <span class="co"># Соседство по правилу ферзя</span>
 <span class="va">nb_queen</span>  <span class="co"># посмотрим сводную информацию</span>
 <span class="co">## Neighbour list object:</span>
@@ -271,8 +271,8 @@
 <span class="co">## Average number of links: 4.35</span>
 <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">nb_queen</span><span class="op">)</span>  <span class="co"># проверим тип объекта</span>
 <span class="co">## [1] "nb"</span></code></pre></div>
-<p>Для объектов типа <code>nb</code> в пакете <code>spdep</code> определена своя функция <code><a href="https://r-spatial.github.io/sf/reference/plot.html">plot()</a></code>, которая позволяет визуализировать граф соседства. Функция требует на вход координаты точек, в случае площадных единиц для этого используют центроиды площадей, которые можно получить функцией <code><a href="https://rdrr.io/pkg/raster/man/xyFromCell.html">coordinates()</a></code>:</p>
-<div class="sourceCode" id="cb681"><pre class="downlit sourceCode r">
+<p>Для объектов типа <code>nb</code> в пакете <code>spdep</code> определена своя функция <code><a href="https://r-spatial.github.io/sf/reference/plot.html">plot()</a></code>, которая позволяет визуализировать граф соседства. Функция требует на вход координаты точек, в случае площадных единиц для этого используют центроиды площадей, которые можно получить функцией <code><a href="https://rdrr.io/pkg/sp/man/coordinates.html">coordinates()</a></code>:</p>
+<div class="sourceCode" id="cb682"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">coords</span> <span class="op">=</span> <span class="va">reg</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html">st_coordinates</a></span><span class="op">(</span><span class="op">)</span>
@@ -283,7 +283,7 @@
 <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Соседи по смежности (правило ферзя)"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-7-1.png" width="100%"></div>
 <p>Для определения соседей по правилу ладьи необходимо вызвать функцию <code><a href="https://rdrr.io/pkg/spdep/man/poly2nb.html">poly2nb()</a></code> с аргументом <code>queen=FALSE</code>. В нашем случае, правда, это даст тот же результат, поскольку в данных отсутствуют единицы, соприкасающиеся в одной лишь точке:</p>
-<div class="sourceCode" id="cb682"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb683"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nb_rook</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/poly2nb.html">poly2nb</a></span><span class="op">(</span><span class="va">reg</span>, queen <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># Соседство по правилу ладьи</span>
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">reg</span>, border <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span>
@@ -298,7 +298,7 @@
 </h3>
 <p>Данная группа методов определения соседства основана на построении триангуляции Делоне для точек исходных данных. Далее эта триангуляция может быть оставлена в неизменном виде, или быть подвержена процедуре фильтрации, которая удалит из нее ребра, не удовлетворяющие заданному критерию.</p>
 <p><strong>Соседи по триангуляции Делоне</strong> без фильтрации могут быть получены с помощью функции <code><a href="https://rdrr.io/pkg/spdep/man/tri2nb.html">tri2nb()</a></code>:</p>
-<div class="sourceCode" id="cb683"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb684"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nb_tin</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/tri2nb.html">tri2nb</a></span><span class="op">(</span><span class="va">coords</span><span class="op">)</span>
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">reg</span>, border <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span>
@@ -316,7 +316,7 @@
 <li>фильтрация триангуляции по правилу сферы влияния (функция <code><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">soi.graph()</a></code>)</li>
 <li>преобразование полученного объекта в класс <code>nb</code>(функция <code><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">graph2nb()</a></code>)</li>
 </ul>
-<div class="sourceCode" id="cb684"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb685"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nb_tin</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">soi.graph</a></span><span class="op">(</span><span class="va">nb_tin</span>, <span class="va">coords</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">graph2nb</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">reg</span>, border <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span>
@@ -332,7 +332,7 @@
 <li>построение графа Гэбриела (функция <code><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">gabrielneigh()</a></code>)</li>
 <li>преобразование полученного объекта в класс <code>nb</code>(функция <code><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">graph2nb()</a></code>)</li>
 </ul>
-<div class="sourceCode" id="cb685"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb686"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nb_gab</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">gabrielneigh</a></span><span class="op">(</span><span class="va">coords</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">graph2nb</a></span><span class="op">(</span><span class="op">)</span>
  
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">reg</span>, border <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span>
@@ -345,7 +345,7 @@
 <li>построение графа относительных соседей (функция <code><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">relativeneigh()</a></code>)</li>
 <li>преобразование полученного объекта в класс <code>nb</code>(функция <code><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">graph2nb()</a></code>)</li>
 </ul>
-<div class="sourceCode" id="cb686"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb687"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nb_rel</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">relativeneigh</a></span><span class="op">(</span><span class="va">coords</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/graphneigh.html">graph2nb</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">reg</span>, border <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span>
@@ -364,7 +364,7 @@
 <li>преобразование полученного объекта в класс <code>nb</code>(функция <code><a href="https://rdrr.io/pkg/spdep/man/knn2nb.html">knn2nb()</a></code>)</li>
 </ul>
 <p>Рассмотрим поиск по количеству на примере нескольких пороговых значений:</p>
-<div class="sourceCode" id="cb687"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb688"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>,
     mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span><span class="op">{</span>
@@ -376,7 +376,7 @@
 <span class="op">}</span></code></pre></div>
 <div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-13-1.png" width="100%"></div>
 <p>Поиск <strong>соседей по расстоянию</strong> осуществляется средствами функции <code><a href="https://rdrr.io/pkg/spdep/man/dnearneigh.html">dnearneigh()</a></code>, которая принимает 3 аргумента: координаты точек, минимальное <span class="math inline">\(d_1\)</span> и максимальное <span class="math inline">\(d_2\)</span> расстояние. Минимальное расстояние имеет смысл использовать чтобы избежать анализа совпадающих по положению объектов, или когда известен пространственный период явления, превышающий <span class="math inline">\(d_1\)</span>:</p>
-<div class="sourceCode" id="cb688"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb689"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>,
     mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">d</span> <span class="kw">in</span> <span class="fl">5</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span> <span class="op">{</span>
@@ -396,7 +396,7 @@
 </h2>
 <p>Пространственные веса характеризуют силу связи между единицами. Если единицы не являются соседними (по выбранному правилу), то пространственный вес их связи будет равен нулю. Во всех остальных случаях веса будут ненулевыми. Поскольку теоретически каждая единица может быть связана с любой другой единицей, распространена форма представления весов в виде матрицы <span class="math inline">\(W\)</span> размером <span class="math inline">\(N \times N\)</span>, где <span class="math inline">\(N\)</span> – число единиц. На пересечении <span class="math inline">\(i\)</span>-й строки и <span class="math inline">\(j\)</span>-го столбца матрицы располагается вес связи между <span class="math inline">\(i\)</span>-й и <span class="math inline">\(j\)</span>-й единицей.</p>
 <p>Простейший вид матрицы <span class="math inline">\(W\)</span> — бинарная. Если связь есть, то ее вес равен единице (1), если нет — нулю (0). Для построения бинарной матрицы нужно использовать функцию <code><a href="https://rdrr.io/pkg/spdep/man/nb2listw.html">nb2listw()</a></code> c параметром <code>style="B"</code>:</p>
-<div class="sourceCode" id="cb689"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb690"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">Wbin</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/nb2listw.html">nb2listw</a></span><span class="op">(</span><span class="va">nb_queen</span>, style <span class="op">=</span> <span class="st">"B"</span><span class="op">)</span>
 <span class="va">Wbin</span>  <span class="co"># посмотрим, что за объект получается на выходе (listw)</span>
 <span class="co">## Characteristics of weights list object:</span>
@@ -411,7 +411,7 @@
 <span class="co">##    n   nn  S0  S1   S2</span>
 <span class="co">## B 40 1600 174 348 3416</span></code></pre></div>
 <p>Оказывается, что это на самом деле не матрица. Это объект с двумя слотами. В слоте weights содержатся веса, а в слоте neighbours — идентификаторы соседей:</p>
-<div class="sourceCode" id="cb690"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb691"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">Wbin</span><span class="op">$</span><span class="va">neighbours</span>
 <span class="co">## Neighbour list object:</span>
 <span class="co">## Number of regions: 40 </span>
@@ -547,12 +547,12 @@
 <p>Дело в том, что матрица весов всегда получается разреженной. То есть, в основном она содержит нули. Это логично, поскольку у каждой точки как правило есть лишь ограниченное число соседей. При этом общее количество точек может быть достаточно большим: чем больше точек мы анализируем, тем больше будет нулей в матрице. Получается, что хранить матрицу как матрицу неэкономично. Более рационально для каждого объекта возвращать список весов, которые соответствуют его соседям. Что и делает функция <code><a href="https://rdrr.io/pkg/spdep/man/nb2listw.html">nb2listw()</a></code>.</p>
 </blockquote>
 <p>Матрицу весов как правило визуализируют, поскольку она может содержать в себе довольно интересные паттерны. Для этого полученный список весов нужно превратить в матрицу с помощью функции <code><a href="https://rdrr.io/pkg/spdep/man/nb2mat.html">listw2mat()</a></code>. Далее использовать функцию <code>levelplot</code> из пакета <code>lattice</code>, которая раскрашивает ячейки матрицы или растрового набора данных:</p>
-<div class="sourceCode" id="cb691"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb692"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">M</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/nb2mat.html">listw2mat</a></span><span class="op">(</span><span class="va">Wbin</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/lattice/man/levelplot.html">levelplot</a></span><span class="op">(</span><span class="va">M</span>, main <span class="op">=</span> <span class="st">"Матрица весов (бинарная)"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-17-1.png" width="100%"></div>
 <p>Более интересный результат дает нормированная матрица. В ней веса всех соседей нормируются на количество соседей. То есть, если у текущей точки 2 соседа, их веса будут равны 0.5. Если 3 соседа то 0.33, 4 — 0.25 и так далее. Взвешенная матрица позволяет отразить тот факт, что одна и та же территориальная единица может оказывать неодинаковое влияние на соседние единицы:</p>
-<div class="sourceCode" id="cb692"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb693"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">Wstand</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/nb2listw.html">nb2listw</a></span><span class="op">(</span><span class="va">nb_queen</span>, style <span class="op">=</span> <span class="st">"W"</span><span class="op">)</span>
 <span class="va">M</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/nb2mat.html">listw2mat</a></span><span class="op">(</span><span class="va">Wstand</span><span class="op">)</span>
 
@@ -567,7 +567,7 @@
 <p>Обратите внимание, что на этот раз цвета в матрице распределены асимметрично.</p>
 </blockquote>
 <p>Однако есть методы определения соседства, которые приведут также и к асимметричному виду самой матрицы, а не только значений. Например, при поиске соседей по количеству соседство A и B вовсе не означает соседство B и A. Проверим это на опыте:</p>
-<div class="sourceCode" id="cb693"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb694"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Ближайшие соседи (k = 1)</span>
 <span class="va">nb_knn</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/knearneigh.html">knearneigh</a></span><span class="op">(</span><span class="va">coords</span>, k <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/knn2nb.html">knn2nb</a></span><span class="op">(</span><span class="op">)</span>
 
@@ -600,7 +600,7 @@
 <li>Построить карты реальных, модельных (fitted) значений и остатков (lag)</li>
 </ol>
 <p>Для начала построим серию карт чтобы оценить по ним наличие или отсутствие пространственной автокорреляции по месяцам:</p>
-<div class="sourceCode" id="cb694"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb695"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mun_src</span> <span class="op">=</span> <span class="va">reg_sf</span>
 
 <span class="co"># Чтение таблицы со статистикой</span>
@@ -634,7 +634,7 @@
 <div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-20-1.png" width="100%"></div>
 <p>Данная серия карт показывает, что наиболее интересный для анализа месяц — февраль, в котором наблюдается рост заболеваемости, а также очевидно наличие пространственной автокорреляции с двумя очагами в центральных и северо-зпапдных районах области.</p>
 <p>Вычислим матрицу пространственных весов:</p>
-<div class="sourceCode" id="cb695"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb696"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Определение соседства (правило ферзя)</span>
 <span class="va">nb_queen</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/poly2nb.html">poly2nb</a></span><span class="op">(</span><span class="va">mun_src</span><span class="op">)</span>
 
@@ -644,7 +644,7 @@
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">nb_queen</span>, <span class="va">coords</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Соседи по смежности (правило ферзя)"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-21-1.png" width="100%"></div>
-<div class="sourceCode" id="cb696"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb697"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># Вычисление весов (нормированная матрица)</span>
 <span class="va">W</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/nb2listw.html">nb2listw</a></span><span class="op">(</span><span class="va">nb_queen</span><span class="op">)</span>
@@ -682,7 +682,7 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 низких и высоких значений, напоминающее шахматную доску</li>
 </ul>
 <p>Для вычисления индекса Морана следует использовать функцию <code><a href="https://rdrr.io/pkg/spdep/man/moran.test.html">moran.test()</a></code>, которая дополнительно оценивает статистическую значимость полученного значения:</p>
-<div class="sourceCode" id="cb697"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb698"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Выбираем данные за февраль</span>
 <span class="va">feb</span> <span class="op">=</span> <span class="va">mun</span> <span class="op">%&gt;%</span> 
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">month</span> <span class="op">==</span> <span class="st">'Февраль'</span><span class="op">)</span>
@@ -737,7 +737,7 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 <span class="header-section-number">18.7.2</span> Перестановочный тест Морана<a class="anchor" aria-label="anchor" href="#autocorrelation_permutation"><i class="fas fa-link"></i></a>
 </h3>
 <p>Графически вышеприведенные рассуждения можно иллюстрировать с помощью перестановочного теста (<strong>permutation test</strong>). Для этого значения исследуемой нами величины перемешиваются между территориальными единицами и далее строится гистограмма распределения. Перестановочный тест выполняется с помощью функции <code><a href="https://rdrr.io/pkg/spdep/man/moran.mc.html">moran.mc()</a></code> с параметром <code>nsim =</code>, задающим число перестановок:</p>
-<div class="sourceCode" id="cb698"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb699"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">sim</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/moran.mc.html">moran.mc</a></span><span class="op">(</span><span class="va">feb</span><span class="op">$</span><span class="va">nsick</span>, listw <span class="op">=</span> <span class="va">W</span>, nsim <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span><span class="op">)</span>
 <span class="co">## </span>
 <span class="co">##  Monte-Carlo simulation of Moran I</span>
@@ -746,7 +746,7 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 <span class="co">## weights: W  </span>
 <span class="co">## number of simulations + 1: 10001 </span>
 <span class="co">## </span>
-<span class="co">## statistic = 0.52118, observed rank = 10001, p-value = 0.00009999</span>
+<span class="co">## statistic = 0.52118, observed rank = 10000, p-value = 0.00009999</span>
 <span class="co">## alternative hypothesis: greater</span>
 
 <span class="co"># Построим гистограмму по вычисленным индексам:</span>
@@ -768,7 +768,7 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 <span class="header-section-number">18.7.3</span> Диаграмма рассеяния Морана<a class="anchor" aria-label="anchor" href="#autocorrelation_moranscatter"><i class="fas fa-link"></i></a>
 </h3>
 <p>Наконец, еще одним графическим инструментом оценки пространственной автокорреляции является диаграмма рассеяния Морана. По оси <span class="math inline">\(X\)</span> откладывается значение в каждой территориальной единице, в по оси <span class="math inline">\(Y\)</span> — ее пространственный лаг, который представляет собой средневзвешенное значение по всем ее соседям:</p>
-<div class="sourceCode" id="cb699"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb700"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/spdep/man/moran.plot.html">moran.plot</a></span><span class="op">(</span><span class="va">feb</span><span class="op">$</span><span class="va">nsick</span>, <span class="va">W</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="18-SpatialRegression_files/figure-html/unnamed-chunk-24-1.png" width="100%"></div>
 <p>На диаграмме рассеяния Морана линиями отмечаются средние значения по обеим осям, а наклонной линией представляется линейная регрессия этих значений, при этом тангенс угла наклона прямой равен значению индекса Морана. Поскольку в данном случае распределение явно не случайно, можно приступать к его моделированию.</p>
@@ -783,7 +783,7 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 <li><p><code>Y ~ X</code> позволит найти коэффициенты <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\rho\)</span> и остатки <span class="math inline">\(\epsilon\)</span> пространственной регрессии вида <span class="math display">\[\mathbf{y} = \mu + \mathbf{X} \mathbf{\beta} + \rho\mathbf{Wy} +  \mathbf{\epsilon}.\]</span></p></li>
 <li><p><code>Y ~ X - 1</code> позволит найти коэффициенты <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\rho\)</span> и остатки <span class="math inline">\(\epsilon\)</span> пространственной регрессии вида <span class="math display">\[\mathbf{y} = \mathbf{X} \mathbf{\beta} + \rho\mathbf{Wy} + \mathbf{\epsilon}\]</span> без свободного члена <span class="math inline">\(\mu\)</span></p></li>
 </ul>
-<div class="sourceCode" id="cb700"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb701"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spdep/man/spdep-deprecated.html">lagsarlm</a></span><span class="op">(</span><span class="va">nsick</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">feb</span>, listw <span class="op">=</span> <span class="va">W</span><span class="op">)</span>
 <span class="va">model</span>
 <span class="co">## </span>
@@ -805,7 +805,7 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 </li>
 </ul>
 <p>Извлекаем модельные значения <span class="math inline">\(Z\)</span> и записываем в таблицу</p>
-<div class="sourceCode" id="cb701"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb702"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Извлекаем результаты пространственной авторегрессии</span>
 <span class="va">feb_spreg</span> <span class="op">=</span> <span class="va">feb</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>fitted <span class="op">=</span> <span class="va">model</span><span class="op">$</span><span class="va">fitted.values</span>,
@@ -952,7 +952,7 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-09-27.</p>
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-10-04.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
