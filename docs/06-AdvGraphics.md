@@ -34,18 +34,18 @@ library(soilDB)
 tables = c('tet00034', 'tet00033', 'tet00032', 'tet00031','tet00030', 'tet00029')
 
 trades = lapply(tables, function(X) { # прочтем несколько таблиц в список
-  get_eurostat(X) %>% label_eurostat()
-}) %>% 
-  bind_rows() %>% # объединим прочитанные таблицы в одну
-  select(-geo) %>% # убираем столбец с территорией торговли, т.к. там только Евросоюз
-  dplyr::filter(stringr::str_detect(indic_et, 'Exports in|Imports in')) %>% # оставим только экспорт и импорт
-  pivot_wider(names_from = indic_et, values_from = values) %>%  # вынесем данные по экспорту и импорту в отдельные переменные
+  get_eurostat(X) |> label_eurostat()
+}) |> 
+  bind_rows() |> # объединим прочитанные таблицы в одну
+  select(-geo) |> # убираем столбец с территорией торговли, т.к. там только Евросоюз
+  dplyr::filter(stringr::str_detect(indic_et, 'Exports in|Imports in')) |> # оставим только экспорт и импорт
+  pivot_wider(names_from = indic_et, values_from = values) |>  # вынесем данные по экспорту и импорту в отдельные переменные
   rename(export = `Exports in million of ECU/EURO`, # дадим им краткие названия
-         import = `Imports in million of ECU/EURO`) %>% 
+         import = `Imports in million of ECU/EURO`) |> 
   mutate(partner = as.factor(partner))
 
 trades # посмотрим, что получилось
-## # A tibble: 720 x 5
+## # A tibble: 720 × 5
 ##    sitc06                   partner                time        export import
 ##    <chr>                    <fct>                  <date>       <dbl>  <dbl>
 ##  1 Food, drinks and tobacco Argentina              2008-01-01    81.3  7334 
@@ -70,40 +70,14 @@ NASA [__POWER__](https://power.larc.nasa.gov/) — это проект _NASA_, �
 
 ```r
 daily_single_ag <- get_power(
-  community = "AG",
+  community = "ag",
   lonlat = c(60.59, 56.84),
-  pars = c("RH2M", "T2M", "PRECTOT"),
+  pars = c("RH2M", "T2M"),
   dates = c("1995-04-01", "1995-04-30"),
-  temporal_average = "DAILY"
+  temporal_api = "daily"
 )
 
 daily_single_ag # посмотрим, что получилось
-## NASA/POWER SRB/FLASHFlux/MERRA2/GEOS 5.12.4 (FP-IT) 0.5 x 0.5 Degree Daily Averaged Data  
-##  Dates (month/day/year): 04/01/1995 through 04/30/1995  
-##  Location: Latitude  56.84   Longitude 60.59  
-##  Elevation from MERRA-2: Average for 1/2x1/2 degree lat/lon region = 279.98 meters   Site = na  
-##  Climate zone: na (reference Briggs et al: http://www.energycodes.gov)  
-##  Value for missing model data cannot be computed or out of model availability range: NA  
-##  
-##  Parameters: 
-##  PRECTOT MERRA2 1/2x1/2 Precipitation (mm day-1) ;
-##  T2M MERRA2 1/2x1/2 Temperature at 2 Meters (C) ;
-##  RH2M MERRA2 1/2x1/2 Relative Humidity at 2 Meters (%)  
-##  
-## # A tibble: 30 x 10
-##      LON   LAT  YEAR    MM    DD   DOY YYYYMMDD    RH2M   T2M PRECTOT
-##    <dbl> <dbl> <dbl> <int> <int> <int> <date>     <dbl> <dbl>   <dbl>
-##  1  60.6  56.8  1995     4     1    91 1995-04-01  77.1  6.29    0   
-##  2  60.6  56.8  1995     4     2    92 1995-04-02  78.4  8.13    0   
-##  3  60.6  56.8  1995     4     3    93 1995-04-03  75.1  8.35    0.03
-##  4  60.6  56.8  1995     4     4    94 1995-04-04  78.1  7.92    2.35
-##  5  60.6  56.8  1995     4     5    95 1995-04-05  89.4  5.64    3.99
-##  6  60.6  56.8  1995     4     6    96 1995-04-06  89.0  6.29    1.26
-##  7  60.6  56.8  1995     4     7    97 1995-04-07  82.5  3.58    1.14
-##  8  60.6  56.8  1995     4     8    98 1995-04-08  75.1  2.6     1.47
-##  9  60.6  56.8  1995     4     9    99 1995-04-09  77.1  3.88    1.76
-## 10  60.6  56.8  1995     4    10   100 1995-04-10  72.6  4.96    0   
-## # … with 20 more rows
 ```
 
 Аналогичным путем можно выгрузить данные, осредненные по годам. Например, можно получить данные по суммарной и прямой солнечной радиации ($кВт/ч/м^2/день$) для той же точки с 1995 по 2015 год:
@@ -111,42 +85,24 @@ daily_single_ag # посмотрим, что получилось
 
 ```r
 interannual_sse <- get_power(
-  community = "SSE",
+  community = "sse",
   lonlat = c(60.59, 56.84),
   dates = 1995:2015,
-  temporal_average = "INTERANNUAL",
+  temporal_api = "interannual",
   pars = c("CLRSKY_SFC_SW_DWN",
            "ALLSKY_SFC_SW_DWN")
 )
 interannual_sse # посмотрим, что получилось
-## NASA/POWER SRB/FLASHFlux/MERRA2/GEOS 5.12.4 (FP-IT) 0.5 x 0.5 Degree Interannual Averages/Sums  
-##  Dates (month/day/year): 01/01/1995 through 12/31/1996  
-##  Location: Latitude  56.84   Longitude 60.59  
-##  Elevation from MERRA-2: Average for 1/2x1/2 degree lat/lon region = 279.98 meters   Site = na  
-##  Climate zone: na (reference Briggs et al: http://www.energycodes.gov)  
-##  Value for missing model data cannot be computed or out of model availability range: NA  
-##  
-##  Parameters: 
-##  ALLSKY_SFC_SW_DWN SRB/FLASHFlux 1/2x1/2 All Sky Insolation Incident on a Horizontal Surface (kW-hr/m^2/day) ;
-##  CLRSKY_SFC_SW_DWN SRB/FLASHFlux 1/2x1/2 Clear Sky Insolation Incident on a Horizontal Surface (kW-hr/m^2/day)  
-##  
-## # A tibble: 4 x 17
-##     LON   LAT PARAMETER  YEAR   JAN   FEB   MAR   APR   MAY   JUN   JUL   AUG
-##   <dbl> <dbl> <chr>     <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-## 1  60.6  56.8 CLRSKY_S…  1995  0.91  2.07  3.93  5.93  7.27  7.98  7.54  6.13
-## 2  60.6  56.8 CLRSKY_S…  1996  0.94  2.12  4.02  6.24  7.37  7.93  7.42  6.23
-## 3  60.6  56.8 ALLSKY_S…  1995  0.68  1.41  2.8   4.75  5.42  6.04  5.78  4.13
-## 4  60.6  56.8 ALLSKY_S…  1996  0.76  1.57  3.39  4.82  5.3   6.2   5.58  4.5 
-## # … with 5 more variables: SEP <dbl>, OCT <dbl>, NOV <dbl>, DEC <dbl>,
-## #   ANN <dbl>
 ```
+
 ## Загрузка данных Soil Data Access {#advgraphics_soildb}
 
 __Soil Data Access__ — это онлайн-сервис департамента сельского хозяйства США, который позволяет получать подробные данные о почвенных ресурсах этой страны. Наиболее часто запрашиваются данные по так называемым почвенным [_сериям_](https://en.wikipedia.org/wiki/Soil_series) — группам почвенных профилей, обладающих схожими характеристиками и, таким образом, идентичными с точки зрения сельскохозяйственного использования. Как правило, серии именуются по названию населенного пункта, рядом с которым впервые были найдены подобные почвы. 
 
 Например, серия _Cecil_ имеет следующее покрытие и обеспеченность разрезами в базе данных SDA при запросе на сайте [Series Extent Explorer](https://casoilresource.lawr.ucdavis.edu/see/#cecil):
 
-![Plot title. ](06-AdvGraphics_insertimage_1.png)
+<img src="06-AdvGraphics_insertimage_1.png" width="100%" />
+
 Для запросов данных по почвенным сериям достаточно вызвать функцию `fetchOSD` и передать ей имя одной или более серий:
 
 ```r
@@ -158,7 +114,7 @@ series = fetchOSD(soils, extended = TRUE)
 
 ```r
 str(series)
-## List of 13
+## List of 14
 ##  $ SPC             :Formal class 'SoilProfileCollection' [package "aqp"] with 9 slots
 ##   .. ..@ idcol       : chr "id"
 ##   .. ..@ hzidcol     : chr "hzID"
@@ -172,30 +128,32 @@ str(series)
 ##   .. .. ..$ stringsAsFactors: logi FALSE
 ##   .. .. ..$ original.order  : int [1:22] 1 2 3 4 5 6 7 8 9 10 ...
 ##   .. .. ..$ origin          : chr "OSD via Soilweb / fetchOSD"
-##   .. ..@ horizons    :'data.frame':	22 obs. of  19 variables:
-##   .. .. ..$ id           : chr [1:22] "CHEWACLA" "CHEWACLA" "CHEWACLA" "CHEWACLA" ...
-##   .. .. ..$ top          : int [1:22] 0 10 36 66 97 119 152 0 20 46 ...
-##   .. .. ..$ bottom       : int [1:22] 10 36 66 97 119 152 203 20 46 56 ...
-##   .. .. ..$ hzname       : chr [1:22] "Ap" "Bw1" "Bw2" "Bw3" ...
-##   .. .. ..$ soil_color   : chr [1:22] "#7E5A3BFF" "#7A5C37FF" "#7A5C37FF" "#7E5A3BFF" ...
-##   .. .. ..$ hue          : chr [1:22] "7.5YR" "10YR" "10YR" "7.5YR" ...
-##   .. .. ..$ value        : int [1:22] 4 4 4 4 5 5 4 4 4 3 ...
-##   .. .. ..$ chroma       : int [1:22] 4 4 4 4 8 1 4 4 3 3 ...
-##   .. .. ..$ dry_hue      : chr [1:22] "7.5YR" "10YR" "10YR" "7.5YR" ...
-##   .. .. ..$ dry_value    : int [1:22] 6 6 6 6 6 6 6 6 6 5 ...
-##   .. .. ..$ dry_chroma   : int [1:22] 4 4 4 4 7 1 4 4 3 3 ...
-##   .. .. ..$ texture_class: Ord.factor w/ 21 levels "coarse sand"<..: 13 18 17 13 17 17 13 13 13 NA ...
-##   .. .. ..$ cf_class     : logi [1:22] NA NA NA NA NA NA ...
-##   .. .. ..$ pH           : logi [1:22] NA NA NA NA NA NA ...
-##   .. .. ..$ pH_class     : Ord.factor w/ 12 levels "ultra acid"<"extremely acid"<..: 3 3 3 3 3 3 3 4 NA NA ...
-##   .. .. ..$ distinctness : chr [1:22] "clear" "gradual" "gradual" "gradual" ...
-##   .. .. ..$ topography   : chr [1:22] "smooth" "wavy" "wavy" "wavy" ...
-##   .. .. ..$ narrative    : chr [1:22] "Ap--0 to 4 inches; brown (7.5YR 4/4) loam; weak medium granular structure; friable; common very fine, fine, and"| __truncated__ "Bw1--4 to 14 inches; dark yellowish brown (10YR 4/4) silty clay loam; weak medium subangular blocky structure; "| __truncated__ "Bw2--14 to 26 inches; dark yellowish brown (10YR 4/4) clay loam; weak medium subangular blocky structure; friab"| __truncated__ "Bw3--26 to 38 inches; brown (7.5YR 4/4) loam; weak medium subangular blocky structure; friable; common fine roo"| __truncated__ ...
-##   .. .. ..$ hzID         : chr [1:22] "1" "2" "3" "4" ...
+##   .. ..@ horizons    :'data.frame':	22 obs. of  21 variables:
+##   .. .. ..$ id                   : chr [1:22] "CHEWACLA" "CHEWACLA" "CHEWACLA" "CHEWACLA" ...
+##   .. .. ..$ top                  : int [1:22] 0 10 36 66 97 119 152 0 20 46 ...
+##   .. .. ..$ bottom               : int [1:22] 10 36 66 97 119 152 203 20 46 56 ...
+##   .. .. ..$ hzname               : chr [1:22] "Ap" "Bw1" "Bw2" "Bw3" ...
+##   .. .. ..$ soil_color           : chr [1:22] "#7E5A3BFF" "#7A5C37FF" "#7A5C37FF" "#7E5A3BFF" ...
+##   .. .. ..$ hue                  : chr [1:22] "7.5YR" "10YR" "10YR" "7.5YR" ...
+##   .. .. ..$ value                : int [1:22] 4 4 4 4 5 5 4 4 4 3 ...
+##   .. .. ..$ chroma               : int [1:22] 4 4 4 4 8 1 4 4 3 3 ...
+##   .. .. ..$ dry_hue              : chr [1:22] "7.5YR" "10YR" "10YR" "7.5YR" ...
+##   .. .. ..$ dry_value            : int [1:22] 6 6 6 6 6 6 6 6 6 5 ...
+##   .. .. ..$ dry_chroma           : int [1:22] 4 4 4 4 7 1 4 4 3 3 ...
+##   .. .. ..$ texture_class        : Ord.factor w/ 21 levels "coarse sand"<..: 13 18 17 13 17 17 13 13 13 NA ...
+##   .. .. ..$ cf_class             : logi [1:22] NA NA NA NA NA NA ...
+##   .. .. ..$ pH                   : logi [1:22] NA NA NA NA NA NA ...
+##   .. .. ..$ pH_class             : Ord.factor w/ 12 levels "ultra acid"<"extremely acid"<..: 3 3 3 3 3 3 3 4 NA NA ...
+##   .. .. ..$ distinctness         : chr [1:22] "clear" "gradual" "gradual" "gradual" ...
+##   .. .. ..$ topography           : chr [1:22] "smooth" "wavy" "wavy" "wavy" ...
+##   .. .. ..$ dry_color_estimated  : logi [1:22] TRUE TRUE TRUE TRUE TRUE TRUE ...
+##   .. .. ..$ moist_color_estimated: logi [1:22] FALSE FALSE FALSE FALSE FALSE FALSE ...
+##   .. .. ..$ narrative            : chr [1:22] "Ap--0 to 4 inches; brown (7.5YR 4/4) loam; weak medium granular structure; friable; common very fine, fine, and"| __truncated__ "Bw1--4 to 14 inches; dark yellowish brown (10YR 4/4) silty clay loam; weak medium subangular blocky structure; "| __truncated__ "Bw2--14 to 26 inches; dark yellowish brown (10YR 4/4) clay loam; weak medium subangular blocky structure; friab"| __truncated__ "Bw3--26 to 38 inches; brown (7.5YR 4/4) loam; weak medium subangular blocky structure; friable; common fine roo"| __truncated__ ...
+##   .. .. ..$ hzID                 : chr [1:22] "1" "2" "3" "4" ...
 ##   .. ..@ site        :'data.frame':	3 obs. of  33 variables:
 ##   .. .. ..$ id                     : chr [1:3] "CHEWACLA" "CONGAREE" "WILKES"
 ##   .. .. ..$ soiltaxclasslastupdated: chr [1:3] "2010-02-11 00:00:00+00" "2002-07-18 00:00:00+00" "1997-06-06 00:00:00+00"
-##   .. .. ..$ mlraoffice             : int [1:3] 3 3 3
+##   .. .. ..$ mlraoffice             : chr [1:3] "raleigh, nc" "raleigh, nc" "raleigh, nc"
 ##   .. .. ..$ series_status          : chr [1:3] "established" "established" "established"
 ##   .. .. ..$ family                 : chr [1:3] "fine-loamy, mixed, active, thermic fluvaquentic dystrudepts" "fine-loamy, mixed, active, nonacid, thermic oxyaquic udifluvents" "loamy, mixed, active, thermic, shallow typic hapludalfs"
 ##   .. .. ..$ soilorder              : chr [1:3] "inceptisols" "entisols" "alfisols"
@@ -210,11 +168,11 @@ str(series)
 ##   .. .. ..$ originyear             : logi [1:3] NA NA NA
 ##   .. .. ..$ establishedyear        : int [1:3] 1937 1904 1916
 ##   .. .. ..$ descriptiondateinitial : chr [1:3] "2010-02-11 00:00:00+00" "2002-07-18 00:00:00+00" "2007-09-06 00:00:00+00"
-##   .. .. ..$ descriptiondateupdated : chr [1:3] "2010-02-11 00:00:00+00" "2002-07-18 00:00:00+00" "2007-09-06 00:00:00+00"
+##   .. .. ..$ descriptiondateupdated : chr [1:3] "2010-02-11 00:00:00+00" "2002-07-18 00:00:00+00" "2021-01-27 16:02:50+00"
 ##   .. .. ..$ benchmarksoilflag      : int [1:3] 1 0 0
 ##   .. .. ..$ statsgoflag            : int [1:3] 1 1 1
-##   .. .. ..$ objwlupdated           : chr [1:3] "2012-08-01 14:06:37+00" "2012-08-01 14:06:37+00" "2012-08-01 14:06:37+00"
-##   .. .. ..$ recwlupdated           : chr [1:3] "2012-08-01 14:06:37+00" "2012-08-01 14:06:37+00" "2012-08-01 14:06:37+00"
+##   .. .. ..$ objwlupdated           : chr [1:3] "2012-08-01 14:06:37+00" "2012-08-01 14:06:37+00" "2021-01-27 16:02:50+00"
+##   .. .. ..$ recwlupdated           : chr [1:3] "2012-08-01 14:06:37+00" "2012-08-01 14:06:37+00" "2021-01-27 16:02:50+00"
 ##   .. .. ..$ typelocstareaiidref    : int [1:3] 6691 6706 6691
 ##   .. .. ..$ typelocstareatypeiidref: int [1:3] 3 3 3
 ##   .. .. ..$ soilseriesiid          : int [1:3] 24628 1057 23800
@@ -223,9 +181,9 @@ str(series)
 ##   .. .. ..$ tax_minclass           : chr [1:3] "mixed" "mixed" "mixed"
 ##   .. .. ..$ subgroup_mod           : chr [1:3] "fluvaquentic" "oxyaquic" "typic"
 ##   .. .. ..$ greatgroup_mod         : chr [1:3] "dystr" "udi" "hapl"
-##   .. .. ..$ drainagecl             : chr [1:3] "somewhat poorly" "well" "well"
-##   .. .. ..$ ac                     : int [1:3] 1259224 216875 617848
-##   .. .. ..$ n_polygons             : int [1:3] 40647 10387 34748
+##   .. .. ..$ drainagecl             : chr [1:3] "somewhat poorly" "well to moderately well" "well"
+##   .. .. ..$ ac                     : int [1:3] 1256820 216072 614614
+##   .. .. ..$ n_polygons             : int [1:3] 39164 10384 34815
 ##   .. ..@ sp          :Formal class 'SpatialPoints' [package "sp"] with 3 slots
 ##   .. .. .. ..@ coords     : num [1, 1] 0
 ##   .. .. .. ..@ bbox       : logi [1, 1] NA
@@ -237,57 +195,60 @@ str(series)
 ##   ..$ series   : chr "CHEWACLA"
 ##   ..$ competing: chr "OAKBORO"
 ##   ..$ family   : chr "fine-loamy, mixed, active, thermic fluvaquentic dystrudepts"
+##  $ geog_assoc_soils:'data.frame':	22 obs. of  2 variables:
+##   ..$ series: chr [1:22] "CONGAREE" "CONGAREE" "CONGAREE" "CONGAREE" ...
+##   ..$ gas   : chr [1:22] "ALTAVISTA" "AUGUSTA" "BUNCOMBE" "CARTECAY" ...
 ##  $ geomcomp        :'data.frame':	3 obs. of  9 variables:
 ##   ..$ series         : chr [1:3] "CHEWACLA" "CONGAREE" "WILKES"
-##   ..$ Interfluve     : num [1:3] 1 0 0.182
-##   ..$ Crest          : num [1:3] 0 0 0.0267
+##   ..$ Interfluve     : num [1:3] 1 0 0.178
+##   ..$ Crest          : num [1:3] 0 0 0.027
 ##   ..$ Head Slope     : int [1:3] 0 0 0
 ##   ..$ Nose Slope     : int [1:3] 0 0 0
-##   ..$ Side Slope     : num [1:3] 0 0 0.791
+##   ..$ Side Slope     : num [1:3] 0 0 0.795
 ##   ..$ Base Slope     : int [1:3] 0 1 0
-##   ..$ n              : int [1:3] 3 1 187
-##   ..$ shannon_entropy: num [1:3] 0 0 0.368
+##   ..$ n              : int [1:3] 3 1 185
+##   ..$ shannon_entropy: num [1:3] 0 0 0.365
 ##  $ hillpos         :'data.frame':	3 obs. of  8 variables:
 ##   ..$ series         : chr [1:3] "CHEWACLA" "CONGAREE" "WILKES"
 ##   ..$ Toeslope       : num [1:3] 0.963 0.786 0
 ##   ..$ Footslope      : num [1:3] 0.0366 0.2143 0
-##   ..$ Backslope      : num [1:3] 0 0 0.636
-##   ..$ Shoulder       : num [1:3] 0 0 0.227
-##   ..$ Summit         : num [1:3] 0 0 0.138
-##   ..$ n              : int [1:3] 82 14 247
-##   ..$ shannon_entropy: num [1:3] 0.0975 0.3228 0.5577
+##   ..$ Backslope      : num [1:3] 0 0 0.637
+##   ..$ Shoulder       : num [1:3] 0 0 0.225
+##   ..$ Summit         : num [1:3] 0 0 0.139
+##   ..$ n              : int [1:3] 82 14 245
+##   ..$ shannon_entropy: num [1:3] 0.0975 0.3228 0.5573
 ##  $ mtnpos          : logi FALSE
 ##  $ terrace         :'data.frame':	2 obs. of  5 variables:
 ##   ..$ series         : chr [1:2] "CHEWACLA" "CONGAREE"
-##   ..$ Tread          : num [1:2] 0.979 1
-##   ..$ Riser          : num [1:2] 0.0213 0
-##   ..$ n              : int [1:2] 94 36
-##   ..$ shannon_entropy: num [1:2] 0.064 0
+##   ..$ Tread          : num [1:2] 0.977 1
+##   ..$ Riser          : num [1:2] 0.023 0
+##   ..$ n              : int [1:2] 87 36
+##   ..$ shannon_entropy: num [1:2] 0.068 0
 ##  $ flats           :'data.frame':	2 obs. of  7 variables:
 ##   ..$ series         : chr [1:2] "CHEWACLA" "CONGAREE"
-##   ..$ Dip            : num [1:2] 0.1569 0.0667
-##   ..$ Talf           : num [1:2] 0.843 0.867
+##   ..$ Dip            : num [1:2] 0.1455 0.0667
+##   ..$ Talf           : num [1:2] 0.855 0.867
 ##   ..$ Flat           : int [1:2] 0 0
 ##   ..$ Rise           : num [1:2] 0 0.0667
-##   ..$ n              : int [1:2] 51 15
-##   ..$ shannon_entropy: num [1:2] 0.27 0.301
+##   ..$ n              : int [1:2] 55 15
+##   ..$ shannon_entropy: num [1:2] 0.258 0.301
 ##  $ pmkind          :'data.frame':	6 obs. of  5 variables:
 ##   ..$ series: chr [1:6] "CHEWACLA" "CHEWACLA" "CONGAREE" "CONGAREE" ...
 ##   ..$ pmkind: chr [1:6] "Alluvium" "Residuum" "Alluvium" "Fluviomarine deposits" ...
-##   ..$ n     : int [1:6] 207 1 72 13 1 264
-##   ..$ total : int [1:6] 208 208 86 86 86 264
+##   ..$ n     : int [1:6] 206 1 72 13 1 262
+##   ..$ total : int [1:6] 207 207 86 86 86 262
 ##   ..$ P     : num [1:6] 0.9952 0.0048 0.8372 0.1512 0.0116 ...
 ##  $ pmorigin        :'data.frame':	24 obs. of  5 variables:
 ##   ..$ series  : chr [1:24] "CHEWACLA" "CHEWACLA" "CHEWACLA" "CHEWACLA" ...
-##   ..$ pmorigin: chr [1:24] "Igneous and metamorphic rock" "Sedimentary rock" "Granite and gneiss" "Mixed" ...
+##   ..$ pmorigin: chr [1:24] "Igneous and metamorphic rock" "Sedimentary rock" "Mixed" "Granite and gneiss" ...
 ##   ..$ n       : int [1:24] 29 11 2 2 1 1 1 1 1 1 ...
 ##   ..$ total   : int [1:24] 51 51 51 51 51 51 51 51 51 51 ...
 ##   ..$ P       : num [1:24] 0.5686 0.2157 0.0392 0.0392 0.0196 ...
 ##  $ mlra            :'data.frame':	19 obs. of  4 variables:
 ##   ..$ series    : chr [1:19] "CHEWACLA" "CHEWACLA" "CHEWACLA" "CHEWACLA" ...
 ##   ..$ mlra      : chr [1:19] "129" "135A" "136" "133A" ...
-##   ..$ area_ac   : int [1:19] 6166 3878 929362 128376 78429 59646 29004 13530 10366 2128 ...
-##   ..$ membership: num [1:19] 0.005 0.003 0.738 0.102 0.062 0.047 0.023 0.011 0.008 0.01 ...
+##   ..$ area_ac   : int [1:19] 6166 3878 927251 128381 78428 60214 29004 13536 9495 2126 ...
+##   ..$ membership: num [1:19] 0.005 0.003 0.738 0.102 0.062 0.048 0.023 0.011 0.008 0.01 ...
 ##  $ climate.annual  :'data.frame':	24 obs. of  12 variables:
 ##   ..$ series     : chr [1:24] "CHEWACLA" "CHEWACLA" "CHEWACLA" "CHEWACLA" ...
 ##   ..$ climate_var: chr [1:24] "Elevation (m)" "Effective Precipitation (mm)" "Frost-Free Days" "Mean Annual Air Temperature (degrees C)" ...
@@ -316,9 +277,9 @@ str(series)
 ##   ..$ n          : int [1:72] 32689 32689 32689 32689 32689 32689 32689 32689 32689 32689 ...
 ##   ..$ month      : Factor w/ 12 levels "1","2","3","4",..: 1 2 3 4 5 6 7 8 9 10 ...
 ##   ..$ variable   : Factor w/ 2 levels "Potential ET (mm)",..: 2 2 2 2 2 2 2 2 2 2 ...
-##  $ soilweb.metadata:'data.frame':	19 obs. of  2 variables:
-##   ..$ product    : chr [1:19] "block diagram archive" "component pedons" "KSSL snapshot" "MLRA membership" ...
-##   ..$ last_update: chr [1:19] "2019-12-17" "2020-12-08" "2020-03-13" "2020-07-14" ...
+##  $ soilweb.metadata:'data.frame':	18 obs. of  2 variables:
+##   ..$ product    : chr [1:18] "block diagram archive" "cached sketches" "component pedons" "KSSL snapshot" ...
+##   ..$ last_update: chr [1:18] "2019-12-17" "2021-10-07" "2020-12-08" "2020-03-18" ...
 ```
 
 
@@ -327,8 +288,8 @@ str(series)
 Для начала посмотрим, как можно показать суммарный экспорт по годам:
 
 ```r
-trades_total = trades %>% 
-  group_by(time) %>% 
+trades_total = trades |> 
+  group_by(time) |> 
   summarise(export = sum(export),
             import = sum(import))
   
@@ -336,7 +297,7 @@ ggplot(data = trades_total) +
   geom_point(mapping = aes(x = time, y = export))
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-8-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-9-1.png" width="100%" />
 
 Базовый (минимально необходимый) шаблон построения графика через __ggplot__ выглядит следующим образом:
 
@@ -362,7 +323,7 @@ ggplot(data = trades_total) +
   geom_line(mapping = aes(x = time, y = export))
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-10-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-11-1.png" width="100%" />
 
 Поскольку в данном случае величина является агрегированной за год, более правильным может быть показ ее изменений в виде ступенчатого линейного графика, который получается через геометрию `geom_step()`:
 
@@ -372,7 +333,7 @@ ggplot(data = trades_total) +
   geom_step(mapping = aes(x = time, y = export))
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-11-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-12-1.png" width="100%" />
 
 Можно совместить несколько геометрий, добавив их последовательно на график:
 
@@ -382,7 +343,7 @@ ggplot(data = trades_total) +
   geom_point(mapping = aes(x = time, y = export))
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-12-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-13-1.png" width="100%" />
 
 Если у нескольких геометрий одинаковые отображения, их можно вынести в вызов функции `ggplot()` (чтобы не дублировать):
 
@@ -392,7 +353,7 @@ ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
   geom_point()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-13-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-14-1.png" width="100%" />
 
 Наглядность линейного графика можно усилить, добавив "заливку" области с использованием `geom_area()`:
 
@@ -403,30 +364,30 @@ ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
   geom_point()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-14-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-15-1.png" width="100%" />
 
 Для построения столбчатой диаграммы следует использовать геометрию `geom_col()`. Например, вот так выглядит структура экспорта продукции машиностроения из Евросоюза по ведущим партнерам:
 
 ```r
-trades %>% 
-  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) %>% 
+trades |> 
+  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) |> 
   ggplot(mapping = aes(x = partner, y = export)) +
   geom_col()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-15-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-16-1.png" width="100%" />
 
 Развернуть диаграмму можно, используя функцию `coord_flip()`:
 
 ```r
-trades %>% 
-  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) %>% 
+trades |> 
+  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) |> 
   ggplot(mapping = aes(x = partner, y = export)) +
   geom_col() +
   coord_flip()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-16-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-17-1.png" width="100%" />
 
 ## Графические переменные и группировки {#advgraphics_aes}
 
@@ -441,17 +402,17 @@ ggplot(trades_total) +
     geom_line(mapping = aes(x = time, y = export), color = 'blue')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-17-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-18-1.png" width="100%" />
 
 ```r
 
-trade_russia = trades %>% dplyr::filter(partner == 'Russia')
+trade_russia = trades |> dplyr::filter(partner == 'Russia')
 
 ggplot(trade_russia) + # у каждой группы данных свой цвет (параметр внутри aes)
   geom_line(mapping = aes(x = time, y = export, color = sitc06))
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-17-2.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-18-2.png" width="100%" />
 
 ```r
 
@@ -460,7 +421,7 @@ ggplot(trade_russia, mapping = aes(x = time, y = export, color = sitc06)) + # а
   geom_point()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-17-3.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-18-3.png" width="100%" />
 
 Аналогичным образом работает параметр формы значка:
 
@@ -470,7 +431,7 @@ ggplot(trades_total) +
     geom_point(mapping = aes(x = time, y = export), shape = 15)
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-18-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-19-1.png" width="100%" />
 
 ```r
     
@@ -479,7 +440,7 @@ ggplot(trade_russia) + # у каждой группы данных свой зн
     geom_point(mapping = aes(x = time, y = export, shape = sitc06))
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-18-2.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-19-2.png" width="100%" />
 
 Для изменения размера значка или линии используйте параметр `size`:
 
@@ -490,7 +451,7 @@ ggplot(trades_total, mapping = aes(x = time, y = export)) +
     geom_line(size = 2)
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-19-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-20-1.png" width="100%" />
 
 Если вы используете зависимые от значений графические переменные и при этом хотите добавить на график еще одну геометрию (c постоянными параметрами), то вам необходимо сгруппировать объекты второй геометрии по той же переменной, по которой вы осуществляете разбиение в первой геометрии. Для этого используйте параметр `group`:
 
@@ -500,54 +461,54 @@ ggplot(trade_russia, aes(x = time, y = export)) +
     geom_line(aes(group = sitc06))
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-20-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-21-1.png" width="100%" />
 
 Для изменения цвета столбчатых диаграмм следует использовать параметр `fill`, а цвет и толщина обводки определяются параметрами `color` и `size`:
 
 ```r
-trades %>% 
-  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) %>% 
+trades |> 
+  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) |> 
   ggplot(mapping = aes(x = partner, y = export)) +
   geom_col(fill = 'plum4', color = 'black', size = 0.2) +
   coord_flip()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-21-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-22-1.png" width="100%" />
 
 Цвет на столбчатых диаграммах можно использовать для отображения дополнительных переменных, например типа экспортируемой продукции. По умолчанию столбики будут образовывать стек
 
 ```r
-trades %>% 
-  dplyr::filter(time == as.Date('2017-01-01')) %>% 
+trades |> 
+  dplyr::filter(time == as.Date('2017-01-01')) |> 
   ggplot(mapping = aes(x = partner, y = export, fill = sitc06)) +
   geom_col(color = 'black', size = 0.2) +
   coord_flip()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-22-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-23-1.png" width="100%" />
 
 Если вам важно не абсолютное количество, а процентное соотношение величин, вы можете применить вид группировки `position == 'fill`:
 
 ```r
-trades %>% 
-  dplyr::filter(time == as.Date('2017-01-01')) %>% 
+trades |> 
+  dplyr::filter(time == as.Date('2017-01-01')) |> 
   ggplot(mapping = aes(x = partner, y = export, fill = sitc06)) +
     geom_col(color = 'black', size = 0.2, position = 'fill') +
     coord_flip()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-23-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-24-1.png" width="100%" />
 
 Еще один вид группировки — это группировка по соседству. Чтобы использовать ее, применить метод `position == 'dodge`:
 
 ```r
-trade_russia %>% 
-  dplyr::filter(time >= as.Date('2013-01-01')) %>% 
+trade_russia |> 
+  dplyr::filter(time >= as.Date('2013-01-01')) |> 
   ggplot(mapping = aes(x = time, y = export, fill = sitc06)) +
     geom_col(color = 'black', size = 0.2, position = 'dodge')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-24-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-25-1.png" width="100%" />
 
 ## Системы координат {#advgraphics_coords}
 
@@ -556,8 +517,8 @@ __ggplot__ поддерживает множество полезных прео
 Смена переменных происходит благодаря уже знакомой нам функции `coord_flip()`. Рассмотрим, например, как изменилась структура экспорта/импорта по годам:
 
 ```r
-trades_type = trades %>% 
-  group_by(sitc06, time) %>% 
+trades_type = trades |> 
+  group_by(sitc06, time) |> 
   summarise(export = sum(export),
             import = sum(import))
 
@@ -565,7 +526,7 @@ ggplot(trades_type) +
     geom_point(mapping = aes(x = export, y = import, color = sitc06, size = time), alpha = 0.5)
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-25-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-26-1.png" width="100%" />
 
 ```r
 
@@ -574,7 +535,7 @@ ggplot(trades_type) +
     coord_flip()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-25-2.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-26-2.png" width="100%" />
 
 Поскольку объемы продукции различаются _на порядки_, для различимости малых объемов целесообразно перейти к логарифмической шкале. Для этого используем `scale_log_x()` и `scale_log_y()`:
 
@@ -585,44 +546,44 @@ ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size =
   scale_y_log10()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-26-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-27-1.png" width="100%" />
 
 Преобразование в полярную систему координат используется для того чтобы получить круговую секторную диаграмму Найтингейл (_coxcomb chart_):
 
 ```r
-trades %>% 
-  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) %>% 
+trades |> 
+  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) |> 
   ggplot(mapping = aes(x = partner, y = export, fill = partner)) +
   geom_col() +
   coord_polar()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-27-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-28-1.png" width="100%" />
  
 Разумеется, здесь тоже можно использовать преобразование шкалы по оси _Y_ (которая теперь отвечает за радиус). Применим правило квадратного корня, добавив вызов функции `scale_y_sqrt()`:
 
 ```r
-trades %>% 
-  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) %>% 
+trades |> 
+  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) |> 
   ggplot(mapping = aes(x = partner, y = export, fill = partner)) +
   geom_col() +
   coord_polar() +
   scale_y_sqrt()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-28-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-29-1.png" width="100%" />
 
 Чтобы построить классическую секторную диаграмму, необходимо, чтобы угол поворота соответствовал величине показателя (оси _Y_), а не названию категории (оси _X_). Для этого при вызове функции `coord_polar()` следует указать параметр `theta = 'y'`, а при вызове `geom_col()` оставить параметр `x` пустым:
 
 ```r
-trades %>% 
-  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) %>% 
+trades |> 
+  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) |> 
   ggplot(mapping = aes(x = '', y = export, fill = partner), color = 'black', size = 0.2) +
   geom_col() +
   coord_polar(theta = 'y')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-29-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-30-1.png" width="100%" />
 
 ## Названия осей и легенды {#advgraphics_titles}
 
@@ -641,7 +602,7 @@ ggplot(trades_type) +
   labs(color = "Вид продукции", size = 'Год')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-30-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-31-1.png" width="100%" />
 
 Добавим заголовок и подзаголовок графика:
 
@@ -653,7 +614,7 @@ ggplot(trades_type) +
           subtitle = 'Данные по ключевым партнерам')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-31-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-32-1.png" width="100%" />
 
 Изменим подписи осей:
 
@@ -667,7 +628,7 @@ ggplot(trades_type) +
   ylab('Импорт')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-32-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-33-1.png" width="100%" />
 
 ## Разметка осей {#advgraphics_axes}
 
@@ -684,7 +645,7 @@ ggplot(trades_type) +
   ylab('Импорт')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-33-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-34-1.png" width="100%" />
 
 Для управления разметкой осей необходимо использовать функции `scale_x_continuous()`, `scale_y_continuous()`, `scale_x_log10(...)`, `scale_y_log10(...)`, `scale_x_reverse(...)`, `scale_y_reverse(...)`, `scale_x_sqrt(...)`, `scale_y_sqrt(...)`, которые, с одной стороны, указывают тип оси, а с другой стороны — позволяют управлять параметрами сетки координат и подписями.
 
@@ -697,7 +658,7 @@ ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size =
   scale_y_log10(breaks = seq(0, 500000, 100000))
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-34-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-35-1.png" width="100%" />
 
 В данном случае, как раз, будет достаточно полезным параметр `labels`, поскольку метки можно сделать более компактными, поделив их на 1000 (и не забыть потом указать, что объемы теперь указаны не в миллионах, а в миллиардах долларов):
 
@@ -709,7 +670,7 @@ ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size =
   scale_y_log10(breaks = brks, labels = brks / 1000)
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-35-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-36-1.png" width="100%" />
 
 Для обычной шкалы используйте функции `scale_x_continuous()` и `scale_y_continuous()`:
 
@@ -720,7 +681,7 @@ ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size =
   scale_y_continuous(breaks = brks, labels = brks / 1000)
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-36-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-37-1.png" width="100%" />
 
 Для того чтобы принудительно указать диапазоны осей и графических переменных, следует использовать функции `lims(...)`, `xlim(...)` и `ylim(...)`. Например, мы можем приблизиться в левый нижний угол графика, задав диапазон 0-200000 по обеим осям:
 
@@ -731,7 +692,7 @@ ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size =
   ylim(0, 75000)
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-37-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-38-1.png" width="100%" />
 
 Функция `lims()` работает еще хитрее: она позволяет применять графические переменные только к ограниченному набору значений исходных данных. Например, таким путем я могу выделить на графике продукцию машиностроения:
 
@@ -741,7 +702,7 @@ ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size =
   lims(color = 'Machinery and transport equipment')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-38-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-39-1.png" width="100%" />
 
 ## Подписи и аннотации {#advgraphics_labels}
 
@@ -755,7 +716,7 @@ ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
   geom_text(aes(label = floor(export / 1000))) # добавляем подписи
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-39-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-40-1.png" width="100%" />
 
 Выравнивание подписи относительно якорной точки (снизу, сверху, справа, слева) по горизонтали и вертикали управляется параметрами `hjust` и `vjust`, а смещения по осям X (в координатах графика) — параметрами `nudge_x` и `nudge_y`:
 
@@ -768,20 +729,20 @@ ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
             vjust = 0, nudge_y = 40000) # добавляем подписи
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-40-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-41-1.png" width="100%" />
 
 Подписи с фоновой плашкой добавляются через функцию `geom_label()`, которая имеет аналогичный синтаксис:
 
 ```r
-trades %>% 
-  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) %>% 
+trades |> 
+  dplyr::filter(sitc06 == 'Machinery and transport equipment', time == as.Date('2017-01-01')) |> 
   ggplot(mapping = aes(x = partner, y = export)) +
   geom_col(fill = 'plum4', color = 'black', size = 0.2) +
   coord_flip() +
   geom_label(aes(y = export / 2, label = floor(export / 1000))) # добавляем подписи
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-41-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-42-1.png" width="100%" />
 
 __Аннотации__ представляют собой объекты, размещаемые на графике вручную, и используемые, как правило, для выделения объектов и областей. Для размещения аннотаций используется функция `annotate()`:
 
@@ -795,7 +756,7 @@ ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
   annotate("text", x = as.Date('2009-01-01'), y = 550000, label = "Это провал", color = 'red')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-42-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-43-1.png" width="100%" />
 
 Аннотировать можно не только подписями, но и регионами. Например, мы можем выделить область, которая соответствует импорту/экспорту продукции химической промышленности:
 
@@ -806,7 +767,7 @@ ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size =
   annotate("text", x = 175000, y = 190000, label = "Chemicals", color = 'coral')
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-43-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-44-1.png" width="100%" />
 
 
 ## Фасеты {#advgraphics_facets}
@@ -815,8 +776,8 @@ ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size =
 
 ```r
 brks = c(0, 50, 100, 150, 200)
-trades %>% 
-  dplyr::filter(sitc06 == 'Machinery and transport equipment') %>% 
+trades |> 
+  dplyr::filter(sitc06 == 'Machinery and transport equipment') |> 
   ggplot(mapping = aes(x = partner, y = import)) +
   geom_col() +
   scale_y_continuous(breaks = brks * 1e3, labels = brks) +
@@ -826,7 +787,7 @@ trades %>%
   facet_wrap(~time)
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-44-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-45-1.png" width="100%" />
 
 ## Темы {#advgraphics_themes}
 
@@ -842,7 +803,7 @@ ggplot(data = trades_total, mapping = aes(x = time, y = export)) +
   theme_bw()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-45-1.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-46-1.png" width="100%" />
 
 ```r
 
@@ -856,7 +817,7 @@ ggplot(trades_type) +
   theme_bw()
 ```
 
-<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-45-2.png" width="100%" />
+<img src="06-AdvGraphics_files/figure-html/unnamed-chunk-46-2.png" width="100%" />
 
 ## Контрольные вопросы и упражнения {#questions_tasks_advgraphics}
 
@@ -889,11 +850,21 @@ ggplot(trades_type) +
 
 ### Упражнения {#tasks_advgraphics}
 
+> Упражнения данной главы частично повторяют упражнения предыдущей главы по базовой графике в целях сравнения двух графических систем R.
+
+1. Постройте для набора данных _quakes_ пакета __datasets__ гистограммы распределения глубин и магнитуд, а также диаграмму рассеяния для двух этих характеристик. Используйте сначала функцию `qplot()`, а затем выполните то же самое с использованием полного синтаксиса `ggplot2()`.
+
+1. На портале открытых данных Тульской области есть [__данные__](https://opendata71.ru/opendata/7107096442-stateforestregisterTularegion/table) о распределении площади лесов и запасов древесины по преобладающим породам и группам возраста. Скачайте эти данные в виде таблицы CSV и постройте по ним круговую и столбчатую диаграмму для категории `Площадь земель, занятых лесными насаждениями (покрытых лесной растительностью), всего`. Подберите цвета, попробуйте изменить ориентировку столбцов на горизонтальную, а для круговой диаграммы поменять угол поворота.
+
+1. Используя [данные](https://raw.githubusercontent.com/tsamsonov/r-geo-course/master/data/garabashi.xlsx)^[_Рототаева О.В., Носенко Г.А., Керимов А.М., Кутузов С.С., Лаврентьев И.И., Никитин С.А., Керимов А.А., Тарасова Л.Н._ Изменения баланса массы ледника Гарабаши (Эльбрус) на рубеже XX–XXI вв. __Лёд и Снег__. 2019;59(1):5-22. https://doi.org/10.15356/2076-6734-2019-1-5-22] по балансу масс ледника Гарабаши, постройте график с тремя кривыми (аккумуляции, абляции и _кумулятивного_ баланса) за период 1981 по 2017 г. Добавьте на график легенду. Обратите внимание на то, что таблица содержит агрегирующие строки (1982-1997, 1998-2017, 1982-2017), которые вам необходимо предварительно исключить. 
+
+    > __Подсказка:__ Чтобы построить кривую кумулятивного баланса,  используйте функцию `cumsum`.
+    
+1. Загрузите [таблицу данных по импорту/экспорту продуктов питания, напитков и табака](https://ec.europa.eu/eurostat/databrowser/view/tet00034/default/table?lang=en) с портала Евростата (с использованием пакета __eurostat__). Постройте линейный график изменения _суммарных_ величин импорта и экспорта по данному показателю (у вас должно получиться 2 графика на одном изображении). Используйте _цвет_ для разделения графиков. Добавьте текстовые подписи величин импорта и экспорта. Постройте также две круговых диаграммы, показывающих соотношение ведущих импортеров и экспортеров за последний имеющийся год. Сделайте сначала это отдельными графиками, а затем одним фасетным графиком (для этого потребуется привести таблицу к длинной форме).
+
 1. Постройте линейный график хода температуры , а также столбчатую диаграмму хода суммарной солнечной радиации в Екатеринбурге на примере данных NASA POWER, загруженных в разделе [6.3](#advgraphics_nasapower).<!-- \@ref(advgraphics_nasapower). -->
 
     > __Подсказка__: Для построения столбчатой диаграммы вам потребуется использовать функцию `geom_col()`, поскольку высота столбика отражает не встречаемость значения, а величину переменной. Также вам потребуется преобразовать таблицу среднемесячных величин к длинной форме, где название месяца будет отдельной переменной (тип — упорядоченный фактор).
-
-2. Загрузите [таблицу данных по импорту/экспорту продуктов питания, напитков и табака](https://ec.europa.eu/eurostat/databrowser/view/tet00034/default/table?lang=en) с портала Евростата (с использованием пакета __eurostat__). Постройте линейный график изменения _суммарных_ величин импорта и экспорта по данному показателю (у вас должно получиться 2 графика на одном изображении). Используйте _цвет_ для разделения графиков. Добавьте текстовые подписи величин импорта и экспорта. Постройте также две круговых диаграммы, показывающих соотношение ведущих импортеров и экспортеров за последний имеющийся год. Сделайте сначала это отдельными графиками, а затем одним фасетным графиком (для этого потребуется привести таблицу к длинной форме).
 
 ----
 _Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, 2021. DOI: [10.5281/zenodo.901911](https://doi.org/10.5281/zenodo.901911)
