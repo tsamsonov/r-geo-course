@@ -172,10 +172,10 @@ destination_wgs = st_transform(destination, WGS84)
 route = osrmRoute(origin_wgs, 
                   destination_wgs, 
                   overview = "full", # запретить генерализацию линий
-                  sp = TRUE) # вернуть результат в виде объекта класса Spatial
+                  returnclass = 'sf') # вернуть результат в виде объекта класса Spatial
 
 # Преобразуем результат обратно в UTM
-route.utm = st_transform(route %>% st_as_sf(), UTM)
+route.utm = st_transform(route, UTM)
 
 # Визуализируем результат:
 plotBasemap()

@@ -960,7 +960,7 @@ files = paste('data/bound', list.files('data/bound', "*.txt"), sep = '/')
   }) %>% 
   bind_rows() %>% 
   left_join(obs, by = c('INDEX' = 'Индекс'))) # присоединим информацию о названиях станций
-## # A tibble: 77,073 x 26
+## # A tibble: 77,073 × 26
 ##    INDEX  GGGG    MM    HH     Z    MP    SP    NP    MT    ST    NT    MD    SD
 ##    <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
 ##  1 20674  2007     1     0  2000  7629    78    27  -187    35    27    53    46
@@ -989,7 +989,7 @@ geo_azimuth = function(dx, dy) {
 (winds = tab %>% 
   mutate(wind = circular(geo_azimuth(MV, MU), template = 'geographics')) %>% 
   select(INDEX, name = Название, GGGG, MM, HH, Z, MU, MV, SS, wind))
-## # A tibble: 77,073 x 10
+## # A tibble: 77,073 × 10
 ##    INDEX name           GGGG    MM    HH     Z    MU    MV    SS wind      
 ##    <dbl> <chr>         <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <circular>
 ##  1 20674 Остров Диксон  2007     1     0  2000    33    31    45 0.8166380 
@@ -1009,7 +1009,7 @@ geo_azimuth = function(dx, dy) {
 
 ```r
 (tiksi_wind = winds %>% dplyr::filter(name == 'Тикси', HH == 12, Z == 0))
-## # A tibble: 136 x 10
+## # A tibble: 136 × 10
 ##    INDEX name   GGGG    MM    HH     Z    MU    MV    SS wind      
 ##    <dbl> <chr> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <circular>
 ##  1 21824 Тикси  2007     1    12     0    36    35    48 0.7994817 
@@ -1122,7 +1122,7 @@ text(x = 1.4 * xp, y = 1.4 * yp,
                 })
   )
 )
-## # A tibble: 13 x 3
+## # A tibble: 13 × 3
 ##    name            kden         peak
 ##    <chr>           <list>      <dbl>
 ##  1 Верхоянск       <dnsty.cr> -2.97 

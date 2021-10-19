@@ -49,7 +49,7 @@ tibble(
   b = 1, 
   c = -1:1
 )
-## # A tibble: 3 x 3
+## # A tibble: 3 × 3
 ##       a     b     c
 ##   <int> <dbl> <int>
 ## 1     1     1    -1
@@ -57,7 +57,7 @@ tibble(
 ## 3     3     1     1
 dfr = data.frame(a = 1:3, b = 1,  c = -1:1)
 as_tibble(dfr)
-## # A tibble: 3 x 3
+## # A tibble: 3 × 3
 ##       a     b     c
 ##   <int> <dbl> <int>
 ## 1     1     1    -1
@@ -80,7 +80,7 @@ tribble(
    2,  1,  0,
    3,  1,  1
 )
-## # A tibble: 3 x 3
+## # A tibble: 3 × 3
 ##       a     b     c
 ##   <dbl> <dbl> <dbl>
 ## 1     1     1    -1
@@ -108,7 +108,7 @@ data(package = 'dplyr')
 ```r
 data(starwars, package = 'dplyr')
 starwars
-## # A tibble: 87 x 14
+## # A tibble: 87 × 14
 ##    name    height  mass hair_color  skin_color eye_color birth_year sex   gender
 ##    <chr>    <int> <dbl> <chr>       <chr>      <chr>          <dbl> <chr> <chr> 
 ##  1 Luke S…    172    77 blond       fair       blue            19   male  mascu…
@@ -200,7 +200,7 @@ N,Region,Year05,Year10,Year11,Year12,Year13
 
 ```r
 (okruga = read_csv('data/okruga.csv'))
-## # A tibble: 8 x 7
+## # A tibble: 8 × 7
 ##     `№` Регион            `2005` `2010` `2011` `2012` `2013`
 ##   <dbl> <chr>              <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
 ## 1     1 Центральный         4341   3761   3613   3651   3570
@@ -240,7 +240,7 @@ N,Region,Year05,Year10,Year11,Year12,Year13
 
 ```r
 (wenergy = read_table('data/wind_energy.txt', col_names = c('id', 'lat', 'lon', 'energy50', 'energy110')))
-## # A tibble: 92 x 5
+## # A tibble: 92 × 5
 ##       id   lat   lon energy50 energy110
 ##    <dbl> <dbl> <dbl>    <dbl>     <dbl>
 ##  1     1  43.5  28       111.      178.
@@ -265,7 +265,7 @@ D настоящем курсе мы будем пользоваться пак�
 ```r
 (reforest = read_excel('data/reforest.xlsx', 
                        col_types = c('text', rep('numeric', 8))))
-## # A tibble: 89 x 9
+## # A tibble: 89 × 9
 ##    Region                `2005` `2010` `2011` `2012` `2013` `2014` `2015` `2016`
 ##    <chr>                  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
 ##  1 Российская Федерация   812.   812.   860    842.   872.   863    803.   840. 
@@ -309,7 +309,7 @@ D настоящем курсе мы будем пользоваться пак�
 ```r
 # ПРОСМОТР ТАБЛИЦЫ
 print(reforest)
-## # A tibble: 89 x 9
+## # A tibble: 89 × 9
 ##    Region                `2005` `2010` `2011` `2012` `2013` `2014` `2015` `2016`
 ##    <chr>                  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
 ##  1 Российская Федерация   812.   812.   860    842.   872.   863    803.   840. 
@@ -324,7 +324,7 @@ print(reforest)
 ## 10 Курская область          0.5    0.3    0.4    0.6    0.6    0.6    0.5    0.4
 ## # … with 79 more rows
 head(reforest)
-## # A tibble: 6 x 9
+## # A tibble: 6 × 9
 ##   Region                 `2005` `2010` `2011` `2012` `2013` `2014` `2015` `2016`
 ##   <chr>                   <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
 ## 1 Российская Федерация    812.   812.   860    842.   872.   863    803.   840. 
@@ -334,7 +334,7 @@ head(reforest)
 ## 5 Владимирская область      4.4    5.3    5.7    6      7.1    5.9    6      4.9
 ## 6 Воронежская область       1.1    1.1    1.8    3      2.7    2.7    2.6    2.3
 tail(reforest)
-## # A tibble: 6 x 9
+## # A tibble: 6 × 9
 ##   Region                 `2005` `2010` `2011` `2012` `2013` `2014` `2015` `2016`
 ##   <chr>                   <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
 ## 1 Хабаровский край        107.    70.2   68.7   67.2   58.4   50.5   59.6   60.3
@@ -378,7 +378,7 @@ rownames(okruga)
 # Замена названий столбцов и строк
 colnames(okruga) <- c("N", "Region", "Year05", "Year10", "Year11", "Year12", "Year13")
 print(okruga)
-## # A tibble: 8 x 7
+## # A tibble: 8 × 7
 ##       N Region            Year05 Year10 Year11 Year12 Year13
 ##   <dbl> <chr>              <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
 ## 1     1 Центральный         4341   3761   3613   3651   3570
@@ -437,7 +437,7 @@ okruga[okruga$Year10 > 2000, ] # Несколько строк через TRUE/F
 
 ```r
 okruga[2:3, c("Year11", "Year12")]
-## # A tibble: 2 x 2
+## # A tibble: 2 × 2
 ##   Year11 Year12
 ##    <dbl>  <dbl>
 ## 1   2866   2877
@@ -480,7 +480,7 @@ colnames(reforest) = c(old_names[1], paste('y', old_names[2:9], sep = ''))
 
 ```r
 (rdf = select(reforest, Region, y2010, y2015))
-## # A tibble: 89 x 3
+## # A tibble: 89 × 3
 ##    Region                        y2010 y2015
 ##    <chr>                         <dbl> <dbl>
 ##  1 Российская Федерация          812.  803. 
@@ -499,7 +499,7 @@ colnames(reforest) = c(old_names[1], paste('y', old_names[2:9], sep = ''))
 
 ```r
 (rdf = select(reforest, -y2005, -y2011:-y2014, -y2016))
-## # A tibble: 89 x 3
+## # A tibble: 89 × 3
 ##    Region                        y2010 y2015
 ##    <chr>                         <dbl> <dbl>
 ##  1 Российская Федерация          812.  803. 
@@ -523,7 +523,7 @@ colnames(reforest) = c(old_names[1], paste('y', old_names[2:9], sep = ''))
 ```r
 flt = !stringr::str_detect(rdf$Region, 'Федерация|федеральный округ') # готовим фильтр для строк
 (regdf = dplyr::filter(rdf, flt)) # применяем фильтр
-## # A tibble: 80 x 3
+## # A tibble: 80 × 3
 ##    Region               y2010 y2015
 ##    <chr>                <dbl> <dbl>
 ##  1 Белгородская область   0.1   0.2
@@ -543,7 +543,7 @@ flt = !stringr::str_detect(rdf$Region, 'Федерация|федеральны�
 
 ```r
 dplyr::filter(regdf, y2015 > 50)
-## # A tibble: 4 x 3
+## # A tibble: 4 × 3
 ##   Region                y2010 y2015
 ##   <chr>                 <dbl> <dbl>
 ## 1 Архангельская область  39.4  57.6
@@ -556,7 +556,7 @@ dplyr::filter(regdf, y2015 > 50)
 
 ```r
 arrange(regdf, y2015) # по возрастанию
-## # A tibble: 80 x 3
+## # A tibble: 80 × 3
 ##    Region                              y2010 y2015
 ##    <chr>                               <dbl> <dbl>
 ##  1 Орловская область                     0     0.1
@@ -571,7 +571,7 @@ arrange(regdf, y2015) # по возрастанию
 ## 10 Курская область                       0.3   0.5
 ## # … with 70 more rows
 arrange(regdf, desc(y2015)) # по убыванию
-## # A tibble: 80 x 3
+## # A tibble: 80 × 3
 ##    Region                y2010 y2015
 ##    <chr>                 <dbl> <dbl>
 ##  1 Иркутская область      80.4 117. 
@@ -590,7 +590,7 @@ __Добавление__ новых переменных (столбцов) ос
 
 ```r
 (regdf = mutate(regdf, delta = y2015 - y2010))
-## # A tibble: 80 x 4
+## # A tibble: 80 × 4
 ##    Region               y2010 y2015   delta
 ##    <chr>                <dbl> <dbl>   <dbl>
 ##  1 Белгородская область   0.1   0.2   0.1  
@@ -609,7 +609,7 @@ __Добавление__ новых переменных (столбцов) ос
 
 ```r
 transmute(regdf, Region = Region, delta = y2015 - y2010) # сохраняем только Region и delta
-## # A tibble: 80 x 2
+## # A tibble: 80 × 2
 ##    Region                 delta
 ##    <chr>                  <dbl>
 ##  1 Белгородская область   0.1  
@@ -632,7 +632,7 @@ summarise(regdf,
           sumforest = sum(y2015, na.rm = TRUE),
           minforest = min(y2015, na.rm = TRUE),
           maxforest = max(y2015, na.rm = TRUE))
-## # A tibble: 1 x 3
+## # A tibble: 1 × 3
 ##   sumforest minforest maxforest
 ##       <dbl>     <dbl>     <dbl>
 ## 1      801.       0.1      117.
@@ -657,7 +657,7 @@ summarise(regdf,
 ```r
 flt2 = stringr::str_detect(rdf$Region, 'федеральный округ') # ищем округа
 (rdf2 = mutate(rdf, okrug = if_else(flt2, Region, NULL))) # перенесем названия округов в новый столбец
-## # A tibble: 89 x 4
+## # A tibble: 89 × 4
 ##    Region                        y2010 y2015 okrug                        
 ##    <chr>                         <dbl> <dbl> <chr>                        
 ##  1 Российская Федерация          812.  803.  <NA>                         
@@ -672,7 +672,7 @@ flt2 = stringr::str_detect(rdf$Region, 'федеральный округ') # и
 ## 10 Курская область                 0.3   0.5 <NA>                         
 ## # … with 79 more rows
 (rdf2 = tidyr::fill(rdf2, okrug)) # заполним все пустые строчки предыдущим значением
-## # A tibble: 89 x 4
+## # A tibble: 89 × 4
 ##    Region                        y2010 y2015 okrug                        
 ##    <chr>                         <dbl> <dbl> <chr>                        
 ##  1 Российская Федерация          812.  803.  <NA>                         
@@ -687,7 +687,7 @@ flt2 = stringr::str_detect(rdf$Region, 'федеральный округ') # и
 ## 10 Курская область                 0.3   0.5 Центральный федеральный округ
 ## # … with 79 more rows
 (regdf = dplyr::filter(rdf2, flt)) # оставим только регионы
-## # A tibble: 80 x 4
+## # A tibble: 80 × 4
 ##    Region               y2010 y2015 okrug                        
 ##    <chr>                <dbl> <dbl> <chr>                        
 ##  1 Белгородская область   0.1   0.2 Центральный федеральный округ
@@ -708,7 +708,7 @@ flt2 = stringr::str_detect(rdf$Region, 'федеральный округ') # и
 regdf_gr = group_by(regdf, okrug)
 regdf_arr = arrange(regdf_gr, desc(y2015))
 (regdf_res = dplyr::filter(regdf_arr, row_number() == 1))
-## # A tibble: 8 x 4
+## # A tibble: 8 × 4
 ## # Groups:   okrug [8]
 ##   Region                y2010 y2015 okrug                              
 ##   <chr>                 <dbl> <dbl> <chr>                              
@@ -727,7 +727,7 @@ regdf_arr = arrange(regdf_gr, desc(y2015))
 ```r
 regdf_gr = group_by(regdf, okrug)
 summarise(regdf_gr, total = sum(y2015, na.rm = TRUE))
-## # A tibble: 8 x 2
+## # A tibble: 8 × 2
 ##   okrug                               total
 ##   <chr>                               <dbl>
 ## 1 Дальневосточный федеральный округ   108. 
@@ -773,7 +773,7 @@ leaders = regdf %>%
   dplyr::filter(row_number() == 1)
 
 print(leaders)
-## # A tibble: 8 x 4
+## # A tibble: 8 × 4
 ## # Groups:   okrug [8]
 ##   Region                y2010 y2015 okrug                              
 ##   <chr>                 <dbl> <dbl> <chr>                              
@@ -860,7 +860,7 @@ result = dplyr::filter(
     pivot_longer(cols = y2005:y2016, 
                  names_to = 'year', 
                  values_to = 'value'))
-## # A tibble: 712 x 3
+## # A tibble: 712 × 3
 ##    Region                        year  value
 ##    <chr>                         <chr> <dbl>
 ##  1 Российская Федерация          y2005 812. 
@@ -887,7 +887,7 @@ result = dplyr::filter(
                  names_prefix = 'y',
                  names_transform = list(year = as.integer),
                  values_to = 'value'))
-## # A tibble: 712 x 3
+## # A tibble: 712 × 3
 ##    Region                         year value
 ##    <chr>                         <int> <dbl>
 ##  1 Российская Федерация           2005 812. 
@@ -910,7 +910,7 @@ result = dplyr::filter(
   separate(year, c('y', 'year'), 1) %>% 
   select(-y) %>% 
   mutate(year = as.integer(year)))
-## # A tibble: 712 x 3
+## # A tibble: 712 × 3
 ##    Region                         year value
 ##    <chr>                         <int> <dbl>
 ##  1 Российская Федерация           2005 812. 
@@ -930,7 +930,7 @@ result = dplyr::filter(
 
 ```r
 reforest_tidy %>% dplyr::filter(year > 2011 & year < 2016 & value == 0)
-## # A tibble: 2 x 3
+## # A tibble: 2 × 3
 ##   Region             year value
 ##   <chr>             <int> <dbl>
 ## 1 Орловская область  2013     0
@@ -949,7 +949,7 @@ reforest_tidy %>% dplyr::filter(year > 2011 & year < 2016 & value == 0)
 ```r
 (reforest = reforest_tidy %>% 
    pivot_wider(names_from = year, values_from = value))
-## # A tibble: 89 x 9
+## # A tibble: 89 × 9
 ##    Region                `2005` `2010` `2011` `2012` `2013` `2014` `2015` `2016`
 ##    <chr>                  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
 ##  1 Российская Федерация   812.   812.   860    842.   872.   863    803.   840. 
@@ -1016,7 +1016,7 @@ _Фильтрующее соединение:_
 (timber = read_excel('data/timber.xlsx', 
                     col_types = c('text', rep('numeric', 8))) %>% 
   dplyr::filter(!stringr::str_detect(Регион, 'Федерация|федеральный округ')))
-## # A tibble: 75 x 9
+## # A tibble: 75 × 9
 ##    Регион               `2010` `2011` `2012` `2013` `2014` `2015` `2016` Место
 ##    <chr>                 <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl> <dbl>
 ##  1 Белгородская область   30.4   39.6   27.7   37.4   34.1   45.6   30.4    60
@@ -1040,7 +1040,7 @@ _Фильтрующее соединение:_
   transmute(Region = Регион,
             year = as.numeric(year),
             harvest = harvest))
-## # A tibble: 525 x 3
+## # A tibble: 525 × 3
 ##    Region                year harvest
 ##    <chr>                <dbl>   <dbl>
 ##  1 Белгородская область  2010    30.4
@@ -1063,7 +1063,7 @@ _Фильтрующее соединение:_
 ```r
 (compare = reforest_tidy %>% 
   inner_join(timber_tidy, by = c("Region" = "Region", "year" = "year")))
-## # A tibble: 511 x 4
+## # A tibble: 511 × 4
 ##    Region                year value harvest
 ##    <chr>                <dbl> <dbl>   <dbl>
 ##  1 Белгородская область  2010   0.1    30.4
@@ -1085,7 +1085,7 @@ _Фильтрующее соединение:_
    mutate(ratio = 1000 * value / harvest) %>% 
    select(Region, year, ratio, value, harvest) %>% 
    arrange(year, desc(ratio)))
-## # A tibble: 511 x 5
+## # A tibble: 511 × 5
 ##    Region                    year ratio value harvest
 ##    <chr>                    <dbl> <dbl> <dbl>   <dbl>
 ##  1 Ставропольский край       2010 182.    0.4     2.2
@@ -1133,7 +1133,7 @@ write_xlsx(compare, "data/output/timber_compare.xlsx")
 ## Краткий обзор {#tables_review}
 
 Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
-<iframe src="https://tsamsonov.github.io/r-geo-course-slides/03_Tables.html#1" width="100%" height="390px"></iframe>
+<iframe src="https://tsamsonov.github.io/r-geo-course-slides/03_Tables.html#1" width="100%" height="390px" data-external="1"></iframe>
 
 > Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.
 

@@ -254,33 +254,33 @@ methods(class = "sf") # Посмотрим, какие методы доступ
 ##  [19] group_by              group_split           identify             
 ##  [22] initialize            inner_join            left_join            
 ##  [25] mapView               mask                  merge                
-##  [28] mutate                nest                  plot                 
-##  [31] print                 raster                rasterize            
-##  [34] rbind                 rename                right_join           
-##  [37] rowwise               sample_frac           sample_n             
-##  [40] select                semi_join             separate_rows        
-##  [43] separate              show                  slice                
-##  [46] slotsFromS3           spread                st_agr               
-##  [49] st_agr<-              st_area               st_as_s2             
-##  [52] st_as_sf              st_as_stars           st_bbox              
-##  [55] st_boundary           st_buffer             st_cast              
-##  [58] st_centroid           st_collection_extract st_convex_hull       
-##  [61] st_coordinates        st_crop               st_crs               
-##  [64] st_crs<-              st_difference         st_filter            
-##  [67] st_geometry           st_geometry<-         st_inscribed_circle  
-##  [70] st_interpolate_aw     st_intersection       st_intersects        
-##  [73] st_is_valid           st_is                 st_join              
-##  [76] st_line_merge         st_m_range            st_make_valid        
-##  [79] st_nearest_points     st_node               st_normalize         
-##  [82] st_point_on_surface   st_polygonize         st_precision         
-##  [85] st_reverse            st_sample             st_segmentize        
-##  [88] st_set_precision      st_shift_longitude    st_simplify          
-##  [91] st_snap               st_sym_difference     st_transform_proj    
-##  [94] st_transform          st_triangulate        st_union             
-##  [97] st_voronoi            st_wrap_dateline      st_write             
-## [100] st_z_range            st_zm                 summarise            
-## [103] transform             transmute             ungroup              
-## [106] unite                 unnest               
+##  [28] mutate                nest                  pivot_longer         
+##  [31] plot                  print                 raster               
+##  [34] rasterize             rbind                 rename               
+##  [37] right_join            rowwise               sample_frac          
+##  [40] sample_n              select                semi_join            
+##  [43] separate_rows         separate              show                 
+##  [46] slice                 slotsFromS3           spread               
+##  [49] st_agr                st_agr<-              st_area              
+##  [52] st_as_s2              st_as_sf              st_as_stars          
+##  [55] st_bbox               st_boundary           st_buffer            
+##  [58] st_cast               st_centroid           st_collection_extract
+##  [61] st_convex_hull        st_coordinates        st_crop              
+##  [64] st_crs                st_crs<-              st_difference        
+##  [67] st_filter             st_geometry           st_geometry<-        
+##  [70] st_inscribed_circle   st_interpolate_aw     st_intersection      
+##  [73] st_intersects         st_is_valid           st_is                
+##  [76] st_join               st_line_merge         st_m_range           
+##  [79] st_make_valid         st_nearest_points     st_node              
+##  [82] st_normalize          st_point_on_surface   st_polygonize        
+##  [85] st_precision          st_reverse            st_sample            
+##  [88] st_segmentize         st_set_precision      st_shift_longitude   
+##  [91] st_simplify           st_snap               st_sym_difference    
+##  [94] st_transform_proj     st_transform          st_triangulate       
+##  [97] st_union              st_voronoi            st_wrap_dateline     
+## [100] st_write              st_z_range            st_zm                
+## [103] summarise             transform             transmute            
+## [106] ungroup               unite                 unnest               
 ## see '?methods' for accessing help and source code
 ```
 
@@ -1045,7 +1045,7 @@ print(cites.sf)
                     col_positions = fwf_widths(diff(c(1, 7, 42, 47, 53, 59, 67, 71)), 
                                                col_names = c('id', 'name', 'lat', 't1', 'lon', 't2', 'z')),
                     locale = locale(encoding = 'CP1251')))
-## # A tibble: 1,124 x 7
+## # A tibble: 1,124 × 7
 ##       id name                  lat t1      lon t2        z
 ##    <dbl> <chr>               <dbl> <chr> <dbl> <chr> <dbl>
 ##  1 20046 Им.Э.Т.Кренкеля,ГМО  80.6 с.ш.   58   в.д.     21

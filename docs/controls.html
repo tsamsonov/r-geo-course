@@ -6,15 +6,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Глава 4 Функции | Визуализация и анализ географических данных на языке R</title>
 <meta name="author" content="Тимофей Самсонов">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="В настоящей главе мы кратко познакомимся с функциональным программированием и метапрограммированием, которые являются одними из основных техник программирования на R.  4.1 Функциональное...">
+<meta name="generator" content="bookdown 0.24 with bs4_book()">
+<meta property="og:title" content="Глава 4 Функции | Визуализация и анализ географических данных на языке R">
+<meta property="og:type" content="book">
+<meta property="og:description" content="В настоящей главе мы кратко познакомимся с функциональным программированием и метапрограммированием, которые являются одними из основных техник программирования на R.  4.1 Функциональное...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Глава 4 Функции | Визуализация и анализ географических данных на языке R">
+<meta name="twitter:site" content="@timofeysamsonov">
+<meta name="twitter:description" content="В настоящей главе мы кратко познакомимся с функциональным программированием и метапрограммированием, которые являются одними из основных техник программирования на R.  4.1 Функциональное...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script><link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
-<script src="libs/datatables-binding-0.18/datatables.js"></script><link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script><link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="libs/datatables-binding-0.19/datatables.js"></script><link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet">
 <script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script><link href="libs/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet">
-<script src="libs/crosstalk-1.1.1/js/crosstalk.min.js"></script><script src="libs/plotly-binding-4.9.4.1/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/plotly-htmlwidgets-css-1.57.1/plotly-htmlwidgets.css" rel="stylesheet">
-<script src="libs/plotly-main-1.57.1/plotly-latest.min.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS --><link rel="stylesheet" href="default">
+<script src="libs/crosstalk-1.1.1/js/crosstalk.min.js"></script><script src="libs/plotly-binding-4.10.0/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="default">
 <link rel="stylesheet" href="custom.css">
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -111,7 +120,7 @@
 <span class="va">d23</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">-</span> <span class="va">x</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span> <span class="op">^</span> <span class="fl">2</span> <span class="op">+</span> <span class="op">(</span><span class="va">y</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">-</span> <span class="va">y</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span> <span class="op">^</span> <span class="fl">2</span><span class="op">)</span>
 <span class="va">d31</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> <span class="op">-</span> <span class="va">x</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span> <span class="op">^</span> <span class="fl">2</span> <span class="op">+</span> <span class="op">(</span><span class="va">y</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> <span class="op">-</span> <span class="va">y</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span> <span class="op">^</span> <span class="fl">2</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="va">d12</span>, <span class="va">d23</span>, <span class="va">d31</span><span class="op">)</span>
-<span class="co">## 1.716718 3.014928 0.8561944</span></code></pre></div>
+<span class="co">## 0.6803959 1.685004 1.184228</span></code></pre></div>
 <p>В правой части этих выражений стоит один и тот же код, который я скопировал и вставил, а далее заменил названия переменных. Это плохо сразу по двум причинам: дублирование фрагментов программы и возрастание вероятности опечаток в скопированой копии. Улучшить код можно, введя функцию вычисления расстояний:</p>
 <div class="sourceCode" id="cb202"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">distance</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x1</span>, <span class="va">y1</span>, <span class="va">x2</span>, <span class="va">y2</span><span class="op">)</span> <span class="op">{</span>
@@ -122,7 +131,7 @@
 <span class="va">d23</span> <span class="op">=</span> <span class="fu">distance</span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="va">y</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="va">x</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, <span class="va">y</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span>
 <span class="va">d31</span> <span class="op">=</span> <span class="fu">distance</span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, <span class="va">y</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, <span class="va">x</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>, <span class="va">y</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="va">d12</span>, <span class="va">d23</span>, <span class="va">d31</span><span class="op">)</span>
-<span class="co">## 1.716718 3.014928 0.8561944</span></code></pre></div>
+<span class="co">## 0.6803959 1.685004 1.184228</span></code></pre></div>
 <p>Функция всегда возвращает один объект: значение, вектор, список и т.д. Например, мы можем сделать функцию следующего уровня, рассчитывающая сразу все расстояния для множества точек:</p>
 <div class="sourceCode" id="cb203"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">distances</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="op">{</span>
@@ -131,7 +140,7 @@
 <span class="op">}</span>
 
 <span class="fu">distances</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span>
-<span class="co">## [1] 1.7167180 3.0149281 0.8561944</span></code></pre></div>
+<span class="co">## [1] 0.6803959 1.6850040 1.1842284</span></code></pre></div>
 <p>Можно пойти еще дальше, и сделать функцию, выполняющую вычисление длины линии, заданной координатами:</p>
 <div class="sourceCode" id="cb204"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">line_length</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="op">{</span>
@@ -139,7 +148,7 @@
 <span class="op">}</span>
 
 <span class="fu">line_length</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span>
-<span class="co">## [1] 5.58784</span></code></pre></div>
+<span class="co">## [1] 3.549628</span></code></pre></div>
 <p>Обратите внимание на то, как мы используем одну ранее написанную функцию при создании другой функции! Это весьма распространенная практика: одна и та же функция может быть как самостоятельно полезной (вызываться непосредственно в программе полтьзователя), так и применяться для решения задач внутри других функций. При этом иногда даже относительно простые фрагменты кода имеет смысл оформлять в виде функций, так как это может улучшить читаемость программы и пояснить смысл выполняемых операций. Так, например, <code>line_length(x, y)</code> в более явном виде обозначает операцию вычисления длины по координатам, нежели <code><a href="https://rdrr.io/r/base/sum.html">sum(distances(x, y))</a></code>. В то же время, здесь важно не переусердствовать и оформлять короткие фрагменты кода в виде функций только если они будут применяться вами неоднократно.</p>
 <p>Если вам нужно вернуть из функции несколько объектов, имеющих разный тип или смысл, заключите их в список и дайте каждому элементу списка “говорящее” имя. Например, помимо периметра, мы можем вернуть также извилистость линии (отношение длины линии к длине отрезка, соединяющего ее первую и последнюю точку):</p>
 <div class="sourceCode" id="cb205"><pre class="downlit sourceCode r">
@@ -154,9 +163,9 @@
 
 <span class="va">result</span> <span class="op">=</span> <span class="fu">line_params</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span>
 <span class="va">result</span><span class="op">$</span><span class="va">length</span>
-<span class="co">## [1] 5.58784</span>
+<span class="co">## [1] 3.549628</span>
 <span class="va">result</span><span class="op">$</span><span class="va">sinuosity</span>
-<span class="co">## [1] 3.369912</span></code></pre></div>
+<span class="co">## [1] 1.669431</span></code></pre></div>
 </div>
 <div id="tech-fun-functionals" class="section level3" number="4.1.2">
 <h3>
@@ -224,7 +233,7 @@
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span>
 
 <span class="op">(</span><span class="va">df</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel</a></span><span class="op">(</span><span class="st">"data/sevzap.xlsx"</span>, col_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'text'</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">'numeric'</span>, <span class="fl">17</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 10 x 18</span>
+<span class="co">## # A tibble: 10 × 18</span>
 <span class="co">##    city     pop birth death  labor salary livspace doctors  hosp assets business</span>
 <span class="co">##    &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;</span>
 <span class="co">##  1 Петр…  277.   13    12.3   72.3 36268.     24.4    75      17 2.47e5    15856</span>
@@ -293,7 +302,7 @@
 <span class="op">}</span>
 
 <span class="op">(</span><span class="va">normalized_df</span> <span class="op">=</span> <span class="va">df</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">normalize</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 10 x 18</span>
+<span class="co">## # A tibble: 10 × 18</span>
 <span class="co">##    city      pop birth death labor salary livspace doctors  hosp assets business</span>
 <span class="co">##    &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;</span>
 <span class="co">##  1 Петроз…  0.36  0.93  1.04  0.26   0.89     1.01    1.05  0.67   0.35     0.31</span>
@@ -332,7 +341,7 @@
 <span class="co">##    invest </span>
 <span class="co">##  521293.0</span>
 <span class="va">df</span> |&gt; <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">normalize</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">## # A tibble: 10 x 18</span>
+<span class="co">## # A tibble: 10 × 18</span>
 <span class="co">##    city      pop birth death labor salary livspace doctors  hosp assets business</span>
 <span class="co">##    &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;</span>
 <span class="co">##  1 Петроз…  0.36  0.93  1.04  0.26   0.89     1.01    1.05  0.67   0.35     0.31</span>
@@ -357,7 +366,7 @@
 <p>Вы уже сталкивались с метапрограммированием, когда работали с функциями <code>dplyr</code>. Например, сравните следующие два способа извлечь столбец из фрейма данных:</p>
 <div class="sourceCode" id="cb212"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">df</span><span class="op">[</span><span class="st">"salary"</span><span class="op">]</span>
-<span class="co">## # A tibble: 10 x 1</span>
+<span class="co">## # A tibble: 10 × 1</span>
 <span class="co">##    salary</span>
 <span class="co">##     &lt;dbl&gt;</span>
 <span class="co">##  1 36268.</span>
@@ -372,7 +381,7 @@
 <span class="co">## 10 44187</span>
 
 <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">df</span>, <span class="va">salary</span><span class="op">)</span>
-<span class="co">## # A tibble: 10 x 1</span>
+<span class="co">## # A tibble: 10 × 1</span>
 <span class="co">##    salary</span>
 <span class="co">##     &lt;dbl&gt;</span>
 <span class="co">##  1 36268.</span>
@@ -407,7 +416,7 @@
 <span class="co">## [1] 82</span>
 
 <span class="va">df</span><span class="op">[</span><span class="st">'salary'</span><span class="op">]</span>      <span class="co"># стандартная запись</span>
-<span class="co">## # A tibble: 10 x 1</span>
+<span class="co">## # A tibble: 10 × 1</span>
 <span class="co">##    salary</span>
 <span class="co">##     &lt;dbl&gt;</span>
 <span class="co">##  1 36268.</span>
@@ -421,7 +430,7 @@
 <span class="co">##  9 27405.</span>
 <span class="co">## 10 44187</span>
 <span class="fu">`[`</span><span class="op">(</span><span class="va">df</span>, <span class="st">'salary'</span><span class="op">)</span> <span class="co"># функциональная запись</span>
-<span class="co">## # A tibble: 10 x 1</span>
+<span class="co">## # A tibble: 10 × 1</span>
 <span class="co">##    salary</span>
 <span class="co">##     &lt;dbl&gt;</span>
 <span class="co">##  1 36268.</span>
@@ -455,7 +464,7 @@
 <div class="sourceCode" id="cb215"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org">readr</a></span><span class="op">)</span>
 <span class="op">(</span><span class="va">okruga</span> <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span><span class="st">'data/okruga.csv'</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 8 x 7</span>
+<span class="co">## # A tibble: 8 × 7</span>
 <span class="co">##     `№` Регион            `2005` `2010` `2011` `2012` `2013`</span>
 <span class="co">##   &lt;dbl&gt; &lt;chr&gt;              &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span>
 <span class="co">## 1     1 Центральный         4341   3761   3613   3651   3570</span>
@@ -483,7 +492,7 @@
 <code class="sourceCode R"><span class="va">f1</span> <span class="op">=</span> <span class="st">'salary'</span>
 <span class="va">f2</span> <span class="op">=</span> <span class="st">'birth'</span>
 <span class="fu"><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html">select_</a></span><span class="op">(</span><span class="va">df</span>, <span class="va">f1</span>, <span class="va">f2</span><span class="op">)</span>        <span class="co"># ОК</span>
-<span class="co">## # A tibble: 10 x 2</span>
+<span class="co">## # A tibble: 10 × 2</span>
 <span class="co">##    salary birth</span>
 <span class="co">##     &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">##  1 36268.  13  </span>
@@ -501,7 +510,7 @@
 <p>Однако кавычки в данном случае усложняют внешний вид программы и затрудняют написание ее текста. Если вы передаете <em>константы</em> в качестве аргументов, они будут работать в обоих случаях:</p>
 <div class="sourceCode" id="cb219"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">df</span>, <span class="st">'salary'</span>, <span class="st">'birth'</span><span class="op">)</span>
-<span class="co">## # A tibble: 10 x 2</span>
+<span class="co">## # A tibble: 10 × 2</span>
 <span class="co">##    salary birth</span>
 <span class="co">##     &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">##  1 36268.  13  </span>
@@ -515,7 +524,7 @@
 <span class="co">##  9 27405.  13.2</span>
 <span class="co">## 10 44187   13.6</span>
 <span class="fu"><a href="https://dplyr.tidyverse.org/reference/se-deprecated.html">select_</a></span><span class="op">(</span><span class="va">df</span>, <span class="st">'salary'</span>, <span class="st">'birth'</span><span class="op">)</span> 
-<span class="co">## # A tibble: 10 x 2</span>
+<span class="co">## # A tibble: 10 × 2</span>
 <span class="co">##    salary birth</span>
 <span class="co">##     &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">##  1 36268.  13  </span>
@@ -549,7 +558,7 @@
 <span class="header-section-number">4.3</span> Краткий обзор<a class="anchor" aria-label="anchor" href="#tech_review"><i class="fas fa-link"></i></a>
 </h2>
 <p>Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
-<iframe src="https://tsamsonov.github.io/r-geo-course-slides/04_Functions.html#1" width="100%" height="390px"></iframe></p>
+<iframe src="https://tsamsonov.github.io/r-geo-course-slides/04_Functions.html#1" width="100%" height="390px" data-external="1"></iframe></p>
 <blockquote>
 <p>Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.</p>
 </blockquote>
@@ -617,7 +626,7 @@
 </ol>
 <div class="inline-table"><table class="table table-sm"><tbody><tr class="odd">
 <td>
-<em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, <code><a href="http://lubridate.tidyverse.org/reference/year.html">lubridate::year(Sys.Date())</a></code>. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a>
+<em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, <code><a href="https://lubridate.tidyverse.org/reference/year.html">lubridate::year(Sys.Date())</a></code>. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a>
 </td>
 </tr></tbody></table></div>
 </div>
@@ -664,7 +673,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-10-06.</p>
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-10-19.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -684,6 +693,22 @@
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
 </script>
 </body>
 </html>

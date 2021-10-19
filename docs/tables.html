@@ -6,15 +6,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Глава 3 Таблицы | Визуализация и анализ географических данных на языке R</title>
 <meta name="author" content="Тимофей Самсонов">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="3.1 Предварительные требования Для работы по теме текущей лекции вам понадобятся пакеты из tidyverse, а также writexl. Установите их, используя следующую команду: install.packages('tidyverse')...">
+<meta name="generator" content="bookdown 0.24 with bs4_book()">
+<meta property="og:title" content="Глава 3 Таблицы | Визуализация и анализ географических данных на языке R">
+<meta property="og:type" content="book">
+<meta property="og:description" content="3.1 Предварительные требования Для работы по теме текущей лекции вам понадобятся пакеты из tidyverse, а также writexl. Установите их, используя следующую команду: install.packages('tidyverse')...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Глава 3 Таблицы | Визуализация и анализ географических данных на языке R">
+<meta name="twitter:site" content="@timofeysamsonov">
+<meta name="twitter:description" content="3.1 Предварительные требования Для работы по теме текущей лекции вам понадобятся пакеты из tidyverse, а также writexl. Установите их, используя следующую команду: install.packages('tidyverse')...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script><link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
-<script src="libs/datatables-binding-0.18/datatables.js"></script><link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script><link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="libs/datatables-binding-0.19/datatables.js"></script><link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet">
 <script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script><link href="libs/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet">
-<script src="libs/crosstalk-1.1.1/js/crosstalk.min.js"></script><script src="libs/plotly-binding-4.9.4.1/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/plotly-htmlwidgets-css-1.57.1/plotly-htmlwidgets.css" rel="stylesheet">
-<script src="libs/plotly-main-1.57.1/plotly-latest.min.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS --><link rel="stylesheet" href="default">
+<script src="libs/crosstalk-1.1.1/js/crosstalk.min.js"></script><script src="libs/plotly-binding-4.10.0/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="default">
 <link rel="stylesheet" href="custom.css">
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -153,7 +162,7 @@
   b <span class="op">=</span> <span class="fl">1</span>, 
   c <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span>
 <span class="op">)</span>
-<span class="co">## # A tibble: 3 x 3</span>
+<span class="co">## # A tibble: 3 × 3</span>
 <span class="co">##       a     b     c</span>
 <span class="co">##   &lt;int&gt; &lt;dbl&gt; &lt;int&gt;</span>
 <span class="co">## 1     1     1    -1</span>
@@ -161,7 +170,7 @@
 <span class="co">## 3     3     1     1</span>
 <span class="va">dfr</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, b <span class="op">=</span> <span class="fl">1</span>,  c <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span>
 <span class="fu">as_tibble</span><span class="op">(</span><span class="va">dfr</span><span class="op">)</span>
-<span class="co">## # A tibble: 3 x 3</span>
+<span class="co">## # A tibble: 3 × 3</span>
 <span class="co">##       a     b     c</span>
 <span class="co">##   &lt;int&gt; &lt;dbl&gt; &lt;int&gt;</span>
 <span class="co">## 1     1     1    -1</span>
@@ -182,7 +191,7 @@
    <span class="fl">2</span>,  <span class="fl">1</span>,  <span class="fl">0</span>,
    <span class="fl">3</span>,  <span class="fl">1</span>,  <span class="fl">1</span>
 <span class="op">)</span>
-<span class="co">## # A tibble: 3 x 3</span>
+<span class="co">## # A tibble: 3 × 3</span>
 <span class="co">##       a     b     c</span>
 <span class="co">##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">## 1     1     1    -1</span>
@@ -211,7 +220,7 @@
 <div class="sourceCode" id="cb158"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">starwars</span>, package <span class="op">=</span> <span class="st">'dplyr'</span><span class="op">)</span>
 <span class="va">starwars</span>
-<span class="co">## # A tibble: 87 x 14</span>
+<span class="co">## # A tibble: 87 × 14</span>
 <span class="co">##    name    height  mass hair_color  skin_color eye_color birth_year sex   gender</span>
 <span class="co">##    &lt;chr&gt;    &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; </span>
 <span class="co">##  1 Luke S…    172    77 blond       fair       blue            19   male  mascu…</span>
@@ -295,7 +304,7 @@
 <p>Вышеуказанный файл сохранен с разделителем запятой, поэтому мы можем прочесть его посредством первой функции из списка:</p>
 <div class="sourceCode" id="cb163"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">okruga</span> <span class="op">=</span> <span class="fu">read_csv</span><span class="op">(</span><span class="st">'data/okruga.csv'</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 8 x 7</span>
+<span class="co">## # A tibble: 8 × 7</span>
 <span class="co">##     `№` Регион            `2005` `2010` `2011` `2012` `2013`</span>
 <span class="co">##   &lt;dbl&gt; &lt;chr&gt;              &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span>
 <span class="co">## 1     1 Центральный         4341   3761   3613   3651   3570</span>
@@ -333,7 +342,7 @@
 <p>Прочитаем вышеприведенный файл с данными о ветровой энергии:</p>
 <div class="sourceCode" id="cb165"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">wenergy</span> <span class="op">=</span> <span class="fu">read_table</span><span class="op">(</span><span class="st">'data/wind_energy.txt'</span>, col_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'id'</span>, <span class="st">'lat'</span>, <span class="st">'lon'</span>, <span class="st">'energy50'</span>, <span class="st">'energy110'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 92 x 5</span>
+<span class="co">## # A tibble: 92 × 5</span>
 <span class="co">##       id   lat   lon energy50 energy110</span>
 <span class="co">##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;</span>
 <span class="co">##  1     1  43.5  28       111.      178.</span>
@@ -358,7 +367,7 @@
 <div class="sourceCode" id="cb166"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">reforest</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel</a></span><span class="op">(</span><span class="st">'data/reforest.xlsx'</span>, 
                        col_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'text'</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">'numeric'</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 89 x 9</span>
+<span class="co">## # A tibble: 89 × 9</span>
 <span class="co">##    Region                `2005` `2010` `2011` `2012` `2013` `2014` `2015` `2016`</span>
 <span class="co">##    &lt;chr&gt;                  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span>
 <span class="co">##  1 Российская Федерация   812.   812.   860    842.   872.   863    803.   840. </span>
@@ -415,7 +424,7 @@
 <div class="sourceCode" id="cb167"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># ПРОСМОТР ТАБЛИЦЫ</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">reforest</span><span class="op">)</span>
-<span class="co">## # A tibble: 89 x 9</span>
+<span class="co">## # A tibble: 89 × 9</span>
 <span class="co">##    Region                `2005` `2010` `2011` `2012` `2013` `2014` `2015` `2016`</span>
 <span class="co">##    &lt;chr&gt;                  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span>
 <span class="co">##  1 Российская Федерация   812.   812.   860    842.   872.   863    803.   840. </span>
@@ -430,7 +439,7 @@
 <span class="co">## 10 Курская область          0.5    0.3    0.4    0.6    0.6    0.6    0.5    0.4</span>
 <span class="co">## # … with 79 more rows</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">reforest</span><span class="op">)</span>
-<span class="co">## # A tibble: 6 x 9</span>
+<span class="co">## # A tibble: 6 × 9</span>
 <span class="co">##   Region                 `2005` `2010` `2011` `2012` `2013` `2014` `2015` `2016`</span>
 <span class="co">##   &lt;chr&gt;                   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span>
 <span class="co">## 1 Российская Федерация    812.   812.   860    842.   872.   863    803.   840. </span>
@@ -440,7 +449,7 @@
 <span class="co">## 5 Владимирская область      4.4    5.3    5.7    6      7.1    5.9    6      4.9</span>
 <span class="co">## 6 Воронежская область       1.1    1.1    1.8    3      2.7    2.7    2.6    2.3</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span><span class="op">(</span><span class="va">reforest</span><span class="op">)</span>
-<span class="co">## # A tibble: 6 x 9</span>
+<span class="co">## # A tibble: 6 × 9</span>
 <span class="co">##   Region                 `2005` `2010` `2011` `2012` `2013` `2014` `2015` `2016`</span>
 <span class="co">##   &lt;chr&gt;                   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span>
 <span class="co">## 1 Хабаровский край        107.    70.2   68.7   67.2   58.4   50.5   59.6   60.3</span>
@@ -479,7 +488,7 @@
 <span class="co"># Замена названий столбцов и строк</span>
 <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">okruga</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"N"</span>, <span class="st">"Region"</span>, <span class="st">"Year05"</span>, <span class="st">"Year10"</span>, <span class="st">"Year11"</span>, <span class="st">"Year12"</span>, <span class="st">"Year13"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">okruga</span><span class="op">)</span>
-<span class="co">## # A tibble: 8 x 7</span>
+<span class="co">## # A tibble: 8 × 7</span>
 <span class="co">##       N Region            Year05 Year10 Year11 Year12 Year13</span>
 <span class="co">##   &lt;dbl&gt; &lt;chr&gt;              &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span>
 <span class="co">## 1     1 Центральный         4341   3761   3613   3651   3570</span>
@@ -539,7 +548,7 @@
 <p>Чтобы выбрать конкретные ячейки в таблице, необходимо задать оба измерения:</p>
 <div class="sourceCode" id="cb173"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">okruga</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Year11"</span>, <span class="st">"Year12"</span><span class="op">)</span><span class="op">]</span>
-<span class="co">## # A tibble: 2 x 2</span>
+<span class="co">## # A tibble: 2 × 2</span>
 <span class="co">##   Year11 Year12</span>
 <span class="co">##    &lt;dbl&gt;  &lt;dbl&gt;</span>
 <span class="co">## 1   2866   2877</span>
@@ -599,7 +608,7 @@
 <p>Начнем с <strong>выбора</strong> нужных переменных, используя <code>select()</code>. Оставим только название региона и данные за 2010 и 2015 гг:</p>
 <div class="sourceCode" id="cb175"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">rdf</span> <span class="op">=</span> <span class="fu">select</span><span class="op">(</span><span class="va">reforest</span>, <span class="va">Region</span>, <span class="va">y2010</span>, <span class="va">y2015</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 89 x 3</span>
+<span class="co">## # A tibble: 89 × 3</span>
 <span class="co">##    Region                        y2010 y2015</span>
 <span class="co">##    &lt;chr&gt;                         &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">##  1 Российская Федерация          812.  803. </span>
@@ -616,7 +625,7 @@
 <p>Ту же самую задачу можно решить от противного — указать со знаком <code><a href="https://rdrr.io/r/base/Arithmetic.html">-</a></code> те столбцы, которые надо убрать:</p>
 <div class="sourceCode" id="cb176"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">rdf</span> <span class="op">=</span> <span class="fu">select</span><span class="op">(</span><span class="va">reforest</span>, <span class="op">-</span><span class="va">y2005</span>, <span class="op">-</span><span class="va">y2011</span><span class="op">:</span><span class="op">-</span><span class="va">y2014</span>, <span class="op">-</span><span class="va">y2016</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 89 x 3</span>
+<span class="co">## # A tibble: 89 × 3</span>
 <span class="co">##    Region                        y2010 y2015</span>
 <span class="co">##    &lt;chr&gt;                         &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">##  1 Российская Федерация          812.  803. </span>
@@ -638,7 +647,7 @@
 <div class="sourceCode" id="cb177"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">flt</span> <span class="op">=</span> <span class="op">!</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">rdf</span><span class="op">$</span><span class="va">Region</span>, <span class="st">'Федерация|федеральный округ'</span><span class="op">)</span> <span class="co"># готовим фильтр для строк</span>
 <span class="op">(</span><span class="va">regdf</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">rdf</span>, <span class="va">flt</span><span class="op">)</span><span class="op">)</span> <span class="co"># применяем фильтр</span>
-<span class="co">## # A tibble: 80 x 3</span>
+<span class="co">## # A tibble: 80 × 3</span>
 <span class="co">##    Region               y2010 y2015</span>
 <span class="co">##    &lt;chr&gt;                &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">##  1 Белгородская область   0.1   0.2</span>
@@ -655,7 +664,7 @@
 <p>Условие можно прописать непосредственно при вызове <code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter()</a></code>. Например, выберем регионы, в которых объем лесовосстановительных работ в 2015 году был более 50 тыс. га:</p>
 <div class="sourceCode" id="cb178"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">regdf</span>, <span class="va">y2015</span> <span class="op">&gt;</span> <span class="fl">50</span><span class="op">)</span>
-<span class="co">## # A tibble: 4 x 3</span>
+<span class="co">## # A tibble: 4 × 3</span>
 <span class="co">##   Region                y2010 y2015</span>
 <span class="co">##   &lt;chr&gt;                 &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">## 1 Архангельская область  39.4  57.6</span>
@@ -665,7 +674,7 @@
 <p>Для <strong>сортировки</strong> таблицы посредством <code>arrange()</code> необходимо указать столбцы, по которым будет осуществлено упорядочение строк. Чаще всего это один столбец, например <em>y2015</em>:</p>
 <div class="sourceCode" id="cb179"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">arrange</span><span class="op">(</span><span class="va">regdf</span>, <span class="va">y2015</span><span class="op">)</span> <span class="co"># по возрастанию</span>
-<span class="co">## # A tibble: 80 x 3</span>
+<span class="co">## # A tibble: 80 × 3</span>
 <span class="co">##    Region                              y2010 y2015</span>
 <span class="co">##    &lt;chr&gt;                               &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">##  1 Орловская область                     0     0.1</span>
@@ -680,7 +689,7 @@
 <span class="co">## 10 Курская область                       0.3   0.5</span>
 <span class="co">## # … with 70 more rows</span>
 <span class="fu">arrange</span><span class="op">(</span><span class="va">regdf</span>, <span class="fu">desc</span><span class="op">(</span><span class="va">y2015</span><span class="op">)</span><span class="op">)</span> <span class="co"># по убыванию</span>
-<span class="co">## # A tibble: 80 x 3</span>
+<span class="co">## # A tibble: 80 × 3</span>
 <span class="co">##    Region                y2010 y2015</span>
 <span class="co">##    &lt;chr&gt;                 &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">##  1 Иркутская область      80.4 117. </span>
@@ -697,7 +706,7 @@
 <p><strong>Добавление</strong> новых переменных (столбцов) осуществляется посредством <code>mutate()</code>. Например, определим, как изменился объем лесовосстановительных работ в 2015 году по сравнению с 2010 годом:</p>
 <div class="sourceCode" id="cb180"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">regdf</span> <span class="op">=</span> <span class="fu">mutate</span><span class="op">(</span><span class="va">regdf</span>, delta <span class="op">=</span> <span class="va">y2015</span> <span class="op">-</span> <span class="va">y2010</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 80 x 4</span>
+<span class="co">## # A tibble: 80 × 4</span>
 <span class="co">##    Region               y2010 y2015   delta</span>
 <span class="co">##    &lt;chr&gt;                &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;</span>
 <span class="co">##  1 Белгородская область   0.1   0.2   0.1  </span>
@@ -714,7 +723,7 @@
 <p>Существует редко используемая разновидность мутирования, при которой сохраняются только столбцы, указанные в параметрах. Она называется <code>transmute()</code> — по сути это комбинация <code>mutate()</code> и <code>select()</code>. Если вы хотите просто сохранить какой-то из столбцов, то укажите его через оператор равенства:</p>
 <div class="sourceCode" id="cb181"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">transmute</span><span class="op">(</span><span class="va">regdf</span>, Region <span class="op">=</span> <span class="va">Region</span>, delta <span class="op">=</span> <span class="va">y2015</span> <span class="op">-</span> <span class="va">y2010</span><span class="op">)</span> <span class="co"># сохраняем только Region и delta</span>
-<span class="co">## # A tibble: 80 x 2</span>
+<span class="co">## # A tibble: 80 × 2</span>
 <span class="co">##    Region                 delta</span>
 <span class="co">##    &lt;chr&gt;                  &lt;dbl&gt;</span>
 <span class="co">##  1 Белгородская область   0.1  </span>
@@ -734,7 +743,7 @@
           sumforest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">y2015</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
           minforest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">y2015</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
           maxforest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">y2015</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 1 x 3</span>
+<span class="co">## # A tibble: 1 × 3</span>
 <span class="co">##   sumforest minforest maxforest</span>
 <span class="co">##       &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span>
 <span class="co">## 1      801.       0.1      117.</span></code></pre></div>
@@ -759,7 +768,7 @@
 <div class="sourceCode" id="cb183"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">flt2</span> <span class="op">=</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">rdf</span><span class="op">$</span><span class="va">Region</span>, <span class="st">'федеральный округ'</span><span class="op">)</span> <span class="co"># ищем округа</span>
 <span class="op">(</span><span class="va">rdf2</span> <span class="op">=</span> <span class="fu">mutate</span><span class="op">(</span><span class="va">rdf</span>, okrug <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">flt2</span>, <span class="va">Region</span>, <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co"># перенесем названия округов в новый столбец</span>
-<span class="co">## # A tibble: 89 x 4</span>
+<span class="co">## # A tibble: 89 × 4</span>
 <span class="co">##    Region                        y2010 y2015 okrug                        </span>
 <span class="co">##    &lt;chr&gt;                         &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                        </span>
 <span class="co">##  1 Российская Федерация          812.  803.  &lt;NA&gt;                         </span>
@@ -774,7 +783,7 @@
 <span class="co">## 10 Курская область                 0.3   0.5 &lt;NA&gt;                         </span>
 <span class="co">## # … with 79 more rows</span>
 <span class="op">(</span><span class="va">rdf2</span> <span class="op">=</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/fill.html">fill</a></span><span class="op">(</span><span class="va">rdf2</span>, <span class="va">okrug</span><span class="op">)</span><span class="op">)</span> <span class="co"># заполним все пустые строчки предыдущим значением</span>
-<span class="co">## # A tibble: 89 x 4</span>
+<span class="co">## # A tibble: 89 × 4</span>
 <span class="co">##    Region                        y2010 y2015 okrug                        </span>
 <span class="co">##    &lt;chr&gt;                         &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                        </span>
 <span class="co">##  1 Российская Федерация          812.  803.  &lt;NA&gt;                         </span>
@@ -789,7 +798,7 @@
 <span class="co">## 10 Курская область                 0.3   0.5 Центральный федеральный округ</span>
 <span class="co">## # … with 79 more rows</span>
 <span class="op">(</span><span class="va">regdf</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">rdf2</span>, <span class="va">flt</span><span class="op">)</span><span class="op">)</span> <span class="co"># оставим только регионы</span>
-<span class="co">## # A tibble: 80 x 4</span>
+<span class="co">## # A tibble: 80 × 4</span>
 <span class="co">##    Region               y2010 y2015 okrug                        </span>
 <span class="co">##    &lt;chr&gt;                &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                        </span>
 <span class="co">##  1 Белгородская область   0.1   0.2 Центральный федеральный округ</span>
@@ -808,7 +817,7 @@
 <code class="sourceCode R"><span class="va">regdf_gr</span> <span class="op">=</span> <span class="fu">group_by</span><span class="op">(</span><span class="va">regdf</span>, <span class="va">okrug</span><span class="op">)</span>
 <span class="va">regdf_arr</span> <span class="op">=</span> <span class="fu">arrange</span><span class="op">(</span><span class="va">regdf_gr</span>, <span class="fu">desc</span><span class="op">(</span><span class="va">y2015</span><span class="op">)</span><span class="op">)</span>
 <span class="op">(</span><span class="va">regdf_res</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">regdf_arr</span>, <span class="fu">row_number</span><span class="op">(</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 8 x 4</span>
+<span class="co">## # A tibble: 8 × 4</span>
 <span class="co">## # Groups:   okrug [8]</span>
 <span class="co">##   Region                y2010 y2015 okrug                              </span>
 <span class="co">##   &lt;chr&gt;                 &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                              </span>
@@ -824,7 +833,7 @@
 <div class="sourceCode" id="cb185"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">regdf_gr</span> <span class="op">=</span> <span class="fu">group_by</span><span class="op">(</span><span class="va">regdf</span>, <span class="va">okrug</span><span class="op">)</span>
 <span class="fu">summarise</span><span class="op">(</span><span class="va">regdf_gr</span>, total <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">y2015</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 8 x 2</span>
+<span class="co">## # A tibble: 8 × 2</span>
 <span class="co">##   okrug                               total</span>
 <span class="co">##   &lt;chr&gt;                               &lt;dbl&gt;</span>
 <span class="co">## 1 Дальневосточный федеральный округ   108. </span>
@@ -874,7 +883,7 @@
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu">row_number</span><span class="op">(</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">leaders</span><span class="op">)</span>
-<span class="co">## # A tibble: 8 x 4</span>
+<span class="co">## # A tibble: 8 × 4</span>
 <span class="co">## # Groups:   okrug [8]</span>
 <span class="co">##   Region                y2010 y2015 okrug                              </span>
 <span class="co">##   &lt;chr&gt;                 &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                              </span>
@@ -964,7 +973,7 @@
     <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="va">y2005</span><span class="op">:</span><span class="va">y2016</span>, 
                  names_to <span class="op">=</span> <span class="st">'year'</span>, 
                  values_to <span class="op">=</span> <span class="st">'value'</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 712 x 3</span>
+<span class="co">## # A tibble: 712 × 3</span>
 <span class="co">##    Region                        year  value</span>
 <span class="co">##    &lt;chr&gt;                         &lt;chr&gt; &lt;dbl&gt;</span>
 <span class="co">##  1 Российская Федерация          y2005 812. </span>
@@ -989,7 +998,7 @@
                  names_prefix <span class="op">=</span> <span class="st">'y'</span>,
                  names_transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>year <span class="op">=</span> <span class="va">as.integer</span><span class="op">)</span>,
                  values_to <span class="op">=</span> <span class="st">'value'</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 712 x 3</span>
+<span class="co">## # A tibble: 712 × 3</span>
 <span class="co">##    Region                         year value</span>
 <span class="co">##    &lt;chr&gt;                         &lt;int&gt; &lt;dbl&gt;</span>
 <span class="co">##  1 Российская Федерация           2005 812. </span>
@@ -1009,7 +1018,7 @@
   <span class="fu">separate</span><span class="op">(</span><span class="va">year</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'y'</span>, <span class="st">'year'</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">y</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">mutate</span><span class="op">(</span>year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 712 x 3</span>
+<span class="co">## # A tibble: 712 × 3</span>
 <span class="co">##    Region                         year value</span>
 <span class="co">##    &lt;chr&gt;                         &lt;int&gt; &lt;dbl&gt;</span>
 <span class="co">##  1 Российская Федерация           2005 812. </span>
@@ -1026,7 +1035,7 @@
 <p>Теперь можно выполнять любые запросы, комбинирующие год измерения и величину показателя. Найдем субъекты, в которых с 2012 по 2015 год не производились лесовосстановительные работы:</p>
 <div class="sourceCode" id="cb191"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">reforest_tidy</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">&gt;</span> <span class="fl">2011</span> <span class="op">&amp;</span> <span class="va">year</span> <span class="op">&lt;</span> <span class="fl">2016</span> <span class="op">&amp;</span> <span class="va">value</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span>
-<span class="co">## # A tibble: 2 x 3</span>
+<span class="co">## # A tibble: 2 × 3</span>
 <span class="co">##   Region             year value</span>
 <span class="co">##   &lt;chr&gt;             &lt;int&gt; &lt;dbl&gt;</span>
 <span class="co">## 1 Орловская область  2013     0</span>
@@ -1044,7 +1053,7 @@
 <div class="sourceCode" id="cb192"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">reforest</span> <span class="op">=</span> <span class="va">reforest_tidy</span> <span class="op">%&gt;%</span> 
    <span class="fu">pivot_wider</span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">year</span>, values_from <span class="op">=</span> <span class="va">value</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 89 x 9</span>
+<span class="co">## # A tibble: 89 × 9</span>
 <span class="co">##    Region                `2005` `2010` `2011` `2012` `2013` `2014` `2015` `2016`</span>
 <span class="co">##    &lt;chr&gt;                  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span>
 <span class="co">##  1 Российская Федерация   812.   812.   860    842.   872.   863    803.   840. </span>
@@ -1114,7 +1123,7 @@
 <code class="sourceCode R"><span class="op">(</span><span class="va">timber</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel</a></span><span class="op">(</span><span class="st">'data/timber.xlsx'</span>, 
                     col_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'text'</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">'numeric'</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">Регион</span>, <span class="st">'Федерация|федеральный округ'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 75 x 9</span>
+<span class="co">## # A tibble: 75 × 9</span>
 <span class="co">##    Регион               `2010` `2011` `2012` `2013` `2014` `2015` `2016` Место</span>
 <span class="co">##    &lt;chr&gt;                 &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">##  1 Белгородская область   30.4   39.6   27.7   37.4   34.1   45.6   30.4    60</span>
@@ -1135,7 +1144,7 @@
   <span class="fu">transmute</span><span class="op">(</span>Region <span class="op">=</span> <span class="va">Регион</span>,
             year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span>,
             harvest <span class="op">=</span> <span class="va">harvest</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 525 x 3</span>
+<span class="co">## # A tibble: 525 × 3</span>
 <span class="co">##    Region                year harvest</span>
 <span class="co">##    &lt;chr&gt;                &lt;dbl&gt;   &lt;dbl&gt;</span>
 <span class="co">##  1 Белгородская область  2010    30.4</span>
@@ -1154,7 +1163,7 @@
 <div class="sourceCode" id="cb196"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">compare</span> <span class="op">=</span> <span class="va">reforest_tidy</span> <span class="op">%&gt;%</span> 
   <span class="fu">inner_join</span><span class="op">(</span><span class="va">timber_tidy</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Region"</span> <span class="op">=</span> <span class="st">"Region"</span>, <span class="st">"year"</span> <span class="op">=</span> <span class="st">"year"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 511 x 4</span>
+<span class="co">## # A tibble: 511 × 4</span>
 <span class="co">##    Region                year value harvest</span>
 <span class="co">##    &lt;chr&gt;                &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;</span>
 <span class="co">##  1 Белгородская область  2010   0.1    30.4</span>
@@ -1174,7 +1183,7 @@
    <span class="fu">mutate</span><span class="op">(</span>ratio <span class="op">=</span> <span class="fl">1000</span> <span class="op">*</span> <span class="va">value</span> <span class="op">/</span> <span class="va">harvest</span><span class="op">)</span> <span class="op">%&gt;%</span> 
    <span class="fu">select</span><span class="op">(</span><span class="va">Region</span>, <span class="va">year</span>, <span class="va">ratio</span>, <span class="va">value</span>, <span class="va">harvest</span><span class="op">)</span> <span class="op">%&gt;%</span> 
    <span class="fu">arrange</span><span class="op">(</span><span class="va">year</span>, <span class="fu">desc</span><span class="op">(</span><span class="va">ratio</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## # A tibble: 511 x 5</span>
+<span class="co">## # A tibble: 511 × 5</span>
 <span class="co">##    Region                    year ratio value harvest</span>
 <span class="co">##    &lt;chr&gt;                    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;</span>
 <span class="co">##  1 Ставропольский край       2010 182.    0.4     2.2</span>
@@ -1221,7 +1230,7 @@
 <span class="header-section-number">3.10</span> Краткий обзор<a class="anchor" aria-label="anchor" href="#tables_review"><i class="fas fa-link"></i></a>
 </h2>
 <p>Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
-<iframe src="https://tsamsonov.github.io/r-geo-course-slides/03_Tables.html#1" width="100%" height="390px"></iframe></p>
+<iframe src="https://tsamsonov.github.io/r-geo-course-slides/03_Tables.html#1" width="100%" height="390px" data-external="1"></iframe></p>
 <blockquote>
 <p>Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.</p>
 </blockquote>
@@ -1370,7 +1379,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-10-06.</p>
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-10-19.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -1390,6 +1399,22 @@
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
 </script>
 </body>
 </html>
