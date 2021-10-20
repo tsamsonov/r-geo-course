@@ -819,6 +819,13 @@ ggplot(trades_type) +
 
 <img src="06-AdvGraphics_files/figure-html/unnamed-chunk-46-2.png" width="100%" />
 
+## Краткий обзор {#advgraphics_review}
+
+Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
+<iframe src="https://tsamsonov.github.io/r-geo-course-slides/06_AdvGraphics.html#1" width="100%" height="390px" data-external="1"></iframe>
+
+> Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.
+
 ## Контрольные вопросы и упражнения {#questions_tasks_advgraphics}
 
 ### Вопросы {#questions_advgraphics}
