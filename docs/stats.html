@@ -45,7 +45,31 @@
 </form>
 
       <nav aria-label="Table of contents"><h2>Table of contents</h2>
-        <ul class="book-toc list-unstyled"><li><a class="" href="index.html"><span class="header-section-number">Глава 7</span> Основы статистики</a></li></ul>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">Введение</a></li>
+<li class="book-part">Основы языка R</li>
+<li><a class="" href="basics.html"><span class="header-section-number">1</span> Типы данных</a></li>
+<li><a class="" href="data-structures.html"><span class="header-section-number">2</span> Структуры данных</a></li>
+<li><a class="" href="tables.html"><span class="header-section-number">3</span> Таблицы</a></li>
+<li><a class="" href="controls.html"><span class="header-section-number">4</span> Функции</a></li>
+<li class="book-part">Графика и статистика</li>
+<li><a class="" href="graphics.html"><span class="header-section-number">5</span> Базовая графика</a></li>
+<li><a class="" href="advgraphics.html"><span class="header-section-number">6</span> Продвинутая графика</a></li>
+<li><a class="active" href="stats.html"><span class="header-section-number">7</span> Основы статистики</a></li>
+<li><a class="" href="temporal.html"><span class="header-section-number">8</span> Временные ряды</a></li>
+<li class="book-part">Пространственные данные и карты</li>
+<li><a class="" href="spatial.html"><span class="header-section-number">9</span> Пространственные данные</a></li>
+<li><a class="" href="maps.html"><span class="header-section-number">10</span> Основы картографии</a></li>
+<li><a class="" href="mapping.html"><span class="header-section-number">11</span> Тематические карты</a></li>
+<li><a class="" href="three.html"><span class="header-section-number">12</span> Трехмерные модели</a></li>
+<li class="book-part">Пространственный анализ</li>
+<li><a class="" href="vector.html"><span class="header-section-number">13</span> Векторный анализ</a></li>
+<li><a class="" href="interp.html"><span class="header-section-number">14</span> Интерполяция геополей</a></li>
+<li><a class="" href="raster.html"><span class="header-section-number">15</span> Растровый анализ</a></li>
+<li><a class="" href="network.html"><span class="header-section-number">16</span> Анализ сетей и траекторий</a></li>
+<li class="book-part">Решение проблем</li>
+<li><a class="" href="package-troubles.html"><span class="header-section-number">A</span> Установка пакетов</a></li>
+</ul>
 
         <div class="book-extra">
           <p><a id="book-repo" href="https://github.com/tsamsonov/r-geo-course">View book source <i class="fab fa-github"></i></a></p>
@@ -61,7 +85,7 @@
 <span class="header-section-number">7.1</span> Предварительные требования<a class="anchor" aria-label="anchor" href="#stat_analysis_prerequisites"><i class="fas fa-link"></i></a>
 </h2>
 <p>Для работы по теме текущей лекции вам понадобятся пакеты из <strong>tidyverse</strong>. Помимо этого, мы будем работать с данными через интерфейс <em>Google Sheets</em> напрямую с использованием пакетов <a href="https://googledrive.tidyverse.org/"><strong>googledrive</strong></a> и <a href="https://googlesheets4.tidyverse.org/"><strong>googlesheets4</strong></a>. Также в лекции используется пакет <strong>ggrepel</strong>, позволяющий устранять конфликты подписей на графиках <strong>ggplot</strong>:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb337"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
@@ -115,7 +139,7 @@
 <p>Пакет <a href="https://googlesheets4.tidyverse.org/"><strong>googlesheets4</strong></a> открывает доступ к таблицам Google. С кратким руководством по использованию пакета вы можете ознакомиться <a href="https://googlesheets4.tidyverse.org/articles/articles/drive-and-sheets.html">тут</a>. Данный пакет использует версию <em>4.x Google Sheets API</em> (отсюда цифра 4 в навании) и рекомендуется к использованию вместо устаревшего пакета <a href="https://cran.r-project.org/web/packages/googlesheets/"><strong>googlesheets</strong></a>.</p>
 <p>Пакет <strong>googlesheets4</strong> работает в связке с пакетом <strong>googledrive</strong>, обеспечивающим общие методы доступа к Google Drive. Для загрузки достаточно вызвать функцию <code><a href="https://googlesheets4.tidyverse.org/reference/range_read.html">read_sheet()</a></code>, передав ей в качестве аргумента ключ таблицы Google (см. предыдущий раздел):</p>
 <p>В качестве примера возьмем данные по <a href="https://www.gapminder.org/data/documentation/gd001/">ВВП на душу населения</a>:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb338"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gdpdf</span> <span class="op">=</span> <span class="fu"><a href="https://googlesheets4.tidyverse.org/reference/range_read.html">read_sheet</a></span><span class="op">(</span><span class="st">'1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg'</span><span class="op">)</span>
 <span class="va">gdpdf</span>
 <span class="co">## # A tibble: 260 × 256</span>
@@ -139,7 +163,7 @@
 <span class="co">## #   1798 &lt;dbl&gt;, 1799 &lt;dbl&gt;, 1800 &lt;dbl&gt;, 1801 &lt;dbl&gt;, 1802 &lt;dbl&gt;, 1803 &lt;dbl&gt;,</span>
 <span class="co">## #   1804 &lt;dbl&gt;, 1805 &lt;dbl&gt;, 1806 &lt;dbl&gt;, 1807 &lt;dbl&gt;, 1808 &lt;dbl&gt;, 1809 &lt;dbl&gt;, …</span></code></pre></div>
 <p>Аналогично рассмотрим показатель <a href="https://www.gapminder.org/data/documentation/gd004/">ожидаемой продолжительности жизни</a>:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb339"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lifedf</span> <span class="op">=</span> <span class="fu"><a href="https://googlesheets4.tidyverse.org/reference/range_read.html">read_sheet</a></span><span class="op">(</span><span class="st">'1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo'</span><span class="op">)</span>
 <span class="va">lifedf</span>
 <span class="co">## # A tibble: 260 × 218</span>
@@ -176,7 +200,7 @@
 </h3>
 <p>Для оценки распределения случайной величины можно использовать графические и статистические способы. Выявление типа распределения важно, поскольку статистические методы не универсальны, и во многих случаях предполагают, что изучаемая переменная подчиняется определенному закону распределения (как правило, нормальному).</p>
 <p>Приведем выгруженные ранее данные ВВП к аккуратному виду, избавившись от множества столбцов с годом измерения. Сразу получим данные за 2015 год для анализа:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb340"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gdpdf_tidy</span> <span class="op">=</span> <span class="va">gdpdf</span> <span class="op">%&gt;%</span> 
    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="va">`1764`</span><span class="op">:</span><span class="va">`2018`</span>, 
                 names_to <span class="op">=</span> <span class="st">'year'</span>, 
@@ -202,17 +226,17 @@
 <span class="co">## 10 Antigua and Barbuda    2015 14884.</span>
 <span class="co">## # … with 250 more rows</span></code></pre></div>
 <p>Для визуальной проверки вида распределения можно использовать геометрию <code><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram()</a></code>:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb341"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">gdpdf15</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">gdp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-8-1.png" width="100%"></div>
 <p>Изменить ширину кармана можно, используя параметр <code>binwidth</code>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb342"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">gdpdf15</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">gdp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span>binwidth <span class="op">=</span> <span class="fl">5000</span>, color <span class="op">=</span> <span class="st">'black'</span>, fill <span class="op">=</span> <span class="st">'steelblue'</span>, size <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-9-1.png" width="100%"></div>
 <p>Преобразуем в аккуратный вид и строим гистограмму распределения:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb343"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lifedf_tidy</span> <span class="op">=</span> <span class="va">lifedf</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="va">`1800`</span><span class="op">:</span><span class="va">`2016`</span>, 
                names_to <span class="op">=</span> <span class="st">'year'</span>, 
@@ -231,29 +255,29 @@
 \]</span>
 где <span class="math inline">\(K\)</span> — ядерная функция, <span class="math inline">\(h &gt; 0\)</span> — сглаживающий параметр, <span class="math inline">\(x_i\)</span> — элементы выборки, <span class="math inline">\(n\)</span> — размер выборки. Ядерная функция должна удовлетворять двум критериям: <span class="math inline">\(K(x) \geq 0\)</span>, <span class="math inline">\(\int_{-\infty}^{+\infty} K(x) dx = 1\)</span>. Отсюда ясно, что любая модель функции плотности распределения может быть использована в качестве ядра: равномерное, нормальное и т.д. Как правило, ядерная функция носит бесконечно убывающий характер: чем дальше мы находимся от точки, тем меньше ее вклад в плотность распределения.</p>
 <p>В <strong>ggplot</strong> за аппроксимацию плотности распределения методом ядерного сглаживания отвечает геометрия <code><a href="https://ggplot2.tidyverse.org/reference/geom_density.html">geom_density()</a></code>:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb344"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">gdpdf15</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">gdp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html">geom_density</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">'black'</span>, fill <span class="op">=</span> <span class="st">'steelblue'</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-11-1.png" width="100%"></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb345"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">lifedf15</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">lifexp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html">geom_density</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">'black'</span>, fill <span class="op">=</span> <span class="st">'olivedrab'</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-11-2.png" width="100%"></div>
 <p>Вы можете комбинировать гистограммы и оценку плотности распределения, но для этого гистограмма по оси <em>Y</em> должна отражать не фактическое количество элементов в каждом классе, а <em>долю</em> или плотность вероятности (<code>y = stat(density)</code>):</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb346"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">gdpdf15</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">gdp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes_eval.html">stat</a></span><span class="op">(</span><span class="va">density</span><span class="op">)</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">'grey'</span>, color <span class="op">=</span> <span class="st">'black'</span>, size <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html">geom_density</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">'black'</span>, fill <span class="op">=</span> <span class="st">'steelblue'</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-12-1.png" width="100%"></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb347"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">lifedf15</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">lifexp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes_eval.html">stat</a></span><span class="op">(</span><span class="va">density</span><span class="op">)</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">'grey'</span>, color <span class="op">=</span> <span class="st">'black'</span>, size <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html">geom_density</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">'black'</span>, fill <span class="op">=</span> <span class="st">'olivedrab'</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-12-2.png" width="100%"></div>
 <p>При построении гистограмм и оценке плотности распределения мы допустили ошибку: приняли, что все измерения являются равнозначными. Однако в данном случае это не так. Население Люксембурга и Пакистана отличается на два порядка — это означает, что Пакистан должен иметь соответственно больший вес при построении гистограммы. Для учета этой характеристики подгрузим из <strong>Gapminder</strong> данные по численности населения и присоединим их к нашим таблицам по ВВП и продолжительности жизни:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb348"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">popdf_tidy</span> <span class="op">=</span> 
   <span class="fu"><a href="https://googlesheets4.tidyverse.org/reference/range_read.html">read_sheet</a></span><span class="op">(</span><span class="st">'1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8'</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># численность населения</span>
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="va">`1800`</span><span class="op">:</span><span class="va">`2015`</span>, 
@@ -280,7 +304,7 @@
 <span class="co">## 10 Abkhazia  1890    NA     NA    NA</span>
 <span class="co">## # … with 19,349 more rows</span></code></pre></div>
 <p>Теперь мы можем произвести взвешенную оценку плотности распределения:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb349"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tab15</span> <span class="op">=</span> <span class="va">tab</span> <span class="op">%&gt;%</span>  
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2015</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># все веса должны быть непустыми!</span>
@@ -289,14 +313,14 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span>binwidth <span class="op">=</span> <span class="fl">5000</span>, fill <span class="op">=</span> <span class="st">'grey'</span>, color <span class="op">=</span> <span class="st">'black'</span>, size <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html">geom_density</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">'black'</span>, fill <span class="op">=</span> <span class="st">'steelblue'</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-14-1.png" width="100%"></div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb350"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tab15</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">lifexp</span>, y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes_eval.html">stat</a></span><span class="op">(</span><span class="va">density</span><span class="op">)</span>, weight <span class="op">=</span> <span class="va">pop</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span>binwidth <span class="op">=</span> <span class="fl">2.5</span>, fill <span class="op">=</span> <span class="st">'grey'</span>, color <span class="op">=</span> <span class="st">'black'</span>, size <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html">geom_density</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">'black'</span>, fill <span class="op">=</span> <span class="st">'olivedrab'</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-14-2.png" width="100%"></div>
 <p>Графики плотности распределения удобны тем, что их, в отличие от гистограмм, удобно комбинировать на одном изображении, используя цвет для разделения по еще одной переменной. Например, мы можем оценить, как изменились мировые диспропорции в продолжительности жизни и доходов населения за последние 50 лет (обратите внимание на параметр <code>fill = year</code> в эстетике:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb351"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tab85</span> <span class="op">=</span> <span class="va">tab</span> <span class="op">%&gt;%</span> 
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">%in%</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1965</span>, <span class="fl">2015</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="op">)</span>
@@ -304,7 +328,7 @@
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tab85</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">gdp</span>, fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span>, weight <span class="op">=</span> <span class="va">pop</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html">geom_density</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-15-1.png" width="100%"></div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb352"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tab85</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">lifexp</span>, fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span>, weight <span class="op">=</span> <span class="va">pop</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html">geom_density</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></code></pre></div>
@@ -315,7 +339,7 @@
 <span class="header-section-number">7.3.2</span> Описательные статистики<a class="anchor" aria-label="anchor" href="#stat_analysis_one_summary"><i class="fas fa-link"></i></a>
 </h3>
 <p>Описательные статистики — это числовые характеристики, описывающие особенности статистического распределения изучаемой величины. К таким характеристикам относят выборочное среднее, медиану, минимум, максимум и ряд других величин. Можно вычислять эти характеристики для всей выборки, но для включения географического контекста мы стратифицируем ее по макрорегионам, которые используются в базе данных <strong>Gapminder</strong>. Подгрузим эту информацию (географические данные находятся по адресу <a href="https://www.gapminder.org/data/geo/"><strong>https://www.gapminder.org/data/geo/</strong></a>):</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb353"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">countries</span> <span class="op">=</span> <span class="fu"><a href="https://googlesheets4.tidyverse.org/reference/range_read.html">read_sheet</a></span><span class="op">(</span><span class="st">'1qHalit8sXC0R8oVXibc2wa2gY7bkwGzOybEMTWp-08o'</span>, <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span>Country <span class="op">=</span> <span class="va">name</span>, Region <span class="op">=</span> <span class="va">eight_regions</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Country</span>, levels <span class="op">=</span> <span class="va">Country</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">Region</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
@@ -325,7 +349,7 @@
 <span class="co">#   drive_get() %&gt;% </span>
 <span class="co">#   read_sheet(sheet = 2) -&gt; countries</span></code></pre></div>
 <p>Визуализируем:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb354"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">countries</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Country</span>, y <span class="op">=</span> <span class="fl">1</span>, fill <span class="op">=</span> <span class="va">Region</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_col</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fl">0.5</span>, label <span class="op">=</span> <span class="va">Country</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span>
@@ -342,7 +366,7 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html">coord_flip</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-17-1.png" width="100%"></div>
 <p>Присоединим эти данные к исходной таблице:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb355"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">tabreg</span> <span class="op">=</span> <span class="va">tab</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">countries</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2015</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -362,17 +386,17 @@
 <span class="co">## 10 Azerbaijan           2015 10475.   72.9  9753968 europe_east       </span>
 <span class="co">## # … with 162 more rows</span></code></pre></div>
 <p>Мы уже знакомы с функциями <code><a href="https://rdrr.io/r/base/Extremes.html">min()</a></code>, <code><a href="https://rdrr.io/r/base/Extremes.html">max()</a></code>, <code><a href="https://rdrr.io/r/stats/median.html">median()</a></code>, <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>, <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code>, которые дают значения соответствующих описательных статистик для векторов данных. Как представить их все одновременно? Для визуализации отличий в статистических параметрах исследуемой выборки удобно использовать тип графика, который называется <a href="https://ru.wikipedia.org/wiki/%D0%AF%D1%89%D0%B8%D0%BA_%D1%81_%D1%83%D1%81%D0%B0%D0%BC%D0%B8"><strong>boxplot</strong></a> (а по русски — диаграмма размаха, улей, или ящик с усами). В <strong>ggplot</strong> за него отвечает геометрия <code><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot()</a></code>:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb356"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tabreg</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Region</span>, y <span class="op">=</span> <span class="va">gdp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html">coord_flip</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-19-1.png" width="100%"></div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb357"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tabreg</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Region</span>, y <span class="op">=</span> <span class="va">lifexp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html">coord_flip</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-19-2.png" width="100%"></div>
 <p>Данные графики наглядно показывают, что регионы отличаются по ряду статистических параметров исследуемой переменной: среднему значению, размаху вариации (разбросу значений), среднеквадратическому отклонению Эти статистики можно получить и в табличном виде:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb358"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">tabreg</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Region</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>gdp_mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">gdp</span><span class="op">)</span>,
@@ -398,7 +422,7 @@
 <p>Прежде чем манипулировать вычисленными статистиками (говорить, что в Западной Европе ВВП на душу населения в 10 раз выше, чем в Южной Африке), необходимо убедиться, что их отличия являются статистически значимыми. На статистическую значимость влияет не только абсолютная разность средних, но также характер распределения и объем выборки — выборки малого объема не могут дать высокой статистической значимости.</p>
 <p>Для сравнения средних значений и дисперсий двух статистических выборок обычно используют <a href="https://ru.wikipedia.org/wiki/T-%D0%9A%D1%80%D0%B8%D1%82%D0%B5%D1%80%D0%B8%D0%B9_%D0%A1%D1%82%D1%8C%D1%8E%D0%B4%D0%B5%D0%BD%D1%82%D0%B0"><strong>тест Стьюдента</strong></a> и <a href="https://ru.wikipedia.org/wiki/F-%D1%82%D0%B5%D1%81%D1%82"><strong>тест Фишера</strong></a> соответственно.</p>
 <p>Проведем тесты для сравнения средних по Европе и Южной Африке используя функцию <code><a href="https://rdrr.io/r/stats/t.test.html">t.test()</a></code> (на самом деле это <a href="https://en.wikipedia.org/wiki/Welch%27s_t-test">тест Уэлча</a>, являющийся модификацией теста Стьюдента):</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb359"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">tabreg</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Region</span> <span class="op">==</span> <span class="st">'africa_sub_saharan'</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">gdp</span><span class="op">)</span>,
        <span class="va">tabreg</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Region</span> <span class="op">==</span> <span class="st">'europe_west'</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">gdp</span><span class="op">)</span><span class="op">)</span>
 <span class="co">## </span>
@@ -428,7 +452,7 @@
 <span class="co">##  62.25435  81.45789</span></code></pre></div>
 <p><a href="https://ru.wikipedia.org/wiki/P-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D0%B5"><strong>p-значения</strong></a> для данных тестов очень малы, что позволяет нам принять (не отвергать) гипотезу о неравенстве средних для Западной Европы и Южной Африки.</p>
 <p>Проверим, так ли значимы отличия в средних для Северной и Южной Америки:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb360"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">tabreg</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Region</span> <span class="op">==</span> <span class="st">'america_north'</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">gdp</span><span class="op">)</span>,
        <span class="va">tabreg</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Region</span> <span class="op">==</span> <span class="st">'america_south'</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">gdp</span><span class="op">)</span><span class="op">)</span>
 <span class="co">## </span>
@@ -458,7 +482,7 @@
 <span class="co">##  74.86111  75.14167</span></code></pre></div>
 <p>В данном случае, несмотря на то, что вычисленные значения средних отличаются, тест показывает очень высокие <strong>p-значения</strong> (0.25 и 0.84 соответственно), что не позволяет нам говорить о том, что эти отличия статистически значимы. Соответственно, делать на их основе какие-либо научные выводы нельзя.</p>
 <p>Аналогичным образом можно проверить статистическую значимость отличий в дисперсии (вариации значений) для разных регионов. Для этого используем функцию <code><a href="https://rdrr.io/r/stats/var.test.html">var.test()</a></code> применительно к регионам Западной и Восточной Европы:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb361"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/var.test.html">var.test</a></span><span class="op">(</span><span class="va">tabreg</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Region</span> <span class="op">==</span> <span class="st">'europe_east'</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">gdp</span><span class="op">)</span>,
        <span class="va">tabreg</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Region</span> <span class="op">==</span> <span class="st">'europe_west'</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">gdp</span><span class="op">)</span><span class="op">)</span>
 <span class="co">## </span>
@@ -503,25 +527,25 @@
 <span class="header-section-number">7.4.1.1</span> Диаграмма рассеяния<a class="anchor" aria-label="anchor" href="#stat_analysis_two_distr_scatter"><i class="fas fa-link"></i></a>
 </h4>
 <p>Первичный анализ производится путем оценки совместного распределения переменных на плоскости (для двух переменных) путем построения диаграммы рассеяния. С этим графиком мы уже хорошо знакомы:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb362"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tabreg</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">gdp</span>, <span class="va">lifexp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-24-1.png" width="100%"></div>
 <p>Очевидно, что в данном случае мы имеем с нелинейной зависимостью. Чтобы упростить задачу по дальнейшему анализу, можно попробовать перейти к логарифмической шкале по оси <em>X</em>:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb363"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>scipen <span class="op">=</span> <span class="fl">999</span><span class="op">)</span>
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tabreg</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">gdp</span>, <span class="va">lifexp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_log10</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-25-1.png" width="100%"></div>
 <p>На диаграмме рассеяния важно показать не только местоположение точек, но также их весовую значимость, которая в данном случае определяется численностью населения в стране. Введем соответствующую графическую переменную — размер точки:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb364"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tabreg</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">gdp</span>, <span class="va">lifexp</span>, size <span class="op">=</span> <span class="va">pop</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_log10</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-26-1.png" width="100%"></div>
 <p>Еще сильнее повысить информативность диаграммы рассеяния можно, используя цвет точек для обозначения региона принадлежности. Это позволит понять связь между введенной нами <em>географической стратификацией</em> и распределением элементов выборки на диаграмме рассеяния:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb365"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tabreg</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">gdp</span>, <span class="va">lifexp</span>, size <span class="op">=</span> <span class="va">pop</span>, color <span class="op">=</span> <span class="va">Region</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
@@ -529,7 +553,7 @@
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-27-1.png" width="100%"></div>
 <p>Использование цвета наглядно показывает, что африканские страны занимают нижнюю левую часть диаграммы рассеяния с малой величиной ВВП и низкой продолжительностью жизни.</p>
 <p>Целесообразно также добавить подписи крупнейших стран мира с населением более 100 млн чел, а также страны, занимающие экстремальные позиции по обеим осям, чтобы понять положение ключевых игроков на диаграмме:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb366"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">tablab</span> <span class="op">=</span> <span class="va">tabreg</span> <span class="op">%&gt;%</span> <span class="co"># табличка для подписей</span>
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span>
@@ -550,7 +574,7 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-28-1.png" width="100%"></div>
 <p>Устранение перекрытий подписей можно осуществить, используя геометрию <code><a href="https://rdrr.io/pkg/ggrepel/man/geom_text_repel.html">geom_text_repel()</a></code> из пакета <strong>ggrepel</strong> вместо стандартной <code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text()</a></code></p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb367"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tabreg</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">gdp</span>, <span class="va">lifexp</span>,  color <span class="op">=</span> <span class="va">Region</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>size <span class="op">=</span> <span class="va">pop</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/ggrepel/man/geom_text_repel.html">geom_text_repel</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">tablab</span>, 
@@ -568,7 +592,7 @@
 <span class="header-section-number">7.4.1.2</span> Плотность распределения<a class="anchor" aria-label="anchor" href="#stat_analysis_two_distr_density"><i class="fas fa-link"></i></a>
 </h4>
 <p>Плотность совместного распределения двух случайных величин представляет собой уже не кривую, а поверхность, которую можно построить с использованием геометрии <code><a href="https://ggplot2.tidyverse.org/reference/geom_density_2d.html">geom_density_2d()</a></code>. По умолчанию эта геометрия визуализируется в форме изолиний:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb368"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tabreg</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">gdp</span>, <span class="va">lifexp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density_2d.html">geom_density_2d</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span>
@@ -576,7 +600,7 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-30-1.png" width="100%"></div>
 <p>Усилить наглядность представления можно, добавив вспомогательную растровую поверхность плотности распределения (по которой, собственно, и строятся изолинии). Обратите внимание, что для растра используется функция <code><a href="https://ggplot2.tidyverse.org/reference/geom_density.html">stat_density()</a></code>:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb369"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tabreg</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">gdp</span>, <span class="va">lifexp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density_2d.html">stat_density_2d</a></span><span class="op">(</span>geom <span class="op">=</span> <span class="st">"raster"</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes_eval.html">stat</a></span><span class="op">(</span><span class="va">density</span><span class="op">)</span><span class="op">)</span>, contour <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density_2d.html">geom_density_2d</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">'black'</span>, size <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span>
@@ -587,7 +611,7 @@
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-31-1.png" width="100%"></div>
 <p>График двумерной плотности распределения показывает, что <em>мода</em> распределения, т.е. наиболее часто встречающийся случай, примерно соответствует странам с продолжительностью жизни 75 лет и ВВП на душу населения $10000.</p>
 <p>В некоторых случаях удобнее оказывается не аппроксимация непрерывной поверхности плотности распределения, а подсчет количества измерений по ячейкам регулярной сетки — квадратным или гексагональным. Такой подход бывает особенно полезен, когда точек измерений очень много и из-за их количества оказывается проблематично разглядеть области их концентрации. Агрегирование данных по ячейкам осуществляется путем применения геометрий <code><a href="https://ggplot2.tidyverse.org/reference/geom_bin_2d.html">geom_bin2d()</a></code> и <code><a href="https://ggplot2.tidyverse.org/reference/geom_hex.html">geom_hex()</a></code>:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb370"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tabreg</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">gdp</span>, <span class="va">lifexp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bin_2d.html">geom_bin2d</a></span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
@@ -595,7 +619,7 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-32-1.png" width="100%"></div>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb371"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tabreg</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">gdp</span>, <span class="va">lifexp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_hex.html">geom_hex</a></span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">+</span>
@@ -622,7 +646,7 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 где <span class="math inline">\(\bar x\)</span> и <span class="math inline">\(\bar y\)</span> соответствуют выборочным средним для <span class="math inline">\(X\)</span> и <span class="math inline">\(Y\)</span>.</p>
 <p>Важно помнить, что коэффициент корреляции Пирсона характеризует силу <em>линейной</em> связи между двумя величинами. Поэтому, если наблюдаемая нами картина взаимосвязи носит нелинейный характер, необходимо предварительно линеаризовать ее, то есть выполнить преобразование над переменными, приводящее к получению линейной зависимости. В нашем в случае изучения ВВП на душу населения и продолжительности жизни мы видели, что линеаризация возможна путем логарифмирования показателя ВВП.</p>
 <p>Для вычисления коэффициента корреляции Пирсона в <strong>R</strong> с оценкой уровня значимости используется функция <code><a href="https://rdrr.io/r/stats/cor.test.html">cor.test()</a></code>:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb372"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/cor.test.html">cor.test</a></span><span class="op">(</span><span class="va">tabreg</span><span class="op">$</span><span class="va">gdp</span>, <span class="va">tabreg</span><span class="op">$</span><span class="va">lifexp</span><span class="op">)</span>
 <span class="co">## </span>
 <span class="co">##  Pearson's product-moment correlation</span>
@@ -637,7 +661,7 @@ r_{xy} = \frac{\sum_{i=1}^{n}(x_i - \bar x)(y_i - \bar y)}{\sqrt{\sum_{i=1}^{n}(
 <span class="co">## 0.6574446</span></code></pre></div>
 <p>Результат теста в данном случае показывает, что коэффициент корреляции с вероятностью 0,95 находится в интервале от 0,56 до 0,73, и его математическое ожидание равно 0,66.</p>
 <p>Проверим, можно ли уточнить эту оценку, выполнив логарифмирование показателя ВВП:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb373"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/cor.test.html">cor.test</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">tabreg</span><span class="op">$</span><span class="va">gdp</span><span class="op">)</span>, <span class="va">tabreg</span><span class="op">$</span><span class="va">lifexp</span><span class="op">)</span>
 <span class="co">## </span>
 <span class="co">##  Pearson's product-moment correlation</span>
@@ -676,13 +700,13 @@ y(x) = β_0+β_1x+...+ β_mx^m.
 <p>Вместо переменных в формуле вы можете использовать функции от переменных. Например <code>log(f) ~ log(x) + sqrt(y)</code> означает модель <span class="math inline">\(\log f = β_0 + β_1 \log x + β_2 \sqrt y\)</span>. Если необходимо выполнить алгебраические преобразования переменных или задать конкретное значение свободного члена, то их необходимо заключить в специальную функцию <code><a href="https://rdrr.io/r/base/AsIs.html">I()</a></code>: <code>f ~ log(x) + I(y ^ 2) + I(0)</code> будет означать модель вида <span class="math inline">\(f = β_1 \log x + β_2 y^2\)</span>.</p>
 <p>Для краткой записи полиномиальной зависимости можно использовать вспомогательную функцию <code><a href="https://rdrr.io/r/stats/poly.html">poly()</a></code>, которая в качестве второго аргумента принимает степень многочлена. Т.е. <code>f ~ poly(x, 3)</code> означает модель вида <span class="math inline">\(f = β_0 + β_1x + β_2x^2 + β_3x^3\)</span>.</p>
 <p>Оценка параметров линейных моделей осуществляется с помощью функции <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code>. В нашем случае модель носит простой характер:</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb374"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">lifexp</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">gdp</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">tabreg</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>
 <span class="co">## (Intercept)    log(gdp) </span>
 <span class="co">##   25.129347    5.261476</span></code></pre></div>
 <p>Полученные данные говорят нам о том, что уравнение имеет вид <span class="math inline">\(lifexp = 25.13 + 5.26 \log(gdp)\)</span>. Чтобы получить подробную сводку о качестве модели, мы можем вызвать <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code>:</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb375"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>
 <span class="co">## </span>
 <span class="co">## Call:</span>
@@ -704,7 +728,7 @@ y(x) = β_0+β_1x+...+ β_mx^m.
 <span class="co">## F-statistic: 300.2 on 1 and 170 DF,  p-value: &lt; 0.00000000000000022</span></code></pre></div>
 <p>Результаты оценки говорят о том, что регрессия построена удовлетворительно. <a href="https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D1%8D%D1%84%D1%84%D0%B8%D1%86%D0%B8%D0%B5%D0%BD%D1%82_%D0%B4%D0%B5%D1%82%D0%B5%D1%80%D0%BC%D0%B8%D0%BD%D0%B0%D1%86%D0%B8%D0%B8">Коэффициент детерминации</a> (квадрат коэффициента корреляции) равен 0,64.</p>
 <p>Для визуализации модели можно извлечь из нее значения используя функцию <code><a href="https://rdrr.io/r/stats/fitted.values.html">fitted()</a></code>:</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb376"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">df</span> <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>lifexp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>,
             gdp <span class="op">=</span> <span class="va">tabreg</span><span class="op">$</span><span class="va">gdp</span><span class="op">)</span>
               
@@ -714,7 +738,7 @@ y(x) = β_0+β_1x+...+ β_mx^m.
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="07-BaseStats_files/figure-html/unnamed-chunk-37-1.png" width="100%"></div>
 <p>Если вам нужно только построить линию регрессии, но не находить ее коэффициенты, то вы можете пропустить этап оценки параметров модели и вывести график линейной регрессии средствами <strong>ggplot</strong>, используя геометрию <code><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth()</a></code> с параметром <code>method = lm</code>:</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb377"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tabreg</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">gdp</span>, <span class="va">lifexp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">'lm'</span>,
@@ -787,15 +811,42 @@ y(x) = β_0+β_1x+...+ β_mx^m.
 </div>
 </div>
   <div class="chapter-nav">
-<div class="empty"></div>
-<div class="empty"></div>
+<div class="prev"><a href="advgraphics.html"><span class="header-section-number">6</span> Продвинутая графика</a></div>
+<div class="next"><a href="temporal.html"><span class="header-section-number">8</span> Временные ряды</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
-      <div id="book-on-this-page"></div>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#stats"><span class="header-section-number">7</span> Основы статистики</a></li>
+<li><a class="nav-link" href="#stat_analysis_prerequisites"><span class="header-section-number">7.1</span> Предварительные требования</a></li>
+<li>
+<a class="nav-link" href="#stat_analysis_intro"><span class="header-section-number">7.2</span> Введение</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#stat_analysis_intro_sources"><span class="header-section-number">7.2.1</span> Источники данных</a></li></ul>
+</li>
+<li>
+<a class="nav-link" href="#stat_analysis_one"><span class="header-section-number">7.3</span> Одна переменная</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#stat_analysis_one_distr"><span class="header-section-number">7.3.1</span> Оценка распределения</a></li>
+<li><a class="nav-link" href="#stat_analysis_one_summary"><span class="header-section-number">7.3.2</span> Описательные статистики</a></li>
+<li><a class="nav-link" href="#stat_analysis_one_tests"><span class="header-section-number">7.3.3</span> Статистические тесты</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#stat_analysis_two"><span class="header-section-number">7.4</span> Две переменных</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#stat_analysis_two_distr"><span class="header-section-number">7.4.1</span> Оценка распределения</a></li>
+<li><a class="nav-link" href="#stat_analysis_two_distr_correg"><span class="header-section-number">7.4.2</span> Корреляция и регрессия</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#stats_review"><span class="header-section-number">7.5</span> Краткий обзор</a></li>
+<li>
+<a class="nav-link" href="#questions_tasks_stat_analysis"><span class="header-section-number">7.6</span> Контрольные вопросы и упражнения</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#questions_stat_analysis"><span class="header-section-number">7.6.1</span> Вопросы</a></li>
+<li><a class="nav-link" href="#tasks_stat_analysis"><span class="header-section-number">7.6.2</span> Упражнения</a></li>
+</ul>
+</li>
+</ul>
 
       <div class="book-extra">
         <ul class="list-unstyled">
-          
+<li><a id="book-source" href="https://github.com/tsamsonov/r-geo-course/blob/master/07-BaseStats.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/tsamsonov/r-geo-course/edit/master/07-BaseStats.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
 </div>
     </nav>
@@ -807,7 +858,7 @@ y(x) = β_0+β_1x+...+ β_mx^m.
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-10-19.</p>
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2021-10-25.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
