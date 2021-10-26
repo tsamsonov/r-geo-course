@@ -10,10 +10,15 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, collapse = TRUE, out.wid
 
 Для работы по теме текущей лекции вам понадобятся пакеты из __tidyverse__. Для работы с временными данными мы воспользуемся пакетом [__lubridate__](https://lubridate.tidyverse.org/), который входит в __tidyverse__, но автоматически не подключается в сессию. Мы также воспользуемся пакетом [__gganimate__](https://github.com/thomasp85/gganimate), который позволяет анимировать графики, построенные с помощью ggplot:
 ```{r}
+library(ggplot2)
 library(tidyverse)
 library(readxl)
 library(lubridate)
 library(gganimate)
+library(trend)
+# TODO: set eval = TRUE after NASA POWER server is available
+library(nasapower)
+library(googlesheets4)
 ```
 
 ## Создание и преобразование дат и времени {#temporal_lubridate}
@@ -40,7 +45,7 @@ as.integer(time)
 difftime(time, as.POSIXct('1970-01-01 00:00:00', tz = 'UTC'), units = 'secs')
 ```
 
-Работа с датами и временем может быть достаточно утомительной при отсутствии специализированных средств. Пакет [__lubridate__](https://lubridate.tidyverse.org/)[@R-lubridate] значительно облегчает эту работу. Основные функции lubridate включают синтаксический разбор ("парсинг") дат в разных форматах, извлечение разных компонент даты и времени (секунд, минут, часов, суток, недель, годов), вычисление разностей и периодов, а  также множество вспомогательных функций (хелперов), облегачающих преобразование временных данных.
+Работа с датами и временем может быть достаточно утомительной при отсутствии специализированных средств. Пакет [__lubridate__](https://lubridate.tidyverse.org/) значительно облегчает эту работу. Основные функции lubridate включают синтаксический разбор ("парсинг") дат в разных форматах, извлечение разных компонент даты и времени (секунд, минут, часов, суток, недель, годов), вычисление разностей и периодов, а  также множество вспомогательных функций (хелперов), облегачающих преобразование временных данных.
 
 Рассмотрим базовые возможности пакета на нескольких примерах.
 
@@ -121,25 +126,25 @@ as.duration(int)
 
 Сформируем даты на основе первых трёх столбцов и проверим, все ли из них корректны. Если компоненты даты некорректны, то функция `yms()` вернет `NA`:
 ```{r}
-tab = src %>%
+tab = src |>
     mutate(Date = ymd(paste(year, month, day)))
 
-tab %>% 
-  dplyr::filter(is.na(Date))
+tab |> 
+  filter(is.na(Date))
 ```
 
 Проверка показала, что преобразование в дату оказалось невозможно только для одной строки. В этой строке оператором была введена несуществующая дата — 29 февраля 1941 года. Этот год не является високосным, а значит количество дней в феврале должно равняться 28. Единственный выход в данной ситуациии — отбраковать запись:
 ```{r}
-tab = tab %>% 
-  dplyr::filter(!is.na(Date))
+tab = tab |> 
+  filter(!is.na(Date))
 ```
 
 После того как мы убедились, что в таблице присутствуют только корректные даты, можно проверять пропуски дат. Для этого упорядочим таблицу по возрастанию дат и используем функцию `lag()` из пакета __dplyr__, чтобы вычислить разницу между каждой датой и ее предшественницей. После этого отфильтруем строки, которым предшествует 1 или более пропущенных дней и сформируем отчетную таблицу, содержащую все найденные пропуски:
 ```{r}
-tab %>% 
-  arrange(Date) %>% 
-  mutate(Gap = Date - lag(Date, 1) - 1) %>% 
-  dplyr::filter(Gap > 0) %>% 
+tab |> 
+  arrange(Date) |> 
+  mutate(Gap = Date - lag(Date, 1) - 1) |> 
+  filter(Gap > 0) |> 
   transmute(start_date = Date - Gap,
             end_date = Date - 1,
             duration = Gap)
@@ -147,15 +152,15 @@ tab %>%
 
 Данная таблица говорит нам о том, что имеется один пропуск из двух дат: 31 декабря 1941 года и 01 января 1942 года. Чтобы восстановить пропущенные сроки, воспользуемся функцией `complete()` из пакета __tidyr__, указав ей, что переменная _Date_ должна содержать _все_ даты с шагом в один день, начиная с самой ранней и заканчивая самой поздней:
 ```{r}
-tab_compl = tab %>% 
+tab_compl = tab |> 
   complete(Date = seq(min(Date, na.rm = T), max(Date, na.rm = T), by = 'day'))
 ```
 
 Итак, полная процедура проверки корректности и восстановления пропущенных дат в виде одного конвейера манипуляций будет выглядеть следующим образом:
 ```{r}
-tab = src %>%
-  mutate(Date = ymd(paste(year, month, day))) %>% 
-  dplyr::filter(!is.na(Date)) %>% 
+tab = src |>
+  mutate(Date = ymd(paste(year, month, day))) |> 
+  filter(!is.na(Date)) |> 
   complete(Date = seq(min(Date, na.rm = T), max(Date, na.rm = T), by = 'day'))
 ```
 
@@ -172,10 +177,10 @@ tab = src %>%
 
 После этого сгруппируем данные по номеру группы и вычислим дату начала, дату конца, продолжительность и тип каждого периода. Полученная таблица наглядно демонстрирует разбиение временного ряда на периоды наличия и отсутствия данных:
 ```{r}
-timerep = tab %>% 
+timerep = tab |> 
   mutate(type = if_else(is.na(level), 'gap', 'data'),
-         num = with(rle(type), rep(seq_along(lengths), lengths))) %>% 
-  group_by(num) %>% 
+         num = with(rle(type), rep(seq_along(lengths), lengths))) |> 
+  group_by(num) |> 
   summarise(start_date = min(Date),
             end_date = max(Date),
             duration = end_date - start_date + 1,
@@ -207,9 +212,9 @@ $$K(\tau) = \mathbb E \big[X(t) X^* (t - \tau) \big],$$
 функцию `acf()`:
 ```{r, fig.height=4, fig.width=8}
 par(mar = c(6,5,4,2))
-autocorr = tab %>% 
-  dplyr::filter(between(Date, max_period$start_date, max_period$end_date)) %>% 
-  pull(level) %>% 
+autocorr = tab |> 
+  filter(between(Date, max_period$start_date, max_period$end_date)) |> 
+  pull(level) |> 
   acf()
 ```
 
@@ -223,16 +228,16 @@ autocorr = tab %>%
 
 Для выполнения интерполяции воспользуемся функцией `na.approx()` из пакета __zoo__ и округлим полученные значения до одного знака после запятой (что соответствует точности исходных данных):
 ```{r}
-(tab_interp = tab %>% 
-  mutate(level_interp = zoo::na.approx(level, maxgap = max_dur) %>% round(1)))
+(tab_interp = tab |> 
+  mutate(level_interp = zoo::na.approx(level, maxgap = max_dur) |> round(1)))
 ```
 
 В заключение проведем заново оценку ситуации с пропусками в данных
 ```{r}
-timerep_interp = tab_interp %>% 
+timerep_interp = tab_interp |> 
   mutate(type = if_else(is.na(level_interp), 'gap', 'data'),
-         num = with(rle(type), rep(seq_along(lengths), lengths))) %>% 
-  group_by(num) %>% 
+         num = with(rle(type), rep(seq_along(lengths), lengths))) |> 
+  group_by(num) |> 
   summarise(start_date = min(Date),
             end_date = max(Date),
             duration = end_date - start_date + 1,
@@ -308,7 +313,7 @@ src_time = sort(tab$time_temperature)
          temp_before = time - src_time[idx],
          temp_after = src_time[idx + 1] - time,
          temp_valid = min(temp_before, temp_after) <= minutes(30) && temp_before + temp_after <= minutes(90))
-}) %>% bind_rows())
+}) |> bind_rows())
 summary(timediff)
 ```
 
@@ -316,7 +321,7 @@ summary(timediff)
 
 В заключение присоединим полученную информацию к таблице интерполированных значений:
 ```{r}
-time_interp_checked = time_interp %>% 
+time_interp_checked = time_interp |> 
   left_join(timediff, by = c('datetime' = 'datetime'))
 ```
 ```{r, echo=FALSE}
@@ -430,7 +435,6 @@ ggplot(tab, mapping = aes(Year1, Wgr)) +
 
 Для выполнения тестов Манна-Кендалла, Петтитт и оценки тренда по методу Тейла-Сена для объема грунтового стока Мезеня подключим пакет __trend__:
 ```{r}
-library(trend)
 (mk = mk.test(tab$Wgr))
 (pt = pettitt.test(tab$Wgr))
 (ts = sens.slope(tab$Wgr))
@@ -467,10 +471,6 @@ ggplot(tab, mapping = aes(Year1, Wgr)) +
 
 В качестве первого примера используем уже знакомые нам данные реанализа NASA POWER суточного осреднения, выгрузив информацию по точкам в трех городах (Мурманск, Москва, Краснодар) за 2018 год:
 ```{r, eval = FALSE}
-# TODO: set eval = TRUE after NASA POWER server is available
-library(nasapower)
-library(ggplot2)
-
 cities = list(
   Мурманск = c(33, 69),
   Москва = c(38, 56),
@@ -484,9 +484,9 @@ tab = purrr::imap(cities, function(coords, city){
     pars = c("RH2M", "T2M", "PRECTOT"),
     dates = c("2018-01-01", "2018-12-31"),
     temporal_average = "DAILY"
-  ) %>% mutate(CITY = city,
+  ) |> mutate(CITY = city,
                MONTH = month(YYYYMMDD))
-}) %>% bind_rows()
+}) |> bind_rows()
 ```
 
 ### Переход по времени {#temporal_animation_time}
@@ -545,39 +545,27 @@ knitr::include_graphics('images/density_anim.gif')
 
 Загрузим ранее использованные в Главе \@ref(stat_analysis) данные Gapminder по соотношению продолжительности жизни и ВВП на душу населения, но на этот раз не будем фильтровать их по времени:
 ```{r, eval=FALSE}
-library(readxl)
-library(googledrive)
-library(googlesheets4)
-countries = read_excel('data/gapminder.xlsx', 2) %>%
-  select(Country = name, Region = eight_regions) %>%
+countries = read_excel('data/gapminder.xlsx', 2) |>
+  select(Country = name, Region = eight_regions) |>
   mutate(Country = factor(Country, levels = Country[order(.$Region)]))
 
-gdpdf_tidy = '1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg' %>% ### ВВП на душу населения
-  as_id() %>% # преобразуем идентификатор в класс drive_id чтобы отличать его от пути
-  drive_get() %>% 
-  read_sheet() %>% 
-  pivot_longer(cols = `1764`:`2018`, names_to = 'year', values_to = 'gdp') %>% 
+gdpdf_tidy = read_sheet('1cxtzRRN6ldjSGoDzFHkB8vqPavq1iOTMElGewQnmHgg') |> ### ВВП на душу населения
+  pivot_longer(cols = `1764`:`2018`, names_to = 'year', values_to = 'gdp') |> 
   rename(Country = 1)
 
-popdf_tidy = '1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8' %>% # численность населения
-  as_id() %>% # преобразуем идентификатор в класс drive_id чтобы отличать его от пути
-  drive_get() %>% 
-  read_sheet() %>% # первый лист
-  pivot_longer(cols = `1800`:`2015`, names_to = 'year', values_to = 'pop') %>% 
+popdf_tidy = read_sheet()'1IbDM8z5XicMIXgr93FPwjgwoTTKMuyLfzU6cQrGZzH8') |> # численность населения
+  pivot_longer(cols = `1800`:`2015`, names_to = 'year', values_to = 'pop') |> 
   rename(Country = 1)
 
-lifedf_tidy = '1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo' %>% # продолжительность жизни
-  as_id() %>% # преобразуем идентификатор в класс drive_id чтобы отличать его от пути
-  drive_get() %>% 
-  read_sheet() %>% 
-  pivot_longer(cols = `1800`:`2016`, names_to = 'year', values_to = 'lifexp') %>% 
+lifedf_tidy = read_sheet('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo') |> # продолжительность жизни
+  pivot_longer(cols = `1800`:`2016`, names_to = 'year', values_to = 'lifexp') |> 
   rename(Country = 1)
 
-tab = gdpdf_tidy %>% 
-  inner_join(lifedf_tidy) %>% 
-  inner_join(popdf_tidy) %>% 
-  inner_join(countries) %>% 
-  mutate(year = as.integer(year)) %>% 
+tab = gdpdf_tidy |> 
+  inner_join(lifedf_tidy) |> 
+  inner_join(popdf_tidy) |> 
+  inner_join(countries) |> 
+  mutate(year = as.integer(year)) |> 
   drop_na()
 ```
 
@@ -612,11 +600,11 @@ knitr::include_graphics('images/scatter_anim.gif')
 
 Для составления такой анимации необходимо сначала убедиться, что в данных все года заполнены корректно (не пусты), и что нет годов, за которые вообще нет данных (такие года придется из анимации исключить, так как для них гидрограф построить невозможно). Помимо этого, чтобы обеспечить сопоставимость аналогичных дат за разные года, необходимо сохранить у них только месяц и день. Поскольку такого формата даты не существует, в качестве "трюка" можно просто заменить года всех дат на $2000$ и записать результат в новое поле. Необходимые преобразования реализуются следующим образом:
 ```{r}
-flt_tab = tab_interp %>% 
-  dplyr::filter(!is.na(year)) %>% 
-  group_by(year) %>%
-  dplyr::filter(!all(is.na(level_interp))) %>% 
-  ungroup() %>% 
+flt_tab = tab_interp |> 
+  filter(!is.na(year)) |> 
+  group_by(year) |>
+  filter(!all(is.na(level_interp))) |> 
+  ungroup() |> 
   mutate(yDate = Date)
 
 year(flt_tab$yDate) <- 2000 # фиктивное поле, в котором аналогичные даты за разные года совпадают
@@ -649,6 +637,15 @@ knitr::include_graphics('images/hydrograph_anim.gif')
 > Текущий срез при выполнении анимации по состояниям доступен в переменной окружения `closest_state`.
 
 В настоящей главе мы рассмотрели лишь базовые возможности создания анимаций средствами пакета __gganimate__. Более подробно с другими возможностями пакета можно ознакомиться в [справочнике](https://gganimate.com/reference/index.html) по его функциям.
+
+## Краткий обзор {#temporal_review}
+
+Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
+```{r, echo=FALSE}
+knitr::include_url('https://tsamsonov.github.io/r-geo-course-slides/08_TemporalStats.html#1', height = '390px')
+```
+
+> Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.
 
 ## Контрольные вопросы и упражнения {#questions_tasks_temporal}
 
