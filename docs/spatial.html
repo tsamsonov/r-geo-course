@@ -945,9 +945,9 @@
 <h3>
 <span class="header-section-number">9.4.3</span> Визуализация<a class="anchor" aria-label="anchor" href="#raster_viz"><i class="fas fa-link"></i></a>
 </h3>
-<div id="raster_viz_single" class="section level4" number="9.4.3.1">
+<div id="raster_viz_static" class="section level4" number="9.4.3.1">
 <h4>
-<span class="header-section-number">9.4.3.1</span> Одноканальные растры<a class="anchor" aria-label="anchor" href="#raster_viz_single"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.4.3.1</span> Статичные карты<a class="anchor" aria-label="anchor" href="#raster_viz_static"><i class="fas fa-link"></i></a>
 </h4>
 <p>Для визуализации одноканальных растров используется функция <code><a href="https://r-spatial.github.io/sf/reference/plot.html">plot()</a></code>. В простейшем виде ей достаточно просто передать визуализируемый растр:</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
@@ -957,9 +957,13 @@
 <div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-52-1.png" width="100%"></div>
 <p>Поскольку растры часто используют в классифицированном виде, вы можете сформировать вектор граничных значений классов, вектор цветов классов, и передать их в параметры <code>breaks</code> и <code>col</code> функции <code><a href="https://r-spatial.github.io/sf/reference/plot.html">plot()</a></code> соответственно. Если параметр <code>breaks</code> не определять, то весь диапазон значений растра будет разбит на равные интервалы соответственно количеству цветов. Если не определять параметр <code>col</code>, то будет применена стандартная палитра <code>terrain.colors</code>. Вы также можете использовать одну из готовых палитр цветов или создать ее вручную (см. посвященную графической подсистеме R):</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">brks</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">12000</span>, <span class="fl">0</span>, <span class="fl">200</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2000</span>, <span class="fl">4000</span>, <span class="fl">8000</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">brks</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">12000</span>, <span class="op">-</span><span class="fl">5000</span>, <span class="op">-</span><span class="fl">2500</span>, <span class="op">-</span><span class="fl">1000</span>, <span class="op">-</span><span class="fl">200</span>, <span class="fl">0</span>, <span class="fl">200</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2000</span>, <span class="fl">4000</span>, <span class="fl">8000</span><span class="op">)</span>
 <span class="va">clrs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
   <span class="st">"steelblue4"</span>,
+  <span class="st">"steelblue3"</span>,
+  <span class="st">"steelblue2"</span>,
+  <span class="st">"steelblue1"</span>,
+  <span class="st">"lightskyblue1"</span>,
   <span class="st">"darkseagreen"</span>,
   <span class="st">"lightgoldenrod1"</span>,
   <span class="st">"darkgoldenrod1"</span>,
@@ -980,11 +984,6 @@
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">dem</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">rainbow</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span>
 <span class="co">## downsample set to c(1,1)</span></code></pre></div>
 <div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-53-3.png" width="100%"></div>
-</div>
-<div id="raster_viz_multi" class="section level4" number="9.4.3.2">
-<h4>
-<span class="header-section-number">9.4.3.2</span> Многоканальные растры<a class="anchor" aria-label="anchor" href="#raster_viz_multi"><i class="fas fa-link"></i></a>
-</h4>
 <p>Для синтезирования цветного изображения на основе многоканального растра необходимо объект <code>stars</code> предварительно подать в функцию <code><a href="https://r-spatial.github.io/stars/reference/st_rgb.html">st_rgb()</a></code>:</p>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_rgb.html">st_rgb</a></span><span class="op">(</span><span class="va">img</span><span class="op">)</span><span class="op">)</span>
@@ -1015,27 +1014,34 @@
 <code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_rgb.html">st_rgb</a></span><span class="op">(</span><span class="va">img</span><span class="op">[</span>,,,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">## downsample set to c(1,1)</span></code></pre></div>
 <div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-55-6.png" width="100%"></div>
-</div>
-<div id="raster_combine" class="section level4" number="9.4.3.3">
-<h4>
-<span class="header-section-number">9.4.3.3</span> Совмещение слоев<a class="anchor" aria-label="anchor" href="#raster_combine"><i class="fas fa-link"></i></a>
-</h4>
 <p>Вы можете совмещать на картах несколько растровых и векторных слоев точно так же как и при совмещении векторных данных (указав параметр <code>add = TRUE</code> при вызове функции <code><a href="https://r-spatial.github.io/sf/reference/plot.html">plot()</a></code>):</p>
 <div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_rgb.html">st_rgb</a></span><span class="op">(</span><span class="va">img</span><span class="op">)</span>, reset <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">## downsample set to c(1,1)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">outlines</span>, border <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html">rgb</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0.5</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure">
-<img src="09-SpatialData_files/figure-html/unnamed-chunk-56-1.png" width="100%">
-### Обрезка {#raster_crop}</div>
-<p>Одна из распространенных задач при работе с растрами — это обрезка, то есть удаление растровых данных, находящихся за пределами указанной территории. Чаще всего обрезку делают либо ограничивающим прямоугольником, либо полигональным объектом. Рассмотрим оба варианта:</p>
+<div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-56-1.png" width="100%"></div>
+</div>
+<div id="raster_viz_inter" class="section level4" number="9.4.3.2">
+<h4>
+<span class="header-section-number">9.4.3.2</span> Интерактивные карты<a class="anchor" aria-label="anchor" href="#raster_viz_inter"><i class="fas fa-link"></i></a>
+</h4>
+<p>Объекты типа stars могут быть визуализированы аналогично векторным на интерактивных картах <code>mapview</code>:</p>
 <div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/mapview/man/mapView.html">mapview</a></span><span class="op">(</span><span class="va">dem</span>, at <span class="op">=</span> <span class="va">brks</span>, col <span class="op">=</span> <span class="va">clrs</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="images/mapview4.png" width="100%"></div>
+</div>
+</div>
+<div id="raster_crop" class="section level3" number="9.4.4">
+<h3>
+<span class="header-section-number">9.4.4</span> Обрезка<a class="anchor" aria-label="anchor" href="#raster_crop"><i class="fas fa-link"></i></a>
+</h3>
+<p>Одна из распространенных задач при работе с растрами — это обрезка, то есть удаление растровых данных, находящихся за пределами указанной территории. Чаще всего обрезку делают либо ограничивающим прямоугольником, либо полигональным объектом. Рассмотрим оба варианта:</p>
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Обрезка по ограничивающему прямоугольнику</span></code></pre></div>
 </div>
-</div>
-<div id="индексирование" class="section level3" number="9.4.4">
+<div id="индексирование" class="section level3" number="9.4.5">
 <h3>
-<span class="header-section-number">9.4.4</span> Индексирование<a class="anchor" aria-label="anchor" href="#%D0%B8%D0%BD%D0%B4%D0%B5%D0%BA%D1%81%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.4.5</span> Индексирование<a class="anchor" aria-label="anchor" href="#%D0%B8%D0%BD%D0%B4%D0%B5%D0%BA%D1%81%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5"><i class="fas fa-link"></i></a>
 </h3>
 <p>Ортогональная структура объектов типа stars позволяет выполнять по ним различные срезы, отсекая ненужные данные. Для этого используется привычный по работе с векторами оператор квадратной скобки <code>[</code>, который работает следующим образом:</p>
 <ul>
@@ -1044,7 +1050,7 @@
 </ul>
 <p>Таким образом, при работе с растрами, которые содержат один атрибут, вам необходимо указать 4 индекса: <code>[var, x, y, band]</code>, где <code>var</code> - это название или порядковый номер атрибута, а <code>x, y, band</code> — порядковые номера двух координатных и одного семантического измерения.</p>
 <p>Например:</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># выбрать 1 канал</span>
 <span class="va">ch1</span> <span class="op">=</span> <span class="va">img</span><span class="op">[</span>,,,<span class="fl">1</span><span class="op">]</span> 
 <span class="va">ch1</span>
@@ -1059,8 +1065,8 @@
 <span class="co">## band    1   1     NA    NA     NA    NA   NULL</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">ch1</span><span class="op">)</span>
 <span class="co">## downsample set to c(1,1,1)</span></code></pre></div>
-<div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-58-1.png" width="100%"></div>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-60-1.png" width="100%"></div>
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># выбрать диапазон ячеек растра</span>
 <span class="va">frag</span> <span class="op">=</span> <span class="va">img</span><span class="op">[</span>, <span class="fl">320</span><span class="op">:</span><span class="fl">470</span>, <span class="fl">100</span><span class="op">:</span><span class="fl">255</span>, <span class="op">]</span> 
@@ -1075,20 +1081,20 @@
 <span class="co">## y     100 255     90  -0.5 WGS 84 FALSE   NULL [y]</span>
 <span class="co">## band    1   3     NA    NA     NA    NA   NULL</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_rgb.html">st_rgb</a></span><span class="op">(</span><span class="va">frag</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-58-2.png" width="100%"></div>
+<div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-60-2.png" width="100%"></div>
 </div>
-<div id="манипуляции" class="section level3" number="9.4.5">
+<div id="манипуляции" class="section level3" number="9.4.6">
 <h3>
-<span class="header-section-number">9.4.5</span> Манипуляции<a class="anchor" aria-label="anchor" href="#%D0%BC%D0%B0%D0%BD%D0%B8%D0%BF%D1%83%D0%BB%D1%8F%D1%86%D0%B8%D0%B8"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.4.6</span> Манипуляции<a class="anchor" aria-label="anchor" href="#%D0%BC%D0%B0%D0%BD%D0%B8%D0%BF%D1%83%D0%BB%D1%8F%D1%86%D0%B8%D0%B8"><i class="fas fa-link"></i></a>
 </h3>
 <p>Объекты типа stars поддерживают манипуляции, аналогичные тем, что могут применяться к векторным данным.</p>
 </div>
-<div id="raster_export" class="section level3" number="9.4.6">
+<div id="raster_export" class="section level3" number="9.4.7">
 <h3>
-<span class="header-section-number">9.4.6</span> Экспорт<a class="anchor" aria-label="anchor" href="#raster_export"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.4.7</span> Экспорт<a class="anchor" aria-label="anchor" href="#raster_export"><i class="fas fa-link"></i></a>
 </h3>
 <p>Чтобы экспортировать (сохранить в файл) любой растр, можно воспользоваться функцией <code>writeRaster()</code>, указав имя выходного файла:</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">writeRaster</span><span class="op">(</span><span class="va">img_rob</span>, <span class="st">'data/world/marble_rob.tif'</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
@@ -1228,7 +1234,7 @@
 <li>изменение системы координат (проецирование)</li>
 </ul>
 <p>Первые три операции (чтение, создание, замена) осуществляются функцией <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs()</a></code>. Чтобы прочитать информацию о проекции, достаточно передать в качестве параметра объект типа <code>sf</code>:</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">countries</span><span class="op">)</span>    <span class="co"># Координатная система</span>
 <span class="co">## Coordinate Reference System:</span>
 <span class="co">##   User input: WGS 84 </span>
@@ -1252,7 +1258,7 @@
 <span class="co">##         BBOX[-90,-180,90,180]],</span>
 <span class="co">##     ID["EPSG",4326]]</span></code></pre></div>
 <p>Эта же функция позволяет создать новую координатную систему, путем передачи ей кода <em>EPSG</em> или строки <em>PROJ.4</em>:</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">3857</span><span class="op">)</span> <span class="co"># Проекция Меркатора для карт мира</span>
 <span class="co">## Coordinate Reference System:</span>
 <span class="co">##   User input: EPSG:3857 </span>
@@ -1369,7 +1375,7 @@
 <span class="co">##             LENGTHUNIT["metre",1,</span>
 <span class="co">##                 ID["EPSG",9001]]]]</span></code></pre></div>
 <p>Замена координатной системы требуется в тех случаях, когда слой не имеет пространственной привязки, или же она задана некорректно. В этом случае необходимо вызвать для слоя функцию <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs()</a></code> и перезаписать результат.</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">countries</span><span class="op">)</span> <span class="op">=</span> <span class="cn">NA</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">countries</span><span class="op">)</span> 
 <span class="co">## Coordinate Reference System: NA</span>
@@ -1401,7 +1407,7 @@
 <p><strong>Внимание</strong>: замена координатной системы не осуществляет перепроецирования данных и не меняет координаты точек. Она лишь влияет на то, как эти координаты будут интерпретироваться. Если вместо проецирования выполнить замену информации о координатной системе, данные будут позиционироваться в неправильном месте.</p>
 </blockquote>
 <p>Для трансформирования данных в другую проекцию следует использовать функцию <code>st_tranform(x, crs)</code>. Данная функция принимает в качестве параметров класс объектов <em>sf</em> и координатную систему, в которую необходимо проецировать данные.</p>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Проекция Меркатора</span>
 <span class="va">countries_merc</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">countries</span>, <span class="fl">3857</span><span class="op">)</span>
 
@@ -1410,8 +1416,8 @@
      lwd <span class="op">=</span> <span class="fl">0.5</span>,
      graticule <span class="op">=</span> <span class="cn">TRUE</span>, 
      axes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-67-1.png" width="100%"></div>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-69-1.png" width="100%"></div>
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Проекция Мольвейде (используем dplyr)</span>
 <span class="va">countries_moll</span> <span class="op">=</span> <span class="va">countries</span> |&gt; <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="st">'+proj=moll'</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">countries_moll</span><span class="op">)</span>, 
@@ -1419,8 +1425,8 @@
      lwd <span class="op">=</span> <span class="fl">0.5</span>,
      graticule <span class="op">=</span> <span class="cn">TRUE</span>, 
      axes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-68-1.png" width="100%"></div>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-70-1.png" width="100%"></div>
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Зарубежная Европа в Конической равнопромежуточной проекции. </span>
 <span class="co"># Задаем только необходимые параметры проекции</span>
 <span class="va">europe.conic</span> <span class="op">=</span> <span class="va">countries</span> |&gt; 
@@ -1432,9 +1438,9 @@
      lwd <span class="op">=</span> <span class="fl">0.5</span>,
      graticule <span class="op">=</span> <span class="cn">TRUE</span>, 
      axes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-69-1.png" width="100%"></div>
+<div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-71-1.png" width="100%"></div>
 <p>Как и в случае с векторными данными, работа с проекцией растровых данных предполагает четыре возможных процедуры: чтение, создание, замена и проецирование. Для чтения и замены информации о системе координат растра используется функция <code>crs()</code>. Она возвращает и принимает строку в формате <em>PROJ.4</em>. Для создания информации о системе координат можно использовать уже знакомую нам функцию <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs()</a></code> из пакета <code>sf</code>. Данная функция возвращает список, вторая компонента которого и есть искомая строка:</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">dem</span><span class="op">)</span> <span class="co"># читаем систему координат</span>
 <span class="co">## Coordinate Reference System:</span>
 <span class="co">##   User input: WGS 84 </span>
@@ -1480,7 +1486,7 @@
 <span class="co">##         BBOX[-90,-180,90,180]],</span>
 <span class="co">##     ID["EPSG",4326]]</span></code></pre></div>
 <p>Для проецирования растра в новую систему координат необходимо использовать функцию <code><a href="https://r-spatial.github.io/stars/reference/st_warp.html">st_warp()</a></code> Приведем несколько примеров проецирования:</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Проекция Меркатора:</span>
 <span class="va">img_merc</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_warp.html">st_warp</a></span><span class="op">(</span><span class="va">img</span>, crs <span class="op">=</span> <span class="fl">3857</span><span class="op">)</span>
 
@@ -1488,15 +1494,15 @@
 <span class="co">## downsample set to c(1,1)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">countries_merc</span><span class="op">)</span>, 
      border <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html">rgb</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0.5</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-71-1.png" width="100%"></div>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-73-1.png" width="100%"></div>
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Проекция Мольвейде:</span>
 <span class="va">img_moll</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_warp.html">st_warp</a></span><span class="op">(</span><span class="va">img</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="st">'+proj=moll'</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_rgb.html">st_rgb</a></span><span class="op">(</span><span class="va">img_moll</span><span class="op">)</span>, reset <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">## downsample set to c(1,1)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">countries_moll</span><span class="op">)</span>, 
      border <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html">rgb</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0.5</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-72-1.png" width="100%"></div>
+<div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-74-1.png" width="100%"></div>
 </div>
 </div>
 <div id="questions_tasks_spatial" class="section level2" number="9.6">

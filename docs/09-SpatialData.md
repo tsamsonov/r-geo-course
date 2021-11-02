@@ -953,7 +953,7 @@ img
 
 ### Визуализация {#raster_viz}
 
-#### Одноканальные растры  {#raster_viz_single}
+#### Статичные карты  {#raster_viz_static}
 
 Для визуализации одноканальных растров используется функция `plot()`. В простейшем виде ей достаточно просто передать визуализируемый растр:
 
@@ -968,9 +968,13 @@ plot(dem)
 Поскольку растры часто используют в классифицированном виде, вы можете сформировать вектор граничных значений классов, вектор цветов классов, и передать их в параметры `breaks` и `col` функции `plot()` соответственно. Если параметр `breaks` не определять, то весь диапазон значений растра будет разбит на равные интервалы соответственно количеству цветов. Если не определять параметр `col`, то будет применена стандартная палитра `terrain.colors`. Вы также можете использовать одну из готовых палитр цветов или создать ее вручную (см. посвященную графической подсистеме R):
 
 ```r
-brks = c(-12000, 0, 200, 500, 1000, 2000, 4000, 8000)
+brks = c(-12000, -5000, -2500, -1000, -200, 0, 200, 500, 1000, 2000, 4000, 8000)
 clrs = c(
   "steelblue4",
+  "steelblue3",
+  "steelblue2",
+  "steelblue1",
+  "lightskyblue1",
   "darkseagreen",
   "lightgoldenrod1",
   "darkgoldenrod1",
@@ -999,8 +1003,6 @@ plot(dem, col = rainbow(10))
 ```
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-53-3.png" width="100%" />
-
-#### Многоканальные растры {#raster_viz_multi}
 
 Для синтезирования цветного изображения на основе многоканального растра необходимо объект `stars` предварительно подать в функцию `st_rgb()`:
 
@@ -1055,8 +1057,6 @@ st_rgb(img[,,,c(3, 2, 1)]) |> plot()
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-55-6.png" width="100%" />
 
-#### Совмещение слоев  {#raster_combine}
-
 Вы можете совмещать на картах несколько растровых и векторных слоев точно так же как и при совмещении векторных данных (указав параметр `add = TRUE` при вызове функции `plot()`):
 
 ```r
@@ -1066,6 +1066,17 @@ plot(outlines, border = rgb(1,1,1,0.5), lwd = 0.5, add = TRUE)
 ```
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-56-1.png" width="100%" />
+
+#### Интерактивные карты {#raster_viz_inter}
+
+Объекты типа stars могут быть визуализированы аналогично векторным на интерактивных картах `mapview`:
+
+
+```r
+mapview(dem, at = brks, col = clrs)
+```
+<img src="images/mapview4.png" width="100%" />
+
 ### Обрезка {#raster_crop}
 
 Одна из распространенных задач при работе с растрами — это обрезка, то есть удаление растровых данных, находящихся за пределами указанной территории. Чаще всего обрезку делают либо ограничивающим прямоугольником, либо полигональным объектом. Рассмотрим оба варианта:
@@ -1104,7 +1115,7 @@ plot(ch1)
 ## downsample set to c(1,1,1)
 ```
 
-<img src="09-SpatialData_files/figure-html/unnamed-chunk-58-1.png" width="100%" />
+<img src="09-SpatialData_files/figure-html/unnamed-chunk-60-1.png" width="100%" />
 
 ```r
 
@@ -1123,7 +1134,7 @@ frag
 plot(st_rgb(frag))
 ```
 
-<img src="09-SpatialData_files/figure-html/unnamed-chunk-58-2.png" width="100%" />
+<img src="09-SpatialData_files/figure-html/unnamed-chunk-60-2.png" width="100%" />
 
 ### Манипуляции
 
@@ -1452,7 +1463,7 @@ plot(st_geometry(countries_merc),
      axes = TRUE)
 ```
 
-<img src="09-SpatialData_files/figure-html/unnamed-chunk-67-1.png" width="100%" />
+<img src="09-SpatialData_files/figure-html/unnamed-chunk-69-1.png" width="100%" />
 
 
 ```r
@@ -1465,7 +1476,7 @@ plot(st_geometry(countries_moll),
      axes = TRUE)
 ```
 
-<img src="09-SpatialData_files/figure-html/unnamed-chunk-68-1.png" width="100%" />
+<img src="09-SpatialData_files/figure-html/unnamed-chunk-70-1.png" width="100%" />
 
 
 ```r
@@ -1482,7 +1493,7 @@ plot(st_geometry(europe.conic),
      axes = TRUE)
 ```
 
-<img src="09-SpatialData_files/figure-html/unnamed-chunk-69-1.png" width="100%" />
+<img src="09-SpatialData_files/figure-html/unnamed-chunk-71-1.png" width="100%" />
 
 Как и в случае с векторными данными, работа с проекцией растровых данных предполагает четыре возможных процедуры: чтение, создание, замена и проецирование. Для чтения и замены информации о системе координат растра используется функция `crs()`. Она возвращает и принимает строку в формате _PROJ.4_. Для создания информации о системе координат можно использовать уже знакомую нам функцию `st_crs()` из пакета `sf`. Данная функция возвращает список, вторая компонента которого и есть искомая строка:
 
@@ -1547,7 +1558,7 @@ plot(st_geometry(countries_merc),
      border = rgb(1,1,1,0.5), lwd = 0.5, add = TRUE)
 ```
 
-<img src="09-SpatialData_files/figure-html/unnamed-chunk-71-1.png" width="100%" />
+<img src="09-SpatialData_files/figure-html/unnamed-chunk-73-1.png" width="100%" />
 
 
 ```r
@@ -1559,7 +1570,7 @@ plot(st_geometry(countries_moll),
      border = rgb(1,1,1,0.5), lwd = 0.5, add = TRUE)
 ```
 
-<img src="09-SpatialData_files/figure-html/unnamed-chunk-72-1.png" width="100%" />
+<img src="09-SpatialData_files/figure-html/unnamed-chunk-74-1.png" width="100%" />
 
 ## Контрольные вопросы и упражнения {#questions_tasks_spatial}
 
