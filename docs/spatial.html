@@ -161,10 +161,11 @@
 <p>Оставшиеся виды геометрий <em>Simple Features</em> включают: <code>CIRCULARSTRING</code>, <code>COMPOUNDCURVE</code>, <code>CURVEPOLYGON</code>, <code>MULTICURVE</code>, <code>MULTISURFACE</code>, <code>CURVE</code>, <code>SURFACE</code>, <code>POLYHEDRALSURFACE</code>, <code>TIN</code>, <code>TRIANGLE</code>.</p>
 <p>Существует два официально закрепленных формата представления SF: <em>Well-Known Text (WKT)</em> и <em>Well-Known Binary (WKB)</em>, которые необходимы для чтения таких данных человеком и машиной соответственно.</p>
 <p><strong>Well-Known Text (WKT)</strong> — стандарт представления геометрии в виде множества списков координат, в которых координаты вершин разделены пробелами, вершины разделены запятыми, а компоненты полигонов и мультигеометрий заключены в круглые скобки и также разделены запятыми. Вышеприведенной картинке соответствуют следующие строки <em>WKT</em>:</p>
-<pre><code>## MULTIPOINT ((0.5 0.5), (1 3), (2 1), (0.2 2), (2 3), (1.5 1.5))
+<pre><code>## POINT (0.5 0.5)
 ## LINESTRING (0 1, 0.5 1.5, 1.2 1.2, 2 1.3, 3 2)
-## MULTILINESTRING ((0.5 1.5, 1.2 1.2, 2 1.3), (0 1.5, 0.5 2, 1.2 1.7), (2 1.8, 3 2.5))
 ## POLYGON ((0.5 0.5, 2 0, 3 2, 1.5 4, 0 3, 0.5 0.5), (1 1, 0.8 2, 2 2.2, 1.4 1.1, 1 1))
+## MULTIPOINT ((0.5 0.5), (1 3), (2 1), (0.2 2), (2 3), (1.5 1.5))
+## MULTILINESTRING ((0.5 1.5, 1.2 1.2, 2 1.3), (0 1.5, 0.5 2, 1.2 1.7), (2 1.8, 3 2.5))
 ## MULTIPOLYGON (((0.5 0.5, 2 0, 3 2, 1.5 4, 0 3, 0.5 0.5), (1 1, 0.8 2, 2 2.2, 1.4 1.1, 1 1)), ((3 3.3, 3.5 3.1, 4 3, 4 3.7, 3.7 3.96, 3.2 4, 3 3.3), (3.2 3.4, 3.8 3.2, 3.8 3.7, 3.3 3.8, 3.2 3.4)), ((3 1.2, 2.5 0.2, 3.5 0.2, 3.5 1.2, 3 1.2)), ((0 1, 0.1 0.8, 0.2 0.5, 0.1 0.3, 0 0.7, 0 1)))
 ## GEOMETRYCOLLECTION (POLYGON ((0.5 0.5, 2 0, 3 2, 1.5 4, 0 3, 0.5 0.5), (1 1, 0.8 2, 2 2.2, 1.4 1.1, 1 1)), MULTIPOINT ((3.5 -0.5), (4 2), (5 0), (3.2 1), (5 2), (4.5 0.5)), MULTILINESTRING ((3 3.5, 3.7 3.2, 4.5 3.3), (2.5 3.5, 3 4, 3.7 3.7), (4.5 3.8, 5.5 4.5)))</code></pre>
 <p><strong>Well-Known Binary (WKB)</strong> — бинарный формат хранения координат. Именно этот формат фактически используется в базах данных, поскольку он обеспечивает высокую скорость чтения и записи данных (в отличие от текстового). Однако внешний вид данных в формате WKB мало о чем говорит человеку, поскольку он предназначен для чтения компьютером. Например, вышеприведенная строка <code>LINESTRING</code> будет выглядеть так:</p>
@@ -1330,9 +1331,9 @@
 <h3>
 <span class="header-section-number">9.4.8</span> Экспорт<a class="anchor" aria-label="anchor" href="#raster_export"><i class="fas fa-link"></i></a>
 </h3>
-<p>Чтобы экспортировать (сохранить в файл) любой растр, можно воспользоваться функцией <code>writeRaster()</code>, указав имя выходного файла:</p>
+<p>Чтобы экспортировать (сохранить в файл) любой растр, можно воспользоваться функцией <code><a href="https://r-spatial.github.io/stars/reference/write_stars.html">write_stars()</a></code>, указав имя выходного файла:</p>
 <div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">writeRaster</span><span class="op">(</span><span class="va">img_mol</span>, <span class="st">'data/world/marble_mol.tif'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/stars/reference/write_stars.html">write_stars</a></span><span class="op">(</span><span class="va">greenland</span>, <span class="st">'data/world/greenland.tif'</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="spatref" class="section level2" number="9.5">
@@ -1376,12 +1377,12 @@
 <li>
 <em>PROJ.4 String</em> — представление в виде строки.</li>
 <li>
-<em>WKT (Well-Known Text)</em> — представление в виде иерархического списка.</li>
+<em>WKT (Well-Known Text)</em> — представление в виде иерархического списка. Это <em>наиболее полный</em> формат описания пространственной привязки, который рекомендуется к использованию для избежания неоднозначностей.</li>
 <li>
 <em>EPSG (European Petroleum Survey Group)</em> — представление в виде числового кода.</li>
 </ul>
 <p>Для поиска проекций в перечисленных форматах представления удобно воспользоваться порталом <a href="spatialreference.org">spatialreference.org</a>.</p>
-<p><strong>PROJ.4 String</strong> — строковый формат представления информации о пространственной привязки, используемый в библиотеке <a href="http://proj4.org">PROJ.4</a>. Данная библиотека лежит в основе координатных систем пространственных данных, используется в <strong>R</strong>, <strong>Python</strong>, <strong>QGIS</strong> и прочих средах. Основные параметры строки:</p>
+<p><strong>PROJ.4 String</strong> — строковый формат представления информации о пространственной привязки, используемый в библиотеке <a href="http://proj.org"><strong>PROJ</strong></a>. Данная библиотека лежит в основе координатных систем пространственных данных, используется в <strong>R</strong>, <strong>Python</strong>, <strong>QGIS</strong> и прочих средах. Основные параметры строки:</p>
 <pre><code>+datum     Datum name (see `proj -ld`)
 +ellps     Ellipsoid name (see `proj -le`)
 +lat_0     Latitude of origin
@@ -1402,7 +1403,7 @@
 <li><p>Координаты в <em>конической равнопромежуточной проекции</em>:</p></li>
 <li><p>Координаты в проекции <em>UTM, зона 37</em>:</p></li>
 </ul>
-<p>Запись координат в формате WKT предполагает представление вышеуказанных компонент пространственной привязки к виде иерархического списка. Например, так будет выглядеть информация о <em>полярной стереографической проекции для карт России</em>:</p>
+<p><strong>WKT</strong> предполагает представление вышеуказанных компонент пространственной привязки к виде иерархического списка. Например, так будет выглядеть информация о <em>полярной стереографической проекции для карт России</em>:</p>
 <pre><code>PROJCS["WGS 84 / EPSG Russia Polar Stereographic",
     GEOGCS["WGS 84",
         DATUM["WGS_1984",
@@ -1647,7 +1648,7 @@
 <div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Проекция Меркатора</span>
 <span class="va">countries_merc</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">countries</span>, <span class="fl">3857</span><span class="op">)</span>
-
+<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">16</span>,<span class="fl">2</span>,<span class="fl">16</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">countries_merc</span><span class="op">)</span>, 
      col <span class="op">=</span> <span class="st">'lightgray'</span>,
      lwd <span class="op">=</span> <span class="fl">0.5</span>,
@@ -1666,11 +1667,11 @@
 <div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Зарубежная Европа в Конической равнопромежуточной проекции. </span>
 <span class="co"># Задаем только необходимые параметры проекции</span>
-<span class="va">europe.conic</span> <span class="op">=</span> <span class="va">countries</span> |&gt; 
+<span class="va">countries_eqdc</span> <span class="op">=</span> <span class="va">countries</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">continent</span> <span class="op">==</span> <span class="st">'Europe'</span> <span class="op">&amp;</span> <span class="va">sovereignt</span> <span class="op">!=</span> <span class="st">'Russia'</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="st">'+proj=eqdc +lon_0=10 +lat_1=30 +lat_2=60 +datum=WGS84 +units=m'</span><span class="op">)</span>
 
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">europe.conic</span><span class="op">)</span>, 
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">countries_eqdc</span><span class="op">)</span>, 
      col <span class="op">=</span> <span class="st">'lightgray'</span>,
      lwd <span class="op">=</span> <span class="fl">0.5</span>,
      graticule <span class="op">=</span> <span class="cn">TRUE</span>, 
@@ -1722,24 +1723,38 @@
 <span class="co">##         AREA["World."],</span>
 <span class="co">##         BBOX[-90,-180,90,180]],</span>
 <span class="co">##     ID["EPSG",4326]]</span></code></pre></div>
-<p>Для проецирования растра в новую систему координат необходимо использовать функцию <code><a href="https://r-spatial.github.io/stars/reference/st_warp.html">st_warp()</a></code> Приведем несколько примеров проецирования:</p>
+<p>Для проецирования растра в новую систему координат необходимо использовать функцию <code><a href="https://r-spatial.github.io/stars/reference/st_warp.html">st_warp()</a></code> Приведем несколько примеров проецирования.</p>
+<p>Проекция <em>Меркатора</em>:</p>
 <div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Проекция Меркатора:</span>
-<span class="va">img_merc</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_warp.html">st_warp</a></span><span class="op">(</span><span class="va">img</span>, crs <span class="op">=</span> <span class="fl">3857</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">img_merc</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_warp.html">st_warp</a></span><span class="op">(</span><span class="va">img</span>, crs <span class="op">=</span> <span class="fl">3857</span><span class="op">)</span>
 
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_rgb.html">st_rgb</a></span><span class="op">(</span><span class="va">img_merc</span><span class="op">)</span>, reset <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">## downsample set to c(1,1)</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_rgb.html">st_rgb</a></span><span class="op">(</span><span class="va">img_merc</span><span class="op">)</span>, main <span class="op">=</span> <span class="cn">NULL</span>, reset <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">countries_merc</span><span class="op">)</span>, 
-     border <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html">rgb</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0.5</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+     border <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html">rgb</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0.5</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">0.25</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-84-1.png" width="100%"></div>
+<p>Проекция <em>Мольвейде</em>:</p>
 <div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Проекция Мольвейде:</span>
-<span class="va">img_moll</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_warp.html">st_warp</a></span><span class="op">(</span><span class="va">img</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="st">'+proj=moll'</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_rgb.html">st_rgb</a></span><span class="op">(</span><span class="va">img_moll</span><span class="op">)</span>, reset <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">## downsample set to c(1,1)</span>
+<code class="sourceCode R"><span class="va">img_moll</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_warp.html">st_warp</a></span><span class="op">(</span><span class="va">img</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="st">'+proj=moll'</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_rgb.html">st_rgb</a></span><span class="op">(</span><span class="va">img_moll</span><span class="op">)</span>, main <span class="op">=</span> <span class="cn">NULL</span>, reset <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">countries_moll</span><span class="op">)</span>, 
      border <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html">rgb</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0.5</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-85-1.png" width="100%"></div>
+<p>Проекция <em>коническая равнопромежуточная</em>:</p>
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">prj</span> <span class="op">=</span> <span class="st">'+proj=eqdc +lon_0=10 +lat_1=30 +lat_2=60 +datum=WGS84 +units=m'</span>
+
+<span class="va">img_eqdc</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_warp.html">st_warp</a></span><span class="op">(</span>
+  <span class="va">img</span>, 
+  crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">prj</span><span class="op">)</span>
+<span class="op">)</span>
+
+<span class="va">img_eqdc_euro</span> <span class="op">=</span> <span class="va">img_eqdc</span><span class="op">[</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="va">countries_eqdc</span><span class="op">)</span><span class="op">]</span>
+
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_rgb.html">st_rgb</a></span><span class="op">(</span><span class="va">img_eqdc_euro</span><span class="op">)</span>, main <span class="op">=</span> <span class="cn">NULL</span>, reset <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">countries_eqdc</span><span class="op">)</span>, 
+     border <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html">rgb</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0.5</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="09-SpatialData_files/figure-html/unnamed-chunk-86-1.png" width="50%"></div>
+<p>Более подробно вопросы выбора проекций и построения сеток координат рассматриваются в следующей главе.</p>
 </div>
 </div>
 <div id="questions_tasks_spatial" class="section level2" number="9.6">
