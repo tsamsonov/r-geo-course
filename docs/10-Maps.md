@@ -12,6 +12,7 @@ library(stars)
 library(dplyr)
 library(ggplot2)
 library(ggrepel)
+library(ggnewscale)
 library(rnaturalearth)
 library(RColorBrewer)
 ```
@@ -35,11 +36,9 @@ library(RColorBrewer)
 
 В настоящей теме кратко рассмотрены все перечисленные аспекты. В качестве библиотеки для визуализации используется ggplot2. Как и в случае с построением обычных графиков, использование данной библиотеки позволяет достичь гораздо лучшего по сравнению с базовой графикой R контроля над внешним видом изображения. Что позволяет в свою очередь достичь выского качества карт.
 
-## Данные Natural Earth {#spatial_ggplot2}
+## Данные Natural Earth {#spatial_natural}
 
 В качестве источника открытых данных мы будем использовать [Natural Earth](https://www.naturalearthdata.com/) и [WorldClim](http://www.worldclim.org/).
-
-### Данные Natural Earth {#thematic_mapping_intro_ne}
 
 [Natural Earth](https://www.naturalearthdata.com/) — это открытые мелкомасштабные картографические данные высокого качества. Данные доступны для трех масштабов: 1:10М, 1:50М и 1:110М. Для доступа к этим данным из среды R без загрузки исходных файлов можно использовать пакет [__rnaturalearth__](https://cran.r-project.org/web/packages/rnaturalearth/index.html). Пакет позволяет выгружать данные из внешнего репозитория, а также содержит три предзакачанных слоя:
 
@@ -59,8 +58,17 @@ ocean = ne_download(scale = 110,
                     category = 'physical',
                     returnclass = 'sf')
 ## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/Rtmp270Lsv", layer: "ne_110m_ocean"
+## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpDFLhqX", layer: "ne_110m_ocean"
 ## with 2 features
+## It has 3 fields
+
+land = ne_download(scale = 110,
+                    type = 'land',
+                    category = 'physical',
+                    returnclass = 'sf')
+## OGR data source with driver: ESRI Shapefile 
+## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpDFLhqX", layer: "ne_110m_land"
+## with 127 features
 ## It has 3 fields
 
 cities = ne_download(scale = 110,
@@ -68,7 +76,7 @@ cities = ne_download(scale = 110,
                      category = 'cultural',
                      returnclass = 'sf')
 ## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/Rtmp270Lsv", layer: "ne_110m_populated_places"
+## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpDFLhqX", layer: "ne_110m_populated_places"
 ## with 243 features
 ## It has 119 fields
 ## Integer64 fields read as strings:  wof_id ne_id
@@ -78,7 +86,7 @@ rivers = ne_download(scale = 110,
                      category = 'physical',
                      returnclass = 'sf')
 ## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/Rtmp270Lsv", layer: "ne_110m_rivers_lake_centerlines"
+## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpDFLhqX", layer: "ne_110m_rivers_lake_centerlines"
 ## with 13 features
 ## It has 31 fields
 ## Integer64 fields read as strings:  scalerank ne_id
@@ -131,7 +139,7 @@ borders = st_read(ne, 'ne_110m_admin_0_boundary_lines_land')
 
 
 ```r
-lyr110 = lst(ocean, coast, countries, rivers, cities, borders)
+lyr110 = lst(ocean, land, coast, countries, rivers, cities, borders)
 ```
 
 ## Визуализация средствами ggplot2 {#spatial_ggplot2}
@@ -365,9 +373,6 @@ degree_labels = function(grat, vjust, hjust, size, lon = T, lat = T) {
   )  
 }
 
-
-
-
 map + 
   geom_sf(data = grat, size = 0.1) +
   coord_sf(crs = "+proj=eck3") +
@@ -413,6 +418,47 @@ map +
 # map + coord_sf(crs = "+proj=times")
 # map + coord_sf(crs = "+proj=moll")
 ```
+
+### Отображение растровых данных
+
+
+```r
+dem = read_stars('data/world/gebco.tif') # Цифровая модель рельефа
+img = read_stars('data/world/BlueMarbleJuly.tif') # Цветной космический снимок (RGB)
+
+ggplot() +
+  geom_stars(data = dem) +
+  geom_sf(data = lyr110$coast, size = 0.4, color = 'white') +
+  coord_sf()
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-16-1.png" width="100%" />
+
+
+```r
+sf_use_s2(FALSE)
+## Spherical geometry (s2) switched off
+dem_land = dem[lyr110$land]
+dem_ocean = dem[lyr110$ocean]
+
+prj = "+proj=eck3"
+
+ggplot() +
+  geom_stars(data = st_warp(dem_ocean, crs = prj)) +
+  scale_fill_gradientn(colours = c('navyblue', 'steelblue', 'azure')) +
+  new_scale_fill() +
+  geom_stars(data = st_warp(dem_land, crs = prj)) +
+  scale_fill_gradientn(colours = c('forestgreen', 'olivedrab', 'lightyellow', 'firebrick', 'pink', 'white'), na.value = NA) +
+  geom_sf(data = st_wrap_dateline(lyr110$coast), size = 0.4, color = 'white') +
+  coord_sf() +
+  labs(x = NULL, y = NULL) +
+  theme_minimal() + 
+  coord_sf(crs = prj) +
+  degree_labels(grat, vjust = +1.5, hjust = +1.5, size = 3, lon = F)
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-17-1.png" width="100%" />
+
 
 
 ### Вопросы {#questions_maps}

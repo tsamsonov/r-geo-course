@@ -6,15 +6,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Глава 10 Основы картографии | Визуализация и анализ географических данных на языке R</title>
 <meta name="author" content="Тимофей Самсонов">
-<meta name="description" content="10.1 Предварительные требования Необходимые для работы пакеты: library(sf) library(stars) library(dplyr) library(ggplot2) library(ggrepel) library(rnaturalearth) library(RColorBrewer)  10.2...">
+<meta name="description" content="10.1 Предварительные требования Необходимые для работы пакеты: library(sf) library(stars) library(dplyr) library(ggplot2) library(ggrepel) library(ggnewscale) library(rnaturalearth)...">
 <meta name="generator" content="bookdown 0.24 with bs4_book()">
 <meta property="og:title" content="Глава 10 Основы картографии | Визуализация и анализ географических данных на языке R">
 <meta property="og:type" content="book">
-<meta property="og:description" content="10.1 Предварительные требования Необходимые для работы пакеты: library(sf) library(stars) library(dplyr) library(ggplot2) library(ggrepel) library(rnaturalearth) library(RColorBrewer)  10.2...">
+<meta property="og:description" content="10.1 Предварительные требования Необходимые для работы пакеты: library(sf) library(stars) library(dplyr) library(ggplot2) library(ggrepel) library(ggnewscale) library(rnaturalearth)...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Глава 10 Основы картографии | Визуализация и анализ географических данных на языке R">
 <meta name="twitter:site" content="@timofeysamsonov">
-<meta name="twitter:description" content="10.1 Предварительные требования Необходимые для работы пакеты: library(sf) library(stars) library(dplyr) library(ggplot2) library(ggrepel) library(rnaturalearth) library(RColorBrewer)  10.2...">
+<meta name="twitter:description" content="10.1 Предварительные требования Необходимые для работы пакеты: library(sf) library(stars) library(dplyr) library(ggplot2) library(ggrepel) library(ggnewscale) library(rnaturalearth)...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -67,6 +67,7 @@
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/slowkow/ggrepel">ggrepel</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">ggnewscale</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ropenscilabs/rnaturalearth">rnaturalearth</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">RColorBrewer</span><span class="op">)</span></code></pre></div>
 </div>
@@ -89,15 +90,11 @@
 <p>При этом многие компоненты неразрывно связаны друг с другом. Например, картографическая основа должна обладать оптимальной детализацией. То есть не быть излишне подробной или, наоборот, генерализованной для выбранного масштаба картографирования. Проекция, в свою очередь, влияет не величину масштаба при фиксированном размере карты, а легенда должны отражать выбранное содержание карты.</p>
 <p>В настоящей теме кратко рассмотрены все перечисленные аспекты. В качестве библиотеки для визуализации используется ggplot2. Как и в случае с построением обычных графиков, использование данной библиотеки позволяет достичь гораздо лучшего по сравнению с базовой графикой R контроля над внешним видом изображения. Что позволяет в свою очередь достичь выского качества карт.</p>
 </div>
-<div id="spatial_ggplot2" class="section level2" number="10.3">
+<div id="spatial_natural" class="section level2" number="10.3">
 <h2>
-<span class="header-section-number">10.3</span> Данные Natural Earth<a class="anchor" aria-label="anchor" href="#spatial_ggplot2"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.3</span> Данные Natural Earth<a class="anchor" aria-label="anchor" href="#spatial_natural"><i class="fas fa-link"></i></a>
 </h2>
 <p>В качестве источника открытых данных мы будем использовать <a href="https://www.naturalearthdata.com/">Natural Earth</a> и <a href="http://www.worldclim.org/">WorldClim</a>.</p>
-<div id="thematic_mapping_intro_ne" class="section level3" number="10.3.1">
-<h3>
-<span class="header-section-number">10.3.1</span> Данные Natural Earth<a class="anchor" aria-label="anchor" href="#thematic_mapping_intro_ne"><i class="fas fa-link"></i></a>
-</h3>
 <p><a href="https://www.naturalearthdata.com/">Natural Earth</a> — это открытые мелкомасштабные картографические данные высокого качества. Данные доступны для трех масштабов: 1:10М, 1:50М и 1:110М. Для доступа к этим данным из среды R без загрузки исходных файлов можно использовать пакет <a href="https://cran.r-project.org/web/packages/rnaturalearth/index.html"><strong>rnaturalearth</strong></a>. Пакет позволяет выгружать данные из внешнего репозитория, а также содержит три предзакачанных слоя:</p>
 <ul>
 <li>
@@ -117,8 +114,17 @@
                     category <span class="op">=</span> <span class="st">'physical'</span>,
                     returnclass <span class="op">=</span> <span class="st">'sf'</span><span class="op">)</span>
 <span class="co">## OGR data source with driver: ESRI Shapefile </span>
-<span class="co">## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/Rtmp270Lsv", layer: "ne_110m_ocean"</span>
+<span class="co">## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpDFLhqX", layer: "ne_110m_ocean"</span>
 <span class="co">## with 2 features</span>
+<span class="co">## It has 3 fields</span>
+
+<span class="va">land</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/rnaturalearth/man/ne_download.html">ne_download</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">110</span>,
+                    type <span class="op">=</span> <span class="st">'land'</span>,
+                    category <span class="op">=</span> <span class="st">'physical'</span>,
+                    returnclass <span class="op">=</span> <span class="st">'sf'</span><span class="op">)</span>
+<span class="co">## OGR data source with driver: ESRI Shapefile </span>
+<span class="co">## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpDFLhqX", layer: "ne_110m_land"</span>
+<span class="co">## with 127 features</span>
 <span class="co">## It has 3 fields</span>
 
 <span class="va">cities</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/rnaturalearth/man/ne_download.html">ne_download</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">110</span>,
@@ -126,7 +132,7 @@
                      category <span class="op">=</span> <span class="st">'cultural'</span>,
                      returnclass <span class="op">=</span> <span class="st">'sf'</span><span class="op">)</span>
 <span class="co">## OGR data source with driver: ESRI Shapefile </span>
-<span class="co">## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/Rtmp270Lsv", layer: "ne_110m_populated_places"</span>
+<span class="co">## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpDFLhqX", layer: "ne_110m_populated_places"</span>
 <span class="co">## with 243 features</span>
 <span class="co">## It has 119 fields</span>
 <span class="co">## Integer64 fields read as strings:  wof_id ne_id</span>
@@ -136,7 +142,7 @@
                      category <span class="op">=</span> <span class="st">'physical'</span>,
                      returnclass <span class="op">=</span> <span class="st">'sf'</span><span class="op">)</span>
 <span class="co">## OGR data source with driver: ESRI Shapefile </span>
-<span class="co">## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/Rtmp270Lsv", layer: "ne_110m_rivers_lake_centerlines"</span>
+<span class="co">## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpDFLhqX", layer: "ne_110m_rivers_lake_centerlines"</span>
 <span class="co">## with 13 features</span>
 <span class="co">## It has 31 fields</span>
 <span class="co">## Integer64 fields read as strings:  scalerank ne_id</span></code></pre></div>
@@ -181,8 +187,7 @@
 <span class="co">## Geodetic CRS:  WGS 84</span></code></pre></div>
 <p>В дальнейшем нам понадобятся данные другой детализации, поэтому объединим текущие данные в список, соответствующий масштабу 110М. Для этого используем функцию <code>lst</code> из пакета <em>tibble</em>, которая элементам списка дает такие же имена как объединяемым элементам:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">lyr110</span> <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/lst.html">lst</a></span><span class="op">(</span><span class="va">ocean</span>, <span class="va">coast</span>, <span class="va">countries</span>, <span class="va">rivers</span>, <span class="va">cities</span>, <span class="va">borders</span><span class="op">)</span></code></pre></div>
-</div>
+<code class="sourceCode R"><span class="va">lyr110</span> <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/lst.html">lst</a></span><span class="op">(</span><span class="va">ocean</span>, <span class="va">land</span>, <span class="va">coast</span>, <span class="va">countries</span>, <span class="va">rivers</span>, <span class="va">cities</span>, <span class="va">borders</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="spatial_ggplot2" class="section level2" number="10.4">
 <h2>
@@ -370,9 +375,6 @@
   <span class="op">)</span>  
 <span class="op">}</span>
 
-
-
-
 <span class="va">map</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">grat</span>, size <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="st">"+proj=eck3"</span><span class="op">)</span> <span class="op">+</span>
@@ -405,9 +407,44 @@
 <span class="co"># map + coord_sf(crs = "+proj=eqearth")</span>
 <span class="co"># map + coord_sf(crs = "+proj=times")</span>
 <span class="co"># map + coord_sf(crs = "+proj=moll")</span></code></pre></div>
-<div id="questions_maps" class="section level3" number="10.5.1">
+<div id="отображение-растровых-данных" class="section level3" number="10.5.1">
 <h3>
-<span class="header-section-number">10.5.1</span> Вопросы<a class="anchor" aria-label="anchor" href="#questions_maps"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.5.1</span> Отображение растровых данных<a class="anchor" aria-label="anchor" href="#%D0%BE%D1%82%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-%D1%80%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B2%D1%8B%D1%85-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85"><i class="fas fa-link"></i></a>
+</h3>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dem</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html">read_stars</a></span><span class="op">(</span><span class="st">'data/world/gebco.tif'</span><span class="op">)</span> <span class="co"># Цифровая модель рельефа</span>
+<span class="va">img</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html">read_stars</a></span><span class="op">(</span><span class="st">'data/world/BlueMarbleJuly.tif'</span><span class="op">)</span> <span class="co"># Цветной космический снимок (RGB)</span>
+
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://r-spatial.github.io/stars/reference/geom_stars.html">geom_stars</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">dem</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lyr110</span><span class="op">$</span><span class="va">coast</span>, size <span class="op">=</span> <span class="fl">0.4</span>, color <span class="op">=</span> <span class="st">'white'</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-16-1.png" width="100%"></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/s2.html">sf_use_s2</a></span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="co">## Spherical geometry (s2) switched off</span>
+<span class="va">dem_land</span> <span class="op">=</span> <span class="va">dem</span><span class="op">[</span><span class="va">lyr110</span><span class="op">$</span><span class="va">land</span><span class="op">]</span>
+<span class="va">dem_ocean</span> <span class="op">=</span> <span class="va">dem</span><span class="op">[</span><span class="va">lyr110</span><span class="op">$</span><span class="va">ocean</span><span class="op">]</span>
+
+<span class="va">prj</span> <span class="op">=</span> <span class="st">"+proj=eck3"</span>
+
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://r-spatial.github.io/stars/reference/geom_stars.html">geom_stars</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_warp.html">st_warp</a></span><span class="op">(</span><span class="va">dem_ocean</span>, crs <span class="op">=</span> <span class="va">prj</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_fill_gradientn</a></span><span class="op">(</span>colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'navyblue'</span>, <span class="st">'steelblue'</span>, <span class="st">'azure'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggnewscale/man/new_scale.html">new_scale_fill</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://r-spatial.github.io/stars/reference/geom_stars.html">geom_stars</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_warp.html">st_warp</a></span><span class="op">(</span><span class="va">dem_land</span>, crs <span class="op">=</span> <span class="va">prj</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_fill_gradientn</a></span><span class="op">(</span>colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'forestgreen'</span>, <span class="st">'olivedrab'</span>, <span class="st">'lightyellow'</span>, <span class="st">'firebrick'</span>, <span class="st">'pink'</span>, <span class="st">'white'</span><span class="op">)</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_wrap_dateline</a></span><span class="op">(</span><span class="va">lyr110</span><span class="op">$</span><span class="va">coast</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">0.4</span>, color <span class="op">=</span> <span class="st">'white'</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="va">prj</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">degree_labels</span><span class="op">(</span><span class="va">grat</span>, vjust <span class="op">=</span> <span class="op">+</span><span class="fl">1.5</span>, hjust <span class="op">=</span> <span class="op">+</span><span class="fl">1.5</span>, size <span class="op">=</span> <span class="fl">3</span>, lon <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-17-1.png" width="100%"></div>
+</div>
+<div id="questions_maps" class="section level3" number="10.5.2">
+<h3>
+<span class="header-section-number">10.5.2</span> Вопросы<a class="anchor" aria-label="anchor" href="#questions_maps"><i class="fas fa-link"></i></a>
 </h3>
 <ol style="list-style-type: decimal">
 <li>Назовите пакет (и одноименную функцию), с помощью которых можно быстро осуществлять интерактивный просмотр пространственных данных.</li>
