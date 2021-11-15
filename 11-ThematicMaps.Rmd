@@ -29,63 +29,7 @@ library(rnaturalearth)
 
 Разнообразие типов и видов карт достаточно велико. Комплексные картографические произведения, содержащие многослойный набор объектов, создаются, как правило, средствами геоинформационных пакетов. Такие карты требуют тщательной и кропотливой работы с легендой, устранения графических конфликтов между знаками, многократного редактирования входных данных, условий, фильтров и способов изображения в попытке достичь эстетичного и вместе с тем информативного результата.
 
-В то же время, гораздо большее количество создаваемых в повседневной практике карт носят простой аналитический характер. Такие карты показывают одно, максимум два явления, и могут иллюстрировать входные данные, результаты промежуточных или итоговых расчетов. Создание именно таких карт целесообразно автоматизировать средствами программирования. В этом разделе мы познакомимся с созданием тематических карт средствами пакета [__tmap__](https://cran.r-project.org/web/packages/tmap/index.html). В качестве источника открытых данных мы будем использовать [Natural Earth](https://www.naturalearthdata.com/) и [WorldClim](http://www.worldclim.org/).
-
-### Данные Natural Earth {#thematic_mapping_intro_ne}
-
-[Natural Earth](https://www.naturalearthdata.com/) — это открытые мелкомасштабные картографические данные высокого качества. Данные доступны для трех масштабов: 1:10М, 1:50М и 1:110М. Для доступа к этим данным из среды R без загрузки исходных файлов можно использовать пакет [__rnaturalearth__](https://cran.r-project.org/web/packages/rnaturalearth/index.html). Пакет позволяет выгружать данные из внешнего репозитория, а также содержит три предзакачанных слоя:
-
-- `ne_countries()` границы стран
-- `ne_states()` границы единиц АТД 1 порядка
-- `ne_coastline()` береговая линия
-
-Для загрузки других слоев необходимо использовать функцию `ne_download()`, передав ей масштаб, название слоя и его категорию: 
-
-```{r, cache=TRUE}
-countries = ne_countries() %>% st_as_sf()
-
-coast = ne_coastline() %>% st_as_sf()
-
-# ocean = ne_download(scale = 110, 
-#                     type = 'ocean', 
-#                     category = 'physical', 
-#                     returnclass = 'sf')
-# 
-# cities = ne_download(scale = 110, 
-#                      type = 'populated_places', 
-#                      category = 'cultural', 
-#                      returnclass = 'sf')
-# 
-# rivers = ne_download(scale = 110, 
-#                      type = 'rivers_lake_centerlines', 
-#                      category = 'physical', 
-#                      returnclass = 'sf')
-
-ne = '/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg'
-ocean = st_read(ne, 'ne_110m_ocean')
-cities = st_read(ne, 'ne_110m_populated_places')
-rivers = st_read(ne, 'ne_110m_rivers_lake_centerlines')
-```
-
-Познакомимся с загруженными данными:
-```{r}
-plot(ocean %>% st_geometry(), col = 'lightblue')
-plot(countries, col = 'white', border = 'grey', add = TRUE)
-plot(coast, add = TRUE, col = 'steelblue')
-plot(rivers, add = TRUE, col = 'steelblue')
-plot(cities, add = TRUE, col = 'black', pch = 19, cex = 0.2)
-```
-
-Перед построением карт мира данные целесообразно спроецировать. Чтобы не трансформировать каждый слой отдельно, можно объединить слои в список и воспользоваться функционалом `lapply` для множественного трансформирования. Для создания списка воспользуемся функцией `lst()` из пакета `tibble`, которая присваивает компонентам списка имена, соответствующие названиям входных переменных (чтобы не писать `ocean = ocean`):
-```{r}
-lyr = tibble::lst(ocean, coast, countries, rivers, cities)
-lyrp = lapply(lyr, st_transform, crs = "+proj=eck3") # Псевдоцилиндрическая проекция Эккерта
-
-plot(lyrp$countries %>% st_geometry(), col = 'white', border = 'grey', lwd = 0.5)
-plot(lyrp$ocean , col = 'lightblue', lwd = 0.5, border = 'steelblue', add = TRUE)
-plot(lyrp$rivers, add = TRUE, lwd = 0.5, col = 'steelblue')
-plot(lyrp$cities, add = TRUE, col = 'black', pch = 19, cex = 0.1)
-```
+В то же время, гораздо большее количество создаваемых в повседневной практике карт носят простой аналитический характер. Такие карты показывают одно, максимум два явления, и могут иллюстрировать входные данные, результаты промежуточных или итоговых расчетов. Создание именно таких карт целесообразно автоматизировать средствами программирования. В этом разделе мы познакомимся с созданием тематических карт средствами пакета [__tmap__](https://cran.r-project.org/web/packages/tmap/index.html). 
 
 ### Данные WorldClim {#thematic_mapping_intro_wc}
 
