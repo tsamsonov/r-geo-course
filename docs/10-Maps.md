@@ -58,17 +58,8 @@ ocean = ne_download(scale = 110,
                     category = 'physical',
                     returnclass = 'sf')
 ## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpDFLhqX", layer: "ne_110m_ocean"
+## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmphtbhzV", layer: "ne_110m_ocean"
 ## with 2 features
-## It has 3 fields
-
-land = ne_download(scale = 110,
-                    type = 'land',
-                    category = 'physical',
-                    returnclass = 'sf')
-## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpDFLhqX", layer: "ne_110m_land"
-## with 127 features
 ## It has 3 fields
 
 cities = ne_download(scale = 110,
@@ -76,20 +67,10 @@ cities = ne_download(scale = 110,
                      category = 'cultural',
                      returnclass = 'sf')
 ## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpDFLhqX", layer: "ne_110m_populated_places"
+## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmphtbhzV", layer: "ne_110m_populated_places"
 ## with 243 features
 ## It has 119 fields
 ## Integer64 fields read as strings:  wof_id ne_id
-
-rivers = ne_download(scale = 110,
-                     type = 'rivers_lake_centerlines',
-                     category = 'physical',
-                     returnclass = 'sf')
-## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpDFLhqX", layer: "ne_110m_rivers_lake_centerlines"
-## with 13 features
-## It has 31 fields
-## Integer64 fields read as strings:  scalerank ne_id
 ```
 
 В то же время, каждый раз выкачивать данные для работы бывает неэффективно. Поэтому вы можете скачать себе полную базу данных Natural Earth в формате GeoPackage (GPKG) по ссылке https://www.naturalearthdata.com/downloads/ и положить ее в любую удобную локацию. В этом случае общение с интернетом в процессе построения карт не потребуется:
@@ -97,24 +78,6 @@ rivers = ne_download(scale = 110,
 
 ```r
 ne = '/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg'
-ocean = st_read(ne, 'ne_110m_ocean')
-## Reading layer `ne_110m_ocean' from data source 
-##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
-##   using driver `GPKG'
-## Simple feature collection with 2 features and 3 fields
-## Geometry type: POLYGON
-## Dimension:     XY
-## Bounding box:  xmin: -180 ymin: -85.60904 xmax: 180 ymax: 90
-## Geodetic CRS:  WGS 84
-cities = st_read(ne, 'ne_110m_populated_places')
-## Reading layer `ne_110m_populated_places' from data source 
-##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
-##   using driver `GPKG'
-## Simple feature collection with 243 features and 119 fields
-## Geometry type: POINT
-## Dimension:     XY
-## Bounding box:  xmin: -175.2206 ymin: -41.29999 xmax: 179.2166 ymax: 64.15002
-## Geodetic CRS:  WGS 84
 rivers = st_read(ne, 'ne_110m_rivers_lake_centerlines')
 ## Reading layer `ne_110m_rivers_lake_centerlines' from data source 
 ##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
@@ -123,6 +86,24 @@ rivers = st_read(ne, 'ne_110m_rivers_lake_centerlines')
 ## Geometry type: LINESTRING
 ## Dimension:     XY
 ## Bounding box:  xmin: -135.3134 ymin: -33.99358 xmax: 129.956 ymax: 72.90651
+## Geodetic CRS:  WGS 84
+lakes = st_read(ne, 'ne_110m_lakes')
+## Reading layer `ne_110m_lakes' from data source 
+##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
+##   using driver `GPKG'
+## Simple feature collection with 25 features and 33 fields
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -124.9536 ymin: -16.53641 xmax: 109.9298 ymax: 66.9693
+## Geodetic CRS:  WGS 84
+land = st_read(ne, 'ne_110m_land')
+## Reading layer `ne_110m_land' from data source 
+##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
+##   using driver `GPKG'
+## Simple feature collection with 127 features and 3 fields
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
 ## Geodetic CRS:  WGS 84
 borders = st_read(ne, 'ne_110m_admin_0_boundary_lines_land')
 ## Reading layer `ne_110m_admin_0_boundary_lines_land' from data source 
@@ -139,7 +120,7 @@ borders = st_read(ne, 'ne_110m_admin_0_boundary_lines_land')
 
 
 ```r
-lyr110 = lst(ocean, land, coast, countries, rivers, cities, borders)
+lyr110 = lst(ocean, land, coast, countries, rivers, lakes, cities, borders)
 ```
 
 ## Визуализация средствами ggplot2 {#spatial_ggplot2}
@@ -217,21 +198,24 @@ ggplot() +
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-9-1.png" width="100%" />
 
-Нанесем на карту точки и подписи крупнейших столиц. Для нанесения подписей используем `geom_sf_text()` с параметром `nudge_y`, чтобы сдвинуть подписи вверх относительно пунсонов:
+Нанесем на карту точки и подписи крупнейших столиц. Для нанесения подписей используем `geom_sf_text()` с параметром `nudge_y`, чтобы сдвинуть подписи вверх относительно пунсонов. Помимо этого, чтобы понизить многословность кода, для дальнейших экспериментов перенесем посторяющиеся слои вы список:
 
 ```r
 lyr110$megacities = lyr110$cities |> 
   filter(SCALERANK == 0, 
          ! NAME %in% c('Washington, D.C.', 'Paris', 'Riyadh', 'Rome', 'São Paulo', 'Kolkata'))
+basemap = list(
+  geom_sf(data = lyr110$countries, color = NA, 
+          mapping = aes(fill = as.factor(mapcolor7)), show.legend = FALSE),
+  scale_fill_manual(values = brewer.pal(7, 'Set2')),
+  geom_sf(data = lyr110$borders, size = 0.2),
+  geom_sf(data = lyr110$ocean, fill = 'azure', color = NA),
+  geom_sf(data = lyr110$coast, size = 0.4, color = 'steelblue4'),
+  geom_sf(data = lyr110$megacities, shape = 21, fill = 'white', stroke = 0.75, size = 2)
+)
 
 ggplot() +
-  geom_sf(data = lyr110$countries, color = NA, 
-          mapping = aes(fill = as.factor(mapcolor7)), show.legend = FALSE) +
-  scale_fill_manual(values = brewer.pal(7, 'Set2')) +
-  geom_sf(data = lyr110$borders, size = 0.2) +
-  geom_sf(data = lyr110$ocean, fill = 'azure', color = NA) +
-  geom_sf(data = lyr110$coast, size = 0.4, color = 'steelblue4') +
-  geom_sf(data = lyr110$megacities, shape = 21, fill = 'white', stroke = 0.75, size = 2) + 
+  basemap +
   geom_sf_text(data = lyr110$megacities, mapping = aes(label = name_en),
                size = 3, nudge_y = 5, family = 'Open Sans', fontface = 'bold') +
   theme_void()
@@ -239,20 +223,13 @@ ggplot() +
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-10-1.png" width="100%" />
 
-
 С подписями точечных объектов, однако, более удобно работать с применением пакета `ggrepel`, который расставляет их автоматически вокруг точек:
 
 ```r
 ggplot() +
-  geom_sf(data = lyr110$countries, color = NA, 
-          mapping = aes(fill = as.factor(mapcolor7)), show.legend = FALSE) +
-  scale_fill_manual(values = brewer.pal(7, 'Set2')) +
-  geom_sf(data = lyr110$borders, size = 0.2) +
-  geom_sf(data = lyr110$ocean, fill = 'azure', color = NA) +
-  geom_sf(data = lyr110$coast, size = 0.4, color = 'steelblue4') +
-  geom_sf(data = lyr110$megacities, shape = 21, fill = 'white', stroke = 0.75, size = 2) + 
+  basemap +
   geom_text_repel(data = lyr110$megacities, stat = "sf_coordinates",
-                  size = 3, aes(label = NAME, geometry = geom), 
+                  size = 3, aes(label = NAME, geometry = geometry), 
                   family = 'Open Sans', fontface = 'bold') +
   theme_void()
 ```
@@ -264,16 +241,9 @@ ggplot() +
 
 ```r
 ggplot() +
-  geom_sf(data = lyr110$countries, color = NA, 
-          mapping = aes(fill = as.factor(mapcolor7)), 
-          alpha = 0.5, show.legend = FALSE) +
-  scale_fill_manual(values = brewer.pal(7, 'Set2')) +
-  geom_sf(data = lyr110$borders, size = 0.2, alpha = 0.5) +
-  geom_sf(data = lyr110$ocean, fill = 'azure', color = NA) +
-  geom_sf(data = lyr110$coast, size = 0.4, color = 'steelblue4', alpha = 0.5) +
-  geom_sf(data = lyr110$megacities, shape = 21, fill = 'white', stroke = 0.5, size = 2) + 
+  basemap +
   geom_text_repel(data = lyr110$megacities, stat = "sf_coordinates",
-                  size = 3, aes(label = NAME, geometry = geom), 
+                  size = 3, aes(label = NAME, geometry = geometry), 
                   family = 'Open Sans', fontface = 'bold') +
   theme_void()
 ```
@@ -284,15 +254,9 @@ ggplot() +
 
 ```r
 ggplot() +
-  geom_sf(data = lyr110$countries, color = NA, 
-          mapping = aes(fill = as.factor(mapcolor7)), show.legend = FALSE) +
-  scale_fill_manual(values = brewer.pal(7, 'Set2')) +
-  geom_sf(data = lyr110$borders, size = 0.2) +
-  geom_sf(data = lyr110$ocean, fill = 'azure', color = NA) +
-  geom_sf(data = lyr110$coast, size = 0.4, color = 'steelblue4') +
-  geom_sf(data = lyr110$megacities, shape = 21, fill = 'white', stroke = 0.75, size = 2) + 
+  basemap +
   geom_label_repel(data = lyr110$megacities, stat = "sf_coordinates",
-                  aes(label = NAME, geometry = geom), 
+                  aes(label = NAME, geometry = geometry), 
                   size = 3, 
                   label.size = NA, 
                   label.padding=.1, 
@@ -319,7 +283,7 @@ map = ggplot() +
   geom_sf(data = lyr110$megacities, shape = 21, fill = 'white', stroke = 0.75, size = 2) +
   geom_label_repel(
     data = lyr110$megacities, stat = "sf_coordinates",
-    aes(label = NAME, geometry = geom),
+    aes(label = NAME, geometry = geometry),
     size = 3,
     label.size = NA,
     label.padding=.1,
@@ -412,15 +376,9 @@ map +
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-15-4.png" width="100%" />
 
-```r
-  
-# map + coord_sf(crs = "+proj=eqearth")
-# map + coord_sf(crs = "+proj=times")
-# map + coord_sf(crs = "+proj=moll")
-```
-
 ### Отображение растровых данных
 
+На общегеографических картах довольно часто присутствует изображение рельефа. Чтобы добавить его на карту, можно использовать специальный тип геометрии `geom_stars`:
 
 ```r
 dem = read_stars('data/world/gebco.tif') # Цифровая модель рельефа
@@ -429,11 +387,79 @@ img = read_stars('data/world/BlueMarbleJuly.tif') # Цветной космич�
 ggplot() +
   geom_stars(data = dem) +
   geom_sf(data = lyr110$coast, size = 0.4, color = 'white') +
-  coord_sf()
+  coord_sf() +
+  theme_void()
 ```
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-16-1.png" width="100%" />
 
+Для начала попробуем раскрасить рельеф в традиционной цветовой шкале, и посмотреть как это будет выглядеть:
+
+```r
+pal = c('navyblue', 'steelblue', 'azure', 'darkslategray', 'olivedrab', 'lightyellow', 'firebrick', 'pink', 'white')
+
+# Вынесем повторяющиемя слои в отдельный список
+hydro_lyrs = list(
+  geom_sf(data = lyr110$coast, size = 0.4, color = 'steelblue4'),
+  geom_sf(data = lyr110$rivers, size = 0.3, color = 'steelblue4'),
+  geom_sf(data = lyr110$lakes, size = 0.3, color = 'steelblue4', fill = 'azure')
+)
+
+ggplot() +
+  geom_stars(data = dem) +
+  scale_fill_gradientn(colours = pal) +
+  hydro_lyrs +
+  coord_sf() +
+  theme_void()
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-17-1.png" width="100%" />
+
+Видно, что по умолчаню цвета распределяются равномерно вдоль шкалы. Нам же необходимо ассоциировать их с конкретными высотами. Это можно сделать, определив в функции `scale_fill_gradientn` параметр `values`. Он принимает значения от 0 до 1 и указывает позицию цвета между минимумом и максимум. Чтобы сформировать такие позиции, необходимо сначала сделать гипсометрическую шкалу в метрах, а затем отмасштабировать ее на дипазон $[0, 1]$ посредством функции `rescale` из пакета `scales`:
+
+
+```r
+val = c(min(dem[[1]]), -4000, -200, 0, 100, 300, 1000, 2500, max(dem[[1]])) |> 
+  scales::rescale()
+
+ggplot() +
+  geom_stars(data = dem) +
+  scale_fill_gradientn(colours = pal, values = val) +
+  hydro_lyrs +
+  coord_sf() +
+  theme_void()
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-18-1.png" width="100%" />
+
+На первый взгляд может показаться, что все в порядке, но есть 2 проблемы:
+- отрицательные высоты на суше закрашиваются таким же цветом, как и отрицательные высота на море
+- нет резкого перехода через отметку 0, при котором цвет должен меняться с голубого на темно-зеленый.
+
+Чтобы убедиться в этом рассмотрим фрагмент карты подробнее, обратив внимание на Персидский залив, Каспийское и Черное моря:
+
+```r
+anno = list(
+  annotate("rect", xmin = 45, xmax = 60, ymin = 22, ymax = 32, 
+           color = 'white', size = 2, fill = NA),
+  annotate("rect", xmin = 45, xmax = 57, ymin = 35, ymax = 48, 
+           color = 'white', size = 2, fill = NA),
+  annotate("rect", xmin = 26, xmax = 43, ymin = 40, ymax = 48, 
+           color = 'white', size = 2, fill = NA)
+)
+
+ggplot() +
+  geom_stars(data = dem) +
+  scale_fill_gradientn(colours = pal, values = val) +
+  hydro_lyrs +
+  anno +
+  coord_sf(xlim = c(10, 75), ylim = c(20, 50)) +
+  theme_void()
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-19-1.png" width="100%" />
+
+Чтобы не возникало такого эффекта, необходимо разделить цифровую модель рельефа на ldt: одна для суши, вторая для мора. Для этого используем стандартный синтаксис вида `stars[sf]`, который позволяет обрезать объект типа `stars` заданным объектом типа `sf`:
 
 ```r
 sf_use_s2(FALSE)
@@ -441,24 +467,48 @@ sf_use_s2(FALSE)
 dem_land = dem[lyr110$land]
 dem_ocean = dem[lyr110$ocean]
 
-prj = "+proj=eck3"
-
-ggplot() +
-  geom_stars(data = st_warp(dem_ocean, crs = prj)) +
-  scale_fill_gradientn(colours = c('navyblue', 'steelblue', 'azure')) +
+map = ggplot() +
+  geom_stars(data = dem_ocean) +
+  scale_fill_gradientn(
+    colours = c('navyblue', 'steelblue4', 'skyblue2', 'azure', 'azure'),
+    values = scales::rescale(
+      c(min(dem_ocean[[1]], na.rm = T), 
+        -4000, -200, 0, 
+        max(dem_ocean[[1]], na.rm = T))
+    ),
+    na.value = NA
+  ) +
   new_scale_fill() +
-  geom_stars(data = st_warp(dem_land, crs = prj)) +
-  scale_fill_gradientn(colours = c('forestgreen', 'olivedrab', 'lightyellow', 'firebrick', 'pink', 'white'), na.value = NA) +
-  geom_sf(data = st_wrap_dateline(lyr110$coast), size = 0.4, color = 'white') +
+  geom_stars(data = dem_land) +
+  scale_fill_gradientn(
+    colours = c('darkslategray', 'darkslategray', 'olivedrab', 
+                'lightyellow', 'firebrick', 'pink', 'white'), 
+    values = scales::rescale(
+      c(min(dem_land[[1]], na.rm = T), 
+        -50, 100, 300, 1500, 3500, 
+        max(dem_land[[1]], na.rm = T)
+      )
+    ), 
+    na.value = NA
+  ) +
+  hydro_lyrs +
   coord_sf() +
-  labs(x = NULL, y = NULL) +
-  theme_minimal() + 
-  coord_sf(crs = prj) +
-  degree_labels(grat, vjust = +1.5, hjust = +1.5, size = 3, lon = F)
+  theme_void()
+
+map
 ```
 
-<img src="10-Maps_files/figure-html/unnamed-chunk-17-1.png" width="100%" />
+<img src="10-Maps_files/figure-html/unnamed-chunk-20-1.png" width="100%" />
 
+Проверим ранее указанную область:
+
+```r
+map +
+  coord_sf(xlim = c(10, 75), ylim = c(20, 50)) +
+  anno
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-21-1.png" width="100%" />
 
 
 ### Вопросы {#questions_maps}
