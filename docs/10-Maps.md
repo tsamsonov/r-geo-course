@@ -293,25 +293,25 @@ map = ggplot() +
   labs(x = NULL, y = NULL) +
   theme_minimal()
 
-map + coord_sf(crs = "+proj=eck3")
+map + coord_sf(crs = "+proj=moll")
 ```
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-14-1.png" width="100%" />
 
 ```r
-map + coord_sf(crs = "+proj=eqearth")
+map + coord_sf(crs = "+proj=eck3")
 ```
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-14-2.png" width="100%" />
 
 ```r
-map + coord_sf(crs = "+proj=times")
+map + coord_sf(crs = "+proj=eqearth")
 ```
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-14-3.png" width="100%" />
 
 ```r
-map + coord_sf(crs = "+proj=moll")
+map + coord_sf(crs = "+proj=times")
 ```
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-14-4.png" width="100%" />
@@ -322,6 +322,10 @@ lons = seq(-180, 180, by = 30)
 lats = seq(-90, 90, by = 30)
 
 grat = st_graticule(lon = lons, lat = lats)
+
+box = st_bbox(c(xmin = -180, xmax = 180, ymax = 90, ymin = -90), crs = st_crs(4326)) |> 
+  st_as_sfc() |> 
+  smoothr::densify(max_distance = 1) 
 
 degree_labels = function(grat, vjust, hjust, size, lon = T, lat = T) {
   pts = grat |>  
@@ -339,18 +343,19 @@ degree_labels = function(grat, vjust, hjust, size, lon = T, lat = T) {
 
 map + 
   geom_sf(data = grat, size = 0.1) +
-  coord_sf(crs = "+proj=eck3") +
-  degree_labels(grat, vjust = +1.5, hjust = +1.5, size = 3)
+  geom_sf(data = box, size = 0.5, fill = NA) +
+  coord_sf(crs = "+proj=moll") +
+  degree_labels(grat, vjust = +1.5, hjust = +1.5, size = 3, lon = F)
 ```
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-15-1.png" width="100%" />
 
 ```r
 
-
 map + 
   geom_sf(data = grat, size = 0.1) +
-  coord_sf(crs = "+proj=eqearth") +
+  geom_sf(data = box, size = 0.5, fill = NA) +
+  coord_sf(crs = "+proj=eck3") +
   degree_labels(grat, vjust = +1.5, hjust = +1.5, size = 3)
 ```
 
@@ -360,7 +365,8 @@ map +
 
 map + 
   geom_sf(data = grat, size = 0.1) +
-  coord_sf(crs = "+proj=times") +
+  geom_sf(data = box, size = 0.5, fill = NA) +
+  coord_sf(crs = "+proj=eqearth") +
   degree_labels(grat, vjust = +1.5, hjust = +1.5, size = 3)
 ```
 
@@ -370,8 +376,9 @@ map +
 
 map + 
   geom_sf(data = grat, size = 0.1) +
-  coord_sf(crs = "+proj=moll") +
-  degree_labels(grat, vjust = +1.5, hjust = +1.5, size = 3, lon = F)
+  geom_sf(data = box, size = 0.5, fill = NA) +
+  coord_sf(crs = "+proj=times") +
+  degree_labels(grat, vjust = +1.5, hjust = +1.5, size = 3)
 ```
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-15-4.png" width="100%" />
@@ -509,6 +516,84 @@ map +
 ```
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-21-1.png" width="100%" />
+
+### Проецирование растровых данных
+
+В отличие от векторных данных, растровые необходимо трансформировать заранее в нужную проекцию. Для этого воспользуемся функцией `st_warp`:
+
+```r
+hydro_lyrs = list(
+  geom_sf(data = st_wrap_dateline(lyr110$coast), size = 0.4, color = 'steelblue4'),
+  geom_sf(data = st_wrap_dateline(lyr110$rivers), size = 0.3, color = 'steelblue4'),
+  geom_sf(data = st_wrap_dateline(lyr110$lakes), size = 0.3, color = 'steelblue4', fill = 'azure')
+)
+
+prj = '+proj=eck3'
+
+scale_ocean = scale_fill_gradientn(
+    colours = c('navyblue', 'steelblue4', 'skyblue2', 'azure', 'azure'),
+    values = scales::rescale(
+      c(min(dem_ocean[[1]], na.rm = T), 
+        -4000, -200, 0, 
+        max(dem_ocean[[1]], na.rm = T))
+    ),
+    na.value = NA
+  )
+
+scale_land = scale_fill_gradientn(
+    colours = c('darkslategray', 'darkslategray', 'olivedrab', 
+                'lightyellow', 'firebrick', 'pink', 'white'), 
+    values = scales::rescale(
+      c(min(dem_land[[1]], na.rm = T), 
+        -50, 100, 300, 1500, 3500, 
+        max(dem_land[[1]], na.rm = T)
+      )
+    ), 
+    na.value = NA
+  )
+
+ggplot() +
+  geom_stars(data = st_warp(dem_ocean, crs = prj)) +
+  scale_ocean +
+  new_scale_fill() +
+  geom_stars(data = st_warp(dem_land, crs = prj)) +
+  scale_land +
+  hydro_lyrs +
+  coord_sf(crs = prj) +
+  theme_void()
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-22-1.png" width="100%" />
+
+Обратим внимание, что растро проецируется немного не так как векторные данные, его область остается прямоугольной. Поэтому при построении карт мира необходимо растры после проецирования обрезать прямоугольником, охватывающим весь мир:
+
+
+```r
+prjs = c("+proj=moll", "+proj=eck3", "+proj=eqearth", "+proj=times")
+lon_labs = c(F,T,T,T)
+
+for (i in seq_along(prjs)) {
+  pbox = st_transform(box, prjs[i])
+
+  map = ggplot() +
+    geom_stars(data = st_warp(dem_ocean, crs = prjs[i])[pbox]) +
+    scale_ocean +
+    new_scale_fill() +
+    geom_stars(data = st_warp(dem_land, crs = prjs[i])[pbox]) +
+    scale_land +
+    hydro_lyrs +
+    geom_sf(data = grat, size = 0.1) +
+    geom_sf(data = box, size = 0.5, fill = NA) +
+    coord_sf(crs = prjs[i]) +
+    degree_labels(grat, vjust = +1.5, hjust = +1.5, size = 3, lon = lon_labs[i]) +
+    ggtitle(prjs[i]) +
+    theme_void()
+  
+  print(map)
+}
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-23-1.png" width="100%" /><img src="10-Maps_files/figure-html/unnamed-chunk-23-2.png" width="100%" /><img src="10-Maps_files/figure-html/unnamed-chunk-23-3.png" width="100%" /><img src="10-Maps_files/figure-html/unnamed-chunk-23-4.png" width="100%" />
 
 
 ### Вопросы {#questions_maps}
