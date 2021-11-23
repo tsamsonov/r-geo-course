@@ -14,6 +14,7 @@ library(ggplot2)
 library(ggrepel)
 library(ggnewscale)
 library(rnaturalearth)
+library(rmapshaper)
 library(RColorBrewer)
 ```
 
@@ -57,7 +58,7 @@ ocean = ne_download(scale = 110,
                     category = 'physical',
                     returnclass = 'sf')
 ## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpHOOemY", layer: "ne_110m_ocean"
+## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/Rtmp3LaFOh", layer: "ne_110m_ocean"
 ## with 2 features
 ## It has 3 fields
 
@@ -66,7 +67,7 @@ cities = ne_download(scale = 110,
                      category = 'cultural',
                      returnclass = 'sf')
 ## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpHOOemY", layer: "ne_110m_populated_places"
+## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/Rtmp3LaFOh", layer: "ne_110m_populated_places"
 ## with 243 features
 ## It has 119 fields
 ## Integer64 fields read as strings:  wof_id ne_id
@@ -687,9 +688,125 @@ for (i in seq_along(cnts)) {
 
 Очевидно, что в данном случае оптимальным является средний уровень детализации `50M`. Два других уровня при выбранном охвате территории и размере карты являются либо избыточно (`10M`), либо недостаточно (`110M`) детальными. 
 
-
 ### Генерализация картографической основы
 
+Иногда не удается найти картографическую основу подходящей детализации. В этом случае вы можете провести _генерализацию_ данных. Поскольку генерализация является достаточно ресурсоемкой процедурой, ее не следует проводить непосредственно в скрипте, который занимается построением карт. Вместо этого, необходимо вынести создание генерализованной картографической основы в отдельный скрипт. Наиболее часто в целях генерализации используются такие операции как геометрическое упрощение и отбор объектов. Следует, однако, помнить, что эти процедуры целесообразно выполнять после того как данные трансформированы в нужную проекцию. В противном случае генерализация может быть неравномерной по полю карты (один градус долготы соответствует меньшим расстояниям в близости полюсов). Помимо этого, будет сложно выполнять параметризацию алгоритмов генерализации.
+
+#### Геометрическое упрощение
+
+В качестве примера рассмотрим геометрическое упрощение рек и полигонов государств. Визуализируем для начала исходные данные:
+
+```r
+countries = cnt010 |> 
+  st_transform(prj) |> 
+  st_crop(box)
+
+ggplot() +
+  geom_sf(data = countries, size = 0.25) +
+  ggtitle('Исходные данные масштаба 10M') +
+  theme_minimal()
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-25-1.png" width="100%" />
+
+Невооруженным взглядом видно, что их детализация избыточна. Для геометрического упрощения воспользуемся функцией `ms_simplify()` из пакета __rmapshaper__. В данной функции доступно два алгоритма геометрического упрощения: Дугласа-Пейкера и Висвалингам-Уайатта. Принципы работы этих алгоритмов разные, поэтому сопоставимая детализация достиагается в них при разном количестве точек:
+
+
+```r
+countries_dp = ms_simplify(countries, 
+                           method = 'dp', # алгоритм Дугласа-Пейкера
+                           keep = 0.04) # оставить 4% точек
+
+countries_vw = ms_simplify(countries,  
+                           method = 'vis', # алгоритм Висвалингам-Уайатта
+                           keep = 0.06)  # оставить 6% точек
+
+ggplot() +
+  geom_sf(data = countries_dp, size = 0.25) +
+  ggtitle('Геометрическое упрощение алгоритмом Дугласа-Пейкера') +
+  theme_minimal()
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-26-1.png" width="100%" />
+
+```r
+
+ggplot() +
+  geom_sf(data = countries_vw, size = 0.25) +
+  ggtitle('Геометрическое упрощение алгоритмом Висвалингам-Уайатта') +
+  theme_minimal()
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-26-2.png" width="100%" />
+
+Видно, что результаты упрощения алгоритмом Дугласа-Пейкера довольно угловатые и неестественные. Но при этом он лучше сохраняет различные характерные точки в структуре линии типа вершин фьордов. Тем не менее для целей картографической генерализации алгоритм Висвалингам-Уайатта можно назвать предпочтительным.
+
+#### Отбор
+
+Отбор применятся внутри множества пространственных объектов для того чтобы уменьшить их количество. Наиболее просто реализуется отбор для  объектов, которые не состоят в пространственных отношениях. Как правило, это точечные объекты. Более сложна процедура отбора во множестве топологически связанных объектов. Например, прореживание транспортной или гидрографической сети. В данном разделе мы посмотрим как можно отбирать точечные объекты. Наиболее простой случай реализуется тогда, когда объекты можно отобрать по атрибутам, без использования пространственных отношений. К счастью, данные Natural Earth содержат атрибуты, которые можно использовать в качестве критериев отбора.
+
+Для начала попробуем нанести все населенные пункты:
+
+
+```r
+cities_eu = st_read(ne, 'ne_10m_populated_places') |> 
+  st_transform(prj) |> 
+  st_crop(box)
+## Reading layer `ne_10m_populated_places' from data source 
+##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
+##   using driver `GPKG'
+## Simple feature collection with 7343 features and 119 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -179.59 ymin: -90 xmax: 179.3833 ymax: 82.48332
+## Geodetic CRS:  WGS 84
+
+ggplot() +
+  geom_sf(data = countries_vw, size = 0.25) +
+  geom_sf(data = cities_eu, size = 0.5, color = 'darkviolet') +
+  geom_sf_text(data = cities_eu, 
+               mapping = aes(label = NAME),
+               size = 1.5, nudge_y = 30000) +
+  theme_bw()
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-27-1.png" width="100%" />
+
+Очевидно, что при такой плотности нормальную карту составить не получится. Попробуем для начала остаить только столицы и разнести их через __ggrepel__:
+
+```r
+capitals = filter(cities_eu, FEATURECLA == 'Admin-0 capital')
+
+ggplot() +
+  geom_sf(data = countries_vw, size = 0.25) +
+  geom_sf(data = capitals, size = 1.2, color = 'darkviolet') +
+  geom_text_repel(data = capitals, stat = "sf_coordinates",
+                size = 2.5, aes(label = NAME, geometry = geom), 
+                fontface = 'bold') +
+  theme_bw()
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-28-1.png" width="100%" />
+
+Очевидно, на данную схему можно также дополнительнонанести дополнительно крупные населенные пункты, отобрав их уже по численности населения. Оставим для примера те, в которых живет более $700 000$ жителей:
+
+
+```r
+major_cities = cities_eu |> 
+  filter((FEATURECLA == 'Admin-0 capital') | (POP_MIN >= 700000)) |> 
+  mutate(FEATURECLA = ordered(FEATURECLA, levels = unique(cities_eu$FEATURECLA)))
+
+
+ggplot() +
+  geom_sf(data = countries_vw, size = 0.25) +
+  geom_sf(data = major_cities, size = 1, mapping = aes(size = FEATURECLA)) +
+  geom_text_repel(data = major_cities, stat = "sf_coordinates",
+                 aes(size = FEATURECLA, label = NAME, geometry = geom)) +
+  scale_size_manual(values = c(2, 2, 2, 2.5)) +
+  theme_bw()
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-29-1.png" width="100%" />
 
 ## Классификация объектов по типам
 

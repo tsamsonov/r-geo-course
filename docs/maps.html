@@ -69,6 +69,7 @@
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/slowkow/ggrepel">ggrepel</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">ggnewscale</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ropenscilabs/rnaturalearth">rnaturalearth</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ateucher/rmapshaper">rmapshaper</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">RColorBrewer</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="maps_intro" class="section level2" number="10.2">
@@ -114,7 +115,7 @@
                     category <span class="op">=</span> <span class="st">'physical'</span>,
                     returnclass <span class="op">=</span> <span class="st">'sf'</span><span class="op">)</span>
 <span class="co">## OGR data source with driver: ESRI Shapefile </span>
-<span class="co">## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpHOOemY", layer: "ne_110m_ocean"</span>
+<span class="co">## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/Rtmp3LaFOh", layer: "ne_110m_ocean"</span>
 <span class="co">## with 2 features</span>
 <span class="co">## It has 3 fields</span>
 
@@ -123,7 +124,7 @@
                      category <span class="op">=</span> <span class="st">'cultural'</span>,
                      returnclass <span class="op">=</span> <span class="st">'sf'</span><span class="op">)</span>
 <span class="co">## OGR data source with driver: ESRI Shapefile </span>
-<span class="co">## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpHOOemY", layer: "ne_110m_populated_places"</span>
+<span class="co">## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/Rtmp3LaFOh", layer: "ne_110m_populated_places"</span>
 <span class="co">## with 243 features</span>
 <span class="co">## It has 119 fields</span>
 <span class="co">## Integer64 fields read as strings:  wof_id ne_id</span></code></pre></div>
@@ -650,6 +651,101 @@
 <h3>
 <span class="header-section-number">10.6.2</span> Генерализация картографической основы<a class="anchor" aria-label="anchor" href="#%D0%B3%D0%B5%D0%BD%D0%B5%D1%80%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BA%D0%B0%D1%80%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B9-%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D1%8B"><i class="fas fa-link"></i></a>
 </h3>
+<p>Иногда не удается найти картографическую основу подходящей детализации. В этом случае вы можете провести <em>генерализацию</em> данных. Поскольку генерализация является достаточно ресурсоемкой процедурой, ее не следует проводить непосредственно в скрипте, который занимается построением карт. Вместо этого, необходимо вынести создание генерализованной картографической основы в отдельный скрипт. Наиболее часто в целях генерализации используются такие операции как геометрическое упрощение и отбор объектов. Следует, однако, помнить, что эти процедуры целесообразно выполнять после того как данные трансформированы в нужную проекцию. В противном случае генерализация может быть неравномерной по полю карты (один градус долготы соответствует меньшим расстояниям в близости полюсов). Помимо этого, будет сложно выполнять параметризацию алгоритмов генерализации.</p>
+<div id="геометрическое-упрощение" class="section level4" number="10.6.2.1">
+<h4>
+<span class="header-section-number">10.6.2.1</span> Геометрическое упрощение<a class="anchor" aria-label="anchor" href="#%D0%B3%D0%B5%D0%BE%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5-%D1%83%D0%BF%D1%80%D0%BE%D1%89%D0%B5%D0%BD%D0%B8%D0%B5"><i class="fas fa-link"></i></a>
+</h4>
+<p>В качестве примера рассмотрим геометрическое упрощение рек и полигонов государств. Визуализируем для начала исходные данные:</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">countries</span> <span class="op">=</span> <span class="va">cnt010</span> |&gt; 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">prj</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crop.html">st_crop</a></span><span class="op">(</span><span class="va">box</span><span class="op">)</span>
+
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">countries</span>, size <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">'Исходные данные масштаба 10M'</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-25-1.png" width="100%"></div>
+<p>Невооруженным взглядом видно, что их детализация избыточна. Для геометрического упрощения воспользуемся функцией <code><a href="https://rdrr.io/pkg/rmapshaper/man/ms_simplify.html">ms_simplify()</a></code> из пакета <strong>rmapshaper</strong>. В данной функции доступно два алгоритма геометрического упрощения: Дугласа-Пейкера и Висвалингам-Уайатта. Принципы работы этих алгоритмов разные, поэтому сопоставимая детализация достиагается в них при разном количестве точек:</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">countries_dp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/rmapshaper/man/ms_simplify.html">ms_simplify</a></span><span class="op">(</span><span class="va">countries</span>, 
+                           method <span class="op">=</span> <span class="st">'dp'</span>, <span class="co"># алгоритм Дугласа-Пейкера</span>
+                           keep <span class="op">=</span> <span class="fl">0.04</span><span class="op">)</span> <span class="co"># оставить 4% точек</span>
+
+<span class="va">countries_vw</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/rmapshaper/man/ms_simplify.html">ms_simplify</a></span><span class="op">(</span><span class="va">countries</span>,  
+                           method <span class="op">=</span> <span class="st">'vis'</span>, <span class="co"># алгоритм Висвалингам-Уайатта</span>
+                           keep <span class="op">=</span> <span class="fl">0.06</span><span class="op">)</span>  <span class="co"># оставить 6% точек</span>
+
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">countries_dp</span>, size <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">'Геометрическое упрощение алгоритмом Дугласа-Пейкера'</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-26-1.png" width="100%"></div>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">countries_vw</span>, size <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">'Геометрическое упрощение алгоритмом Висвалингам-Уайатта'</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-26-2.png" width="100%"></div>
+<p>Видно, что результаты упрощения алгоритмом Дугласа-Пейкера довольно угловатые и неестественные. Но при этом он лучше сохраняет различные характерные точки в структуре линии типа вершин фьордов. Тем не менее для целей картографической генерализации алгоритм Висвалингам-Уайатта можно назвать предпочтительным.</p>
+</div>
+<div id="отбор" class="section level4" number="10.6.2.2">
+<h4>
+<span class="header-section-number">10.6.2.2</span> Отбор<a class="anchor" aria-label="anchor" href="#%D0%BE%D1%82%D0%B1%D0%BE%D1%80"><i class="fas fa-link"></i></a>
+</h4>
+<p>Отбор применятся внутри множества пространственных объектов для того чтобы уменьшить их количество. Наиболее просто реализуется отбор для объектов, которые не состоят в пространственных отношениях. Как правило, это точечные объекты. Более сложна процедура отбора во множестве топологически связанных объектов. Например, прореживание транспортной или гидрографической сети. В данном разделе мы посмотрим как можно отбирать точечные объекты. Наиболее простой случай реализуется тогда, когда объекты можно отобрать по атрибутам, без использования пространственных отношений. К счастью, данные Natural Earth содержат атрибуты, которые можно использовать в качестве критериев отбора.</p>
+<p>Для начала попробуем нанести все населенные пункты:</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cities_eu</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_10m_populated_places'</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">prj</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crop.html">st_crop</a></span><span class="op">(</span><span class="va">box</span><span class="op">)</span>
+<span class="co">## Reading layer `ne_10m_populated_places' from data source </span>
+<span class="co">##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' </span>
+<span class="co">##   using driver `GPKG'</span>
+<span class="co">## Simple feature collection with 7343 features and 119 fields</span>
+<span class="co">## Geometry type: POINT</span>
+<span class="co">## Dimension:     XY</span>
+<span class="co">## Bounding box:  xmin: -179.59 ymin: -90 xmax: 179.3833 ymax: 82.48332</span>
+<span class="co">## Geodetic CRS:  WGS 84</span>
+
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">countries_vw</span>, size <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">cities_eu</span>, size <span class="op">=</span> <span class="fl">0.5</span>, color <span class="op">=</span> <span class="st">'darkviolet'</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf_text</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">cities_eu</span>, 
+               mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">NAME</span><span class="op">)</span>,
+               size <span class="op">=</span> <span class="fl">1.5</span>, nudge_y <span class="op">=</span> <span class="fl">30000</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-27-1.png" width="100%"></div>
+<p>Очевидно, что при такой плотности нормальную карту составить не получится. Попробуем для начала остаить только столицы и разнести их через <strong>ggrepel</strong>:</p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">capitals</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">cities_eu</span>, <span class="va">FEATURECLA</span> <span class="op">==</span> <span class="st">'Admin-0 capital'</span><span class="op">)</span>
+
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">countries_vw</span>, size <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">capitals</span>, size <span class="op">=</span> <span class="fl">1.2</span>, color <span class="op">=</span> <span class="st">'darkviolet'</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggrepel/man/geom_text_repel.html">geom_text_repel</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">capitals</span>, stat <span class="op">=</span> <span class="st">"sf_coordinates"</span>,
+                size <span class="op">=</span> <span class="fl">2.5</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">NAME</span>, geometry <span class="op">=</span> <span class="va">geom</span><span class="op">)</span>, 
+                fontface <span class="op">=</span> <span class="st">'bold'</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-28-1.png" width="100%"></div>
+<p>Очевидно, на данную схему можно также дополнительнонанести дополнительно крупные населенные пункты, отобрав их уже по численности населения. Оставим для примера те, в которых живет более <span class="math inline">\(700 000\)</span> жителей:</p>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">major_cities</span> <span class="op">=</span> <span class="va">cities_eu</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="op">(</span><span class="va">FEATURECLA</span> <span class="op">==</span> <span class="st">'Admin-0 capital'</span><span class="op">)</span> <span class="op">|</span> <span class="op">(</span><span class="va">POP_MIN</span> <span class="op">&gt;=</span> <span class="fl">700000</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>FEATURECLA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">ordered</a></span><span class="op">(</span><span class="va">FEATURECLA</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">cities_eu</span><span class="op">$</span><span class="va">FEATURECLA</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+
+
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">countries_vw</span>, size <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">major_cities</span>, size <span class="op">=</span> <span class="fl">1</span>, mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>size <span class="op">=</span> <span class="va">FEATURECLA</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggrepel/man/geom_text_repel.html">geom_text_repel</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">major_cities</span>, stat <span class="op">=</span> <span class="st">"sf_coordinates"</span>,
+                 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>size <span class="op">=</span> <span class="va">FEATURECLA</span>, label <span class="op">=</span> <span class="va">NAME</span>, geometry <span class="op">=</span> <span class="va">geom</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_size_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-29-1.png" width="100%"></div>
+</div>
 </div>
 </div>
 <div id="классификация-объектов-по-типам" class="section level2" number="10.7">
