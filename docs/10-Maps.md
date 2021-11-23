@@ -17,8 +17,7 @@ library(rnaturalearth)
 library(RColorBrewer)
 ```
 
-
-## Введение
+## Введение {#maps_intro}
 
 В настоящей главе рассматриваются общие принципы автоматизированного построения карт. Картографическая визуализация базируется на комплексе аспектов, таких как:
 
@@ -58,7 +57,7 @@ ocean = ne_download(scale = 110,
                     category = 'physical',
                     returnclass = 'sf')
 ## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmphtbhzV", layer: "ne_110m_ocean"
+## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpHOOemY", layer: "ne_110m_ocean"
 ## with 2 features
 ## It has 3 fields
 
@@ -67,7 +66,7 @@ cities = ne_download(scale = 110,
                      category = 'cultural',
                      returnclass = 'sf')
 ## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmphtbhzV", layer: "ne_110m_populated_places"
+## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpHOOemY", layer: "ne_110m_populated_places"
 ## with 243 features
 ## It has 119 fields
 ## Integer64 fields read as strings:  wof_id ne_id
@@ -120,7 +119,8 @@ borders = st_read(ne, 'ne_110m_admin_0_boundary_lines_land')
 
 
 ```r
-lyr110 = lst(ocean, land, coast, countries, rivers, lakes, cities, borders)
+lyr110 = lst(ocean, land, coast, countries, 
+             rivers, lakes, cities, borders)
 ```
 
 ## Визуализация средствами ggplot2 {#spatial_ggplot2}
@@ -163,7 +163,8 @@ ggplot() +
 ggplot() +
   geom_sf(data = lyr110$countries, color = NA) +
   geom_sf(data = lyr110$borders, size = 0.2) +
-  geom_sf(data = lyr110$ocean, size = 0.4, fill = 'azure', color = 'steelblue') +
+  geom_sf(data = lyr110$ocean, size = 0.4, 
+          fill = 'azure', color = 'steelblue') +
   theme_void()
 ```
 
@@ -176,8 +177,10 @@ ggplot() +
 ggplot() +
   geom_sf(data = lyr110$countries, color = NA) +
   geom_sf(data = lyr110$borders, size = 0.2) +
-  geom_sf(data = lyr110$ocean, fill = 'azure', color = NA) +
-  geom_sf(data = lyr110$coast, size = 0.4, color = 'steelblue') +
+  geom_sf(data = lyr110$ocean, 
+          fill = 'azure', color = NA) +
+  geom_sf(data = lyr110$coast, 
+          size = 0.4, color = 'steelblue') +
   theme_void()
 ```
 
@@ -204,6 +207,7 @@ ggplot() +
 lyr110$megacities = lyr110$cities |> 
   filter(SCALERANK == 0, 
          ! NAME %in% c('Washington, D.C.', 'Paris', 'Riyadh', 'Rome', 'São Paulo', 'Kolkata'))
+
 basemap = list(
   geom_sf(data = lyr110$countries, color = NA, 
           mapping = aes(fill = as.factor(mapcolor7)), show.legend = FALSE),
@@ -240,8 +244,19 @@ ggplot() +
 
 
 ```r
+basemap0 = list(
+  geom_sf(data = lyr110$countries, color = NA, 
+          alpha = 0.5,
+          mapping = aes(fill = as.factor(mapcolor7)), show.legend = FALSE),
+  scale_fill_manual(values = brewer.pal(7, 'Set2')),
+  geom_sf(data = lyr110$borders, alpha = 0.5, size = 0.2),
+  geom_sf(data = lyr110$ocean, fill = 'azure', color = NA),
+  geom_sf(data = lyr110$coast, alpha = 0.5, size = 0.4, color = 'steelblue4'),
+  geom_sf(data = lyr110$megacities, shape = 21, fill = 'white', stroke = 0.75, size = 2)
+)
+
 ggplot() +
-  basemap +
+  basemap0 +
   geom_text_repel(data = lyr110$megacities, stat = "sf_coordinates",
                   size = 3, aes(label = NAME, geometry = geometry), 
                   family = 'Open Sans', fontface = 'bold') +
@@ -266,7 +281,6 @@ ggplot() +
 ```
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-13-1.png" width="100%" />
-
 
 ## Проекции и градусные сетки
 
@@ -315,6 +329,12 @@ map + coord_sf(crs = "+proj=times")
 ```
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-14-4.png" width="100%" />
+
+```r
+map + coord_sf(crs = "+proj=mill")
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-14-5.png" width="100%" />
 
 
 ```r
@@ -389,7 +409,6 @@ map +
 
 ```r
 dem = read_stars('data/world/gebco.tif') # Цифровая модель рельефа
-img = read_stars('data/world/BlueMarbleJuly.tif') # Цветной космический снимок (RGB)
 
 ggplot() +
   geom_stars(data = dem) +
@@ -594,6 +613,90 @@ for (i in seq_along(prjs)) {
 ```
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-23-1.png" width="100%" /><img src="10-Maps_files/figure-html/unnamed-chunk-23-2.png" width="100%" /><img src="10-Maps_files/figure-html/unnamed-chunk-23-3.png" width="100%" /><img src="10-Maps_files/figure-html/unnamed-chunk-23-4.png" width="100%" />
+
+## Детализация данных
+
+### Выбор картографической основы
+
+Один из обязательных признаков хорошей карты — это использование пространственных данных подходящей детализации. Избыточная детализация приводит к тому, что карта становится неопрятной, пестрит трудно воспринимаемыми деталями, производит непрофессиональное впечатление. Помимо этого, избыточная детализация данных приводит к тому, что карта будет медленно прорисовываться. Это справедливо как для карт, создаваемых программным путём, так и для карт, которые составляются в ГИС-пакетах. В некоторых случаях можно столкнуться с обратной ситуацией, когда данные менее детальны, чем это требуется для карты. В этом случае у пользователя карты будет складываться впечатление, что карта недостаточно точна и информативна.
+
+Проблема детализации касается в основном картографической основы, поскольку подбирается она прежде всего в соответствии с охватом исследуемой территории и физическим размером итогового изображения. В случае если предполагается совмещение картографической основы и тематических данных, важным фактором будет также детализация самих тематических данных.
+
+В качестве примера для выбора подходящей основы рассмотрим задачу построения карты Европы, которая бы вписывалась в размер страницы данной книги. База данных Natural Earth содержит 3 уровня детализации, из которых надо выбрать подходящий. Сравним их:
+
+
+```r
+cnt010 = st_read(ne, 'ne_10m_admin_0_countries')
+## Reading layer `ne_10m_admin_0_countries' from data source 
+##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
+##   using driver `GPKG'
+## Simple feature collection with 255 features and 94 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.6341
+## Geodetic CRS:  WGS 84
+cnt050 = st_read(ne, 'ne_50m_admin_0_countries')
+## Reading layer `ne_50m_admin_0_countries' from data source 
+##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
+##   using driver `GPKG'
+## Simple feature collection with 241 features and 94 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -180 ymin: -89.99893 xmax: 180 ymax: 83.59961
+## Geodetic CRS:  WGS 84
+cnt110 = st_read(ne, 'ne_110m_admin_0_countries')
+## Reading layer `ne_110m_admin_0_countries' from data source 
+##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
+##   using driver `GPKG'
+## Simple feature collection with 177 features and 94 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
+## Geodetic CRS:  WGS 84
+
+prj = '+proj=laea +lat_0=50 +lon_0=10'
+
+box = st_bbox(c(xmin = -10, xmax = 33, 
+                ymin = 33, ymax = 60),
+              crs = st_crs(4326)) |> 
+  st_as_sfc() |> 
+  st_transform(prj) |> 
+  st_bbox()
+
+cnts = list(cnt010, cnt050, cnt110)
+scales = c(10, 50, 110)
+
+for (i in seq_along(cnts)) {
+  print(
+      ggplot() +
+        geom_sf(data = cnts[[i]], size = 0.25,
+                mapping = aes(fill = as.factor(MAPCOLOR7)),
+                show.legend = FALSE) +
+        scale_fill_manual(values = brewer.pal(7, 'Set2')) +
+        coord_sf(crs = prj, 
+                 xlim = c(box[1], box[3]),
+                 ylim = c(box[2], box[4])) +
+        theme_bw() +
+        theme(panel.background = element_rect(fill = 'azure')) +
+        ggtitle(glue::glue('Уровень детализации {scales[i]}M'))
+  )
+}
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-24-1.png" width="100%" /><img src="10-Maps_files/figure-html/unnamed-chunk-24-2.png" width="100%" /><img src="10-Maps_files/figure-html/unnamed-chunk-24-3.png" width="100%" />
+
+Очевидно, что в данном случае оптимальным является средний уровень детализации `50M`. Два других уровня при выбранном охвате территории и размере карты являются либо избыточно (`10M`), либо недостаточно (`110M`) детальными. 
+
+
+### Генерализация картографической основы
+
+
+## Классификация объектов по типам
+
+## Легенды
+
+## Карты-врезки
+
 
 
 ### Вопросы {#questions_maps}
