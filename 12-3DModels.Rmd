@@ -22,10 +22,10 @@ library(rayshader)
 
 ## Освещение цифровой модели рельефа {#three_lighting}
 
-Построение трехмерной модели обычно начинается с создания изображения рельефа. В качестве примера рассмотрим ЦМР для территории Сатинской учебно-научной базы Географического факультета МГУ. Чтобы построить изображение рельефа, для начана надо получить матрицу со значениями цвета RGB, а затем вывести ее на экран посредством `plot_map()`. Градиентная окраска по высоте получается функцией `height_shade()`, аналитическая отмывка — через `sphere_shade()`:
+Построение трехмерной модели обычно начинается с создания изображения рельефа. В качестве примера рассмотрим ЦМР на территорию в окрестностях Хибин и Ловозёрских тундр в Мурманской области. Чтобы построить изображение рельефа, для начана надо получить матрицу со значениями цвета RGB, а затем вывести ее на экран посредством `plot_map()`. Градиентная окраска по высоте получается функцией `height_shade()`, аналитическая отмывка — через `sphere_shade()`:
 
 ```{r}
-dem = read_stars('data/Satino_DEM.tif')
+dem = read_stars('data/dem_khibiny.tif')
 
 elev = dem[[1]]
 
@@ -37,14 +37,14 @@ elev |>
   plot_map()
 
 elev |> 
-  sphere_shade() |> 
+  sphere_shade(zscale = 10) |> 
   plot_map()
 
-dem_colors = colorRampPalette(c("darkolivegreen4", "lightyellow", "orange", "firebrick"))
+dem_colors = colorRampPalette(c("darkolivegreen", "lightyellow", "orange", "firebrick", "white"))
 
 elev |> 
   height_shade(texture = dem_colors(256)) |> 
-  add_overlay(sphere_shade(elev, texture = 'bw', zscale=0.5), alphalayer=0.7) |> 
+  add_overlay(sphere_shade(elev, texture = 'bw', zscale=10), alphalayer=0.7) |> 
   plot_map()
 ```
 
@@ -53,13 +53,30 @@ elev |>
 ```{r}
 palettes = c('bw', 'desert', 'imhof1','imhof2','imhof3','imhof4', 'unicorn')
 
-par(mfrow = c(1, 2))
 for (pal in palettes) {
   elev |> 
-    sphere_shade(texture = pal) |> 
+    sphere_shade(texture = pal, zscale=10) |> 
     plot_map()
 }
-par(mfrow = c(1, 1))
+```
+
+Добавим принудительно посчитанные тени:
+```{r}
+elev |> 
+  height_shade(texture = dem_colors(256)) |> 
+  add_overlay(sphere_shade(elev, texture = 'bw', zscale=10), alphalayer=0.5) |> 
+  add_shadow(lamb_shade(elev, zscale = 20), 0.1) |> 
+  plot_map()
+```
+
+Амбиентное овещение позволяет отделить долины от вершин хребтов:
+```{r}
+elev |> 
+  height_shade(texture = dem_colors(256)) |> 
+  add_overlay(sphere_shade(elev, texture = 'bw', zscale=10), alphalayer=0.5) |> 
+  add_shadow(lamb_shade(elev, zscale = 20), 0.1) |> 
+  add_shadow(ambient_shade(elev), 0.1) %>%
+  plot_map()
 ```
 
 Для построение трехмерной сцены вместо `plot_map()` необходимо использовать `plot_3d()`. При этом будет открыто интерактивное окно OpenGL, в котором вы сможете вращать созданную сцену:
@@ -67,23 +84,29 @@ par(mfrow = c(1, 1))
 ```{r}
 elev |> 
   height_shade(texture = dem_colors(256)) |> 
-  add_overlay(sphere_shade(elev, texture = 'bw', zscale=0.5), alphalayer=0.7) |> 
-  plot_3d(elev, zscale = 2, fov = 0,
+  add_overlay(sphere_shade(elev, texture = 'bw', zscale=10), alphalayer=0.5) |> 
+  add_shadow(lamb_shade(elev, zscale = 20), 0.1) |> 
+  add_shadow(ambient_shade(elev), 0.1) |> 
+  plot_3d(elev, zscale = 20, fov = 0,
           theta = 135, zoom = 0.75, phi = 45, 
           windowsize = c(1000, 800))
 
 Sys.sleep(0.2)
 render_snapshot()
+rgl::rgl.close()
 ```
 
 ## Добавление объектов на сцену {#three_lighting}
 
 Прочтем векторные данные:
 ```{r}
-hydro_lines = st_read('data/Satino.gpkg', 'WaterLine')
-hydro_polys = st_read('data/Satino.gpkg', 'WaterPolygon')
-roads = st_read('data/Satino.gpkg', 'Roads')
-forest = st_read('data/Satino.gpkg', 'ForestBorders')
+db = 'data/khibiny.gpkg'
+rivers = st_read(db, 'rivers')
+lakes = st_read(db, 'lakes') |> 
+  filter(CLASS_ID != 31300000)
+roads = st_read(db, 'roads')
+rails = st_read(db, 'roads')
+forest = st_read(db, 'veg')
 ```
 
 Добавим их через оверлей объектов:
@@ -91,18 +114,16 @@ forest = st_read('data/Satino.gpkg', 'ForestBorders')
 ext = raster::extent(st_bbox(dem))
 elev |> 
   height_shade(texture = dem_colors(256)) |> 
-  add_overlay(sphere_shade(elev, texture = 'bw', zscale=0.5), alphalayer=0.7) |> 
-  add_overlay(generate_line_overlay(hydro_lines, linewidth = 1, color="steelblue4",
+  add_overlay(sphere_shade(elev, texture = 'bw', zscale=10), alphalayer=0.5) |> 
+  add_shadow(lamb_shade(elev, zscale = 20), 0.1) |> 
+  add_overlay(generate_line_overlay(rivers, linewidth = 1, color="steelblue4",
                                     extent = ext,
                                     heightmap = elev)) |> 
-  add_overlay(generate_polygon_overlay(hydro_polys, linewidth = 1, 
-                                       palette = 'steelblue1',
+  add_overlay(generate_polygon_overlay(lakes, linewidth = 1, 
+                                       palette = 'azure',
                                        linecolor = 'steelblue4',
                                        extent = ext,
                                        heightmap = elev)) |> 
-  add_overlay(generate_line_overlay(roads, linewidth = 2, color="red",
-                                    extent = ext,
-                                    heightmap = elev)) |> 
   plot_map()
 ```
 
@@ -110,20 +131,42 @@ elev |>
 ```{r}
 elev |> 
   height_shade(texture = dem_colors(256)) |> 
-  add_overlay(sphere_shade(elev, texture = 'bw', zscale=0.5), alphalayer=0.7) |> 
-  add_overlay(generate_line_overlay(hydro_lines, linewidth = 1, color="steelblue4",
+  add_overlay(sphere_shade(elev, texture = 'bw', zscale=10), alphalayer=0.5) |> 
+  add_shadow(lamb_shade(elev, zscale = 20), 0.1) |> 
+  add_overlay(generate_line_overlay(rivers, linewidth = 1, color="steelblue4",
                                     extent = ext,
                                     heightmap = elev)) |> 
-  add_overlay(generate_polygon_overlay(hydro_polys, linewidth = 1, 
-                                       palette = 'steelblue1',
+  add_overlay(generate_polygon_overlay(lakes, linewidth = 1, 
+                                       palette = 'azure',
                                        linecolor = 'steelblue4',
                                        extent = ext,
                                        heightmap = elev)) |> 
-  add_overlay(generate_line_overlay(roads, linewidth = 2, color="red",
+  plot_3d(elev, zscale = 20, fov = 0,
+          theta = 135, zoom = 0.75, phi = 45, 
+          windowsize = c(1000, 800))
+
+Sys.sleep(0.2)
+render_snapshot()
+rgl::rgl.close()
+```
+
+
+Чтобы приблизить изображение, повернуть, изменить угол наклона и т.д., используйте параметры функции `plot_3d()`:
+```{r}
+elev |> 
+  height_shade(texture = dem_colors(256)) |> 
+  add_overlay(sphere_shade(elev, texture = 'bw', zscale=10), alphalayer=0.5) |> 
+  add_shadow(lamb_shade(elev, zscale = 20), 0.1) |> 
+  add_overlay(generate_line_overlay(rivers, linewidth = 1, color="steelblue4",
                                     extent = ext,
                                     heightmap = elev)) |> 
-  plot_3d(elev, zscale = 2, fov = 0,
-          theta = 135, zoom = 0.75, phi = 45, 
+  add_overlay(generate_polygon_overlay(lakes, linewidth = 1, 
+                                       palette = 'azure',
+                                       linecolor = 'steelblue4',
+                                       extent = ext,
+                                       heightmap = elev)) |> 
+  plot_3d(elev, zscale = 50, fov = 0,
+          theta = 80, zoom = 0.25, phi = 35, 
           windowsize = c(1000, 800))
 
 Sys.sleep(0.2)
