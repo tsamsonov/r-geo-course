@@ -273,10 +273,33 @@ render_snapshot()
 rgl::rgl.close()
 ```
 
-
 ## Анимация трёхмерной сцены  {#three_animation}
 
+Анимация с помощью пакета __rayshader__ осуществляется покадрово. Для этого необходимо задать последовательность параметров камеры, каждый из которых будет определять кадр видеофильма, и определить эти параметры в функции `render_movie()`.    
+
 ### Вращение относительно точки {#three_animation_circle}
+
+Наиболее простой спобособ визуализации сцены — вращение относительно фиксированной точки. В этом случае необходимо менять только угол поворота камеры. По умолчанию `render_movie()` создает 12-секундный ролик с частотой 30 кадров в секунду (т.е. 360 кадров всего). Именно такой результат будет получен, если вызывать ее без параметров:
+```{r, eval=F}
+plot_3d(plt, elev, zscale = 30, fov = 0,
+        theta = -45, zoom = 0.5, 
+        windowsize = c(1400, 800))
+
+for (name in popmajor$NAME) {
+  pop = filter(popmajor, NAME == name)
+  render_label(elev, lat = st_coordinates(pop)[, 2], lon = st_coordinates(pop)[, 1], 
+               text = name, altitude = 1000, zscale=30, textsize = 1.75, linewidth = 4,
+               extent = ext, textcolor = "turquoise2", linecolor="turquoise2",
+               relativez = TRUE)
+}
+
+render_movie(filename = 'images/khibiny_rotate.gif')
+```
+```{r, echo=FALSE}
+knitr::include_graphics('images/khibiny_rotate.gif')
+```
+
+
 
 ### Облёт по траектории {#three_animation_path}
 
