@@ -17,7 +17,9 @@ library(rayshader)
 
 Трехмерные модели местности могут использоваться в тех случаях, когда стандартное картографическое изображение недостаточно наглядно. Поскольку и построение трехмерных моделей и взаимодействие с ними сложнее, чем с обычными картами, они распространены не столь повсеместно. 
 
-## Освещение цифровой модели рельефа {#three_lighting}
+## Создание трёхмерной сцены {#three_labels}
+
+### Освещение цифровой модели рельефа {#three_lighting}
 
 Построение трехмерной модели обычно начинается с создания изображения рельефа. В качестве примера рассмотрим ЦМР на территорию в окрестностях Хибин и Ловозёрских тундр в Мурманской области. Чтобы построить изображение рельефа, для начана надо получить матрицу со значениями цвета RGB, а затем вывести ее на экран посредством `plot_map()`. Градиентная окраска по высоте получается функцией `height_shade()`, аналитическая отмывка — через `sphere_shade()`:
 
@@ -109,7 +111,7 @@ elev |>
   add_shadow(ambient_shade(elev), 0.1) |> 
   plot_3d(elev, zscale = 20, fov = 0,
           theta = 135, zoom = 0.75, phi = 45, 
-          windowsize = c(1000, 800))
+          windowsize = c(1400, 800))
 
 Sys.sleep(0.2)
 render_snapshot()
@@ -121,7 +123,7 @@ render_snapshot()
 rgl::rgl.close()
 ```
 
-## Добавление объектов на сцену {#three_lighting}
+### Векторные слои {#three_add}
 
 Прочтем векторные данные:
 
@@ -152,13 +154,13 @@ roads = st_read(db, 'roads')
 ## Dimension:     XY
 ## Bounding box:  xmin: 480907 ymin: 7471985 xmax: 613876.2 ymax: 7557222
 ## Projected CRS: WGS 84 / UTM zone 36N
-rails = st_read(db, 'roads')
-## Reading layer `roads' from data source 
+rails = st_read(db, 'rails')
+## Reading layer `rails' from data source 
 ##   `/Users/tsamsonov/GitHub/r-geo-course/data/khibiny.gpkg' using driver `GPKG'
-## Simple feature collection with 1086 features and 11 fields
+## Simple feature collection with 70 features and 6 fields
 ## Geometry type: MULTILINESTRING
 ## Dimension:     XY
-## Bounding box:  xmin: 480907 ymin: 7471985 xmax: 613876.2 ymax: 7557222
+## Bounding box:  xmin: 480907 ymin: 7474071 xmax: 569818.5 ymax: 7557222
 ## Projected CRS: WGS 84 / UTM zone 36N
 forest = st_read(db, 'veg')
 ## Reading layer `veg' from data source 
@@ -167,6 +169,14 @@ forest = st_read(db, 'veg')
 ## Geometry type: MULTIPOLYGON
 ## Dimension:     XY
 ## Bounding box:  xmin: 480907 ymin: 7471985 xmax: 613876.2 ymax: 7557222
+## Projected CRS: WGS 84 / UTM zone 36N
+blocks = st_read(db, 'blocks')
+## Reading layer `blocks' from data source 
+##   `/Users/tsamsonov/GitHub/r-geo-course/data/khibiny.gpkg' using driver `GPKG'
+## Simple feature collection with 191 features and 8 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 480907 ymin: 7476464 xmax: 585007 ymax: 7556537
 ## Projected CRS: WGS 84 / UTM zone 36N
 ```
 
@@ -178,7 +188,7 @@ elev |>
   height_shade(texture = dem_colors(256)) |> 
   add_overlay(sphere_shade(elev, texture = 'bw', zscale=10), alphalayer=0.5) |> 
   add_shadow(lamb_shade(elev, zscale = 20), 0.1) |> 
-  add_overlay(generate_line_overlay(rivers, linewidth = 1, color="steelblue4",
+  add_overlay(generate_line_overlay(rivers, linewidth = 2, color="steelblue4",
                                     extent = ext,
                                     heightmap = elev)) |> 
   add_overlay(generate_polygon_overlay(lakes, linewidth = 1, 
@@ -198,7 +208,7 @@ elev |>
   height_shade(texture = dem_colors(256)) |> 
   add_overlay(sphere_shade(elev, texture = 'bw', zscale=10), alphalayer=0.5) |> 
   add_shadow(lamb_shade(elev, zscale = 20), 0.1) |> 
-  add_overlay(generate_line_overlay(rivers, linewidth = 1, color="steelblue4",
+  add_overlay(generate_line_overlay(rivers, linewidth = 2, color="steelblue4",
                                     extent = ext,
                                     heightmap = elev)) |> 
   add_overlay(generate_polygon_overlay(lakes, linewidth = 1, 
@@ -208,7 +218,7 @@ elev |>
                                        heightmap = elev)) |> 
   plot_3d(elev, zscale = 20, fov = 0,
           theta = 135, zoom = 0.75, phi = 45, 
-          windowsize = c(1000, 800))
+          windowsize = c(1400, 800))
 
 Sys.sleep(0.2)
 render_snapshot()
@@ -220,7 +230,6 @@ render_snapshot()
 rgl::rgl.close()
 ```
 
-
 Чтобы приблизить изображение, повернуть, изменить угол наклона и т.д., используйте параметры функции `plot_3d()`:
 
 ```r
@@ -228,7 +237,7 @@ elev |>
   height_shade(texture = dem_colors(256)) |> 
   add_overlay(sphere_shade(elev, texture = 'bw', zscale=10), alphalayer=0.5) |> 
   add_shadow(lamb_shade(elev, zscale = 20), 0.1) |> 
-  add_overlay(generate_line_overlay(rivers, linewidth = 1, color="steelblue4",
+  add_overlay(generate_line_overlay(rivers, linewidth = 2, color="steelblue4",
                                     extent = ext,
                                     heightmap = elev)) |> 
   add_overlay(generate_polygon_overlay(lakes, linewidth = 1, 
@@ -238,7 +247,7 @@ elev |>
                                        heightmap = elev)) |> 
   plot_3d(elev, zscale = 50, fov = 0,
           theta = 80, zoom = 0.25, phi = 35, 
-          windowsize = c(1000, 800))
+          windowsize = c(1400, 800))
 
 Sys.sleep(0.2)
 render_snapshot()
@@ -246,11 +255,70 @@ render_snapshot()
 
 <img src="12-3DModels_files/figure-html/unnamed-chunk-10-1.png" width="100%" />
 
+```r
+rgl::rgl.close()
+```
 
+Расширим состав визуализируемых объектов:
+
+```r
+plt = elev |> 
+  height_shade(texture = dem_colors(256)) |> 
+  add_overlay(sphere_shade(elev, texture = 'bw', zscale=10), alphalayer=0.5) |> 
+  add_shadow(lamb_shade(elev, zscale = 20), 0.1) |> 
+  add_overlay(generate_polygon_overlay(blocks, linewidth = 1, 
+                                     palette = 'orange',
+                                     linecolor = 'black',
+                                     extent = ext,
+                                     heightmap = elev)) |> 
+  add_overlay(generate_line_overlay(rivers, linewidth = 2, color="steelblue4",
+                                    extent = ext,
+                                    heightmap = elev)) |> 
+  add_overlay(generate_polygon_overlay(lakes, linewidth = 1, 
+                                       palette = 'azure',
+                                       linecolor = 'steelblue4',
+                                       extent = ext,
+                                       heightmap = elev)) |> 
+  add_overlay(generate_line_overlay(roads, linewidth = 4, color="black",
+                                    extent = ext,
+                                    heightmap = elev)) |> 
+  add_overlay(generate_line_overlay(roads, linewidth = 2, color="lightyellow",
+                                  extent = ext,
+                                  heightmap = elev)) |> 
+  add_overlay(generate_line_overlay(rails, linewidth = 3, color="black",
+                                  extent = ext,
+                                  heightmap = elev)) 
+
+plot_map(plt)
+```
+
+<img src="12-3DModels_files/figure-html/unnamed-chunk-11-1.png" width="100%" />
+
+```r
+
+plot_3d(plt, elev, zscale = 30, fov = 0,
+        theta = -45, zoom = 0.25, phi = 30, 
+        windowsize = c(1400, 800))
+
+Sys.sleep(0.2)
+render_snapshot()
+```
+
+<img src="12-3DModels_files/figure-html/unnamed-chunk-11-2.png" width="100%" />
+
+```r
+rgl::rgl.close()
+```
+
+### Подписи {#three_labels}
+
+## Анимация трёхмерной сцены  {#three_animation}
+
+### Вращение относительно точки {#three_animation_circle}
+
+### Облёт по траектории {#three_animation_path}
 
 ## Контрольные вопросы и упражнения {#questions_tasks_three}
-
-
 
 ### Вопросы {#questions_three}
 

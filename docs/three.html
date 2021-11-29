@@ -73,10 +73,14 @@
 </h2>
 <p>Трехмерные модели местности могут использоваться в тех случаях, когда стандартное картографическое изображение недостаточно наглядно. Поскольку и построение трехмерных моделей и взаимодействие с ними сложнее, чем с обычными картами, они распространены не столь повсеместно.</p>
 </div>
-<div id="three_lighting" class="section level2" number="12.3">
+<div id="three_labels" class="section level2" number="12.3">
 <h2>
-<span class="header-section-number">12.3</span> Освещение цифровой модели рельефа<a class="anchor" aria-label="anchor" href="#three_lighting"><i class="fas fa-link"></i></a>
+<span class="header-section-number">12.3</span> Создание трёхмерной сцены<a class="anchor" aria-label="anchor" href="#three_labels"><i class="fas fa-link"></i></a>
 </h2>
+<div id="three_lighting" class="section level3" number="12.3.1">
+<h3>
+<span class="header-section-number">12.3.1</span> Освещение цифровой модели рельефа<a class="anchor" aria-label="anchor" href="#three_lighting"><i class="fas fa-link"></i></a>
+</h3>
 <p>Построение трехмерной модели обычно начинается с создания изображения рельефа. В качестве примера рассмотрим ЦМР на территорию в окрестностях Хибин и Ловозёрских тундр в Мурманской области. Чтобы построить изображение рельефа, для начана надо получить матрицу со значениями цвета RGB, а затем вывести ее на экран посредством <code><a href="https://www.rayshader.com/reference/plot_map.html">plot_map()</a></code>. Градиентная окраска по высоте получается функцией <code><a href="https://www.rayshader.com/reference/height_shade.html">height_shade()</a></code>, аналитическая отмывка — через <code><a href="https://www.rayshader.com/reference/sphere_shade.html">sphere_shade()</a></code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dem</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html">read_stars</a></span><span class="op">(</span><span class="st">'data/dem_khibiny.tif'</span><span class="op">)</span>
@@ -141,7 +145,7 @@
   <span class="fu"><a href="https://www.rayshader.com/reference/add_shadow.html">add_shadow</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/ambient_shade.html">ambient_shade</a></span><span class="op">(</span><span class="va">elev</span><span class="op">)</span>, <span class="fl">0.1</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://www.rayshader.com/reference/plot_3d.html">plot_3d</a></span><span class="op">(</span><span class="va">elev</span>, zscale <span class="op">=</span> <span class="fl">20</span>, fov <span class="op">=</span> <span class="fl">0</span>,
           theta <span class="op">=</span> <span class="fl">135</span>, zoom <span class="op">=</span> <span class="fl">0.75</span>, phi <span class="op">=</span> <span class="fl">45</span>, 
-          windowsize <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">800</span><span class="op">)</span><span class="op">)</span>
+          windowsize <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1400</span>, <span class="fl">800</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.2</span><span class="op">)</span>
 <span class="fu"><a href="https://www.rayshader.com/reference/render_snapshot.html">render_snapshot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
@@ -149,10 +153,10 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">rgl</span><span class="fu">::</span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/rgl.open.html">rgl.close</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="three_lighting" class="section level2" number="12.4">
-<h2>
-<span class="header-section-number">12.4</span> Добавление объектов на сцену<a class="anchor" aria-label="anchor" href="#three_lighting"><i class="fas fa-link"></i></a>
-</h2>
+<div id="three_add" class="section level3" number="12.3.2">
+<h3>
+<span class="header-section-number">12.3.2</span> Векторные слои<a class="anchor" aria-label="anchor" href="#three_add"><i class="fas fa-link"></i></a>
+</h3>
 <p>Прочтем векторные данные:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">db</span> <span class="op">=</span> <span class="st">'data/khibiny.gpkg'</span>
@@ -181,13 +185,13 @@
 <span class="co">## Dimension:     XY</span>
 <span class="co">## Bounding box:  xmin: 480907 ymin: 7471985 xmax: 613876.2 ymax: 7557222</span>
 <span class="co">## Projected CRS: WGS 84 / UTM zone 36N</span>
-<span class="va">rails</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">db</span>, <span class="st">'roads'</span><span class="op">)</span>
-<span class="co">## Reading layer `roads' from data source </span>
+<span class="va">rails</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">db</span>, <span class="st">'rails'</span><span class="op">)</span>
+<span class="co">## Reading layer `rails' from data source </span>
 <span class="co">##   `/Users/tsamsonov/GitHub/r-geo-course/data/khibiny.gpkg' using driver `GPKG'</span>
-<span class="co">## Simple feature collection with 1086 features and 11 fields</span>
+<span class="co">## Simple feature collection with 70 features and 6 fields</span>
 <span class="co">## Geometry type: MULTILINESTRING</span>
 <span class="co">## Dimension:     XY</span>
-<span class="co">## Bounding box:  xmin: 480907 ymin: 7471985 xmax: 613876.2 ymax: 7557222</span>
+<span class="co">## Bounding box:  xmin: 480907 ymin: 7474071 xmax: 569818.5 ymax: 7557222</span>
 <span class="co">## Projected CRS: WGS 84 / UTM zone 36N</span>
 <span class="va">forest</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">db</span>, <span class="st">'veg'</span><span class="op">)</span>
 <span class="co">## Reading layer `veg' from data source </span>
@@ -196,6 +200,14 @@
 <span class="co">## Geometry type: MULTIPOLYGON</span>
 <span class="co">## Dimension:     XY</span>
 <span class="co">## Bounding box:  xmin: 480907 ymin: 7471985 xmax: 613876.2 ymax: 7557222</span>
+<span class="co">## Projected CRS: WGS 84 / UTM zone 36N</span>
+<span class="va">blocks</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">db</span>, <span class="st">'blocks'</span><span class="op">)</span>
+<span class="co">## Reading layer `blocks' from data source </span>
+<span class="co">##   `/Users/tsamsonov/GitHub/r-geo-course/data/khibiny.gpkg' using driver `GPKG'</span>
+<span class="co">## Simple feature collection with 191 features and 8 fields</span>
+<span class="co">## Geometry type: MULTIPOLYGON</span>
+<span class="co">## Dimension:     XY</span>
+<span class="co">## Bounding box:  xmin: 480907 ymin: 7476464 xmax: 585007 ymax: 7556537</span>
 <span class="co">## Projected CRS: WGS 84 / UTM zone 36N</span></code></pre></div>
 <p>Добавим их через оверлей объектов:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -204,7 +216,7 @@
   <span class="fu"><a href="https://www.rayshader.com/reference/height_shade.html">height_shade</a></span><span class="op">(</span>texture <span class="op">=</span> <span class="fu">dem_colors</span><span class="op">(</span><span class="fl">256</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/sphere_shade.html">sphere_shade</a></span><span class="op">(</span><span class="va">elev</span>, texture <span class="op">=</span> <span class="st">'bw'</span>, zscale<span class="op">=</span><span class="fl">10</span><span class="op">)</span>, alphalayer<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://www.rayshader.com/reference/add_shadow.html">add_shadow</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/lamb_shade.html">lamb_shade</a></span><span class="op">(</span><span class="va">elev</span>, zscale <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>, <span class="fl">0.1</span><span class="op">)</span> |&gt; 
-  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/generate_line_overlay.html">generate_line_overlay</a></span><span class="op">(</span><span class="va">rivers</span>, linewidth <span class="op">=</span> <span class="fl">1</span>, color<span class="op">=</span><span class="st">"steelblue4"</span>,
+  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/generate_line_overlay.html">generate_line_overlay</a></span><span class="op">(</span><span class="va">rivers</span>, linewidth <span class="op">=</span> <span class="fl">2</span>, color<span class="op">=</span><span class="st">"steelblue4"</span>,
                                     extent <span class="op">=</span> <span class="va">ext</span>,
                                     heightmap <span class="op">=</span> <span class="va">elev</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/generate_polygon_overlay.html">generate_polygon_overlay</a></span><span class="op">(</span><span class="va">lakes</span>, linewidth <span class="op">=</span> <span class="fl">1</span>, 
@@ -220,7 +232,7 @@
   <span class="fu"><a href="https://www.rayshader.com/reference/height_shade.html">height_shade</a></span><span class="op">(</span>texture <span class="op">=</span> <span class="fu">dem_colors</span><span class="op">(</span><span class="fl">256</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/sphere_shade.html">sphere_shade</a></span><span class="op">(</span><span class="va">elev</span>, texture <span class="op">=</span> <span class="st">'bw'</span>, zscale<span class="op">=</span><span class="fl">10</span><span class="op">)</span>, alphalayer<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://www.rayshader.com/reference/add_shadow.html">add_shadow</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/lamb_shade.html">lamb_shade</a></span><span class="op">(</span><span class="va">elev</span>, zscale <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>, <span class="fl">0.1</span><span class="op">)</span> |&gt; 
-  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/generate_line_overlay.html">generate_line_overlay</a></span><span class="op">(</span><span class="va">rivers</span>, linewidth <span class="op">=</span> <span class="fl">1</span>, color<span class="op">=</span><span class="st">"steelblue4"</span>,
+  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/generate_line_overlay.html">generate_line_overlay</a></span><span class="op">(</span><span class="va">rivers</span>, linewidth <span class="op">=</span> <span class="fl">2</span>, color<span class="op">=</span><span class="st">"steelblue4"</span>,
                                     extent <span class="op">=</span> <span class="va">ext</span>,
                                     heightmap <span class="op">=</span> <span class="va">elev</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/generate_polygon_overlay.html">generate_polygon_overlay</a></span><span class="op">(</span><span class="va">lakes</span>, linewidth <span class="op">=</span> <span class="fl">1</span>, 
@@ -230,7 +242,7 @@
                                        heightmap <span class="op">=</span> <span class="va">elev</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://www.rayshader.com/reference/plot_3d.html">plot_3d</a></span><span class="op">(</span><span class="va">elev</span>, zscale <span class="op">=</span> <span class="fl">20</span>, fov <span class="op">=</span> <span class="fl">0</span>,
           theta <span class="op">=</span> <span class="fl">135</span>, zoom <span class="op">=</span> <span class="fl">0.75</span>, phi <span class="op">=</span> <span class="fl">45</span>, 
-          windowsize <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">800</span><span class="op">)</span><span class="op">)</span>
+          windowsize <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1400</span>, <span class="fl">800</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.2</span><span class="op">)</span>
 <span class="fu"><a href="https://www.rayshader.com/reference/render_snapshot.html">render_snapshot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
@@ -243,7 +255,7 @@
   <span class="fu"><a href="https://www.rayshader.com/reference/height_shade.html">height_shade</a></span><span class="op">(</span>texture <span class="op">=</span> <span class="fu">dem_colors</span><span class="op">(</span><span class="fl">256</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/sphere_shade.html">sphere_shade</a></span><span class="op">(</span><span class="va">elev</span>, texture <span class="op">=</span> <span class="st">'bw'</span>, zscale<span class="op">=</span><span class="fl">10</span><span class="op">)</span>, alphalayer<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://www.rayshader.com/reference/add_shadow.html">add_shadow</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/lamb_shade.html">lamb_shade</a></span><span class="op">(</span><span class="va">elev</span>, zscale <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>, <span class="fl">0.1</span><span class="op">)</span> |&gt; 
-  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/generate_line_overlay.html">generate_line_overlay</a></span><span class="op">(</span><span class="va">rivers</span>, linewidth <span class="op">=</span> <span class="fl">1</span>, color<span class="op">=</span><span class="st">"steelblue4"</span>,
+  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/generate_line_overlay.html">generate_line_overlay</a></span><span class="op">(</span><span class="va">rivers</span>, linewidth <span class="op">=</span> <span class="fl">2</span>, color<span class="op">=</span><span class="st">"steelblue4"</span>,
                                     extent <span class="op">=</span> <span class="va">ext</span>,
                                     heightmap <span class="op">=</span> <span class="va">elev</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/generate_polygon_overlay.html">generate_polygon_overlay</a></span><span class="op">(</span><span class="va">lakes</span>, linewidth <span class="op">=</span> <span class="fl">1</span>, 
@@ -253,11 +265,76 @@
                                        heightmap <span class="op">=</span> <span class="va">elev</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://www.rayshader.com/reference/plot_3d.html">plot_3d</a></span><span class="op">(</span><span class="va">elev</span>, zscale <span class="op">=</span> <span class="fl">50</span>, fov <span class="op">=</span> <span class="fl">0</span>,
           theta <span class="op">=</span> <span class="fl">80</span>, zoom <span class="op">=</span> <span class="fl">0.25</span>, phi <span class="op">=</span> <span class="fl">35</span>, 
-          windowsize <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">800</span><span class="op">)</span><span class="op">)</span>
+          windowsize <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1400</span>, <span class="fl">800</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.2</span><span class="op">)</span>
 <span class="fu"><a href="https://www.rayshader.com/reference/render_snapshot.html">render_snapshot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-10-1.png" width="100%"></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">rgl</span><span class="fu">::</span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/rgl.open.html">rgl.close</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>Расширим состав визуализируемых объектов:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">plt</span> <span class="op">=</span> <span class="va">elev</span> |&gt; 
+  <span class="fu"><a href="https://www.rayshader.com/reference/height_shade.html">height_shade</a></span><span class="op">(</span>texture <span class="op">=</span> <span class="fu">dem_colors</span><span class="op">(</span><span class="fl">256</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/sphere_shade.html">sphere_shade</a></span><span class="op">(</span><span class="va">elev</span>, texture <span class="op">=</span> <span class="st">'bw'</span>, zscale<span class="op">=</span><span class="fl">10</span><span class="op">)</span>, alphalayer<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://www.rayshader.com/reference/add_shadow.html">add_shadow</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/lamb_shade.html">lamb_shade</a></span><span class="op">(</span><span class="va">elev</span>, zscale <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>, <span class="fl">0.1</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/generate_polygon_overlay.html">generate_polygon_overlay</a></span><span class="op">(</span><span class="va">blocks</span>, linewidth <span class="op">=</span> <span class="fl">1</span>, 
+                                     palette <span class="op">=</span> <span class="st">'orange'</span>,
+                                     linecolor <span class="op">=</span> <span class="st">'black'</span>,
+                                     extent <span class="op">=</span> <span class="va">ext</span>,
+                                     heightmap <span class="op">=</span> <span class="va">elev</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/generate_line_overlay.html">generate_line_overlay</a></span><span class="op">(</span><span class="va">rivers</span>, linewidth <span class="op">=</span> <span class="fl">2</span>, color<span class="op">=</span><span class="st">"steelblue4"</span>,
+                                    extent <span class="op">=</span> <span class="va">ext</span>,
+                                    heightmap <span class="op">=</span> <span class="va">elev</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/generate_polygon_overlay.html">generate_polygon_overlay</a></span><span class="op">(</span><span class="va">lakes</span>, linewidth <span class="op">=</span> <span class="fl">1</span>, 
+                                       palette <span class="op">=</span> <span class="st">'azure'</span>,
+                                       linecolor <span class="op">=</span> <span class="st">'steelblue4'</span>,
+                                       extent <span class="op">=</span> <span class="va">ext</span>,
+                                       heightmap <span class="op">=</span> <span class="va">elev</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/generate_line_overlay.html">generate_line_overlay</a></span><span class="op">(</span><span class="va">roads</span>, linewidth <span class="op">=</span> <span class="fl">4</span>, color<span class="op">=</span><span class="st">"black"</span>,
+                                    extent <span class="op">=</span> <span class="va">ext</span>,
+                                    heightmap <span class="op">=</span> <span class="va">elev</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/generate_line_overlay.html">generate_line_overlay</a></span><span class="op">(</span><span class="va">roads</span>, linewidth <span class="op">=</span> <span class="fl">2</span>, color<span class="op">=</span><span class="st">"lightyellow"</span>,
+                                  extent <span class="op">=</span> <span class="va">ext</span>,
+                                  heightmap <span class="op">=</span> <span class="va">elev</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/generate_line_overlay.html">generate_line_overlay</a></span><span class="op">(</span><span class="va">rails</span>, linewidth <span class="op">=</span> <span class="fl">3</span>, color<span class="op">=</span><span class="st">"black"</span>,
+                                  extent <span class="op">=</span> <span class="va">ext</span>,
+                                  heightmap <span class="op">=</span> <span class="va">elev</span><span class="op">)</span><span class="op">)</span> 
+
+<span class="fu"><a href="https://www.rayshader.com/reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">plt</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-11-1.png" width="100%"></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="fu"><a href="https://www.rayshader.com/reference/plot_3d.html">plot_3d</a></span><span class="op">(</span><span class="va">plt</span>, <span class="va">elev</span>, zscale <span class="op">=</span> <span class="fl">30</span>, fov <span class="op">=</span> <span class="fl">0</span>,
+        theta <span class="op">=</span> <span class="op">-</span><span class="fl">45</span>, zoom <span class="op">=</span> <span class="fl">0.25</span>, phi <span class="op">=</span> <span class="fl">30</span>, 
+        windowsize <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1400</span>, <span class="fl">800</span><span class="op">)</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.2</span><span class="op">)</span>
+<span class="fu"><a href="https://www.rayshader.com/reference/render_snapshot.html">render_snapshot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-11-2.png" width="100%"></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">rgl</span><span class="fu">::</span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/rgl.open.html">rgl.close</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="three_labels" class="section level3" number="12.3.3">
+<h3>
+<span class="header-section-number">12.3.3</span> Подписи<a class="anchor" aria-label="anchor" href="#three_labels"><i class="fas fa-link"></i></a>
+</h3>
+</div>
+</div>
+<div id="three_animation" class="section level2" number="12.4">
+<h2>
+<span class="header-section-number">12.4</span> Анимация трёхмерной сцены<a class="anchor" aria-label="anchor" href="#three_animation"><i class="fas fa-link"></i></a>
+</h2>
+<div id="three_animation_circle" class="section level3" number="12.4.1">
+<h3>
+<span class="header-section-number">12.4.1</span> Вращение относительно точки<a class="anchor" aria-label="anchor" href="#three_animation_circle"><i class="fas fa-link"></i></a>
+</h3>
+</div>
+<div id="three_animation_path" class="section level3" number="12.4.2">
+<h3>
+<span class="header-section-number">12.4.2</span> Облёт по траектории<a class="anchor" aria-label="anchor" href="#three_animation_path"><i class="fas fa-link"></i></a>
+</h3>
+</div>
 </div>
 <div id="questions_tasks_three" class="section level2" number="12.5">
 <h2>
