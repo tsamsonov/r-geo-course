@@ -129,55 +129,17 @@ rgl::rgl.close()
 
 ```r
 db = 'data/khibiny.gpkg'
-rivers = st_read(db, 'rivers')
-## Reading layer `rivers' from data source 
-##   `/Users/tsamsonov/GitHub/r-geo-course/data/khibiny.gpkg' using driver `GPKG'
-## Simple feature collection with 3132 features and 8 fields
-## Geometry type: MULTILINESTRING
-## Dimension:     XY
-## Bounding box:  xmin: 480907 ymin: 7471985 xmax: 613876.2 ymax: 7557222
-## Projected CRS: WGS 84 / UTM zone 36N
-lakes = st_read(db, 'lakes') |> 
+rivers = st_read(db, 'rivers', quiet = T)
+lakes = st_read(db, 'lakes', quiet = T) |> 
   filter(CLASS_ID != 31300000)
-## Reading layer `lakes' from data source 
-##   `/Users/tsamsonov/GitHub/r-geo-course/data/khibiny.gpkg' using driver `GPKG'
-## Simple feature collection with 3266 features and 14 fields
-## Geometry type: MULTIPOLYGON
-## Dimension:     XY
-## Bounding box:  xmin: 480907 ymin: 7471985 xmax: 613876.2 ymax: 7557222
-## Projected CRS: WGS 84 / UTM zone 36N
-roads = st_read(db, 'roads')
-## Reading layer `roads' from data source 
-##   `/Users/tsamsonov/GitHub/r-geo-course/data/khibiny.gpkg' using driver `GPKG'
-## Simple feature collection with 1086 features and 11 fields
-## Geometry type: MULTILINESTRING
-## Dimension:     XY
-## Bounding box:  xmin: 480907 ymin: 7471985 xmax: 613876.2 ymax: 7557222
-## Projected CRS: WGS 84 / UTM zone 36N
-rails = st_read(db, 'rails')
-## Reading layer `rails' from data source 
-##   `/Users/tsamsonov/GitHub/r-geo-course/data/khibiny.gpkg' using driver `GPKG'
-## Simple feature collection with 70 features and 6 fields
-## Geometry type: MULTILINESTRING
-## Dimension:     XY
-## Bounding box:  xmin: 480907 ymin: 7474071 xmax: 569818.5 ymax: 7557222
-## Projected CRS: WGS 84 / UTM zone 36N
-forest = st_read(db, 'veg')
-## Reading layer `veg' from data source 
-##   `/Users/tsamsonov/GitHub/r-geo-course/data/khibiny.gpkg' using driver `GPKG'
-## Simple feature collection with 1657 features and 8 fields
-## Geometry type: MULTIPOLYGON
-## Dimension:     XY
-## Bounding box:  xmin: 480907 ymin: 7471985 xmax: 613876.2 ymax: 7557222
-## Projected CRS: WGS 84 / UTM zone 36N
-blocks = st_read(db, 'blocks')
-## Reading layer `blocks' from data source 
-##   `/Users/tsamsonov/GitHub/r-geo-course/data/khibiny.gpkg' using driver `GPKG'
-## Simple feature collection with 191 features and 8 fields
-## Geometry type: MULTIPOLYGON
-## Dimension:     XY
-## Bounding box:  xmin: 480907 ymin: 7476464 xmax: 585007 ymax: 7556537
-## Projected CRS: WGS 84 / UTM zone 36N
+
+roads_all = st_read(db, 'roads', quiet = T)
+roads = filter(roads_all, CLASS_ID <= 62131000)
+
+rails = st_read(db, 'rails', quiet = T)
+forest = st_read(db, 'veg', quiet = T)
+blocks = st_read(db, 'blocks', quiet = T)
+poppol = st_read(db, 'poppol', quiet = T)
 ```
 
 Добавим их через оверлей объектов:
@@ -266,7 +228,7 @@ plt = elev |>
   height_shade(texture = dem_colors(256)) |> 
   add_overlay(sphere_shade(elev, texture = 'bw', zscale=10), alphalayer=0.5) |> 
   add_shadow(lamb_shade(elev, zscale = 20), 0.1) |> 
-  add_overlay(generate_polygon_overlay(blocks, linewidth = 1, 
+  add_overlay(generate_polygon_overlay(poppol, linewidth = 1, 
                                      palette = 'orange',
                                      linecolor = 'black',
                                      extent = ext,
@@ -311,6 +273,75 @@ rgl::rgl.close()
 ```
 
 ### Подписи {#three_labels}
+
+Для размещения подписей следует использовать функцию `generate_label_overlay()`:
+
+
+```r
+popmajor = poppol |> 
+  filter(CLASS_ID < 41300000) |> 
+  st_centroid()
+
+popminor= poppol |> 
+  filter(CLASS_ID == 41300000) |> 
+  st_centroid()
+
+plt_lbl = plt |> 
+  add_overlay(generate_point_overlay(popmajor, size = 8, extent = ext, color = "black", pch = 19,
+                                     heightmap = elev)) |> 
+  add_overlay(generate_point_overlay(popmajor, size = 3, extent = ext, color = "white", pch = 19,
+                                     heightmap = elev)) |> 
+  add_overlay(generate_label_overlay(labels = popmajor, 
+                                     data_label_column = 'NAME',
+                                     extent = ext, text_size = 2, color = "black", font=2,
+                                     halo_color = "white", halo_expand = 2, point_size = 0,
+                                     seed=1, heightmap = elev))
+plot_map(plt_lbl)
+```
+
+<img src="12-3DModels_files/figure-html/unnamed-chunk-12-1.png" width="100%" />
+
+```r
+
+plot_3d(plt_lbl, elev, zscale = 30, fov = 0,
+        theta = -45, zoom = 0.5, phi = 30, 
+        windowsize = c(1400, 800))
+
+Sys.sleep(0.2)
+render_snapshot()
+```
+
+<img src="12-3DModels_files/figure-html/unnamed-chunk-12-2.png" width="100%" />
+
+```r
+rgl::rgl.close()
+```
+
+Как видно, оверлей подписей выглядит не очень в трехмерноме режиме. В этом случае необходимо эти подписи наносить уже после того как трехмерный режим активирован:
+
+```r
+plot_3d(plt, elev, zscale = 30, fov = 0,
+        theta = -45, zoom = 0.5, phi = 35, 
+        windowsize = c(1400, 800))
+
+for (name in popmajor$NAME) {
+  pop = filter(popmajor, NAME == name)
+  render_label(elev, lat = st_coordinates(pop)[, 2], lon = st_coordinates(pop)[, 1], 
+               text = name, altitude = 1000, zscale=30, textsize = 1.75, linewidth = 4,
+               extent = ext, textcolor = "turquoise2", linecolor="turquoise2",
+               relativez = TRUE)
+}
+
+Sys.sleep(0.2)
+render_snapshot()
+```
+
+<img src="12-3DModels_files/figure-html/unnamed-chunk-13-1.png" width="100%" />
+
+```r
+rgl::rgl.close()
+```
+
 
 ## Анимация трёхмерной сцены  {#three_animation}
 
