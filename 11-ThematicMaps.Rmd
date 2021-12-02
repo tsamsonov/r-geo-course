@@ -18,10 +18,33 @@ library(raster)
 library(mapview)
 library(classInt)
 library(gapminder)
-library(tidyverse)
+library(dplyr)
 library(googlesheets4)
 library(rnaturalearth)
+options(scipen = 999)
 ```
+
+```{r}
+ne = '/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg'
+countries = ne_countries(scale = 110, returnclass = 'sf')
+coast = ne_coastline(scale = 110, returnclass = 'sf')
+ocean = ne_download(scale = 110,
+                    type = 'ocean',
+                    category = 'physical',
+                    returnclass = 'sf')
+cities = ne_download(scale = 110,
+                     type = 'populated_places',
+                     category = 'cultural',
+                     returnclass = 'sf')
+rivers = st_read(ne, 'ne_110m_rivers_lake_centerlines')
+lakes = st_read(ne, 'ne_110m_lakes')
+land = st_read(ne, 'ne_110m_land')
+borders = st_read(ne, 'ne_110m_admin_0_boundary_lines_land')
+
+lyr = lst(ocean, land, coast, countries, 
+          rivers, lakes, cities, borders)
+```
+
 
 ## Введение {#thematic_mapping_intro}
 
@@ -37,7 +60,7 @@ library(rnaturalearth)
 
 Выполним загрузку 10-минутного растра с суммарным количеством осадков за год:
 ```{r, cache=TRUE, fig.height=20}
-prec = raster::getData("worldclim", var = "prec", res = 10) %>% 
+prec = raster::getData("worldclim", var = "prec", res = 10) |> 
   st_as_stars() # преобразуем в stars для удобства работы
 plot(prec) # это 12-канальный растр
 ```
@@ -46,11 +69,10 @@ plot(prec) # это 12-канальный растр
 
 Выполним трансформирование данных в [__проекцию Миллера__](https://proj4.org/operations/projections/mill.html). Для того чтобы карта не обрезалась по охвату растра (он не включает данные на Антарктиду), необходимо расширить его охват на весь земной шар. Для этого используем функцию `extend()` из пакета __raster__:
 ```{r, cache = TRUE}
-precm = prec %>% 
+precp = prec |> 
   st_warp(crs = "+proj=mill")
-  # extend(extent(-180, 180, -90, 90)) %>% 
-  # projectRaster(crs = "+proj=mill")
-lyrm = lapply(lyr, st_transform, crs = "+proj=mill") # Цилиндрическая проекция Миллера
+
+lyrp = lapply(lyr, st_transform, crs = "+proj=mill") # Цилиндрическая проекция Миллера
 ```
 
 Визуализируем полученные данные на карте:
@@ -58,11 +80,11 @@ lyrm = lapply(lyr, st_transform, crs = "+proj=mill") # Цилиндрическ�
 ramp = colorRampPalette(c("white", "violetred"))
 
 # Визуализируем данные на январь:
-plot(precm[,,,1], 
+plot(precp[,,,1], 
      col = ramp(10),
      main = 'Количество осадков в январе, мм',
      reset = FALSE) # разрешаем добавлять объекты на карту.
-plot(st_geometry(lyrm$ocean), border = 'steelblue', 
+plot(st_geometry(lyrp$ocean), border = 'steelblue', 
      col = 'lightblue', add = TRUE)
 
 ```
@@ -105,14 +127,7 @@ lifedf = left_join(gap,
   rename(lifexp = SP.DYN.LE00.IN) |> 
   mutate(geo = stringr::str_to_upper(geo))
 
-# (read_sheet('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo') %>% # продолжительность жизни
-#   rename(name = 1) %>% 
-#   gather(year, lifexp, -name) %>% 
-#   dplyr::filter(year == 2016) %>% 
-#   left_join(read_excel('data/gapminder.xlsx', 2)) %>% 
-#   mutate(geo = stringr::str_to_upper(geo)) -> lifedf) # выгружаем данные по продолжительности и сохраняем в переменную lifedf
-
-coun = lyrp$countries %>% 
+coun = lyrp$countries |> 
   left_join(lifedf, by = c('adm0_a3' = 'geo'))
 
 tm_shape(coun) +
@@ -124,16 +139,16 @@ tm_shape(lyrp$ocean) +
 
 Для реализации способа __картодиаграмм__ используется геометрия `tm_bubbles()`. Чтобы оставить отображение границ полигонов, нам необходимо к одной геометрии применить несколько способов изображения:
 ```{r}
-tm_shape(coun) +
+tm_shape(lyrp$ocean) +
+  tm_fill(col = 'lightblue') +
+  tm_borders(col = 'steelblue') +
+tm_shape(lyrp$countries) +
   tm_fill(col = 'white') +
   tm_borders(col = 'grey') +
   tm_bubbles('gdp_md_est', 
              scale = 3,
              col = 'red', 
-             alpha = 0.5) + # количественная переменная
-tm_shape(lyrp$ocean) +
-  tm_fill(col = 'lightblue') +
-  tm_borders(col = 'steelblue')
+             alpha = 0.5) # количественная переменная
 ```
 
 Аналогичным образом реализуется __значковый способ__ применительно к объектам, локализованным по точкам. Картографируем численность населения по крупнейшим городам:
@@ -165,13 +180,13 @@ tm_shape(lyrp$cities) +
 
 При отображении растровых данных используется способ отображения `tm_raster()`. В случае отображения количественных растров Параметр `breaks` определяет границы интервалов, для которых будут использованы цвета, взятые из параметра `palette`:
 ```{r}
-box = st_bbox(c(xmin = -180, xmax = 180, ymax = 90, ymin = -90), crs = st_crs(4326))
-tm_shape(precm[,,,1],
-         bbox = box) +
+# box = st_bbox(c(xmin = -180, xmax = 180, ymax = 90, ymin = -90), crs = st_crs(4326))
+
+tm_shape(precp[,,,1]) +
     tm_raster('prec1',
               breaks = c(10, 50, 100, 200, 500, 1000),
               palette = ramp(5)) +
-tm_shape(lyrm$ocean) +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'lightblue') +
   tm_borders(col = 'steelblue')
 ```
@@ -206,24 +221,22 @@ tm_shape(lyrp$ocean)+
 
 Для количественного показателя (количество осадков) применим палитру _PuBuGn_:
 ```{r, cache = TRUE}
-tm_shape(precm[,,,1],
-         bbox = box) +
+tm_shape(precp[,,,1]) +
     tm_raster('prec1',
               breaks = c(10, 50, 100, 200, 500, 1000),
               palette = 'PuBuGn') +
-tm_shape(lyrm$ocean) +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'lightblue') +
   tm_borders(col = 'steelblue')
 ```
 
 Вы всегда можете, конечно, определить цвета вручную. В этом случае их количество должно совпадать с количеством интервалов классификации:
 ```{r}
-tm_shape(precm[,,,1],
-         bbox = box) +
+tm_shape(precp[,,,1]) +
     tm_raster('prec1',
               breaks = c(10, 50, 100, 200, 500, 1000),
               palette = c('white', 'gray80', 'gray60', 'gray40', 'gray20')) +
-tm_shape(lyrm$ocean) +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'lightblue') +
   tm_borders(col = 'steelblue')
 ```
@@ -253,7 +266,9 @@ tm_shape(land) +
 # Запишем число классов в переменную
 nclasses = 5
 
-intervals = classIntervals(coun$lifexp, n = nclasses, style = "equal")
+intervals = classIntervals(countries$pop_est, 
+                           n = nclasses, 
+                           style = "equal")
 
 # извлечь полученные границы можно через $brks
 intervals$brks
@@ -263,21 +278,24 @@ plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Равные интерв
 
 Созданные интервалы хоть и равны, но не аккуратны. Зато метод классификации `"pretty"` создает также равные интервалы, но может слегка расширить диапазон или добавить 1 класс, чтобы получить границы интервалов, округленные до целых чисел:
 ```{r, collapse=TRUE}
-intervals = classIntervals(coun$lifexp, n = nclasses, style = "pretty")
+intervals = classIntervals(countries$pop_est, 
+                           n = nclasses, 
+                           style = "pretty")
 intervals$brks
 plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Округленные равные интервалы")
 ```
 
 Квантили --- равноколичественные интервалы. В каждом классе содержится одинаковое число объектов:
 ```{r, collapse=TRUE}
-intervals = classIntervals(coun$lifexp, n = nclasses, style = "quantile")
+intervals = classIntervals(countries$pop_est, n = nclasses, style = "quantile")
 intervals$brks
 plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Квантили (равноколичественные)")
 ```
 
 Метод "естественных интервалов", или метод Фишера-Дженкса позволяет найти классы, максимально однородные внутри и при этом максимально отличающиеся друг от друга:
+
 ```{r, collapse=TRUE}
-intervals = classIntervals(coun$lifexp, n = nclasses, style = "jenks")
+intervals = classIntervals(countries$pop_est, n = nclasses, style = "jenks")
 intervals$brks
 plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Естественные интервалы")
 ```
@@ -286,10 +304,12 @@ plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Естественные 
 
 Чтобы использовать заранее вычисленные интервалы классификации, их необходимо подать в параметр `breaks` при построении карты:
 ```{r}
-brks = classIntervals(coun$lifexp, n = 4, style = "pretty")$brks
+brks = classIntervals(countries$pop_est, 
+                      n = 7, 
+                      style = "jenks")$brks
 
-tm_shape(coun) +
-  tm_polygons('lifexp', 
+tm_shape(lyrp$countries) +
+  tm_polygons('pop_est', 
               border.col = 'gray20',
               palette = 'YlGn',
               breaks = brks) + # количественная переменная
@@ -300,12 +320,11 @@ tm_shape(lyrp$ocean) +
 
 Аналогичным путем работают шкалы для растровых данных:
 ```{r}
-tm_shape(precm[,,,1],
-         bbox = box) +
+tm_shape(precp[,,,1]) +
     tm_raster('prec1',
-              breaks = classIntervals(precm[,,,1][[1]], n = 5, style = "quantile", na.rm = TRUE)$brks,
+              breaks = classIntervals(sample(precp[,,,1][[1]], 1000), n = 5, style = "jenks", na.rm = TRUE)$brks,
               palette = 'PuBuGn') +
-tm_shape(lyrm$ocean) +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'lightblue') +
   tm_borders(col = 'steelblue')
 ```
@@ -314,14 +333,13 @@ tm_shape(lyrm$ocean) +
 
 Для классификации естественными интервалами сделаем выборку в 2 000 значений с растра c помощью функции `sampleRandom()` из пакета __raster__:
 ```{r}
-smpl = sample(precm[,,,1][[1]], 2000) 
+smpl = sample(precp[,,,1][[1]], 2000) 
 
-tm_shape(precm[,,,1],
-         bbox = box) +
+tm_shape(precp[,,,1]) +
     tm_raster('prec1',
               breaks = classIntervals(smpl, n = 5, style = "jenks")$brks,
               palette = 'PuBuGn') +
-tm_shape(lyrm$ocean) +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'lightblue') +
   tm_borders(col = 'steelblue')
 ```
@@ -338,8 +356,8 @@ tm_shape(lyrm$ocean) +
 
 Построим карту продолжительности жизни, используя классификацию при отображении:
 ```{r}
-tm_shape(coun) +
-  tm_polygons('lifexp', 
+tm_shape(lyrp$countries) +
+  tm_polygons('pop_est', 
               palette = 'YlGn',
               n = 5,
               style = 'fisher',
@@ -351,28 +369,22 @@ tm_shape(lyrp$ocean) +
 
 Установка средней точки при классификации оказывается очень полезной в тех случаях, когда данные являются биполярными. Покажем это на примере данных WorldClim по температуре:
 ```{r, cache = TRUE}
-temp = raster::getData("worldclim", var = "tmean", res = 10) %>% 
-  st_as_stars() %>% 
-  mutate(tmean1 = tmean1 / 10) %>% 
+temp = raster::getData("worldclim", var = "tmean", res = 10) |> 
+  st_as_stars() |> 
+  mutate(tmean1 = tmean1 / 10) |> 
   st_warp(crs = "+proj=mill")
-  # extend(extent(-180, 180, -90, 90)) %>% 
-  # projectRaster(crs = "+proj=mill") / 10
-
- # не забываем поделить результат на 10, 
- # так как данные хранятся в виде целых чисел!
 ```
 
 Визуализируем данные по температуре, используя классическую красно-бело-синюю палитру _RdBu_ и нейтральную точку 0 градусов по Цельсию. По умолчанию в данной палитре красный цвет соответствует малым значениям. пакет __tmap__ позволяет инвертировать цвета палитры, добавив знак минус перед ее названием. Помимо этого, для размещения положительных значений наверху выполним обратную сортировку элементов легенды, используя параметр `legend.reverse = TRUE`: 
 ```{r}
-tm_shape(temp[,,,1],
-         bbox = box) +
+tm_shape(temp[,,,3]) +
     tm_raster('tmean1',
               n = 11,
               midpoint = 0,
               style = 'pretty',
               legend.reverse = TRUE,
-              palette = '-RdBu') +
-tm_shape(lyrm$ocean) +
+              palette = '-Spectral') +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'azure') +
   tm_borders(col = 'steelblue')
 ```
@@ -381,8 +393,7 @@ tm_shape(lyrm$ocean) +
 
 Весьма важно отметить на карте области, для которых данные отсутствуют. Вы могли обратить внимание, что для способов изображения, применимых к векторным данным, _tmap_ автоматически добавляет класс легенды, который отвечает за пропуски. Для растров, однако, он это не делает. Чтобы принудительно вывести в легенду и на карту символ, отвечающий за пропущенные значения, необходимо определить параметр `colorNA`. Обычно, в зависимости от цветовой палитры легенды, для этого используют серый или белый цвет:
 ```{r}
-tm_shape(temp[,,,1],
-         bbox = box) +
+tm_shape(temp[,,,1]) +
     tm_raster('tmean1',
               colorNA = 'grey', # определяем цвет для пропущенных значений
               n = 11,
@@ -390,11 +401,10 @@ tm_shape(temp[,,,1],
               style = 'pretty',
               legend.reverse = TRUE,
               palette = '-RdBu') +
-tm_shape(lyrm$ocean) +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'azure') +
   tm_borders(col = 'steelblue')
 ```
-
 
 ## Компоновка {#thematic_mapping_layouts}
 
@@ -415,7 +425,7 @@ tm_shape(lyrp$ocean)+
   tm_fill(col = 'azure') +
   tm_borders(col = 'steelblue') +
 tm_layout(legend.position = c('left', 'bottom'),
-          fontfamily = 'Open Sans', # шрифт
+          fontfamily = 'PT Sans', # шрифт
           main.title.size = 1.2,   # масштаб шрифта в заголовке
           main.title = 'Тип экономики', # заголовок
           legend.frame = TRUE, # рамка вокруг легенды
@@ -426,7 +436,10 @@ tm_layout(legend.position = c('left', 'bottom'),
 
 Для того чтобы определить заголовок легенды размера значка или диаграммы, необходимо задать параметр `title.size`. Помимо этого, легенду можно пристыковать непосредственно к рамке карты, если задать значения параметра `legend.position` в верхнем регистре:
 ```{r}
-tm_shape(coun) +
+tm_shape(lyrp$ocean) +
+  tm_fill(col = 'lightblue') +
+  tm_borders(col = 'steelblue') +
+tm_shape(lyrp$countries) +
   tm_fill(col = 'white') +
   tm_borders(col = 'grey') +
   tm_bubbles('gdp_md_est', 
@@ -434,9 +447,6 @@ tm_shape(coun) +
              col = 'red', 
              alpha = 0.5,
              title.size = '$ млн') + # количественная переменная
-tm_shape(lyrp$ocean) +
-  tm_fill(col = 'lightblue') +
-  tm_borders(col = 'steelblue') +
 tm_layout(legend.position = c('LEFT', 'BOTTOM'), # верхний регистр — легенда встык
           fontfamily = 'Open Sans', # шрифт
           main.title.size = 1.2,   # масштаб шрифта в заголовке
@@ -454,13 +464,13 @@ tm_layout(legend.position = c('LEFT', 'BOTTOM'), # верхний регистр
 - убрать рамку карты (`frame`),
 - сдвинуть заголовок вдоль строки, выровняв его с центром карты (`main.title.position`):
 ```{r}
-tm_shape(coun) +
-  tm_polygons('lifexp', 
+tm_shape(lyrp$countries) +
+  tm_polygons('pop_est', 
               border.col = 'gray20', 
               palette = 'YlGn',
               n = 4,
               style = 'jenks',
-              title = 'Лет',
+              title = 'Чел.',
               colorNA = 'lightgray',
               textNA = 'Нет данных',
               legend.format = list(text.separator = '—')) + # количественная переменная
@@ -468,19 +478,18 @@ tm_shape(lyrp$ocean) +
   tm_fill(col = 'azure') +
   tm_borders(col = 'steelblue4') +
 tm_layout(frame = FALSE,
-          main.title.position = 0.15,
+          main.title.position = 0.5,
           legend.outside = TRUE,
           legend.outside.position = 'right',
           fontfamily = 'Open Sans',
           main.title.size = 1.2,
-          main.title = 'Продолжительность жизни',
+          main.title = 'Численность населения',
           legend.bg.color = 'white')
 ```
 
 Для отображения __координатной сетки__ вы можете использовать функцию `tm_grid()`. По умолчанию она строит координатную сетку в единицах измерения проекции. Однако если требуется градусная сетка, то ее можно определить, используя параметр `projection = 4326`:
 ```{r}
-tm_shape(temp[,,,1],
-         bbox = box) +
+tm_shape(temp[,,,1]) +
   tm_raster('tmean1',
             title = '°C',
             colorNA = 'grey', # определяем цвет для пропущенных значений
@@ -491,7 +500,7 @@ tm_shape(temp[,,,1],
             style = 'pretty',
             legend.reverse = TRUE,
             palette = '-RdBu') +
-tm_shape(lyrm$ocean) +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'azure') +
   tm_borders(col = 'steelblue') +
 tm_layout(legend.position = c('left', 'bottom'),
@@ -501,55 +510,16 @@ tm_layout(legend.position = c('left', 'bottom'),
           legend.frame = TRUE,
           legend.frame.lwd = 0.2,
           legend.bg.alpha = 0.5,
-          legend.bg.color = 'white') # +
-# tm_graticules(x = seq(-180, 180, by = 30), 
-#         y = seq(-90, 90, by = 30), 
-#         lwd = 0.2,
-#         col = "black")
-```
-
-Если вам необходимо обеспечить значки градуса, вы можете сделать это, используя параметр `labels.format`, определив в нем анонимную функцию, добавляющую значок градуса в переданный ей вектор подписей. 
-
-Помимо этого, вам может понадобиться увеличить поля вокруг карты, чтобы освободить пространство для размещения меток (на предыдущей карте они не влезли). Это делается через параметр `outer.margins`, который ожидает получить вектор из четырех значений (по умолчанию все они равны 0.02, т.е. 2% от размера окна).
-
-```{r}
-tm_shape(temp[,,,1],
-         bbox = box) +
-  tm_raster('tmean1',
-            title = '°C',
-            colorNA = 'grey', # определяем цвет для пропущенных значений
-            textNA = 'Нет данных',
-            legend.format = list(text.separator = '—'),
-            n = 11,
-            midpoint = 0,
-            style = 'pretty',
-            legend.reverse = TRUE,
-            palette = '-RdBu') +
-tm_shape(lyrm$ocean) +
-  tm_fill(col = 'azure') +
-  tm_borders(col = 'steelblue') +
-tm_layout(legend.position = c('LEFT', 'BOTTOM'),
-          fontfamily = 'Open Sans',
-          main.title.size = 1.2,
-          main.title = 'Средняя температура января',
-          legend.frame = TRUE,
-          legend.frame.lwd = 0.2,
-          legend.bg.alpha = 0.8,
-          legend.bg.color = 'white',
-          outer.margins = c(0.05, 0.02, 0.02, 0.02),
-          inner.margins = c(0, 0, 0, 0)) # +
-# tm_grid(x = seq(-180, 180, by = 30), 
-#         y = seq(-90, 90, by = 30), 
-#         lwd = 0.2,
-#         col = "black", 
-#         projection = 4326,
-#         labels.inside.frame = FALSE,
-#         labels.format = list(fun = function(X) paste0(X, '°')))
+          legend.bg.color = 'white') +
+tm_graticules(x = seq(-150, 150, by = 30),
+        y = seq(-60, 60, by = 30),
+        lwd = 0.2,
+        col = "black")
 ```
 
 Подписи сетки координат можно добавить и для более сложных проекций, однако располагаться они будут по-прежнему вдоль осей _X_ и _Y_. В примере ниже также показано как можно увеличить расстояние между заголовком и картой, определив более крупный отступ от верхней стороны в параметре `inner.margins`:
 ```{r}
-tm_shape(coun) +
+tm_shape(coun, projection = '+proj=moll') +
   tm_polygons('lifexp', 
               palette = 'YlGn',
               n = 4,
@@ -573,13 +543,10 @@ tm_layout(frame = FALSE,
           legend.bg.color = 'white',
           outer.margins = c(0.02, 0.05, 0.02, 0.02),
           inner.margins = c(0.02, 0.02, 0.07, 0.02)) +
-tm_grid(x = seq(-180, 180, by = 60), 
-        y = seq(-90, 90, by = 30), 
+tm_graticules(x = seq(-150, 150, by = 30),
+        y = seq(-60, 60, by = 30),
         lwd = 0.2,
-        col = "black", 
-        projection = 4326,
-        labels.inside.frame = FALSE,
-        labels.format = list(fun = function(X) paste0(X, '°')))
+        col = "black")
 ```
 
 ## Фасеты и серии карт {#thematic_mapping_facets}
@@ -594,14 +561,6 @@ lifexp_dec = lifexp |>
 lifedf_dec = left_join(gap, lifexp_dec, by = c('name' = 'country')) |>
   rename(lifexp = SP.DYN.LE00.IN) |> 
   mutate(geo = stringr::str_to_upper(geo))
-
-# ('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo' %>% # продолжительность жизни
-#   read_sheet() %>% 
-#   rename(name = 1) %>% 
-#   gather(year, lifexp, -name) %>% 
-#   dplyr::filter(year %in% c(1960, 1970, 1980, 1990, 2000, 2010)) %>% 
-#   left_join(read_excel('data/gapminder.xlsx', 2)) %>% 
-#   mutate(geo = stringr::str_to_upper(geo)) -> lifedf2) # выгружаем данные по ВВП на душу населения и сохраняем в переменную lifedf
 
 coun_dec = lyrp$countries |>  
   left_join(lifedf_dec, by = c('adm0_a3' = 'geo'))
@@ -657,8 +616,7 @@ months = c('Январь', 'Февраль', 'Март', 'Апрель',
            'Март', 'Июнь', 'Июль', 'Август', 
            'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь')
 
-tm_shape(temp,
-         bbox = box) +
+tm_shape(temp) +
     tm_raster('temp1',
               title = '°C',
               colorNA = 'grey', # определяем цвет для пропущенных значений
@@ -669,7 +627,7 @@ tm_shape(temp,
               style = 'fixed',
               legend.reverse = TRUE,
               palette = '-RdBu') +
-  tm_shape(lyrm$ocean) +
+  tm_shape(lyrp$ocean) +
     tm_fill(col = 'azure') +
     tm_borders(col = 'steelblue') +
   tm_layout(legend.position = c('LEFT', 'BOTTOM'),
@@ -680,14 +638,11 @@ tm_shape(temp,
             legend.frame.lwd = 0.2,
             legend.bg.alpha = 0.8,
             legend.bg.color = 'white',
-            inner.margins = c(0, 0, 0, 0)) #+
-  # tm_grid(x = seq(-180, 180, by = 30), 
-  #         y = seq(-90, 90, by = 30), 
-  #         lwd = 0.2,
-  #         col = "black", 
-  #         projection = 4326,
-  #         labels.inside.frame = FALSE,
-  #         labels.format = list(fun = function(Z) paste0(Z, '°')))
+            inner.margins = c(0, 0, 0, 0)) +
+  tm_graticules(x = seq(-150, 150, by = 30),
+        y = seq(-60, 60, by = 30),
+        lwd = 0.2,
+        col = "black")
 
 # tmap_arrange(maps, asp = NA, ncol = 2,
 #              outer.margins = 0.05)
@@ -755,7 +710,7 @@ tm_view(set.view = c(20, 45, 2),    # центр карты и масштабн�
 tmap_mode('view')
 tmap_options(check.and.fix = TRUE)
 
-coun = coun %>% mutate(gdp_scaled = round(0.001 * gdp_md_est))
+coun = coun |> mutate(gdp_scaled = round(0.001 * gdp_md_est))
 
 tm_basemap("OpenStreetMap") +
 tm_shape(coun) +

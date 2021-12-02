@@ -1109,7 +1109,6 @@ img |> attr('dimensions') |> attr('raster') |> str()
 ```r
 par(mfrow = c(1,1))
 plot(dem)
-## downsample set to c(1,1)
 ```
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-57-1.png" width="100%" />
@@ -1132,7 +1131,6 @@ clrs = c(
   "firebrick3")
 
 plot(dem, breaks = brks, col = clrs)
-## downsample set to c(1,1)
 ```
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-58-1.png" width="100%" />
@@ -1140,7 +1138,6 @@ plot(dem, breaks = brks, col = clrs)
 ```r
 
 plot(dem, col = colorRampPalette(c("black", "white"))(255))
-## downsample set to c(1,1)
 ```
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-58-2.png" width="100%" />
@@ -1148,7 +1145,6 @@ plot(dem, col = colorRampPalette(c("black", "white"))(255))
 ```r
 
 plot(dem, col = rainbow(10))
-## downsample set to c(1,1)
 ```
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-58-3.png" width="100%" />
@@ -1157,7 +1153,6 @@ plot(dem, col = rainbow(10))
 
 ```r
 plot(st_rgb(img))
-## downsample set to c(1,1)
 ```
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-59-1.png" width="100%" />
@@ -1166,42 +1161,36 @@ plot(st_rgb(img))
 
 ```r
 st_rgb(img[,,,c(1, 2, 3)]) |> plot()
-## downsample set to c(1,1)
 ```
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-60-1.png" width="100%" />
 
 ```r
 st_rgb(img[,,,c(1, 3, 2)]) |> plot()
-## downsample set to c(1,1)
 ```
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-60-2.png" width="100%" />
 
 ```r
 st_rgb(img[,,,c(2, 1, 3)]) |> plot()
-## downsample set to c(1,1)
 ```
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-60-3.png" width="100%" />
 
 ```r
 st_rgb(img[,,,c(2, 3, 1)]) |> plot()
-## downsample set to c(1,1)
 ```
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-60-4.png" width="100%" />
 
 ```r
 st_rgb(img[,,,c(3, 1, 2)]) |> plot()
-## downsample set to c(1,1)
 ```
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-60-5.png" width="100%" />
 
 ```r
 st_rgb(img[,,,c(3, 2, 1)]) |> plot()
-## downsample set to c(1,1)
 ```
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-60-6.png" width="100%" />
@@ -1210,7 +1199,6 @@ st_rgb(img[,,,c(3, 2, 1)]) |> plot()
 
 ```r
 plot(st_rgb(img), reset = FALSE)
-## downsample set to c(1,1)
 plot(outlines, border = rgb(1,1,1,0.5), lwd = 0.5, add = TRUE)
 ```
 
@@ -1297,7 +1285,6 @@ ch1
 ## y       1 360     90  -0.5 WGS 84 FALSE   NULL [y]
 ## band    1   1     NA    NA     NA    NA   NULL
 plot(ch1)
-## downsample set to c(1,1,1)
 ```
 
 <img src="09-SpatialData_files/figure-html/unnamed-chunk-66-1.png" width="100%" />
@@ -1365,7 +1352,6 @@ plot(etopo['depth'],
      breaks = c(0, 500, 1000, 2000, 3000, 4000),
      main = 'Мощность покровного оледенения',
      reset = FALSE)
-## downsample set to c(1,1)
 plot(oceans, col = 'steelblue', add = TRUE)
 ```
 
@@ -1821,7 +1807,8 @@ plot(st_geometry(countries_merc),
 
 ```r
 img_moll = st_warp(img, crs = st_crs('+proj=moll'))
-plot(st_rgb(img_moll), main = NULL, reset = FALSE)
+plot(st_rgb(img_moll, probs = c(0.01, 0.99),
+       stretch = "percent"), main = NULL, reset = FALSE)
 plot(st_geometry(countries_moll), 
      border = rgb(1,1,1,0.5), lwd = 0.5, add = TRUE)
 ```

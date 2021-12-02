@@ -15,69 +15,34 @@ library(raster)
 library(mapview)
 library(classInt)
 library(gapminder)
-library(tidyverse)
+library(dplyr)
 library(googlesheets4)
 library(rnaturalearth)
+options(scipen = 999)
 ```
-
-## Введение {#thematic_mapping_intro}
-
-Тематические карты представляют собой важный инструмент географических исследований. Таблицы и графики не дают полного представления о пространственном распределении изучаемого явления. Это знание способна дать исследователю карта.
-
-Разнообразие типов и видов карт достаточно велико. Комплексные картографические произведения, содержащие многослойный набор объектов, создаются, как правило, средствами геоинформационных пакетов. Такие карты требуют тщательной и кропотливой работы с легендой, устранения графических конфликтов между знаками, многократного редактирования входных данных, условий, фильтров и способов изображения в попытке достичь эстетичного и вместе с тем информативного результата.
-
-В то же время, гораздо большее количество создаваемых в повседневной практике карт носят простой аналитический характер. Такие карты показывают одно, максимум два явления, и могут иллюстрировать входные данные, результаты промежуточных или итоговых расчетов. Создание именно таких карт целесообразно автоматизировать средствами программирования. В этом разделе мы познакомимся с созданием тематических карт средствами пакета [__tmap__](https://cran.r-project.org/web/packages/tmap/index.html). В качестве источника открытых данных мы будем использовать [Natural Earth](https://www.naturalearthdata.com/) и [WorldClim](http://www.worldclim.org/).
-
-### Данные Natural Earth {#thematic_mapping_intro_ne}
-
-[Natural Earth](https://www.naturalearthdata.com/) — это открытые мелкомасштабные картографические данные высокого качества. Данные доступны для трех масштабов: 1:10М, 1:50М и 1:110М. Для доступа к этим данным из среды R без загрузки исходных файлов можно использовать пакет [__rnaturalearth__](https://cran.r-project.org/web/packages/rnaturalearth/index.html). Пакет позволяет выгружать данные из внешнего репозитория, а также содержит три предзакачанных слоя:
-
-- `ne_countries()` границы стран
-- `ne_states()` границы единиц АТД 1 порядка
-- `ne_coastline()` береговая линия
-
-Для загрузки других слоев необходимо использовать функцию `ne_download()`, передав ей масштаб, название слоя и его категорию: 
 
 
 ```r
-countries = ne_countries() %>% st_as_sf()
-
-coast = ne_coastline() %>% st_as_sf()
-
-# ocean = ne_download(scale = 110, 
-#                     type = 'ocean', 
-#                     category = 'physical', 
-#                     returnclass = 'sf')
-# 
-# cities = ne_download(scale = 110, 
-#                      type = 'populated_places', 
-#                      category = 'cultural', 
-#                      returnclass = 'sf')
-# 
-# rivers = ne_download(scale = 110, 
-#                      type = 'rivers_lake_centerlines', 
-#                      category = 'physical', 
-#                      returnclass = 'sf')
-
 ne = '/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg'
-ocean = st_read(ne, 'ne_110m_ocean')
-## Reading layer `ne_110m_ocean' from data source 
-##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
-##   using driver `GPKG'
-## Simple feature collection with 2 features and 3 fields
-## Geometry type: POLYGON
-## Dimension:     XY
-## Bounding box:  xmin: -180 ymin: -85.60904 xmax: 180 ymax: 90
-## Geodetic CRS:  WGS 84
-cities = st_read(ne, 'ne_110m_populated_places')
-## Reading layer `ne_110m_populated_places' from data source 
-##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
-##   using driver `GPKG'
-## Simple feature collection with 243 features and 119 fields
-## Geometry type: POINT
-## Dimension:     XY
-## Bounding box:  xmin: -175.2206 ymin: -41.29999 xmax: 179.2166 ymax: 64.15002
-## Geodetic CRS:  WGS 84
+countries = ne_countries(scale = 110, returnclass = 'sf')
+coast = ne_coastline(scale = 110, returnclass = 'sf')
+ocean = ne_download(scale = 110,
+                    type = 'ocean',
+                    category = 'physical',
+                    returnclass = 'sf')
+## OGR data source with driver: ESRI Shapefile 
+## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/Rtmpls8lFs", layer: "ne_110m_ocean"
+## with 2 features
+## It has 3 fields
+cities = ne_download(scale = 110,
+                     type = 'populated_places',
+                     category = 'cultural',
+                     returnclass = 'sf')
+## OGR data source with driver: ESRI Shapefile 
+## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/Rtmpls8lFs", layer: "ne_110m_populated_places"
+## with 243 features
+## It has 119 fields
+## Integer64 fields read as strings:  wof_id ne_id
 rivers = st_read(ne, 'ne_110m_rivers_lake_centerlines')
 ## Reading layer `ne_110m_rivers_lake_centerlines' from data source 
 ##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
@@ -87,33 +52,46 @@ rivers = st_read(ne, 'ne_110m_rivers_lake_centerlines')
 ## Dimension:     XY
 ## Bounding box:  xmin: -135.3134 ymin: -33.99358 xmax: 129.956 ymax: 72.90651
 ## Geodetic CRS:  WGS 84
+lakes = st_read(ne, 'ne_110m_lakes')
+## Reading layer `ne_110m_lakes' from data source 
+##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
+##   using driver `GPKG'
+## Simple feature collection with 25 features and 33 fields
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -124.9536 ymin: -16.53641 xmax: 109.9298 ymax: 66.9693
+## Geodetic CRS:  WGS 84
+land = st_read(ne, 'ne_110m_land')
+## Reading layer `ne_110m_land' from data source 
+##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
+##   using driver `GPKG'
+## Simple feature collection with 127 features and 3 fields
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
+## Geodetic CRS:  WGS 84
+borders = st_read(ne, 'ne_110m_admin_0_boundary_lines_land')
+## Reading layer `ne_110m_admin_0_boundary_lines_land' from data source 
+##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
+##   using driver `GPKG'
+## Simple feature collection with 186 features and 5 fields
+## Geometry type: LINESTRING
+## Dimension:     XY
+## Bounding box:  xmin: -140.9978 ymin: -54.89681 xmax: 141.0339 ymax: 70.16419
+## Geodetic CRS:  WGS 84
+
+lyr = lst(ocean, land, coast, countries, 
+          rivers, lakes, cities, borders)
 ```
 
-Познакомимся с загруженными данными:
 
-```r
-plot(ocean %>% st_geometry(), col = 'lightblue')
-plot(countries, col = 'white', border = 'grey', add = TRUE)
-plot(coast, add = TRUE, col = 'steelblue')
-plot(rivers, add = TRUE, col = 'steelblue')
-plot(cities, add = TRUE, col = 'black', pch = 19, cex = 0.2)
-```
+## Введение {#thematic_mapping_intro}
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-3-1.png" width="100%" />
+Тематические карты представляют собой важный инструмент географических исследований. Таблицы и графики не дают полного представления о пространственном распределении изучаемого явления. Это знание способна дать исследователю карта.
 
-Перед построением карт мира данные целесообразно спроецировать. Чтобы не трансформировать каждый слой отдельно, можно объединить слои в список и воспользоваться функционалом `lapply` для множественного трансформирования. Для создания списка воспользуемся функцией `lst()` из пакета `tibble`, которая присваивает компонентам списка имена, соответствующие названиям входных переменных (чтобы не писать `ocean = ocean`):
+Разнообразие типов и видов карт достаточно велико. Комплексные картографические произведения, содержащие многослойный набор объектов, создаются, как правило, средствами геоинформационных пакетов. Такие карты требуют тщательной и кропотливой работы с легендой, устранения графических конфликтов между знаками, многократного редактирования входных данных, условий, фильтров и способов изображения в попытке достичь эстетичного и вместе с тем информативного результата.
 
-```r
-lyr = tibble::lst(ocean, coast, countries, rivers, cities)
-lyrp = lapply(lyr, st_transform, crs = "+proj=eck3") # Псевдоцилиндрическая проекция Эккерта
-
-plot(lyrp$countries %>% st_geometry(), col = 'white', border = 'grey', lwd = 0.5)
-plot(lyrp$ocean , col = 'lightblue', lwd = 0.5, border = 'steelblue', add = TRUE)
-plot(lyrp$rivers, add = TRUE, lwd = 0.5, col = 'steelblue')
-plot(lyrp$cities, add = TRUE, col = 'black', pch = 19, cex = 0.1)
-```
-
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-4-1.png" width="100%" />
+В то же время, гораздо большее количество создаваемых в повседневной практике карт носят простой аналитический характер. Такие карты показывают одно, максимум два явления, и могут иллюстрировать входные данные, результаты промежуточных или итоговых расчетов. Создание именно таких карт целесообразно автоматизировать средствами программирования. В этом разделе мы познакомимся с созданием тематических карт средствами пакета [__tmap__](https://cran.r-project.org/web/packages/tmap/index.html). 
 
 ### Данные WorldClim {#thematic_mapping_intro_wc}
 
@@ -122,24 +100,22 @@ plot(lyrp$cities, add = TRUE, col = 'black', pch = 19, cex = 0.1)
 Выполним загрузку 10-минутного растра с суммарным количеством осадков за год:
 
 ```r
-prec = raster::getData("worldclim", var = "prec", res = 10) %>% 
+prec = raster::getData("worldclim", var = "prec", res = 10) |> 
   st_as_stars() # преобразуем в stars для удобства работы
 plot(prec) # это 12-канальный растр
-## downsample set to c(5,5,1)
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-5-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-3-1.png" width="100%" />
 
 > Использовать программную загрузку целесообразно для небольших наборов данных. Если счет пошел на десятки мегабайт и выше, следует все-таки выкачать данные в виде файла и работать с ним.
 
 Выполним трансформирование данных в [__проекцию Миллера__](https://proj4.org/operations/projections/mill.html). Для того чтобы карта не обрезалась по охвату растра (он не включает данные на Антарктиду), необходимо расширить его охват на весь земной шар. Для этого используем функцию `extend()` из пакета __raster__:
 
 ```r
-precm = prec %>% 
+precp = prec |> 
   st_warp(crs = "+proj=mill")
-  # extend(extent(-180, 180, -90, 90)) %>% 
-  # projectRaster(crs = "+proj=mill")
-lyrm = lapply(lyr, st_transform, crs = "+proj=mill") # Цилиндрическая проекция Миллера
+
+lyrp = lapply(lyr, st_transform, crs = "+proj=mill") # Цилиндрическая проекция Миллера
 ```
 
 Визуализируем полученные данные на карте:
@@ -148,16 +124,15 @@ lyrm = lapply(lyr, st_transform, crs = "+proj=mill") # Цилиндрическ�
 ramp = colorRampPalette(c("white", "violetred"))
 
 # Визуализируем данные на январь:
-plot(precm[,,,1], 
+plot(precp[,,,1], 
      col = ramp(10),
      main = 'Количество осадков в январе, мм',
      reset = FALSE) # разрешаем добавлять объекты на карту.
-## downsample set to c(3,3,1)
-plot(st_geometry(lyrm$ocean), border = 'steelblue', 
+plot(st_geometry(lyrp$ocean), border = 'steelblue', 
      col = 'lightblue', add = TRUE)
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-7-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-5-1.png" width="100%" />
 
 ## Способы изображения {#thematic_mapping_tmap}
 
@@ -188,7 +163,7 @@ tm_shape(lyrp$ocean)+
   tm_borders(col = 'steelblue')
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-9-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-7-1.png" width="100%" />
 
 __Количественный фон__ или __картограммы__ получаются при картографировании числового показателя применением той же функции `tm_polygons()`:
 
@@ -202,14 +177,7 @@ lifedf = left_join(gap,
   rename(lifexp = SP.DYN.LE00.IN) |> 
   mutate(geo = stringr::str_to_upper(geo))
 
-# (read_sheet('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo') %>% # продолжительность жизни
-#   rename(name = 1) %>% 
-#   gather(year, lifexp, -name) %>% 
-#   dplyr::filter(year == 2016) %>% 
-#   left_join(read_excel('data/gapminder.xlsx', 2)) %>% 
-#   mutate(geo = stringr::str_to_upper(geo)) -> lifedf) # выгружаем данные по продолжительности и сохраняем в переменную lifedf
-
-coun = lyrp$countries %>% 
+coun = lyrp$countries |> 
   left_join(lifedf, by = c('adm0_a3' = 'geo'))
 
 tm_shape(coun) +
@@ -219,24 +187,24 @@ tm_shape(lyrp$ocean) +
   tm_borders(col = 'steelblue4')
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-10-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-8-1.png" width="100%" />
 
 Для реализации способа __картодиаграмм__ используется геометрия `tm_bubbles()`. Чтобы оставить отображение границ полигонов, нам необходимо к одной геометрии применить несколько способов изображения:
 
 ```r
-tm_shape(coun) +
+tm_shape(lyrp$ocean) +
+  tm_fill(col = 'lightblue') +
+  tm_borders(col = 'steelblue') +
+tm_shape(lyrp$countries) +
   tm_fill(col = 'white') +
   tm_borders(col = 'grey') +
   tm_bubbles('gdp_md_est', 
              scale = 3,
              col = 'red', 
-             alpha = 0.5) + # количественная переменная
-tm_shape(lyrp$ocean) +
-  tm_fill(col = 'lightblue') +
-  tm_borders(col = 'steelblue')
+             alpha = 0.5) # количественная переменная
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-11-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-9-1.png" width="100%" />
 
 Аналогичным образом реализуется __значковый способ__ применительно к объектам, локализованным по точкам. Картографируем численность населения по крупнейшим городам:
 
@@ -251,7 +219,7 @@ tm_shape(lyrp$cities) +
   tm_bubbles('POP2015', col = 'olivedrab', alpha = 0.8)
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-12-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-10-1.png" width="100%" />
 
 __Надписи__ объектов на карте размещаются с помощью функции `tm_text`. Данная функция содержит весьма полезные параметры `remove.overlap` и `auto.placement`, которые позволяют убрать перекрывающиеся подписи и автоматически разместить из вокруг точек так, чтобы уменьшить перекрытия с самими знаками и другими подписями. Дополним предыдущую карту названиями городов:
 
@@ -267,25 +235,25 @@ tm_shape(lyrp$cities) +
   tm_text('name_ru', size = 0.5, remove.overlap = TRUE, auto.placement = TRUE)
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-13-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-11-1.png" width="100%" />
 
 ### Растровые данные {#thematic_mapping_rasters}
 
 При отображении растровых данных используется способ отображения `tm_raster()`. В случае отображения количественных растров Параметр `breaks` определяет границы интервалов, для которых будут использованы цвета, взятые из параметра `palette`:
 
 ```r
-box = st_bbox(c(xmin = -180, xmax = 180, ymax = 90, ymin = -90), crs = st_crs(4326))
-tm_shape(precm[,,,1],
-         bbox = box) +
+# box = st_bbox(c(xmin = -180, xmax = 180, ymax = 90, ymin = -90), crs = st_crs(4326))
+
+tm_shape(precp[,,,1]) +
     tm_raster('prec1',
               breaks = c(10, 50, 100, 200, 500, 1000),
               palette = ramp(5)) +
-tm_shape(lyrm$ocean) +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'lightblue') +
   tm_borders(col = 'steelblue')
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-14-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-12-1.png" width="100%" />
 
 Растровые данные могут хранить и качественную информацию: например, тип почв или вид землепользования. В качестве примера визуализируем типы земельного покрова (land cover) из растрового стека `land`, который есть в пакете __tmap__. Цвета здесь выбираются автоматически, их настройка рассматривается в следующем параграфе:
 
@@ -297,7 +265,7 @@ tm_shape(land) +
   tm_raster('cover')
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-15-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-13-1.png" width="100%" />
 
 
 ## Цветовые шкалы {#thematic_color_scales}
@@ -320,37 +288,35 @@ tm_shape(lyrp$ocean)+
   tm_borders(col = 'steelblue')
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-17-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-15-1.png" width="100%" />
 
 Для количественного показателя (количество осадков) применим палитру _PuBuGn_:
 
 ```r
-tm_shape(precm[,,,1],
-         bbox = box) +
+tm_shape(precp[,,,1]) +
     tm_raster('prec1',
               breaks = c(10, 50, 100, 200, 500, 1000),
               palette = 'PuBuGn') +
-tm_shape(lyrm$ocean) +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'lightblue') +
   tm_borders(col = 'steelblue')
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-18-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-16-1.png" width="100%" />
 
 Вы всегда можете, конечно, определить цвета вручную. В этом случае их количество должно совпадать с количеством интервалов классификации:
 
 ```r
-tm_shape(precm[,,,1],
-         bbox = box) +
+tm_shape(precp[,,,1]) +
     tm_raster('prec1',
               breaks = c(10, 50, 100, 200, 500, 1000),
               palette = c('white', 'gray80', 'gray60', 'gray40', 'gray20')) +
-tm_shape(lyrm$ocean) +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'lightblue') +
   tm_borders(col = 'steelblue')
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-19-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-17-1.png" width="100%" />
 
 Для категориальных данных необходимо тщательно подбирать цвета, стандартные шкалы тут могут не подойти (более подробно о шкалах --- далее). Для вышеприведенного примера с растром типов земельного покрова можно подобрать следующие цвета:
 
@@ -364,7 +330,7 @@ tm_shape(land) +
   tm_raster('cover', palette = pal)
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-20-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-18-1.png" width="100%" />
 
 
 ## Классификация {#thematic_mapping_class}
@@ -381,59 +347,67 @@ tm_shape(land) +
 # Запишем число классов в переменную
 nclasses = 5
 
-intervals = classIntervals(coun$lifexp, n = nclasses, style = "equal")
+intervals = classIntervals(countries$pop_est, 
+                           n = nclasses, 
+                           style = "equal")
 
 # извлечь полученные границы можно через $brks
 intervals$brks
-## [1] 51.59300 58.07138 64.54975 71.02813 77.50650 83.98488
+## [1]        140  267722706  535445272  803167838 1070890404 1338612970
 
 plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Равные интервалы MIN/MAX")
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-21-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-19-1.png" width="100%" />
 
 Созданные интервалы хоть и равны, но не аккуратны. Зато метод классификации `"pretty"` создает также равные интервалы, но может слегка расширить диапазон или добавить 1 класс, чтобы получить границы интервалов, округленные до целых чисел:
 
 ```r
-intervals = classIntervals(coun$lifexp, n = nclasses, style = "pretty")
+intervals = classIntervals(countries$pop_est, 
+                           n = nclasses, 
+                           style = "pretty")
 intervals$brks
-## [1] 50 55 60 65 70 75 80 85
+## [1]          0  200000000  400000000  600000000  800000000 1000000000 1200000000
+## [8] 1400000000
 plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Округленные равные интервалы")
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-22-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-20-1.png" width="100%" />
 
 Квантили --- равноколичественные интервалы. В каждом классе содержится одинаковое число объектов:
 
 ```r
-intervals = classIntervals(coun$lifexp, n = nclasses, style = "quantile")
+intervals = classIntervals(countries$pop_est, n = nclasses, style = "quantile")
 intervals$brks
-## [1] 51.59300 63.70640 70.89153 75.18710 78.64560 83.98488
+## [1]        140    2231503    6057263   12619600   33487208 1338612970
 plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Квантили (равноколичественные)")
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-23-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-21-1.png" width="100%" />
 
 Метод "естественных интервалов", или метод Фишера-Дженкса позволяет найти классы, максимально однородные внутри и при этом максимально отличающиеся друг от друга:
 
+
 ```r
-intervals = classIntervals(coun$lifexp, n = nclasses, style = "jenks")
+intervals = classIntervals(countries$pop_est, n = nclasses, style = "jenks")
 intervals$brks
-## [1] 51.59300 58.30900 66.20500 72.64400 78.60700 83.98488
+## [1]        140   32369558   97976603  198739269  313973000 1338612970
 plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Естественные интервалы")
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-24-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-22-1.png" width="100%" />
 
 ### Применение на картах {#thematic_mapping_class_application}
 
 Чтобы использовать заранее вычисленные интервалы классификации, их необходимо подать в параметр `breaks` при построении карты:
 
 ```r
-brks = classIntervals(coun$lifexp, n = 4, style = "pretty")$brks
+brks = classIntervals(countries$pop_est, 
+                      n = 7, 
+                      style = "jenks")$brks
 
-tm_shape(coun) +
-  tm_polygons('lifexp', 
+tm_shape(lyrp$countries) +
+  tm_polygons('pop_est', 
               border.col = 'gray20',
               palette = 'YlGn',
               breaks = brks) + # количественная переменная
@@ -442,41 +416,39 @@ tm_shape(lyrp$ocean) +
   tm_borders(col = 'steelblue4')
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-25-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-23-1.png" width="100%" />
 
 Аналогичным путем работают шкалы для растровых данных:
 
 ```r
-tm_shape(precm[,,,1],
-         bbox = box) +
+tm_shape(precp[,,,1]) +
     tm_raster('prec1',
-              breaks = classIntervals(precm[,,,1][[1]], n = 5, style = "quantile", na.rm = TRUE)$brks,
+              breaks = classIntervals(sample(precp[,,,1][[1]], 1000), n = 5, style = "jenks", na.rm = TRUE)$brks,
               palette = 'PuBuGn') +
-tm_shape(lyrm$ocean) +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'lightblue') +
   tm_borders(col = 'steelblue')
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-26-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-24-1.png" width="100%" />
 
 > Учтите, что метод естественных интервалов --- ресурсоемкий в вычислительном плане. Поэтому если вы хотите с его помощью классифицировать растровые данные, целесообразно сделать выборку не более чем из нескольких тысяч пикселов. Иначе придется долго ждать.
 
 Для классификации естественными интервалами сделаем выборку в 2 000 значений с растра c помощью функции `sampleRandom()` из пакета __raster__:
 
 ```r
-smpl = sample(precm[,,,1][[1]], 2000) 
+smpl = sample(precp[,,,1][[1]], 2000) 
 
-tm_shape(precm[,,,1],
-         bbox = box) +
+tm_shape(precp[,,,1]) +
     tm_raster('prec1',
               breaks = classIntervals(smpl, n = 5, style = "jenks")$brks,
               palette = 'PuBuGn') +
-tm_shape(lyrm$ocean) +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'lightblue') +
   tm_borders(col = 'steelblue')
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-27-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-25-1.png" width="100%" />
 
 ### Классификация при отображении {#thematic_mapping_class_application}
 
@@ -491,8 +463,8 @@ tm_shape(lyrm$ocean) +
 Построим карту продолжительности жизни, используя классификацию при отображении:
 
 ```r
-tm_shape(coun) +
-  tm_polygons('lifexp', 
+tm_shape(lyrp$countries) +
+  tm_polygons('pop_est', 
               palette = 'YlGn',
               n = 5,
               style = 'fisher',
@@ -502,47 +474,40 @@ tm_shape(lyrp$ocean) +
   tm_borders(col = 'steelblue4')
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-28-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-26-1.png" width="100%" />
 
 Установка средней точки при классификации оказывается очень полезной в тех случаях, когда данные являются биполярными. Покажем это на примере данных WorldClim по температуре:
 
 ```r
-temp = raster::getData("worldclim", var = "tmean", res = 10) %>% 
-  st_as_stars() %>% 
-  mutate(tmean1 = tmean1 / 10) %>% 
+temp = raster::getData("worldclim", var = "tmean", res = 10) |> 
+  st_as_stars() |> 
+  mutate(tmean1 = tmean1 / 10) |> 
   st_warp(crs = "+proj=mill")
-  # extend(extent(-180, 180, -90, 90)) %>% 
-  # projectRaster(crs = "+proj=mill") / 10
-
- # не забываем поделить результат на 10, 
- # так как данные хранятся в виде целых чисел!
 ```
 
 Визуализируем данные по температуре, используя классическую красно-бело-синюю палитру _RdBu_ и нейтральную точку 0 градусов по Цельсию. По умолчанию в данной палитре красный цвет соответствует малым значениям. пакет __tmap__ позволяет инвертировать цвета палитры, добавив знак минус перед ее названием. Помимо этого, для размещения положительных значений наверху выполним обратную сортировку элементов легенды, используя параметр `legend.reverse = TRUE`: 
 
 ```r
-tm_shape(temp[,,,1],
-         bbox = box) +
+tm_shape(temp[,,,3]) +
     tm_raster('tmean1',
               n = 11,
               midpoint = 0,
               style = 'pretty',
               legend.reverse = TRUE,
-              palette = '-RdBu') +
-tm_shape(lyrm$ocean) +
+              palette = '-Spectral') +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'azure') +
   tm_borders(col = 'steelblue')
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-30-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-28-1.png" width="100%" />
 
 ### Пропущенные данные {#thematic_mapping_na}
 
 Весьма важно отметить на карте области, для которых данные отсутствуют. Вы могли обратить внимание, что для способов изображения, применимых к векторным данным, _tmap_ автоматически добавляет класс легенды, который отвечает за пропуски. Для растров, однако, он это не делает. Чтобы принудительно вывести в легенду и на карту символ, отвечающий за пропущенные значения, необходимо определить параметр `colorNA`. Обычно, в зависимости от цветовой палитры легенды, для этого используют серый или белый цвет:
 
 ```r
-tm_shape(temp[,,,1],
-         bbox = box) +
+tm_shape(temp[,,,1]) +
     tm_raster('tmean1',
               colorNA = 'grey', # определяем цвет для пропущенных значений
               n = 11,
@@ -550,13 +515,12 @@ tm_shape(temp[,,,1],
               style = 'pretty',
               legend.reverse = TRUE,
               palette = '-RdBu') +
-tm_shape(lyrm$ocean) +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'azure') +
   tm_borders(col = 'steelblue')
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-31-1.png" width="100%" />
-
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-29-1.png" width="100%" />
 
 ## Компоновка {#thematic_mapping_layouts}
 
@@ -578,7 +542,7 @@ tm_shape(lyrp$ocean)+
   tm_fill(col = 'azure') +
   tm_borders(col = 'steelblue') +
 tm_layout(legend.position = c('left', 'bottom'),
-          fontfamily = 'Open Sans', # шрифт
+          fontfamily = 'PT Sans', # шрифт
           main.title.size = 1.2,   # масштаб шрифта в заголовке
           main.title = 'Тип экономики', # заголовок
           legend.frame = TRUE, # рамка вокруг легенды
@@ -587,12 +551,15 @@ tm_layout(legend.position = c('left', 'bottom'),
           legend.bg.color = 'white') # цвет фона легенды
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-32-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-30-1.png" width="100%" />
 
 Для того чтобы определить заголовок легенды размера значка или диаграммы, необходимо задать параметр `title.size`. Помимо этого, легенду можно пристыковать непосредственно к рамке карты, если задать значения параметра `legend.position` в верхнем регистре:
 
 ```r
-tm_shape(coun) +
+tm_shape(lyrp$ocean) +
+  tm_fill(col = 'lightblue') +
+  tm_borders(col = 'steelblue') +
+tm_shape(lyrp$countries) +
   tm_fill(col = 'white') +
   tm_borders(col = 'grey') +
   tm_bubbles('gdp_md_est', 
@@ -600,9 +567,6 @@ tm_shape(coun) +
              col = 'red', 
              alpha = 0.5,
              title.size = '$ млн') + # количественная переменная
-tm_shape(lyrp$ocean) +
-  tm_fill(col = 'lightblue') +
-  tm_borders(col = 'steelblue') +
 tm_layout(legend.position = c('LEFT', 'BOTTOM'), # верхний регистр — легенда встык
           fontfamily = 'Open Sans', # шрифт
           main.title.size = 1.2,   # масштаб шрифта в заголовке
@@ -613,7 +577,7 @@ tm_layout(legend.position = c('LEFT', 'BOTTOM'), # верхний регистр
           legend.bg.color = 'white') # цвет фона легенды
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-33-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-31-1.png" width="100%" />
 
 По умолчанию __tmap__ размещает легенду внутри фрейма картографического изображения. Однако ее можно вынести и наружу, используя параметр `legend.outside` функции `tm_layout()`. В примере ниже показано также, как можно 
 
@@ -623,13 +587,13 @@ tm_layout(legend.position = c('LEFT', 'BOTTOM'), # верхний регистр
 - сдвинуть заголовок вдоль строки, выровняв его с центром карты (`main.title.position`):
 
 ```r
-tm_shape(coun) +
-  tm_polygons('lifexp', 
+tm_shape(lyrp$countries) +
+  tm_polygons('pop_est', 
               border.col = 'gray20', 
               palette = 'YlGn',
               n = 4,
               style = 'jenks',
-              title = 'Лет',
+              title = 'Чел.',
               colorNA = 'lightgray',
               textNA = 'Нет данных',
               legend.format = list(text.separator = '—')) + # количественная переменная
@@ -637,22 +601,21 @@ tm_shape(lyrp$ocean) +
   tm_fill(col = 'azure') +
   tm_borders(col = 'steelblue4') +
 tm_layout(frame = FALSE,
-          main.title.position = 0.15,
+          main.title.position = 0.5,
           legend.outside = TRUE,
           legend.outside.position = 'right',
           fontfamily = 'Open Sans',
           main.title.size = 1.2,
-          main.title = 'Продолжительность жизни',
+          main.title = 'Численность населения',
           legend.bg.color = 'white')
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-34-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-32-1.png" width="100%" />
 
 Для отображения __координатной сетки__ вы можете использовать функцию `tm_grid()`. По умолчанию она строит координатную сетку в единицах измерения проекции. Однако если требуется градусная сетка, то ее можно определить, используя параметр `projection = 4326`:
 
 ```r
-tm_shape(temp[,,,1],
-         bbox = box) +
+tm_shape(temp[,,,1]) +
   tm_raster('tmean1',
             title = '°C',
             colorNA = 'grey', # определяем цвет для пропущенных значений
@@ -663,7 +626,7 @@ tm_shape(temp[,,,1],
             style = 'pretty',
             legend.reverse = TRUE,
             palette = '-RdBu') +
-tm_shape(lyrm$ocean) +
+tm_shape(lyrp$ocean) +
   tm_fill(col = 'azure') +
   tm_borders(col = 'steelblue') +
 tm_layout(legend.position = c('left', 'bottom'),
@@ -673,67 +636,19 @@ tm_layout(legend.position = c('left', 'bottom'),
           legend.frame = TRUE,
           legend.frame.lwd = 0.2,
           legend.bg.alpha = 0.5,
-          legend.bg.color = 'white') # +
+          legend.bg.color = 'white') +
+tm_graticules(x = seq(-150, 150, by = 30),
+        y = seq(-60, 60, by = 30),
+        lwd = 0.2,
+        col = "black")
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-35-1.png" width="100%" />
-
-```r
-# tm_graticules(x = seq(-180, 180, by = 30), 
-#         y = seq(-90, 90, by = 30), 
-#         lwd = 0.2,
-#         col = "black")
-```
-
-Если вам необходимо обеспечить значки градуса, вы можете сделать это, используя параметр `labels.format`, определив в нем анонимную функцию, добавляющую значок градуса в переданный ей вектор подписей. 
-
-Помимо этого, вам может понадобиться увеличить поля вокруг карты, чтобы освободить пространство для размещения меток (на предыдущей карте они не влезли). Это делается через параметр `outer.margins`, который ожидает получить вектор из четырех значений (по умолчанию все они равны 0.02, т.е. 2% от размера окна).
-
-
-```r
-tm_shape(temp[,,,1],
-         bbox = box) +
-  tm_raster('tmean1',
-            title = '°C',
-            colorNA = 'grey', # определяем цвет для пропущенных значений
-            textNA = 'Нет данных',
-            legend.format = list(text.separator = '—'),
-            n = 11,
-            midpoint = 0,
-            style = 'pretty',
-            legend.reverse = TRUE,
-            palette = '-RdBu') +
-tm_shape(lyrm$ocean) +
-  tm_fill(col = 'azure') +
-  tm_borders(col = 'steelblue') +
-tm_layout(legend.position = c('LEFT', 'BOTTOM'),
-          fontfamily = 'Open Sans',
-          main.title.size = 1.2,
-          main.title = 'Средняя температура января',
-          legend.frame = TRUE,
-          legend.frame.lwd = 0.2,
-          legend.bg.alpha = 0.8,
-          legend.bg.color = 'white',
-          outer.margins = c(0.05, 0.02, 0.02, 0.02),
-          inner.margins = c(0, 0, 0, 0)) # +
-```
-
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-36-1.png" width="100%" />
-
-```r
-# tm_grid(x = seq(-180, 180, by = 30), 
-#         y = seq(-90, 90, by = 30), 
-#         lwd = 0.2,
-#         col = "black", 
-#         projection = 4326,
-#         labels.inside.frame = FALSE,
-#         labels.format = list(fun = function(X) paste0(X, '°')))
-```
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-33-1.png" width="100%" />
 
 Подписи сетки координат можно добавить и для более сложных проекций, однако располагаться они будут по-прежнему вдоль осей _X_ и _Y_. В примере ниже также показано как можно увеличить расстояние между заголовком и картой, определив более крупный отступ от верхней стороны в параметре `inner.margins`:
 
 ```r
-tm_shape(coun) +
+tm_shape(coun, projection = '+proj=moll') +
   tm_polygons('lifexp', 
               palette = 'YlGn',
               n = 4,
@@ -757,16 +672,13 @@ tm_layout(frame = FALSE,
           legend.bg.color = 'white',
           outer.margins = c(0.02, 0.05, 0.02, 0.02),
           inner.margins = c(0.02, 0.02, 0.07, 0.02)) +
-tm_grid(x = seq(-180, 180, by = 60), 
-        y = seq(-90, 90, by = 30), 
+tm_graticules(x = seq(-150, 150, by = 30),
+        y = seq(-60, 60, by = 30),
         lwd = 0.2,
-        col = "black", 
-        projection = 4326,
-        labels.inside.frame = FALSE,
-        labels.format = list(fun = function(X) paste0(X, '°')))
+        col = "black")
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-37-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-34-1.png" width="100%" />
 
 ## Фасеты и серии карт {#thematic_mapping_facets}
 
@@ -781,14 +693,6 @@ lifexp_dec = lifexp |>
 lifedf_dec = left_join(gap, lifexp_dec, by = c('name' = 'country')) |>
   rename(lifexp = SP.DYN.LE00.IN) |> 
   mutate(geo = stringr::str_to_upper(geo))
-
-# ('1H3nzTwbn8z4lJ5gJ_WfDgCeGEXK3PVGcNjQ_U5og8eo' %>% # продолжительность жизни
-#   read_sheet() %>% 
-#   rename(name = 1) %>% 
-#   gather(year, lifexp, -name) %>% 
-#   dplyr::filter(year %in% c(1960, 1970, 1980, 1990, 2000, 2010)) %>% 
-#   left_join(read_excel('data/gapminder.xlsx', 2)) %>% 
-#   mutate(geo = stringr::str_to_upper(geo)) -> lifedf2) # выгружаем данные по ВВП на душу населения и сохраняем в переменную lifedf
 
 coun_dec = lyrp$countries |>  
   left_join(lifedf_dec, by = c('adm0_a3' = 'geo'))
@@ -827,7 +731,7 @@ tm_layout(frame = FALSE,
           inner.margins = c(0.02, 0.02, 0.07, 0.02))
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-39-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-36-1.png" width="100%" />
 
 Фасетные карты по растровым данным в настоящий момент не поддерживаются в пакете __tmap__, но вы можете создать их, используя функцию `tmap_arrange()`, которая принимает на вход список из карт __tmap__ и упорядочивает их в фасетной компоновке. 
 
@@ -848,8 +752,7 @@ months = c('Январь', 'Февраль', 'Март', 'Апрель',
            'Март', 'Июнь', 'Июль', 'Август', 
            'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь')
 
-tm_shape(temp,
-         bbox = box) +
+tm_shape(temp) +
     tm_raster('temp1',
               title = '°C',
               colorNA = 'grey', # определяем цвет для пропущенных значений
@@ -860,7 +763,7 @@ tm_shape(temp,
               style = 'fixed',
               legend.reverse = TRUE,
               palette = '-RdBu') +
-  tm_shape(lyrm$ocean) +
+  tm_shape(lyrp$ocean) +
     tm_fill(col = 'azure') +
     tm_borders(col = 'steelblue') +
   tm_layout(legend.position = c('LEFT', 'BOTTOM'),
@@ -871,19 +774,16 @@ tm_shape(temp,
             legend.frame.lwd = 0.2,
             legend.bg.alpha = 0.8,
             legend.bg.color = 'white',
-            inner.margins = c(0, 0, 0, 0)) #+
+            inner.margins = c(0, 0, 0, 0)) +
+  tm_graticules(x = seq(-150, 150, by = 30),
+        y = seq(-60, 60, by = 30),
+        lwd = 0.2,
+        col = "black")
 ```
 
-<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-40-1.png" width="100%" />
+<img src="11-ThematicMaps_files/figure-html/unnamed-chunk-37-1.png" width="100%" />
 
 ```r
-  # tm_grid(x = seq(-180, 180, by = 30), 
-  #         y = seq(-90, 90, by = 30), 
-  #         lwd = 0.2,
-  #         col = "black", 
-  #         projection = 4326,
-  #         labels.inside.frame = FALSE,
-  #         labels.format = list(fun = function(Z) paste0(Z, '°')))
 
 # tmap_arrange(maps, asp = NA, ncol = 2,
 #              outer.margins = 0.05)
@@ -954,7 +854,7 @@ tm_view(set.view = c(20, 45, 2),    # центр карты и масштабн�
 tmap_mode('view')
 tmap_options(check.and.fix = TRUE)
 
-coun = coun %>% mutate(gdp_scaled = round(0.001 * gdp_md_est))
+coun = coun |> mutate(gdp_scaled = round(0.001 * gdp_md_est))
 
 tm_basemap("OpenStreetMap") +
 tm_shape(coun) +
