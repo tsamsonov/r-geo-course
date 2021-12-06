@@ -741,6 +741,88 @@ ggplot() +
 
 Видно, что результаты упрощения алгоритмом Дугласа-Пейкера довольно угловатые и неестественные. Но при этом он лучше сохраняет различные характерные точки в структуре линии типа вершин фьордов. Тем не менее для целей картографической генерализации алгоритм Висвалингам-Уайатта можно назвать предпочтительным.
 
+Помимо этого, при геометрическом упрощении возникаеют сложности топологического согласования с другими слоями. Обратим внимание на то, как речки согласуются с береговой линией:
+
+```r
+rivers = st_read(ne, 'ne_10m_rivers_lake_centerlines') |> 
+  st_transform(prj) |> 
+  st_crop(box) |> 
+  st_cast('MULTILINESTRING') |> 
+  st_cast('LINESTRING')
+## Reading layer `ne_10m_rivers_lake_centerlines' from data source 
+##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
+##   using driver `GPKG'
+## Simple feature collection with 1455 features and 34 fields (with 1 geometry empty)
+## Geometry type: MULTILINESTRING
+## Dimension:     XY
+## Bounding box:  xmin: -164.9035 ymin: -52.15773 xmax: 177.5204 ymax: 75.79348
+## Geodetic CRS:  WGS 84
+
+ggplot() +
+  geom_sf(data = countries_vw, size = 0.25) +
+  geom_sf(data = rivers, color = 'steelblue') +
+  ggtitle('Геометрическое упрощение алгоритмом Висвалингам-Уайатта') +
+  theme_minimal()
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-27-1.png" width="100%" />
+
+Здесь видно, что изза упрощения линий удалились эстуарии рек, и теперь речки не дотягивают до своих устьев. Чтобы такого эффекта не происходило, необходимо зафиксировать вершины эстуариев, запретив их удалять. Наиболее просто это сделать в линейном варианте, когда упрощению подвергаются береговые линии, а не полигоны стран:
+
+```r
+coast = st_read(ne, 'ne_10m_coastline') |> 
+  st_transform(prj) |> 
+  st_crop(box) |>
+  st_cast('MULTILINESTRING') |> 
+  st_cast('LINESTRING') 
+## Reading layer `ne_10m_coastline' from data source 
+##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
+##   using driver `GPKG'
+## Simple feature collection with 4133 features and 3 fields
+## Geometry type: LINESTRING
+## Dimension:     XY
+## Bounding box:  xmin: -180 ymin: -85.22194 xmax: 180 ymax: 83.6341
+## Geodetic CRS:  WGS 84
+
+mouths = rivers |> 
+  st_line_sample(ls, sample = c(1)) |> 
+  st_cast('POINT') |> 
+  st_snap(coast, tol = 1000) |> 
+  st_intersection(coast)
+
+ggplot() +
+  geom_sf(data = coast, color = 'steelblue') +
+  geom_sf(data = rivers, color = 'steelblue') +
+  geom_sf(data = mouths, color = 'red') +
+  theme_minimal()
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-28-1.png" width="100%" />
+
+```r
+
+coast_split = lwgeom::st_split(coast, mouths) |> 
+  st_collection_extract('LINESTRING')
+
+coast_vw = ms_simplify(coast_split,  
+                       method = 'vis', # алгоритм Висвалингам-Уайатта
+                       keep = 0.05)  # оставить 6% точек
+
+rivers_vw = ms_simplify(rivers,  
+                       method = 'vis', # алгоритм Висвалингам-Уайатта
+                       keep = 0.05)  # оставить 6% точек
+
+
+ggplot() +
+  geom_sf(data = coast_vw, size = 0.25) +
+  geom_sf(data = rivers_vw, color = 'steelblue') +
+  ggtitle('Геометрическое упрощение алгоритмом Висвалингам-Уайатта') +
+  theme_minimal()
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-28-2.png" width="100%" />
+
+
 #### Отбор
 
 Отбор применятся внутри множества пространственных объектов для того чтобы уменьшить их количество. Наиболее просто реализуется отбор для  объектов, которые не состоят в пространственных отношениях. Как правило, это точечные объекты. Более сложна процедура отбора во множестве топологически связанных объектов. Например, прореживание транспортной или гидрографической сети. В данном разделе мы посмотрим как можно отбирать точечные объекты. Наиболее простой случай реализуется тогда, когда объекты можно отобрать по атрибутам, без использования пространственных отношений. К счастью, данные Natural Earth содержат атрибуты, которые можно использовать в качестве критериев отбора.
@@ -770,7 +852,7 @@ ggplot() +
   theme_bw()
 ```
 
-<img src="10-Maps_files/figure-html/unnamed-chunk-27-1.png" width="100%" />
+<img src="10-Maps_files/figure-html/unnamed-chunk-29-1.png" width="100%" />
 
 Очевидно, что при такой плотности нормальную карту составить не получится. Попробуем для начала остаить только столицы и разнести их через __ggrepel__:
 
@@ -786,7 +868,7 @@ ggplot() +
   theme_bw()
 ```
 
-<img src="10-Maps_files/figure-html/unnamed-chunk-28-1.png" width="100%" />
+<img src="10-Maps_files/figure-html/unnamed-chunk-30-1.png" width="100%" />
 
 Очевидно, на данную схему можно также дополнительнонанести дополнительно крупные населенные пункты, отобрав их уже по численности населения. Оставим для примера те, в которых живет более $700 000$ жителей:
 
@@ -806,7 +888,7 @@ ggplot() +
   theme_bw()
 ```
 
-<img src="10-Maps_files/figure-html/unnamed-chunk-29-1.png" width="100%" />
+<img src="10-Maps_files/figure-html/unnamed-chunk-31-1.png" width="100%" />
 
 ## Классификация объектов по типам
 
