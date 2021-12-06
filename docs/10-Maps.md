@@ -760,7 +760,7 @@ rivers = st_read(ne, 'ne_10m_rivers_lake_centerlines') |>
 
 ggplot() +
   geom_sf(data = countries_vw, size = 0.25) +
-  geom_sf(data = rivers, color = 'steelblue') +
+  geom_sf(data = rivers, size = 0.25, color = 'steelblue') +
   ggtitle('Геометрическое упрощение алгоритмом Висвалингам-Уайатта') +
   theme_minimal()
 ```
@@ -791,8 +791,8 @@ mouths = rivers |>
   st_intersection(coast)
 
 ggplot() +
-  geom_sf(data = coast, color = 'steelblue') +
-  geom_sf(data = rivers, color = 'steelblue') +
+  geom_sf(data = coast, size = 0.35, color = 'steelblue') +
+  geom_sf(data = rivers, size = 0.25, color = 'steelblue') +
   geom_sf(data = mouths, color = 'red') +
   theme_minimal()
 ```
@@ -814,8 +814,8 @@ rivers_vw = ms_simplify(rivers,
 
 
 ggplot() +
-  geom_sf(data = coast_vw, size = 0.25) +
-  geom_sf(data = rivers_vw, color = 'steelblue') +
+  geom_sf(data = coast_vw, size = 0.35, color = 'steelblue') +
+  geom_sf(data = rivers_vw, size = 0.25, color = 'steelblue') +
   ggtitle('Геометрическое упрощение алгоритмом Висвалингам-Уайатта') +
   theme_minimal()
 ```
@@ -870,7 +870,7 @@ ggplot() +
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-30-1.png" width="100%" />
 
-Очевидно, на данную схему можно также дополнительнонанести дополнительно крупные населенные пункты, отобрав их уже по численности населения. Оставим для примера те, в которых живет более $700 000$ жителей:
+Очевидно, на данную схему можно также дополнительно нанести дополнительно крупные населенные пункты, отобрав их уже по численности населения. Оставим для примера те, в которых живет более $700 000$ жителей:
 
 
 ```r
@@ -881,10 +881,10 @@ major_cities = cities_eu |>
 
 ggplot() +
   geom_sf(data = countries_vw, size = 0.25) +
-  geom_sf(data = major_cities, size = 1, mapping = aes(size = FEATURECLA)) +
+  geom_sf(data = major_cities, size = 1, color = 'darkviolet') +
   geom_text_repel(data = major_cities, stat = "sf_coordinates",
-                 aes(size = FEATURECLA, label = NAME, geometry = geom)) +
-  scale_size_manual(values = c(2, 2, 2, 2.5)) +
+                size = 2, aes(label = NAME, geometry = geom), 
+                box.padding = 0.15, fontface = 'bold') +
   theme_bw()
 ```
 
@@ -893,6 +893,8 @@ ggplot() +
 ## Классификация объектов по типам
 
 ## Легенды
+
+## Масштабные линейки
 
 ## Карты-врезки
 
