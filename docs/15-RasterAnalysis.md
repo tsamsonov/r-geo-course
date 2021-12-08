@@ -387,7 +387,6 @@ __Зональные операции__ связаны с агрегирован
 temp = raster::getData("worldclim", var = "tmean", res = 10) %>% 
   st_as_stars() / 10
 plot(temp)
-## downsample set to c(16,16,1)
 ```
 
 <img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-9-1.png" width="100%" />
