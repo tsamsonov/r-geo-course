@@ -114,48 +114,6 @@ plot(borders,
 
 <img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-2-4.png" width="100%" />
 
-<!-- ### Операции со значениями {#raster_values} -->
-
-<!-- Операции со значениями растров чрезвычайно разнообразны, поэтому подробно они разбираются в одной из последующих глав. Здесь же мы кратко познакомимся с _локальными операциями_ над растром, такими как фильтрация и арифметические преобразования. В локальных операциях каждый пиксел растра анализируется отдельно, независимо от остальных пикселов. Поэтому локальные операции наиболее просты в применении. Но это не означает, что они менее важны, чем более сложные операции. Как раз наоборот: фильтрация и арифметика представляют собой важнейшие операции растровой алгебры.  -->
-
-<!-- Особенность растровой алгебры заключается в том, что растры используются в выражениях как обычные переменные --- это делает преобразования растров простыми и наглядными.  -->
-
-<!-- Чтобы произвести __фильрацию__ (выбор) ячеек по значениям, необходимо соорудить логическое выражение с участием растра. Все пикселы, удовлетворяющие критерию, получат в результирующем растре значение `1`, а все остальные — `0`. Несколько примеров: -->
-
-<!-- ```{r} -->
-<!-- below.zero = dem < 0 -->
-<!-- plot(below.zero) -->
-
-<!-- highlands = dem > 100 & dem < 500 -->
-<!-- plot(highlands) -->
-
-<!-- mountains = dem > 1000 -->
-<!-- plot(mountains) -->
-<!-- ``` -->
-
-<!-- С помощью локальных операций растровой алгебры можно складывать, вычитать, перемножать и делить растры (а также брать из них квадратные корни, логарифмы, тригонометрические функции), точно так же как это происходит с обычными числами. Соответственно, бывают бинарные (два растра) и унарные (один растр) операции. -->
-
-<!-- > Чтобы получать предсказуемые результаты бинарных операций растровой алгебры, необходимо, чтобы геометрия растров совпадала. -->
-
-<!-- Покажем возможности растровой алгебры на примере определения толщины покровного оледенения. Глобальная цифровая модель рельефа [ETOPO1](https://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.ngdc.mgg.dem:316) поставляется в двух вариантах: Ice Surface (поверхность с учетом покровного оледенения) и Bedrock (подстилающая поверхность). Если вычесть из первой вторую, можно узнать толщину льда в Гренландии и на Антарктиде: -->
-<!-- ```{r} -->
-<!-- bed = raster('data/world/etopo1_bed.tif') -->
-<!-- ice = raster('data/world/etopo1_ice.tif') -->
-
-<!-- ice.depth = ice - bed -->
-
-<!-- plot(ice.depth, col = cm.colors(255)) -->
-<!-- plot(outlines, border = 'black', lwd = 0.5, add = TRUE) -->
-<!-- ``` -->
-
-<!-- Чтобы маскировать значения растра, необходимо воспользоваться функцией `values()`, которая обнажает список значений растра. Например, можно превратить в NA все пикселы, в которых толщина льда меньше или равна нулю: -->
-<!-- ```{r} -->
-<!-- ice.depth[ice.depth <= 0] = NA -->
-
-<!-- plot(ice.depth, col = cm.colors(255)) -->
-<!-- plot(outlines, border = 'black', lwd = 0.5, add = TRUE) -->
-<!-- ``` -->
-
 ### Фокальные операции {#raster_focal}
 
 В фокальных операциях участвует не только сама ячейка или совпадающие с ней ячейки других растров, но также ячейки, находящиеся в некоторой окрестности (опять же, в одном или нескольких растрах одновременно). Данный вид анализа подразделяется на две категории: фокальный анализ с фиксированной окрестностью и с расширенной окрестностью.
@@ -164,7 +122,10 @@ plot(borders,
 
 В общем случае фиксированная окрестность может иметь различную форму, однако наиболее часто используется квадратная окрестность размером $3\times3$:
 
-![Виды растровых окрестностей. Темной точкой выделена анализируемая ячейка](images/raster_neighborhoods.png)
+<div class="figure">
+<img src="images/raster_neighborhoods.png" alt="Виды растровых окрестностей. Темной точкой выделена анализируемая ячейка" width="100%" />
+<p class="caption">(\#fig:unnamed-chunk-3)Виды растровых окрестностей. Темной точкой выделена анализируемая ячейка</p>
+</div>
 
 Фокальные операции с фиксированной окрестностью — привычное дело в обработке изображений. Они работают по принципу "плавающего окна". Выбранная окрестность (квадратная, круглая и т.д.) представляется в виде матрицы коэффициентов — так называемого ядра свёртки (convolution kernel). Далее эта матрица перемещается, позиционируясь последовательно над каждой ячейкой растра, и значение в этой ячейке заменяется на взвешенную сумму значений ячеек в окрестности, умноженных на соответствующие коэффициенты ядра свертки. Например, если ядро состоит из единиц, то будет посчитана обычная сумма. 
 
@@ -178,7 +139,7 @@ dem = crop(ice, extent(-120, -75, 10, 40))
 spplot(dem)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-3-1.png" width="100%" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-4-1.png" width="100%" />
 
 ```r
 
@@ -196,7 +157,7 @@ spplot(stack(dem, filtered),
        names.attr=c('Исходный рельеф', 'Сглаживание средним'))
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-3-2.png" width="100%" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-4-2.png" width="100%" />
 
 Более мягким эффектом сглаживания, который к тому же не нарушает дифференцируемость поверхности, является гауссово сглаживание. Коэффициенты в матрице Гаусса убывают от центральной ячейки к краям матрицы по закону Гаусса-Лапласа, что позволяет придать центральной ячейке более высокий вес по сравнению с ячейками, располагающимися на краю анализируемой окрестности:
 
@@ -208,7 +169,7 @@ spplot(stack(dem, filtered),
        names.attr=c('Исходный рельеф', 'Гауссово сглаживание'))
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-4-1.png" width="100%" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-5-1.png" width="100%" />
 
 Еще одна интересная область применения фильтрации --- это обнаружение границ (change detection). Границы на изображении возникают в тех местах, где его яркость резко меняет свое значение (в одном или нескольких каналах). Например, на фотографии контур лица может быть распознан по перепаду яркости между его изображением и фоном (если он имеет существенно отличный цвет). Поскольку перепад яркости соответствует экстремальным значениям производной поверхности (отрицательным или положительным), его также можно определить путем фокального анализа, а затем отсечь ячейки растра, в которых значение этой производной по модулю превышает заданный порог (то есть, имеет необходимый контраст). 
 
@@ -228,7 +189,7 @@ plot(filtered,
      main = 'Производная поверхности')
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-5-1.png" width="100%" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-6-1.png" width="100%" />
 
 ```r
 
@@ -247,7 +208,7 @@ plot(faults,
      add = TRUE)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-5-2.png" width="100%" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-6-2.png" width="100%" />
 
 Еще один распространенный случай использования фокальных операций --- это морфометрический анализ поверхностей. Квадратная окрестность $3\times3$ вокруг каждой ячейки формирует локальную поверхность, производные которой дают представление об уклоне, экспозиции и прочих морфометрических параметрах. Их можно вычислить с помощью функции `terrain()` из пакета `raster`:
 
@@ -258,7 +219,7 @@ dem = raster('data/dem_fergana.tif')
 spplot(dem)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-6-1.png" width="100%" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-7-1.png" width="100%" />
 
 ```r
 
@@ -269,7 +230,7 @@ spplot(slope,
        names.attr=c('Углы наклона'))
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-6-2.png" width="100%" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-7-2.png" width="100%" />
 
 ```r
 
@@ -280,7 +241,7 @@ spplot(aspect,
        names.attr=c('Экспозиции склона'))
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-6-3.png" width="100%" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-7-3.png" width="100%" />
 
 Вычисление производных поверхности позволяет не только исследовать рельеф, но также строить его изображения. Например, хорошо знакомую всем по картам аналитическую отмывку рельефа (_hillshade_). Яркость поверхности в этом способе изображения зависит от угла между направлением на источник освещения (откуда светит Солнце) и нормалью к поверхности. Нормаль можно вычислить как напрямую через производные поверхности, так и восстановить на основе значений угла наклона и экспозиции в точке, что и используется в пакете __raster__. Обратите внимание на то, что для того чтобы повысить наглядность (контрастность) изображения, мы умножаем высоты рельефа на 20. Это стандартная практика для мелкомасштабных карт:
 
@@ -296,7 +257,7 @@ plot(hill,
      main = 'Отмывка рельефа')
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-7-1.png" width="100%" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-8-1.png" width="100%" />
 
 #### Расширенная окрестность {#raster_focal_extended}
 
@@ -375,7 +336,7 @@ ggplot() +
   theme_bw()
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-8-1.png" width="100%" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-9-1.png" width="100%" />
 
 ### Зональные операции {#raster_zonal}
 
@@ -389,7 +350,7 @@ temp = raster::getData("worldclim", var = "tmean", res = 10) %>%
 plot(temp)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-9-1.png" width="100%" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-10-1.png" width="100%" />
 
 ```r
 
@@ -408,9 +369,7 @@ ggplot() +
   theme(legend.position = 'bottom')
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-9-2.png" width="100%" />
-
-> Оператор `@` означает обращение к _слоту_ объекта. Слоты представляют собой объекты, являющиеся внутри других объектов, являющихся экземплярами классов S4. 
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-10-2.png" width="100%" />
 
 Предварительно необходимо убедиться, что оба растра имеют совпадающий охват (экстент) и пространственное разрешение. Обратите внимание на то, что, поскольку растр земельного покрова категориальный, для его передискретизации необходимо использовать метод ближайшего соседа (_Nearest Neighbor_), который для каждого пиксела нового растра берет значение в ближайшем к нему пикселе исходного растра:
 
@@ -504,7 +463,7 @@ ggplot(zonal_stats) +
   scale_x_continuous(breaks = months)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-12-1.png" width="100%" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-13-1.png" width="100%" />
 
 Перед вычислением целесообразно разделить растр землепользования на северное и южное полушарие (т.к. ход температур в них противоположный):
 
@@ -520,7 +479,7 @@ mtemp_north_tidy = zonal(temp_north, cover_north, 'mean') %>%
   pivot_longer(-zone, 
                names_to = 'month', 
                values_to = 'tmean', 
-               names_prefix = 'layer.',
+               names_prefix = 'tmean',
                names_transform = list(month = as.integer)) %>% 
   mutate(hemisphere = 'north')
 
@@ -529,7 +488,7 @@ mtemp_south_tidy = zonal(temp_south, cover_south, 'mean') %>%
   pivot_longer(-zone, 
                names_to = 'month', 
                values_to = 'tmean', 
-               names_prefix = 'layer.',
+               names_prefix = 'tmean',
                names_transform = list(month = as.integer)) %>% 
   mutate(hemisphere = 'south')
 
@@ -543,7 +502,7 @@ ggplot(mtemp_tidy2) +
   facet_wrap(~hemisphere, ncol = 1)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-13-1.png" width="100%" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-14-1.png" width="100%" />
 
 ### Глобальные операции {#raster_global}
 
@@ -575,7 +534,7 @@ points(coords)
 text(coords, labels = z, pos = 4)
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-15-1.png" width="100%" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-16-1.png" width="100%" />
 
 
 Одна из наиболее распространенных задач по извлечению растровых данных — это построение профиля вдоль заданной линии. Воспользуемся интерактивным редактором для проведения линии профиля
@@ -585,7 +544,8 @@ mp = mapview(temp$tmean6)
 profile = mapedit::drawFeatures(mp)
 ```
 
-![](images/mapedit_profile.png)
+<img src="images/mapedit_profile.png" width="100%" />
+
 
 
 
@@ -641,7 +601,7 @@ tm_shape(pts) +
 tm_layout(legend.position = c('left', 'bottom'))
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-19-1.png" width="100%" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-21-1.png" width="100%" />
 
 ```r
 
@@ -655,7 +615,7 @@ tempdf %>%
     ggtitle('Профиль среднемесячной температуры июня по линии A—B')
 ```
 
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-19-2.png" width="100%" />
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-21-2.png" width="100%" />
 
 ## Контрольные вопросы и упражнения {#questions_tasks_raster}
 
