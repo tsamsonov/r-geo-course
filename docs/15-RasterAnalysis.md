@@ -11,13 +11,13 @@ library(sf)
 library(sp)
 library(tmap)
 library(stars)
-library(raster)
 library(mapview)
 library(mapedit)
 library(lattice)
 library(classInt)
 library(geosphere)
 library(tidyverse)
+library(raster)
 ```
 
 ## Введение {#raster_intro}
@@ -145,8 +145,8 @@ spplot(dem)
 
 # Среднее
 wgt = matrix(c(1, 1, 1,
-                1, 1, 1,
-                1, 1, 1) / 9, 
+               1, 1, 1,
+               1, 1, 1) / 9, 
               nrow = 3)
 # на самом деле проще написать так:
 # wgt = matrix(1/9, 3, 3), но полная форма записана для наглядности
@@ -251,8 +251,13 @@ slope2 = terrain(dem * 20, opt = 'slope')
 aspect2 = terrain(dem * 20, opt = 'aspect')
                  
 # параметры angle и direction функции hillShade определяют азимут и высоту источника освещения:
+hill_vert = hillShade(slope2, aspect2, angle = 90, direction = 315)
+
 hill = hillShade(slope2, aspect2, angle = 45, direction = 315)
-plot(hill, 
+
+hill_comb = hill * hill_vert
+
+plot(hill_comb, 
      col = gray.colors(128),
      main = 'Отмывка рельефа')
 ```
@@ -585,13 +590,13 @@ tempdf = temprof[[1]] %>%
                names_to = 'month', 
                values_to = 'tmean', 
                names_prefix = 'tmean',
-               names_transform = list(month = factor, ordered = TRUE, levels = 1:12))
+               names_transform = list(month = \(x) factor(x,  ordered = TRUE, levels = 1:12)))
 
 pts = profile %>% 
   st_cast('POINT') %>% 
   mutate(label = c('A', 'B'))
 
-tm_shape(slice(temp, band, 6)) +
+tm_shape(slice(temp, band, 1)) +
   tm_raster('tmean1', midpoint = 0, palette = '-RdBu') +
 tm_shape(profile) +
   tm_lines() +
@@ -606,13 +611,14 @@ tm_layout(legend.position = c('left', 'bottom'))
 ```r
 
 tempdf %>% 
-  dplyr::filter(month == 6) %>% 
+  # dplyr::filter(month == 7) %>% 
   ggplot(aes(x = dist, y = tmean)) +
     geom_line() +
     geom_smooth(span = 0.1) +
     annotate('text', x = 0, y = 10, label = 'A') +
     annotate('text', x = max(tempdf$dist), y = 10, label = 'B') +
-    ggtitle('Профиль среднемесячной температуры июня по линии A—B')
+    ggtitle('Профиль среднемесячной температуры июня по линии A—B') +
+    facet_wrap(~month)
 ```
 
 <img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-21-2.png" width="100%" />
