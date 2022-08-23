@@ -74,7 +74,6 @@ plot(cities, col = 'black', pch = 20, cex = 0.5, add = TRUE)
 ```r
 
 sf::sf_use_s2(FALSE)
-## Spherical geometry (s2) switched off
 
 # Отбираем точки внутри стран с максимальным ВВП
 sel = cities[largest, ]
@@ -779,7 +778,7 @@ text(zones %>% st_centroid() %>% st_coordinates(),
 # Данные по Северной Каролине
 nc = sf::st_read(system.file("shape/nc.shp", package="sf"))
 ## Reading layer `nc' from data source 
-##   `/Library/Frameworks/R.framework/Versions/4.1/Resources/library/sf/shape/nc.shp' 
+##   `/Library/Frameworks/R.framework/Versions/4.2/Resources/library/sf/shape/nc.shp' 
 ##   using driver `ESRI Shapefile'
 ## Simple feature collection with 100 features and 14 fields
 ## Geometry type: MULTIPOLYGON
@@ -1281,7 +1280,9 @@ summary(tiksi_wind$wind)
 1. Используя [таблицу](https://github.com/tsamsonov/r-geo-course/blob/master/data/tverobl_streets.xlsx), подготовленную на основе данных [__OpenStreetMap__](https://www.openstreetmap.org/#map=3/69.62/-74.90), проведите аналогичный анализ направлений (поле `dir`) для улиц четырех городов Тверской области (_Бежецк, Бологое, Кашин, Торжок_).
     
     > __Внимание:__ В этой таблице, в отличие от предыдущей, направление рассчитано в диапазоне от 0 до 360 градусов. Чтобы корректно оценить распределение направлений, необходимо перед вычислением круговых статистик вычесть 180 из углов, больших 180 градусов.
+    
+1. Субъекты Российской Федерации пронумерованы числами от 1 до 85 в алфавитном порядке. Для решения задач пространственного анализа часто бывает необходимо, чтобы нумерация была пространственная. В этом случае соседние субъекты будут иметь похожие номера. Придумайте методику такой нумерации и реализуйте ее в виде программы на языке R. 
 
 ----
-_Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, 2021. DOI: [10.5281/zenodo.901911](https://doi.org/10.5281/zenodo.901911)
+_Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, 2022. DOI: [10.5281/zenodo.901911](https://doi.org/10.5281/zenodo.901911)
 ----
