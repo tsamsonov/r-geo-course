@@ -25,7 +25,7 @@ library(soilDB)
 
 ## Загрузка данных Евростата {#advgraphics_eurostat}
 
-Таблицы данных Евростата имеют уникальные коды, по которым их можно загружать, используя API (Application programming interface). В этой лекции мы будем работать с данными о крупнейших международных партнерах Евросоюза по импорту и экспорту основных видов товаров. Например, [таблица данных по продуктам питания, напиткам и табаку](https://ec.europa.eu/eurostat/databrowser/view/tet00034/default/table?lang=en) имеет код __tet00034__:
+Таблицы данных Евростата имеют уникальные коды, по которым их можно загружать, используя API (Application programming interface). В этой лекции мы будем работать с данными о крупнейших международных партнерах Евросоюза по импорту и экспорту основных видов товаров. Например, [таблица данных по продуктам питания, напиткам и табаку](https://ec.europa.eu/eurostat/databrowser/view/tet00034/default/table?lang=en) имеет код __TET00022__:
 
 ```{r, echo = FALSE}
 knitr::include_graphics('images/eurostat.png')
@@ -34,7 +34,7 @@ knitr::include_graphics('images/eurostat.png')
 
 Для чтения таблиц по кодам в пакете eurostat имеется функция `get_eurostat()`. Чтобы год измерения получить в виде числа, а не объекта типа `Date`, используем второй параметр `time_format = num`. Для перехода от кодов продукции и стран к их полным наименованиям, дополнительно вызовем функцию `label_eurostat()` из того же пакета:
 ```{r, cache = TRUE}
-tables = c('tet00034', 'tet00033', 'tet00032', 'tet00031','tet00030', 'tet00029')
+tables = c('tet00022', 'tet00023', 'tet00024', 'tet00025','tet00026', 'tet00027')
 
 trades = lapply(tables, function(X) { # прочтем несколько таблиц в список
   get_eurostat(X) |> label_eurostat()
@@ -72,10 +72,10 @@ daily_single_ag # посмотрим, что получилось
 
 ```{r, cache = TRUE, eval=FALSE}
 interannual_sse <- get_power(
-  community = "sse",
+  community = "ag",
   lonlat = c(60.59, 56.84),
   dates = 1995:2015,
-  temporal_api = "interannual",
+  temporal_api = "climatology",
   pars = c("CLRSKY_SFC_SW_DWN",
            "ALLSKY_SFC_SW_DWN")
 )

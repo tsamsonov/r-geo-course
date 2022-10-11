@@ -23,7 +23,7 @@ library(soilDB)
 
 ## Загрузка данных Евростата {#advgraphics_eurostat}
 
-Таблицы данных Евростата имеют уникальные коды, по которым их можно загружать, используя API (Application programming interface). В этой лекции мы будем работать с данными о крупнейших международных партнерах Евросоюза по импорту и экспорту основных видов товаров. Например, [таблица данных по продуктам питания, напиткам и табаку](https://ec.europa.eu/eurostat/databrowser/view/tet00034/default/table?lang=en) имеет код __tet00034__:
+Таблицы данных Евростата имеют уникальные коды, по которым их можно загружать, используя API (Application programming interface). В этой лекции мы будем работать с данными о крупнейших международных партнерах Евросоюза по импорту и экспорту основных видов товаров. Например, [таблица данных по продуктам питания, напиткам и табаку](https://ec.europa.eu/eurostat/databrowser/view/tet00034/default/table?lang=en) имеет код __TET00022__:
 
 <img src="images/eurostat.png" width="100%" />
 
@@ -31,7 +31,7 @@ library(soilDB)
 Для чтения таблиц по кодам в пакете eurostat имеется функция `get_eurostat()`. Чтобы год измерения получить в виде числа, а не объекта типа `Date`, используем второй параметр `time_format = num`. Для перехода от кодов продукции и стран к их полным наименованиям, дополнительно вызовем функцию `label_eurostat()` из того же пакета:
 
 ```r
-tables = c('tet00034', 'tet00033', 'tet00032', 'tet00031','tet00030', 'tet00029')
+tables = c('tet00022', 'tet00023', 'tet00024', 'tet00025','tet00026', 'tet00027')
 
 trades = lapply(tables, function(X) { # прочтем несколько таблиц в список
   get_eurostat(X) |> label_eurostat()
@@ -45,20 +45,20 @@ trades = lapply(tables, function(X) { # прочтем несколько таб
   mutate(partner = as.factor(partner))
 
 trades # посмотрим, что получилось
-## # A tibble: 720 × 5
-##    sitc06                   partner                time        export import
-##    <chr>                    <fct>                  <date>       <dbl>  <dbl>
-##  1 Food, drinks and tobacco Argentina              2008-01-01    81.3  7334 
-##  2 Food, drinks and tobacco Brazil                 2008-01-01   600.   9639.
-##  3 Food, drinks and tobacco Canada                 2008-01-01  1950.   1458.
-##  4 Food, drinks and tobacco Switzerland            2008-01-01  5000.   2727.
-##  5 Food, drinks and tobacco China except Hong Kong 2008-01-01  1322.   3567.
-##  6 Food, drinks and tobacco Japan                  2008-01-01  3964.    119.
-##  7 Food, drinks and tobacco Norway                 2008-01-01  2416.   3012.
-##  8 Food, drinks and tobacco Russia                 2008-01-01  7567.    855.
-##  9 Food, drinks and tobacco Turkey                 2008-01-01  1175    3160.
-## 10 Food, drinks and tobacco United States          2008-01-01 10021.   6030.
-## # … with 710 more rows
+## # A tibble: 1,380 × 5
+##    sitc06                   partner       time       export import
+##    <chr>                    <fct>         <date>      <dbl>  <dbl>
+##  1 Food, drinks and tobacco Argentina     2010-01-01   85.9  5164.
+##  2 Food, drinks and tobacco Australia     2010-01-01 1252.    462.
+##  3 Food, drinks and tobacco Brazil        2010-01-01  768.   8650.
+##  4 Food, drinks and tobacco Canada        2010-01-01 1858.    971.
+##  5 Food, drinks and tobacco Switzerland   2010-01-01 5257.   3068.
+##  6 Food, drinks and tobacco Côte d'Ivoire 2010-01-01  374.   2107.
+##  7 Food, drinks and tobacco India         2010-01-01  165.   1450.
+##  8 Food, drinks and tobacco Japan         2010-01-01 3702.    131.
+##  9 Food, drinks and tobacco South Korea   2010-01-01  938.    115.
+## 10 Food, drinks and tobacco Morocco       2010-01-01  921.   1755.
+## # … with 1,370 more rows
 ```
 
 ## Загрузка данных NASA POWER {#advgraphics_nasapower}
@@ -85,10 +85,10 @@ daily_single_ag # посмотрим, что получилось
 
 ```r
 interannual_sse <- get_power(
-  community = "sse",
+  community = "ag",
   lonlat = c(60.59, 56.84),
   dates = 1995:2015,
-  temporal_api = "interannual",
+  temporal_api = "climatology",
   pars = c("CLRSKY_SFC_SW_DWN",
            "ALLSKY_SFC_SW_DWN")
 )
