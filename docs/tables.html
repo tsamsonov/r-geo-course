@@ -880,7 +880,7 @@
 <li>вызов функций с говорящими названиями операции более понятными;</li>
 <li>код выглядит более чистым и легко читаемым за счет отсутствия обращений к фреймам данных через квадратные скобки, доллары и «закавыченные» названия переменных;</li>
 <li>код с использованием функций <strong>dplyr</strong> часто оказывается короче, чем его традиционные аналоги;</li>
-<li>операции dplyr можно выстраивать в конвейеры с помощью пайп-оператора <code>%&gt;%</code>.</li>
+<li>операции dplyr можно выстраивать в конвейеры с помощью пайп-оператора <code>|&gt;</code>.</li>
 </ul>
 <p>Последнюю возможность мы рассмотрим в следующем параграфе.</p>
 </div>
@@ -888,29 +888,29 @@
 <h3>
 <span class="header-section-number">3.6.2</span> Конвейер манипуляций<a class="anchor" aria-label="anchor" href="#tables_manipiulations_pipeline"><i class="fas fa-link"></i></a>
 </h3>
-<p>В предыдущем параграфе было показано как найти регион-лидер в каждой группе по выбранному показателю. При этом, несмотря на то что интерес представляет только конечный результат, нам пришлось шесть раз осуществить запись промежуточного результата в соответствующую переменную. Чтобы избежать подобного многословия в программах, в <strong>R</strong> реализована возможность организации <strong>конвейера манипуляций</strong> (pipeline) посредством использования <em>пайп-оператора</em> <code>%&gt;%</code>.</p>
-<p><strong>Пайп-оператор <code>%&gt;%</code></strong> предназначен для компактной и наглядной записи <em>последовательностей</em> обработки данных. Работает он следующим образом:</p>
+<p>В предыдущем параграфе было показано как найти регион-лидер в каждой группе по выбранному показателю. При этом, несмотря на то что интерес представляет только конечный результат, нам пришлось шесть раз осуществить запись промежуточного результата в соответствующую переменную. Чтобы избежать подобного многословия в программах, в <strong>R</strong> реализована возможность организации <strong>конвейера манипуляций</strong> (pipeline) посредством использования <em>пайп-оператора</em> <code>|&gt;</code>.</p>
+<p><strong>Пайп-оператор <code>|&gt;</code></strong> предназначен для компактной и наглядной записи <em>последовательностей</em> обработки данных. Работает он следующим образом:</p>
 <ul>
 <li>
-<code>x %&gt;% f</code> эквивалентно <code>f(x)</code>
+<code>x |&gt; f</code> эквивалентно <code>f(x)</code>
 </li>
 <li>
-<code>x %&gt;% f(y)</code> эквивалентно <code>f(x, y)</code>
+<code>x |&gt; f(y)</code> эквивалентно <code>f(x, y)</code>
 </li>
 <li>
-<code>x %&gt;% f %&gt;% g %&gt;% h</code> эквивалентно <code>h(g(f(x)))</code>
+<code>x |&gt; f |&gt; g |&gt; h</code> эквивалентно <code>h(g(f(x)))</code>
 </li>
 </ul>
 <p>Коротко говоря, пайп оператор берет результат вычисления выражения слева и подставляет его в качестве первого аргумента в выражение справа. С помощью этого оператора вышеприведенный код по нахождению региона-лидера можно записать так:</p>
 <div class="sourceCode" id="cb186"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">regdf</span> <span class="op">=</span> <span class="va">rdf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>okrug <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="va">flt2</span>, <span class="va">Region</span>, <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/fill.html">fill</a></span><span class="op">(</span><span class="va">okrug</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="va">regdf</span> <span class="op">=</span> <span class="va">rdf</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>okrug <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="va">flt2</span>, <span class="va">Region</span>, <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/fill.html">fill</a></span><span class="op">(</span><span class="va">okrug</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">flt</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">leaders</span> <span class="op">=</span> <span class="va">regdf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">okrug</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">y2015</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span><span class="va">leaders</span> <span class="op">=</span> <span class="va">regdf</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">okrug</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">y2015</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/ranking.html">row_number</a></span><span class="op">(</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">leaders</span><span class="op">)</span></span>
@@ -957,7 +957,7 @@
 <li>упростить добавление новых операций по обработке данных в любое место последовательности.</li>
 </ul>
 <blockquote>
-<p><strong>Пайп-оператор <code>%&gt;%</code> можно быстро набрать в RStudio</strong>, нажав клавиатурное сочетание <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> на помпьютерах Mac)</p>
+<p><strong>Пайп-оператор <code>|&gt;</code> можно быстро набрать в RStudio</strong>, нажав клавиатурное сочетание <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> на помпьютерах Mac)</p>
 </blockquote>
 </div>
 <div id="tables_tidy" class="section level3" number="3.6.3">
@@ -1000,7 +1000,7 @@
 </ul>
 <p>Рассмотрим на примере таблицы <em>reforest</em> приведение к аккуратному виду:</p>
 <div class="sourceCode" id="cb188"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="op">(</span><span class="va">reforest_tidy</span> <span class="op">=</span> <span class="va">reforest</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">reforest_tidy</span> <span class="op">=</span> <span class="va">reforest</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="va">y2005</span><span class="op">:</span><span class="va">y2016</span>, </span>
 <span>                 names_to <span class="op">=</span> <span class="st">'year'</span>, </span>
 <span>                 values_to <span class="op">=</span> <span class="st">'value'</span><span class="op">)</span><span class="op">)</span></span>
@@ -1023,7 +1023,7 @@
 </blockquote>
 <p>Полученный результат еще не вполне пригоден для анализа, поскольку в переменной <code>year</code> мы имеем строковые значения, начинающиеся с <code>y</code>. Чтобы избавиться от этого префикса, можно при вызове <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> указать параметр <code>names_prefix</code>. Поскольку по умолчанию ключи конвертируются в строковый столбец, а год — это целочисленное значение, следует дополнительно указать параметр <code>names_ptypes</code>. Помимо этого, конвертации подвергаются все столбцы, <em>кроме</em> <code>Region</code> — это означает, что можно пойти от обратного в параметре <code>cols</code>. Резюмируя перечисленные соображения, вышеприведенный вызов можно оптимизировать следующим образом:</p>
 <div class="sourceCode" id="cb189"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="op">(</span><span class="va">reforest_tidy2</span> <span class="op">=</span> <span class="va">reforest</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">reforest_tidy2</span> <span class="op">=</span> <span class="va">reforest</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="va">Region</span>, </span>
 <span>                 names_to <span class="op">=</span> <span class="st">'year'</span>,</span>
 <span>                 names_prefix <span class="op">=</span> <span class="st">'y'</span>,</span>
@@ -1045,9 +1045,9 @@
 <span><span class="co">## # … with 702 more rows</span></span></code></pre></div>
 <p>Если по какой-то причине вам уже досталась таблица, в которой в ячейках сцеплены несколько сущностей, разделить их можно с помощью функции <code><a href="https://tidyr.tidyverse.org/reference/separate.html">separate()</a></code>. Вышеприведенный тиббл <code>reforest_tidy</code> можно “довести до ума” последовательным вызовом <code><a href="https://tidyr.tidyverse.org/reference/separate.html">separate()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> и <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code>:</p>
 <div class="sourceCode" id="cb190"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="op">(</span><span class="va">reforest_tidy</span> <span class="op">=</span> <span class="va">reforest_tidy</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html">separate</a></span><span class="op">(</span><span class="va">year</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'y'</span>, <span class="st">'year'</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">y</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">reforest_tidy</span> <span class="op">=</span> <span class="va">reforest_tidy</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html">separate</a></span><span class="op">(</span><span class="va">year</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'y'</span>, <span class="st">'year'</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">y</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">## # A tibble: 712 × 3</span></span>
 <span><span class="co">##    Region                         year value</span></span>
@@ -1065,7 +1065,7 @@
 <span><span class="co">## # … with 702 more rows</span></span></code></pre></div>
 <p>Теперь можно выполнять любые запросы, комбинирующие год измерения и величину показателя. Найдем субъекты, в которых с 2012 по 2015 год не производились лесовосстановительные работы:</p>
 <div class="sourceCode" id="cb191"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">reforest_tidy</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">&gt;</span> <span class="fl">2011</span> <span class="op">&amp;</span> <span class="va">year</span> <span class="op">&lt;</span> <span class="fl">2016</span> <span class="op">&amp;</span> <span class="va">value</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">reforest_tidy</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">&gt;</span> <span class="fl">2011</span> <span class="op">&amp;</span> <span class="va">year</span> <span class="op">&lt;</span> <span class="fl">2016</span> <span class="op">&amp;</span> <span class="va">value</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">## # A tibble: 2 × 3</span></span>
 <span><span class="co">##   Region             year value</span></span>
 <span><span class="co">##   &lt;chr&gt;             &lt;int&gt; &lt;dbl&gt;</span></span>
@@ -1082,7 +1082,7 @@
 </ul>
 <p>Преобразуем ранее удлиненную таблицу к “широкому” виду:</p>
 <div class="sourceCode" id="cb192"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="op">(</span><span class="va">reforest</span> <span class="op">=</span> <span class="va">reforest_tidy</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">reforest</span> <span class="op">=</span> <span class="va">reforest_tidy</span> <span class="op">|&gt;</span> </span>
 <span>   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">year</span>, values_from <span class="op">=</span> <span class="va">value</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">## # A tibble: 89 × 9</span></span>
 <span><span class="co">##    Region                `2005` `2010` `2011` `2012` `2013` `2014` `2015` `2016`</span></span>
@@ -1103,12 +1103,12 @@
 </blockquote>
 <p>В качестве примера операции с широкой таблицей вычислим разности по сравнению с предыдущим годом:</p>
 <div class="sourceCode" id="cb193"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">diffs</span> <span class="op">=</span> <span class="va">reforest</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">`2011`</span><span class="op">:</span><span class="va">`2016`</span><span class="op">)</span> <span class="op">-</span></span>
-<span>        <span class="va">reforest</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">`2010`</span><span class="op">:</span><span class="va">`2015`</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">diffs</span> <span class="op">=</span> <span class="va">reforest</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">`2011`</span><span class="op">:</span><span class="va">`2016`</span><span class="op">)</span> <span class="op">-</span></span>
+<span>        <span class="va">reforest</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">`2010`</span><span class="op">:</span><span class="va">`2015`</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">diffs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Region <span class="op">=</span> <span class="va">reforest</span><span class="op">$</span><span class="va">Region</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Region</span>, <span class="va">`2011`</span><span class="op">:</span><span class="va">`2016`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span><span class="va">diffs</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Region <span class="op">=</span> <span class="va">reforest</span><span class="op">$</span><span class="va">Region</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Region</span>, <span class="va">`2011`</span><span class="op">:</span><span class="va">`2016`</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Посмотрим шапку таблицы</span></span>
 <span><span class="co">##                          Region 2011  2012 2013 2014  2015 2016</span></span>
 <span><span class="co">## 1          Российская Федерация 48.5 -18.3 30.6 -9.3 -60.1 37.0</span></span>
@@ -1152,7 +1152,7 @@
 <p>Подгрузим таблицу по лесозаготовкам:</p>
 <div class="sourceCode" id="cb194"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">timber</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel</a></span><span class="op">(</span><span class="st">'data/timber.xlsx'</span>, </span>
-<span>                    col_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'text'</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">'numeric'</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>                    col_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'text'</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">'numeric'</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">Регион</span>, <span class="st">'Федерация|федеральный округ'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">## # A tibble: 75 × 9</span></span>
 <span><span class="co">##    Регион               `2010` `2011` `2012` `2013` `2014` `2015` `2016` Место</span></span>
@@ -1170,8 +1170,8 @@
 <span><span class="co">## # … with 65 more rows</span></span></code></pre></div>
 <p>Приведем ее к аккуратному виду, который соответствует виду таблицы по лесовосстановлению:</p>
 <div class="sourceCode" id="cb195"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="op">(</span><span class="va">timber_tidy</span> <span class="op">=</span> <span class="va">timber</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">harvest</span>, <span class="va">`2010`</span><span class="op">:</span><span class="va">`2016`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">timber_tidy</span> <span class="op">=</span> <span class="va">timber</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">harvest</span>, <span class="va">`2010`</span><span class="op">:</span><span class="va">`2016`</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">transmute</a></span><span class="op">(</span>Region <span class="op">=</span> <span class="va">Регион</span>,</span>
 <span>            year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span>,</span>
 <span>            harvest <span class="op">=</span> <span class="va">harvest</span><span class="op">)</span><span class="op">)</span></span>
@@ -1192,7 +1192,7 @@
 <p>Теперь нам осталось присоединить данные по лесозаготовкам к таблице по лесовосстановлению, используя имя региона (<code>Region</code>) и год (<code>year</code>) в качестве ключевых полей.</p>
 <p>Для этого мы используем функцию <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join()</a></code>, поскольку нас интересует сравнение по тем годам, для которых имеются данные в обеих таблицах:</p>
 <div class="sourceCode" id="cb196"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="op">(</span><span class="va">compare</span> <span class="op">=</span> <span class="va">reforest_tidy</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">compare</span> <span class="op">=</span> <span class="va">reforest_tidy</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">timber_tidy</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Region"</span> <span class="op">=</span> <span class="st">"Region"</span>, <span class="st">"year"</span> <span class="op">=</span> <span class="st">"year"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">## # A tibble: 511 × 4</span></span>
 <span><span class="co">##    Region                year value harvest</span></span>
@@ -1210,9 +1210,9 @@
 <span><span class="co">## # … with 501 more rows</span></span></code></pre></div>
 <p>Наконец, вычислим искомое отношние и упорядочим регионы по году (возрастание) и отношению (убывание):</p>
 <div class="sourceCode" id="cb197"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="op">(</span><span class="va">compare</span> <span class="op">=</span> <span class="va">compare</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ratio <span class="op">=</span> <span class="fl">1000</span> <span class="op">*</span> <span class="va">value</span> <span class="op">/</span> <span class="va">harvest</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Region</span>, <span class="va">year</span>, <span class="va">ratio</span>, <span class="va">value</span>, <span class="va">harvest</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">compare</span> <span class="op">=</span> <span class="va">compare</span> <span class="op">|&gt;</span> </span>
+<span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ratio <span class="op">=</span> <span class="fl">1000</span> <span class="op">*</span> <span class="va">value</span> <span class="op">/</span> <span class="va">harvest</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Region</span>, <span class="va">year</span>, <span class="va">ratio</span>, <span class="va">value</span>, <span class="va">harvest</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">year</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">ratio</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">## # A tibble: 511 × 5</span></span>
 <span><span class="co">##    Region                    year ratio value harvest</span></span>
@@ -1410,7 +1410,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2022-08-23.</p>
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2022-10-20.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
