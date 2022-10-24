@@ -23,6 +23,7 @@ library(googlesheets4)
 library(tsibble)
 library(feasts)
 library(fable)
+library(fuzzyjoin)
 ```
 
 ## Создание и преобразование дат и времени {#temporal_lubridate}
@@ -321,62 +322,38 @@ DT::datatable(tab, options = list(scrollX = TRUE))
 
 Определим расчетные интервалы времени для каждой из характеристик:
 ```{r}
-(time_bounds = tibble(
-  type = c('temperature', 'humidity', 'pressure'),
-  tmin = ceiling_date(c(min(tab$time_temperature), 
-                        min(tab$time_humidity), 
-                        min(tab$time_pressure)), 
-                      unit = '30 minutes'),
-  tmax = floor_date(c(max(tab$time_temperature), 
-                      max(tab$time_humidity), 
-                      max(tab$time_pressure)), 
+tab = tab |> select(id, temperature, time_temperature)
+
+tmin = ceiling_date(min(tab$time_temperature), 
                     unit = '30 minutes')
-))
+tmax = floor_date(max(tab$time_temperature), 
+                  unit = '30 minutes')
 ```
 
 В данном случае видно, что возможные границы сроков интерполяции для всех трех переменных совпадают, что несколько облегачает задачу.
 Проинтерполуруем данные на единую регулярную временную сетку через $30$ минут, используя функцию [`approx()`](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/approxfun.html) из базового __R__. По умолчанию данная функция использует линейную интерполяцию по ближайшим значениям до и после интерполируемого:
 ```{r}
-(time_interp = tibble(
-  datetime = seq(min(time_bounds$tmin), max(time_bounds$tmax), by = '30 min'),
-  temp = round(approx(tab$time_temperature, tab$temperature, xout = datetime)$y, 1),
-  humd = round(approx(tab$time_humidity, tab$humidity, xout = datetime)$y, 1),
-  pres = round(approx(tab$time_pressure, tab$pressure, xout = datetime)$y, 1)
-))
+time_interp = tibble(
+  datetime = seq(tmin, tmax, by = '30 min'),
+  temp = round(approx(tab$time_temperature, 
+                      tab$temperature, 
+                      xout = datetime)$y, 1)
+)
 ```
 
-Надежность каждого интерполированного значения можно оценить, задав максимально допустимое расстояние по времени до ближайшего элемента исходных данных до и после интерполируемого времени. Предположим, валидными будут считаться значения, расположенные не далее чем $30$ минут до ближайшего временного среза (до или после), при этом длина интервала, в который попадает интерполируемый срез, не должна превышать $90$ минут.
+Надежность каждого интерполированного значения можно оценить, задав максимальную продолжительность интерполируемого интервала. Предположим, что она не должна превышать $60$ минут:
 
-Задачу поиска временного интервала исходных данных, в который попадает каждый интерполируемый временной срез, удобно решить с помощью кусочно-линейной функции [`stepfun()`](https://www.rdocumentation.org/packages/stats/versions/3.6.1/topics/stepfun), передав ей в качестве аргумента $X$ упорядоченные по времени сроки исходных данных, а в качестве значений $Y$ — порядковые номера исходных сроков:
 ```{r}
-src_time = sort(tab$time_temperature)
-(tempfun = stepfun(src_time, 0:nrow(tab)))
+idx = sapply(time_interp$datetime, \(x) match(TRUE, tab$time_temperature >= x))
+
+time_interp = time_interp |> 
+  mutate(before_time = datetime - tab$time_temperature[idx-1],
+         after_time = tab$time_temperature[idx] - datetime,
+         valid = after_time - before_time <= minutes(60))
+summary(time_interp)
+cat('Valid are ', round(100 * sum(time_interp$valid) / nrow(time_interp), 1), '% of interpolated values', sep = '')
 ```
 
-Созданная таким образом кусочно-линейная функция для переданного ей значения времени будет возвращать порядковый номер временного интервала исходных данных. Оценим с помощью нее временные расстояния до ближайших наблюдений и их соответствие выдвинутым условиям:
-```{r}
-(timediff = lapply(time_interp$datetime, function(time) {
-  idx = tempfun(time)
-  tibble(datetime = time,
-         temp_before = time - src_time[idx],
-         temp_after = src_time[idx + 1] - time,
-         temp_valid = min(temp_before, temp_after) <= minutes(30) && temp_before + temp_after <= minutes(90))
-}) |> bind_rows())
-summary(timediff)
-```
-
-Полученные результаты говорят нам о том, что критериям соответствуют $1455$ значений температур из $2049$, остальные $594$ значения либо попадают в слишком длинный интервал между исходными данными (более  $90$ минут), либо расположены слишком далеко от ближайшего наблюдения (более $30$ минут).
-
-В заключение присоединим полученную информацию к таблице интерполированных значений:
-```{r}
-time_interp_checked = time_interp |> 
-  left_join(timediff, by = c('datetime' = 'datetime'))
-```
-```{r, echo=FALSE}
-DT::datatable(time_interp_checked, options = list(scrollX = TRUE))
-```
-
-Аналогичную проверку валидности следует выполнить для оставшихся переменных — влажности и давления.
 
 ## Аппроксимация по времени {#temporal_loess}
 
