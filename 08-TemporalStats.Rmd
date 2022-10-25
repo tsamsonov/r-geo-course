@@ -298,6 +298,39 @@ DT::datatable(timerep_interp2)
 
 По результатам автокореляционного анализа и интерполяции удалось заполнить значительное число пропусков в данных. Однако по прежнему остаются значительные по длине пропуски, которые уже требуют привлечения дополнительных источников информации для их заполнения.
 
+## Интерполяция с учетом предикторов {#temporal_prognosis}
+
+В некоторых случая интерполяцию можно уточнить с использованием предикторов. Рассмотрим уточнение прогноза уровня воды с учетом информации о температурах и осадках на р. Умба:
+
+```{r}
+meteo = read_delim('data/in_Umba_meteo.txt', delim = ' ', 
+                 col_names = c('day', 'month', 'year', 'temp', 'prec'), na = '9999') |> 
+  mutate(Date = ymd(paste(year, month, day)),
+         tempsm = zoo::rollmean(temp, 10, fill = NA, align = 'center'),
+         precsum = zoo::rollsum(prec, 5, fill = NA, align = 'center')) |> 
+  select(Date, temp, tempsm, prec, precsum)
+
+tsbl_all = left_join(tsbl_int, meteo, by = 'Date')
+tsbl_all
+```
+
+Расширим временной диапазон рассмотрения
+```{r}
+autoplot(tsbl_all, level_interp, size = 1) +
+  scale_x_date(limits = c(ymd(19320101), ymd(19360101)))
+```
+
+Видно, что период в начале 1935 года слишком длинный для того чтобы его прогнозировать с использованиме исключительно авторегрессионных свойств и сглаживающего среднего. Попробуем для этого применить связь с осадками и температурой:
+```{r}
+tsbl_int_met = tsbl_all |> 
+  model(mdl = ARIMA(level_interp ~ tempsm + precsum)) |> 
+  interpolate(tsbl_all)
+
+autoplot(tsbl_int_met, level_interp, color = 'green', size = 1) +
+  geom_line(aes(Date, level_interp), tsbl_all, size = 1) +
+  scale_x_date(limits = c(ymd(19320101), ymd(19360101)))
+```
+
 ### Пересчет на другую временную сетку {#temporal_interp_reg}
 
 Когда данные, поступающие из различных источников, привязаны к несовпадающим временным срезам, возникает задача приведения их к единой временной сетке. Как правило, эта сетка имеет регулярный шаг (каждый час, каждый месяц и т.д.), поскольку это упрощает выполнение статистического анализа. 
@@ -353,6 +386,65 @@ time_interp = time_interp |>
 summary(time_interp)
 cat('Valid are ', round(100 * sum(time_interp$valid) / nrow(time_interp), 1), '% of interpolated values', sep = '')
 ```
+
+
+
+
+### Прогнозирование по времени
+
+Рассмотрим задачу прогнозирования количества [потребляемой электроэнергии](https://otexts.com/fpp3/forecasting.html#example-forecasting-electricity-demand) в штате Виктория (Австралия) в зависимости от температуры воздуха. Существует корреляция между этими переменными.
+
+```{r}
+data(vic_elec, package = 'tsibbledata')
+
+vic_elec_daily = vic_elec |> 
+  filter(year(Time) == 2014) |> 
+  index_by(Date = date(Time)) |> 
+  summarise(
+    Demand = sum(Demand) / 1e3,
+    Temperature = max(Temperature),
+    Holiday = any(Holiday)
+  ) |> 
+  mutate(Day_Type = case_when(
+    Holiday ~ "Holiday",
+    wday(Date) %in% 2:6 ~ "Weekday",
+    TRUE ~ "Weekend"
+  ))
+
+vic_elec_daily |> 
+  pivot_longer(c(Demand, Temperature)) |> 
+    ggplot(aes(x = Date, y = value)) +
+    geom_line() +
+    facet_grid(name ~ ., scales = "free_y") + ylab("")
+```
+
+
+Выполним построение модели:
+```{r}
+fit = vic_elec_daily |> 
+  model(ARIMA(Demand ~ Temperature + I(Temperature^2) +
+                (Day_Type == "Weekday")))
+```
+
+И прогнозирование:
+```{r}
+vic_elec_future = new_data(vic_elec_daily, 14) |> 
+  mutate(
+    Temperature = 26,
+    Holiday = c(TRUE, rep(FALSE, 13)),
+    Day_Type = case_when(
+      Holiday ~ "Holiday",
+      wday(Date) %in% 2:6 ~ "Weekday",
+      TRUE ~ "Weekend"
+    )
+  )
+
+forecast(fit, vic_elec_future) |> 
+  autoplot(vic_elec_daily) +
+  labs(title="Daily electricity demand: Victoria",
+       y="GW")
+```
+
 
 
 ## Аппроксимация по времени {#temporal_loess}
@@ -447,6 +539,7 @@ ggplot(tab, mapping = aes(Year1, Wgr)) +
 Вместо координат исходных точек для построения регрессии можно использовать и произвольные координаты $X$. В этом случае кривая будет соединять точки, полученные локальной регрессионной оценкой в заданных координатах $X$. Именно этот принцип используется в двумерном (и многомерном) случае. Пусть даны измерения показателя в $N$ исходных точках и задано число $\alpha$ --- сглаживающий параметр. Тогда аппроксимация показателя в каждом узле интерполяции получается путем построения поверхности тренда (см. выше) по $\alpha N$ ближайшим исходным точкам. Как и в одномерном случае, близкие точки будут оказывать более сильное влияние на коэффициенты регрессии, чем удаленные.
 
 Метод _LOESS_ предоставляет широкие возможности настройки благодаря вариативности параметра сглаживания и степени регрессионного полинома.
+
 
 ## Статистики {#temporal_tests}
 
