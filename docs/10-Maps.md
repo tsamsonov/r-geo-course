@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
 # Основы картографии {#maps}
 
 
@@ -152,7 +157,7 @@ ggplot() +
 ```r
 ggplot() +
   geom_sf(data = lyr110$countries, color = NA) +
-  geom_sf(data = lyr110$borders, size = 0.2) +
+  geom_sf(data = lyr110$borders, linewidth = 0.2) +
   theme_void()
 ```
 
@@ -163,8 +168,8 @@ ggplot() +
 ```r
 ggplot() +
   geom_sf(data = lyr110$countries, color = NA) +
-  geom_sf(data = lyr110$borders, size = 0.2) +
-  geom_sf(data = lyr110$ocean, size = 0.4, 
+  geom_sf(data = lyr110$borders, linewidth = 0.2) +
+  geom_sf(data = lyr110$ocean, linewidth = 0.4, 
           fill = 'azure', color = 'steelblue') +
   theme_void()
 ```
@@ -177,7 +182,7 @@ ggplot() +
 ```r
 ggplot() +
   geom_sf(data = lyr110$countries, color = NA) +
-  geom_sf(data = lyr110$borders, size = 0.2) +
+  geom_sf(data = lyr110$borders, linewidth = 0.2) +
   geom_sf(data = lyr110$ocean, 
           fill = 'azure', color = NA) +
   geom_sf(data = lyr110$coast, 
@@ -194,9 +199,9 @@ ggplot() +
   geom_sf(data = lyr110$countries, color = NA, 
           mapping = aes(fill = as.factor(mapcolor7)), show.legend = FALSE) +
   scale_fill_manual(values = brewer.pal(7, 'Set2')) +
-  geom_sf(data = lyr110$borders, size = 0.2) +
+  geom_sf(data = lyr110$borders, linewidth = 0.2) +
   geom_sf(data = lyr110$ocean, fill = 'azure', color = NA) +
-  geom_sf(data = lyr110$coast, size = 0.4, color = 'steelblue4') +
+  geom_sf(data = lyr110$coast, linewidth = 0.4, color = 'steelblue4') +
   theme_void()
 ```
 
@@ -213,15 +218,15 @@ basemap = list(
   geom_sf(data = lyr110$countries, color = NA, 
           mapping = aes(fill = as.factor(mapcolor7)), show.legend = FALSE),
   scale_fill_manual(values = brewer.pal(7, 'Set2')),
-  geom_sf(data = lyr110$borders, size = 0.2),
+  geom_sf(data = lyr110$borders, linewidth = 0.2),
   geom_sf(data = lyr110$ocean, fill = 'azure', color = NA),
-  geom_sf(data = lyr110$coast, size = 0.4, color = 'steelblue4'),
-  geom_sf(data = lyr110$megacities, shape = 21, fill = 'white', stroke = 0.75, size = 2)
+  geom_sf(data = lyr110$coast, linewidth = 0.4, color = 'steelblue4'),
+  geom_sf(data = lyr110$megacities, shape = 21, fill = 'white', stroke = 0.75, linewidth = 2)
 )
 
 ggplot() +
   basemap +
-  geom_sf_text(data = lyr110$megacities, mapping = aes(label = name_en),
+  geom_sf_text(data = lyr110$megacities, mapping = aes(label = NAME),
                size = 3, nudge_y = 5, family = 'Open Sans', fontface = 'bold') +
   theme_void()
 ```
@@ -250,10 +255,10 @@ basemap0 = list(
           alpha = 0.5,
           mapping = aes(fill = as.factor(mapcolor7)), show.legend = FALSE),
   scale_fill_manual(values = brewer.pal(7, 'Set2')),
-  geom_sf(data = lyr110$borders, alpha = 0.5, size = 0.2),
+  geom_sf(data = lyr110$borders, alpha = 0.5, linewidth = 0.2),
   geom_sf(data = lyr110$ocean, fill = 'azure', color = NA),
-  geom_sf(data = lyr110$coast, alpha = 0.5, size = 0.4, color = 'steelblue4'),
-  geom_sf(data = lyr110$megacities, shape = 21, fill = 'white', stroke = 0.75, size = 2)
+  geom_sf(data = lyr110$coast, alpha = 0.5, linewidth = 0.4, color = 'steelblue4'),
+  geom_sf(data = lyr110$megacities, shape = 21, fill = 'white', stroke = 0.75, linewidth = 2)
 )
 
 ggplot() +
@@ -292,9 +297,9 @@ map = ggplot() +
   geom_sf(data = lyr110$countries, color = NA,
           mapping = aes(fill = as.factor(mapcolor7)), show.legend = FALSE) +
   scale_fill_manual(values = brewer.pal(7, 'Set2')) +
-  geom_sf(data = lyr110$borders, size = 0.2) +
+  geom_sf(data = lyr110$borders, linewidth = 0.2) +
   geom_sf(data = lyr110$ocean, fill = 'azure', color = NA) +
-  geom_sf(data = st_wrap_dateline(lyr110$coast), size = 0.4, color = 'steelblue4') +
+  geom_sf(data = st_wrap_dateline(lyr110$coast), linewidth = 0.4, color = 'steelblue4') +
   geom_sf(data = lyr110$megacities, shape = 21, fill = 'white', stroke = 0.75, size = 2) +
   geom_label_repel(
     data = lyr110$megacities, stat = "sf_coordinates",
@@ -344,7 +349,9 @@ lats = seq(-90, 90, by = 30)
 
 grat = st_graticule(lon = lons, lat = lats)
 
-box = st_bbox(c(xmin = -180, xmax = 180, ymax = 90, ymin = -90), crs = st_crs(4326)) |> 
+box = st_bbox(c(xmin = -180, xmax = 180, 
+                ymax = 90,   ymin = -90), 
+              crs = st_crs(4326)) |> 
   st_as_sfc() |> 
   smoothr::densify(max_distance = 1) 
 
@@ -363,8 +370,8 @@ degree_labels = function(grat, vjust, hjust, size, lon = T, lat = T) {
 }
 
 map + 
-  geom_sf(data = grat, size = 0.1) +
-  geom_sf(data = box, size = 0.5, fill = NA) +
+  geom_sf(data = grat, linewidth = 0.1) +
+  geom_sf(data = box, linewidth = 0.5, fill = NA) +
   coord_sf(crs = "+proj=moll") +
   degree_labels(grat, vjust = +1.5, hjust = +1.5, size = 3, lon = F)
 ```
@@ -374,8 +381,8 @@ map +
 ```r
 
 map + 
-  geom_sf(data = grat, size = 0.1) +
-  geom_sf(data = box, size = 0.5, fill = NA) +
+  geom_sf(data = grat, linewidth = 0.1) +
+  geom_sf(data = box, linewidth = 0.5, fill = NA) +
   coord_sf(crs = "+proj=eck3") +
   degree_labels(grat, vjust = +1.5, hjust = +1.5, size = 3)
 ```
@@ -385,8 +392,8 @@ map +
 ```r
 
 map + 
-  geom_sf(data = grat, size = 0.1) +
-  geom_sf(data = box, size = 0.5, fill = NA) +
+  geom_sf(data = grat, linewidth = 0.1) +
+  geom_sf(data = box, linewidth = 0.5, fill = NA) +
   coord_sf(crs = "+proj=eqearth") +
   degree_labels(grat, vjust = +1.5, hjust = +1.5, size = 3)
 ```
@@ -396,8 +403,8 @@ map +
 ```r
 
 map + 
-  geom_sf(data = grat, size = 0.1) +
-  geom_sf(data = box, size = 0.5, fill = NA) +
+  geom_sf(data = grat, linewidth = 0.1) +
+  geom_sf(data = box, linewidth = 0.5, fill = NA) +
   coord_sf(crs = "+proj=times") +
   degree_labels(grat, vjust = +1.5, hjust = +1.5, size = 3)
 ```
@@ -413,7 +420,7 @@ dem = read_stars('data/world/gebco.tif') # Цифровая модель рел�
 
 ggplot() +
   geom_stars(data = dem) +
-  geom_sf(data = lyr110$coast, size = 0.4, color = 'white') +
+  geom_sf(data = lyr110$coast, linewidth = 0.4, color = 'white') +
   coord_sf() +
   theme_void()
 ```
@@ -427,9 +434,9 @@ pal = c('navyblue', 'steelblue', 'azure', 'darkslategray', 'olivedrab', 'lightye
 
 # Вынесем повторяющиемя слои в отдельный список
 hydro_lyrs = list(
-  geom_sf(data = lyr110$coast, size = 0.4, color = 'steelblue4'),
-  geom_sf(data = lyr110$rivers, size = 0.3, color = 'steelblue4'),
-  geom_sf(data = lyr110$lakes, size = 0.3, color = 'steelblue4', fill = 'azure')
+  geom_sf(data = lyr110$coast, linewidth = 0.4, color = 'steelblue4'),
+  geom_sf(data = lyr110$rivers, linewidth = 0.3, color = 'steelblue4'),
+  geom_sf(data = lyr110$lakes, linewidth = 0.3, color = 'steelblue4', fill = 'azure')
 )
 
 ggplot() +
@@ -468,11 +475,11 @@ ggplot() +
 ```r
 anno = list(
   annotate("rect", xmin = 45, xmax = 60, ymin = 22, ymax = 32, 
-           color = 'white', size = 2, fill = NA),
+           color = 'white', linewidth = 2, fill = NA),
   annotate("rect", xmin = 45, xmax = 57, ymin = 35, ymax = 48, 
-           color = 'white', size = 2, fill = NA),
+           color = 'white', linewidth = 2, fill = NA),
   annotate("rect", xmin = 26, xmax = 43, ymin = 40, ymax = 48, 
-           color = 'white', size = 2, fill = NA)
+           color = 'white', linewidth = 2, fill = NA)
 )
 
 ggplot() +
@@ -542,9 +549,9 @@ map +
 
 ```r
 hydro_lyrs = list(
-  geom_sf(data = st_wrap_dateline(lyr110$coast), size = 0.4, color = 'steelblue4'),
-  geom_sf(data = st_wrap_dateline(lyr110$rivers), size = 0.3, color = 'steelblue4'),
-  geom_sf(data = st_wrap_dateline(lyr110$lakes), size = 0.3, color = 'steelblue4', fill = 'azure')
+  geom_sf(data = st_wrap_dateline(lyr110$coast), linewidth = 0.4, color = 'steelblue4'),
+  geom_sf(data = st_wrap_dateline(lyr110$rivers), linewidth = 0.3, color = 'steelblue4'),
+  geom_sf(data = st_wrap_dateline(lyr110$lakes), linewidth = 0.3, color = 'steelblue4', fill = 'azure')
 )
 
 prj = '+proj=eck3'
@@ -584,7 +591,7 @@ ggplot() +
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-22-1.png" width="100%" />
 
-Обратим внимание, что растро проецируется немного не так как векторные данные, его область остается прямоугольной. Поэтому при построении карт мира необходимо растры после проецирования обрезать прямоугольником, охватывающим весь мир:
+Обратим внимание, что растр проецируется немного не так, как векторные данные, его область остается прямоугольной. Поэтому при построении карт мира необходимо растры после проецирования обрезать прямоугольником, охватывающим весь мир:
 
 
 ```r
@@ -595,14 +602,14 @@ for (i in seq_along(prjs)) {
   pbox = st_transform(box, prjs[i])
 
   map = ggplot() +
-    geom_stars(data = st_warp(dem_ocean, crs = prjs[i])[pbox]) +
+    geom_stars(data = st_warp(dem_ocean, crs = prjs[i], use_gdal = TRUE)[pbox]) +
     scale_ocean +
     new_scale_fill() +
-    geom_stars(data = st_warp(dem_land, crs = prjs[i])[pbox]) +
+    geom_stars(data = st_warp(dem_land, crs = prjs[i], use_gdal = TRUE)[pbox]) +
     scale_land +
     hydro_lyrs +
-    geom_sf(data = grat, size = 0.1) +
-    geom_sf(data = box, size = 0.5, fill = NA) +
+    geom_sf(data = grat, linewidth = 0.1) +
+    geom_sf(data = box, linewidth = 0.5, fill = NA) +
     coord_sf(crs = prjs[i]) +
     degree_labels(grat, vjust = +1.5, hjust = +1.5, size = 3, lon = lon_labs[i]) +
     ggtitle(prjs[i]) +
@@ -669,7 +676,7 @@ scales = c(10, 50, 110)
 for (i in seq_along(cnts)) {
   print(
       ggplot() +
-        geom_sf(data = cnts[[i]], size = 0.25,
+        geom_sf(data = cnts[[i]], linewidth = 0.25,
                 mapping = aes(fill = as.factor(MAPCOLOR7)),
                 show.legend = FALSE) +
         scale_fill_manual(values = brewer.pal(7, 'Set2')) +
@@ -701,7 +708,7 @@ countries = cnt010 |>
   st_crop(box)
 
 ggplot() +
-  geom_sf(data = countries, size = 0.25) +
+  geom_sf(data = countries, linewidth = 0.25) +
   ggtitle('Исходные данные масштаба 10M') +
   theme_minimal()
 ```
@@ -721,7 +728,7 @@ countries_vw = ms_simplify(countries,
                            keep = 0.06)  # оставить 6% точек
 
 ggplot() +
-  geom_sf(data = countries_dp, size = 0.25) +
+  geom_sf(data = countries_dp, linewidth = 0.25) +
   ggtitle('Геометрическое упрощение алгоритмом Дугласа-Пейкера') +
   theme_minimal()
 ```
@@ -731,7 +738,7 @@ ggplot() +
 ```r
 
 ggplot() +
-  geom_sf(data = countries_vw, size = 0.25) +
+  geom_sf(data = countries_vw, linewidth = 0.25) +
   ggtitle('Геометрическое упрощение алгоритмом Висвалингам-Уайатта') +
   theme_minimal()
 ```
@@ -758,8 +765,8 @@ rivers = st_read(ne, 'ne_10m_rivers_lake_centerlines') |>
 ## Geodetic CRS:  WGS 84
 
 ggplot() +
-  geom_sf(data = countries_vw, size = 0.25) +
-  geom_sf(data = rivers, size = 0.25, color = 'steelblue') +
+  geom_sf(data = countries_vw, linewidth = 0.25) +
+  geom_sf(data = rivers, linewidth = 0.25, color = 'steelblue') +
   ggtitle('Геометрическое упрощение алгоритмом Висвалингам-Уайатта') +
   theme_minimal()
 ```
@@ -790,8 +797,8 @@ mouths = rivers |>
   st_intersection(coast)
 
 ggplot() +
-  geom_sf(data = coast, size = 0.35, color = 'steelblue') +
-  geom_sf(data = rivers, size = 0.25, color = 'steelblue') +
+  geom_sf(data = coast, linewidth = 0.35, color = 'steelblue') +
+  geom_sf(data = rivers, linewidth = 0.25, color = 'steelblue') +
   geom_sf(data = mouths, color = 'red') +
   theme_minimal()
 ```
@@ -813,8 +820,8 @@ rivers_vw = ms_simplify(rivers,
 
 
 ggplot() +
-  geom_sf(data = coast_vw, size = 0.35, color = 'steelblue') +
-  geom_sf(data = rivers_vw, size = 0.25, color = 'steelblue') +
+  geom_sf(data = coast_vw, linewidth = 0.35, color = 'steelblue') +
+  geom_sf(data = rivers_vw, linewidth = 0.25, color = 'steelblue') +
   ggtitle('Геометрическое упрощение алгоритмом Висвалингам-Уайатта') +
   theme_minimal()
 ```
@@ -843,7 +850,7 @@ cities_eu = st_read(ne, 'ne_10m_populated_places') |>
 ## Geodetic CRS:  WGS 84
 
 ggplot() +
-  geom_sf(data = countries_vw, size = 0.25) +
+  geom_sf(data = countries_vw, linewidth = 0.25) +
   geom_sf(data = cities_eu, size = 0.5, color = 'darkviolet') +
   geom_sf_text(data = cities_eu, 
                mapping = aes(label = NAME),
@@ -859,7 +866,7 @@ ggplot() +
 capitals = filter(cities_eu, FEATURECLA == 'Admin-0 capital')
 
 ggplot() +
-  geom_sf(data = countries_vw, size = 0.25) +
+  geom_sf(data = countries_vw, linewidth = 0.25) +
   geom_sf(data = capitals, size = 1.2, color = 'darkviolet') +
   geom_text_repel(data = capitals, stat = "sf_coordinates",
                 size = 2.5, aes(label = NAME, geometry = geom), 
@@ -879,7 +886,7 @@ major_cities = cities_eu |>
 
 
 ggplot() +
-  geom_sf(data = countries_vw, size = 0.25) +
+  geom_sf(data = countries_vw, linewidth = 0.25) +
   geom_sf(data = major_cities, size = 1, color = 'darkviolet') +
   geom_text_repel(data = major_cities, stat = "sf_coordinates",
                 size = 2, aes(label = NAME, geometry = geom), 
@@ -892,6 +899,42 @@ ggplot() +
 ## Классификация объектов по типам
 
 Для того чтобы подчеркнуть отличия между объектами разных типов и значимости, на картах применяется классификация. Более важные объекты показываются более заметными символами, при этом разнотипные, но равные по значимости объекты получают сходные по видимости, но разные по рисунку символы. Пример первого типа — это отображение населенных пунктов разной людности значками разного диаметра. Второй тип классификации на общегеографических картах соответствует, например, электрифицированным и неэлектрифицированным железным дорогам.
+
+Например, так можно классифицировать населенные пункты по численности населения на категории:
+
+- менее 100 000 жителей,
+- от 100 000 до 1 000 000 жителей, 
+- более 1 000 000 жителей
+
+
+```r
+brks = c(100000, 1000000)
+
+ggplot() +
+  geom_sf(data = countries_vw, size = 0.25) +
+  geom_sf(data = capitals, mapping = aes(size = POP_MAX), colour = "black",
+          fill = "white",  shape = 21, stroke = 0.5) +
+  scale_size_binned(breaks = brks, range = c(1, 3), name = 'Population, ppl', trans = 'sqrt') +
+  new_scale('size') +
+  geom_text_repel(data = capitals, stat = "sf_coordinates", force_pull = 1,
+                aes(label = NAME, geometry = geom, size = POP_MAX),
+                fontface = 'bold', show.legend = FALSE) +
+  scale_size_binned(breaks = brks, range = c(2, 3)) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  theme_bw() +
+  theme(
+    panel.grid = element_line(colour = "black", linewidth = 0.1),
+    panel.background = element_rect(fill = NA),
+    panel.ontop = TRUE
+  ) +
+  labs(x = NULL, y = NULL)
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-32-1.png" width="100%" />
+
+
+
 
 ## Легенды
 
