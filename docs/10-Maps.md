@@ -21,6 +21,7 @@ library(ggnewscale)
 library(rnaturalearth)
 library(rmapshaper)
 library(RColorBrewer)
+library(ggspatial)
 ```
 
 ## Введение {#maps_intro}
@@ -83,42 +84,10 @@ cities = ne_download(scale = 110,
 
 ```r
 ne = '/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg'
-rivers = st_read(ne, 'ne_110m_rivers_lake_centerlines')
-## Reading layer `ne_110m_rivers_lake_centerlines' from data source 
-##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
-##   using driver `GPKG'
-## Simple feature collection with 13 features and 31 fields
-## Geometry type: LINESTRING
-## Dimension:     XY
-## Bounding box:  xmin: -135.3134 ymin: -33.99358 xmax: 129.956 ymax: 72.90651
-## Geodetic CRS:  WGS 84
-lakes = st_read(ne, 'ne_110m_lakes')
-## Reading layer `ne_110m_lakes' from data source 
-##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
-##   using driver `GPKG'
-## Simple feature collection with 25 features and 33 fields
-## Geometry type: POLYGON
-## Dimension:     XY
-## Bounding box:  xmin: -124.9536 ymin: -16.53641 xmax: 109.9298 ymax: 66.9693
-## Geodetic CRS:  WGS 84
-land = st_read(ne, 'ne_110m_land')
-## Reading layer `ne_110m_land' from data source 
-##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
-##   using driver `GPKG'
-## Simple feature collection with 127 features and 3 fields
-## Geometry type: POLYGON
-## Dimension:     XY
-## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
-## Geodetic CRS:  WGS 84
-borders = st_read(ne, 'ne_110m_admin_0_boundary_lines_land')
-## Reading layer `ne_110m_admin_0_boundary_lines_land' from data source 
-##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
-##   using driver `GPKG'
-## Simple feature collection with 186 features and 5 fields
-## Geometry type: LINESTRING
-## Dimension:     XY
-## Bounding box:  xmin: -140.9978 ymin: -54.89681 xmax: 141.0339 ymax: 70.16419
-## Geodetic CRS:  WGS 84
+rivers = st_read(ne, 'ne_110m_rivers_lake_centerlines', quiet = T)
+lakes = st_read(ne, 'ne_110m_lakes', quiet = T)
+land = st_read(ne, 'ne_110m_land', quiet = T)
+borders = st_read(ne, 'ne_110m_admin_0_boundary_lines_land', quiet = T)
 ```
 
 В дальнейшем нам понадобятся данные другой детализации, поэтому объединим текущие данные в список, соответствующий масштабу 110М. Для этого используем функцию `lst` из пакета _tibble_, которая элементам списка дает такие же имена как объединяемым элементам:
@@ -165,6 +134,7 @@ ggplot() +
 
 Убрав обводку стран, мы потеряли береговую линию. Будет логично добавить на карту океан. Однако если отобразить его полигоном с обводкой, как мы попытались изначально поступить при визуализации стран, по границе карты возникнут несуществующие береговые линии:
 
+
 ```r
 ggplot() +
   geom_sf(data = lyr110$countries, color = NA) +
@@ -194,6 +164,7 @@ ggplot() +
 
 Добавим раскраску стран по их политической принадлежности. При отображении пространственных данных действуют принципы задания графических переменных, аналогичные построению обычных графиков: через `mapping = aes(...)`. Воспользуемся готовым атрибутивным полем в таблице данных для создания политико-административной раскраски:
 
+
 ```r
 ggplot() +
   geom_sf(data = lyr110$countries, color = NA, 
@@ -208,6 +179,7 @@ ggplot() +
 <img src="10-Maps_files/figure-html/unnamed-chunk-9-1.png" width="100%" />
 
 Нанесем на карту точки и подписи крупнейших столиц. Для нанесения подписей используем `geom_sf_text()` с параметром `nudge_y`, чтобы сдвинуть подписи вверх относительно пунсонов. Помимо этого, чтобы понизить многословность кода, для дальнейших экспериментов перенесем посторяющиеся слои вы список:
+
 
 ```r
 lyr110$megacities = lyr110$cities |> 
@@ -234,6 +206,7 @@ ggplot() +
 <img src="10-Maps_files/figure-html/unnamed-chunk-10-1.png" width="100%" />
 
 С подписями точечных объектов, однако, более удобно работать с применением пакета `ggrepel`, который расставляет их автоматически вокруг точек:
+
 
 ```r
 ggplot() +
@@ -273,6 +246,7 @@ ggplot() +
 
 В качестве альтернативного решения можно добавить лекий полупрозрачный фон под подписями городов. Для этого нужно изменить геометрию с `geom_text_repel` на `geom_label_repel` и определить цвет заливки фона:
 
+
 ```r
 ggplot() +
   basemap +
@@ -291,6 +265,7 @@ ggplot() +
 ## Проекции и градусные сетки
 
 Когда вы отображаете данные в градусах, не определяя проекцию, они визуализируются в цилиндрической равнопромежуточной проекции. Такая проекция не очень удобна для визуализации земного шара. Запишем исходную карту без проекции в отдельную переменную и визуализируем ее с помощью разных проекций:
+
 
 ```r
 map = ggplot() +
@@ -341,6 +316,8 @@ map + coord_sf(crs = "+proj=mill")
 ```
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-14-5.png" width="100%" />
+
+Добавим теперь линии градусной сетки:
 
 
 ```r
@@ -415,6 +392,7 @@ map +
 
 На общегеографических картах довольно часто присутствует изображение рельефа. Чтобы добавить его на карту, можно использовать специальный тип геометрии `geom_stars`:
 
+
 ```r
 dem = read_stars('data/world/gebco.tif') # Цифровая модель рельефа
 
@@ -428,6 +406,7 @@ ggplot() +
 <img src="10-Maps_files/figure-html/unnamed-chunk-16-1.png" width="100%" />
 
 Для начала попробуем раскрасить рельеф в традиционной цветовой шкале, и посмотреть как это будет выглядеть:
+
 
 ```r
 pal = c('navyblue', 'steelblue', 'azure', 'darkslategray', 'olivedrab', 'lightyellow', 'firebrick', 'pink', 'white')
@@ -472,6 +451,7 @@ ggplot() +
 
 Чтобы убедиться в этом рассмотрим фрагмент карты подробнее, обратив внимание на Персидский залив, Каспийское и Черное моря:
 
+
 ```r
 anno = list(
   annotate("rect", xmin = 45, xmax = 60, ymin = 22, ymax = 32, 
@@ -494,6 +474,7 @@ ggplot() +
 <img src="10-Maps_files/figure-html/unnamed-chunk-19-1.png" width="100%" />
 
 Чтобы не возникало такого эффекта, необходимо разделить цифровую модель рельефа на ldt: одна для суши, вторая для мора. Для этого используем стандартный синтаксис вида `stars[sf]`, который позволяет обрезать объект типа `stars` заданным объектом типа `sf`:
+
 
 ```r
 sf_use_s2(FALSE)
@@ -535,6 +516,7 @@ map
 
 Проверим ранее указанную область:
 
+
 ```r
 map +
   coord_sf(xlim = c(10, 75), ylim = c(20, 50)) +
@@ -546,6 +528,7 @@ map +
 ### Проецирование растровых данных
 
 В отличие от векторных данных, растровые необходимо трансформировать заранее в нужную проекцию. Для этого воспользуемся функцией `st_warp`:
+
 
 ```r
 hydro_lyrs = list(
@@ -633,33 +616,9 @@ for (i in seq_along(prjs)) {
 
 
 ```r
-cnt010 = st_read(ne, 'ne_10m_admin_0_countries')
-## Reading layer `ne_10m_admin_0_countries' from data source 
-##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
-##   using driver `GPKG'
-## Simple feature collection with 255 features and 94 fields
-## Geometry type: MULTIPOLYGON
-## Dimension:     XY
-## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.6341
-## Geodetic CRS:  WGS 84
-cnt050 = st_read(ne, 'ne_50m_admin_0_countries')
-## Reading layer `ne_50m_admin_0_countries' from data source 
-##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
-##   using driver `GPKG'
-## Simple feature collection with 241 features and 94 fields
-## Geometry type: MULTIPOLYGON
-## Dimension:     XY
-## Bounding box:  xmin: -180 ymin: -89.99893 xmax: 180 ymax: 83.59961
-## Geodetic CRS:  WGS 84
-cnt110 = st_read(ne, 'ne_110m_admin_0_countries')
-## Reading layer `ne_110m_admin_0_countries' from data source 
-##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' 
-##   using driver `GPKG'
-## Simple feature collection with 177 features and 94 fields
-## Geometry type: MULTIPOLYGON
-## Dimension:     XY
-## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
-## Geodetic CRS:  WGS 84
+cnt010 = st_read(ne, 'ne_10m_admin_0_countries', quiet = T)
+cnt050 = st_read(ne, 'ne_50m_admin_0_countries', quiet = T)
+cnt110 = st_read(ne, 'ne_110m_admin_0_countries', quiet = T)
 
 prj = '+proj=laea +lat_0=50 +lon_0=10'
 
@@ -701,6 +660,7 @@ for (i in seq_along(cnts)) {
 #### Геометрическое упрощение
 
 В качестве примера рассмотрим геометрическое упрощение рек и полигонов государств. Визуализируем для начала исходные данные:
+
 
 ```r
 countries = cnt010 |> 
@@ -749,6 +709,7 @@ ggplot() +
 
 Помимо этого, при геометрическом упрощении возникаеют сложности топологического согласования с другими слоями. Обратим внимание на то, как речки согласуются с береговой линией:
 
+
 ```r
 rivers = st_read(ne, 'ne_10m_rivers_lake_centerlines') |> 
   st_transform(prj) |> 
@@ -774,6 +735,7 @@ ggplot() +
 <img src="10-Maps_files/figure-html/unnamed-chunk-27-1.png" width="100%" />
 
 Здесь видно, что изза упрощения линий удалились эстуарии рек, и теперь речки не дотягивают до своих устьев. Чтобы такого эффекта не происходило, необходимо зафиксировать вершины эстуариев, запретив их удалять. Наиболее просто это сделать в линейном варианте, когда упрощению подвергаются береговые линии, а не полигоны стран:
+
 
 ```r
 coast = st_read(ne, 'ne_10m_coastline') |> 
@@ -828,7 +790,6 @@ ggplot() +
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-28-2.png" width="100%" />
 
-
 #### Отбор
 
 Отбор применятся внутри множества пространственных объектов для того чтобы уменьшить их количество. Наиболее просто реализуется отбор для  объектов, которые не состоят в пространственных отношениях. Как правило, это точечные объекты. Более сложна процедура отбора во множестве топологически связанных объектов. Например, прореживание транспортной или гидрографической сети. В данном разделе мы посмотрим как можно отбирать точечные объекты. Наиболее простой случай реализуется тогда, когда объекты можно отобрать по атрибутам, без использования пространственных отношений. К счастью, данные Natural Earth содержат атрибуты, которые можно использовать в качестве критериев отбора.
@@ -861,6 +822,7 @@ ggplot() +
 <img src="10-Maps_files/figure-html/unnamed-chunk-29-1.png" width="100%" />
 
 Очевидно, что при такой плотности нормальную карту составить не получится. Попробуем для начала остаить только столицы и разнести их через __ggrepel__:
+
 
 ```r
 capitals = filter(cities_eu, FEATURECLA == 'Admin-0 capital')
@@ -899,7 +861,6 @@ ggplot() +
 ## Классификация объектов по типам
 
 Для того чтобы подчеркнуть отличия между объектами разных типов и значимости, на картах применяется классификация. Более важные объекты показываются более заметными символами, при этом разнотипные, но равные по значимости объекты получают сходные по видимости, но разные по рисунку символы. Пример первого типа — это отображение населенных пунктов разной людности значками разного диаметра. Второй тип классификации на общегеографических картах соответствует, например, автомобильным и железным дорогам.
-
 
 ### Вычисляемые классы
 
@@ -973,21 +934,25 @@ auto = roads |>
     levels = c("Unknown", "Road", "Secondary Highway", "Major Highway"))
   )
 
-box = countries_vw |> 
+exp = 75000
+
+box_pl = countries_vw |> 
   filter (SOVEREIGNT == 'Poland') |> 
-  st_bbox()
+  st_bbox() +
+  c(-exp, -exp, exp, exp) # expand by 50 km each side
 
 ggplot() +
   geom_sf(data = countries_vw, linewidth = 1) +
   geom_sf(data = auto, aes(color = type, linewidth = type)) +
-  scale_x_continuous(limits = box[c(1,3)]) +
-  scale_y_continuous(limits = box[c(2,4)]) +
+  scale_x_continuous(limits = box_pl[c(1,3)], expand = c(0,0)) +
+  scale_y_continuous(limits = box_pl[c(2,4)], expand = c(0,0)) +
   theme_bw()
 ```
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-34-1.png" width="100%" />
 
 По умолчанию ситуация с символами тревожная, но проблему можно решить путем ручной настройки толщин линий и цветов:
+
 
 ```r
 ggplot() +
@@ -1000,52 +965,158 @@ ggplot() +
   scale_color_manual(values = c('orange', 'red', 'firebrick', 'darkviolet'), 
                      name = 'Road class',
                      guide = guide_legend(reverse = TRUE)) +
-  scale_x_continuous(limits = box[c(1,3)]) +
-  scale_y_continuous(limits = box[c(2,4)]) +
+  scale_x_continuous(limits = box_pl[c(1,3)], expand = c(0,0)) +
+  scale_y_continuous(limits = box_pl[c(2,4)], expand = c(0,0)) +
   theme_bw()
 ```
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-35-1.png" width="100%" />
+
 Вернем отображение населенных пунктов, но уже с более дробной классификацией:
 
+
 ```r
+options(scipen = 999)
 brks = c(100000, 500000, 1000000)
 
-ggplot() +
+map_pl = ggplot() +
   geom_sf(data = countries_vw, linewidth = 1) +
   geom_sf(data = auto, aes(color = type, linewidth = type), 
           show.legend = "line") +
-  scale_linewidth_ordinal(range = c(0.05, 1), 
+  scale_linewidth_ordinal(range = c(0.2, 1), 
                           name = 'Road class',
                           guide = guide_legend(reverse = TRUE)) +
-  scale_color_manual(values = c('orange', 'firebrick', 'red', 'darkviolet'), 
+  scale_color_manual(values = c('grey20', 'firebrick', 'red', 'darkviolet'), 
                      name = 'Road class',
                      guide = guide_legend(reverse = TRUE)) +
   geom_sf(data = cities_eu, mapping = aes(size = POP_MAX), colour = "black",
           fill = "white",  shape = 21, stroke = 0.5) +
-  scale_size_binned(breaks = brks, range = c(2, 5), 
+  scale_size_binned(breaks = brks, range = c(1.5, 4), 
                     name = 'Population, ppl', trans = 'sqrt') +
   new_scale('size') +
   geom_label_repel(data = cities_eu, stat = "sf_coordinates", force_pull = 1,
                 aes(label = NAME, geometry = geom, size = POP_MAX),
                 fontface = 'bold', label.padding=.1, label.size = NA, 
-                fill = alpha("white", 0.8), , show.legend = FALSE) +
-  scale_size_binned(breaks = brks, range = c(3, 5), name = 'Population, ppl') +
-  scale_x_continuous(limits = box[c(1,3)]) +
-  scale_y_continuous(limits = box[c(2,4)]) +
-  theme_bw()
+                fill = alpha("white", 0.8), show.legend = FALSE) +
+  scale_size_binned(breaks = brks, range = c(2.5, 4), name = 'Population, ppl') +
+  scale_x_continuous(limits = box_pl[c(1,3)], expand = c(0,0)) +
+  scale_y_continuous(limits = box_pl[c(2,4)], expand = c(0,0)) +
+  theme_bw() +
+  labs(x = NULL, y = NULL, title = 'Poland')
+
+map_pl
 ```
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-36-1.png" width="100%" />
 
 Более сложная ситуация возникает, когда требуется варьировать одновременно несколько графических переменных. Например, если крупнейшие населенные пункты необходимо показывать квадратом, а не кружком. Или автомобильные дороги должны быть толще, чем железные. В этом случае у вас есть два варианта решения проблемы. Вариант "в лоб" — разнести классы объектов по разным слоям и назначить им индивидуальные значки. Вариант более вдумчивый — настроить отображение там образом, чтобы данные брались из одного слоя и классифицировались непосредственно при отображении. Но в этом случае с высокой вероятностью придется делать индивидуальные символы для каждого типа объекта.
- 
 
-## Легенды
+## Масштабные линейки и указатели направления на север.
 
-## Масштабные линейки
+Стандартные элементы компоновки карты — масштабная линейка и указатель на север. С точки зрения __ggplot__ они являются аннотациями. Соответствующие аннотации можно найти в пакете [ggspatial](https://paleolimbot.github.io/ggspatial/).
+
+Масштабную линейку и указатель севера, отображаемые по умолчанию:
+
+
+```r
+map_pl +
+  annotation_north_arrow() +
+  annotation_scale()
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-37-1.png" width="100%" />
+
+можно кастомизировать, изменив их стиль, размер, расположение и прочие параметры. Например, в данном случае целесообразно переместить их в левый верхний угол и уменьшить в размере:
+
+
+```r
+suppl = list(
+  annotation_north_arrow(style = north_arrow_fancy_orienteering(),
+                         height = unit(1, 'cm'),
+                         width = unit(1, 'cm'),
+                         pad_x = unit(0.05, "cm"),
+                         pad_y = unit(0.7, "cm"),
+                         which_north = "true",
+                         location = 'tl'),
+  annotation_scale(location = 'tl',
+                   style = 'ticks',
+                   height = unit(0.1, "cm"),
+                   pad_y = unit(0.2, "cm"),
+                   pad_x = unit(2.0, "cm"))
+)
+
+map_pl + suppl
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-38-1.png" width="100%" />
 
 ## Карты-врезки
+
+Карты-врезки используются для того чтобы дополнить картографическое изображение пространственной информацией, которая не помещается на основное изображение. Достаточно часто такие карты показывают:
+
+- фрагменты изображаемой территории в более крупном масштабе;
+- ту же самую территорию или ее окружение в более мелком масштабе;
+
+При этом с содержательной точки зрения карты-врезки могут как быть идентичными основной карте (показывать те же явления, но в другом масштабе), так и отличаться от нее. Например, на гидрогеологической картах врезки показывают артезианские бассейны для той же территории.
+
+В качестве примера врезки разместим карту Европы, которая показывает местоположение отображаемой страны на карте Европы и выделяет ее другим цветом. Для этого понадобится создать карту-врезку как новый объект ggplot и добавить ее на основную карту на слой аннотаций как объект `ggplotGrob`.
+
+Начнем с построения карты-врезки:
+
+
+```r
+inset_map = ggplot() +
+  geom_sf(data = cnt110, linewidth = 0.25,
+          fill = 'grey',
+          show.legend = FALSE) +
+  geom_sf(data = filter(cnt110, SOVEREIGNT == 'Poland'), 
+          fill = 'cyan', linewidth = 1,
+          show.legend = FALSE) +
+  coord_sf(crs = prj, label_graticule = '',
+           xlim = c(box[1], box[3]),
+           ylim = c(box[2], box[4])) +
+  theme_bw() +
+  theme(panel.background = element_rect(fill = 'azure'),
+        plot.margin = margin(0, 0, 0, 0, "cm"))
+
+inset_map
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-39-1.png" width="100%" />
+
+Теперь разместим ее в одном из углов. Поскольку мы знаем ограничивающий прямоугольник отображаемой области, это сделать можно путем аффинных преобразований относительно выбранного угла карты. Например, относительно левого нижнего:
+
+
+```r
+lowleft = box_pl[c(1,2,1,2)] # левый нижний угол
+ratio = (box[4] - box[2]) / (box[3] - box[1]) # пропорции карты-врезки
+dx = box_pl[3] - box_pl[1] # ширина основной карты
+
+# высота основной карты, как если бы она имела 
+# такие же пропорции, как и врезка
+dy = dx * ratio 
+
+# Находим ограничивающий прямоугольник врезки
+# Которая будет иметь длину стороны 0,25 от длины карты
+
+box_ins = 0.25 * c(0, 0,  dx, dy) + lowleft 
+
+# собираем аннотацию 
+inset = annotation_custom(
+    grob = ggplotGrob(inset_map),
+    xmin = box_ins[1], xmax = box_ins[3],
+    ymin = box_ins[2], ymax = box_ins[4]
+)
+
+map_pl +
+  suppl +
+  inset
+```
+
+<img src="10-Maps_files/figure-html/unnamed-chunk-40-1.png" width="100%" />
+
+Код построения карты-врезки целесообразно вынести в функцию для последующего использования.
+
 
 ### Вопросы {#questions_maps}
 

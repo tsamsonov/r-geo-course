@@ -74,7 +74,8 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">ggnewscale</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ropenscilabs/rnaturalearth">rnaturalearth</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ateucher/rmapshaper">rmapshaper</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">RColorBrewer</span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">RColorBrewer</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://paleolimbot.github.io/ggspatial/">ggspatial</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="maps_intro" class="section level2" number="10.2">
 <h2>
@@ -135,42 +136,10 @@
 <p>В то же время, каждый раз выкачивать данные для работы бывает неэффективно. Поэтому вы можете скачать себе полную базу данных Natural Earth в формате GeoPackage (GPKG) по ссылке <a href="https://www.naturalearthdata.com/downloads/" class="uri">https://www.naturalearthdata.com/downloads/</a> и положить ее в любую удобную локацию. В этом случае общение с интернетом в процессе построения карт не потребуется:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ne</span> <span class="op">=</span> <span class="st">'/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg'</span></span>
-<span><span class="va">rivers</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_rivers_lake_centerlines'</span><span class="op">)</span></span>
-<span><span class="co">## Reading layer `ne_110m_rivers_lake_centerlines' from data source </span></span>
-<span><span class="co">##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' </span></span>
-<span><span class="co">##   using driver `GPKG'</span></span>
-<span><span class="co">## Simple feature collection with 13 features and 31 fields</span></span>
-<span><span class="co">## Geometry type: LINESTRING</span></span>
-<span><span class="co">## Dimension:     XY</span></span>
-<span><span class="co">## Bounding box:  xmin: -135.3134 ymin: -33.99358 xmax: 129.956 ymax: 72.90651</span></span>
-<span><span class="co">## Geodetic CRS:  WGS 84</span></span>
-<span><span class="va">lakes</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_lakes'</span><span class="op">)</span></span>
-<span><span class="co">## Reading layer `ne_110m_lakes' from data source </span></span>
-<span><span class="co">##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' </span></span>
-<span><span class="co">##   using driver `GPKG'</span></span>
-<span><span class="co">## Simple feature collection with 25 features and 33 fields</span></span>
-<span><span class="co">## Geometry type: POLYGON</span></span>
-<span><span class="co">## Dimension:     XY</span></span>
-<span><span class="co">## Bounding box:  xmin: -124.9536 ymin: -16.53641 xmax: 109.9298 ymax: 66.9693</span></span>
-<span><span class="co">## Geodetic CRS:  WGS 84</span></span>
-<span><span class="va">land</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_land'</span><span class="op">)</span></span>
-<span><span class="co">## Reading layer `ne_110m_land' from data source </span></span>
-<span><span class="co">##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' </span></span>
-<span><span class="co">##   using driver `GPKG'</span></span>
-<span><span class="co">## Simple feature collection with 127 features and 3 fields</span></span>
-<span><span class="co">## Geometry type: POLYGON</span></span>
-<span><span class="co">## Dimension:     XY</span></span>
-<span><span class="co">## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513</span></span>
-<span><span class="co">## Geodetic CRS:  WGS 84</span></span>
-<span><span class="va">borders</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_admin_0_boundary_lines_land'</span><span class="op">)</span></span>
-<span><span class="co">## Reading layer `ne_110m_admin_0_boundary_lines_land' from data source </span></span>
-<span><span class="co">##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' </span></span>
-<span><span class="co">##   using driver `GPKG'</span></span>
-<span><span class="co">## Simple feature collection with 186 features and 5 fields</span></span>
-<span><span class="co">## Geometry type: LINESTRING</span></span>
-<span><span class="co">## Dimension:     XY</span></span>
-<span><span class="co">## Bounding box:  xmin: -140.9978 ymin: -54.89681 xmax: 141.0339 ymax: 70.16419</span></span>
-<span><span class="co">## Geodetic CRS:  WGS 84</span></span></code></pre></div>
+<span><span class="va">rivers</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_rivers_lake_centerlines'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="va">lakes</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_lakes'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="va">land</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_land'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="va">borders</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_admin_0_boundary_lines_land'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p>В дальнейшем нам понадобятся данные другой детализации, поэтому объединим текущие данные в список, соответствующий масштабу 110М. Для этого используем функцию <code>lst</code> из пакета <em>tibble</em>, которая элементам списка дает такие же имена как объединяемым элементам:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lyr110</span> <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/lst.html">lst</a></span><span class="op">(</span><span class="va">ocean</span>, <span class="va">land</span>, <span class="va">coast</span>, <span class="va">countries</span>, </span>
@@ -344,6 +313,7 @@
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="st">"+proj=mill"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-14-5.png" width="100%"></div>
+<p>Добавим теперь линии градусной сетки:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lons</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span>, by <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span><span class="va">lats</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">90</span>, <span class="fl">90</span>, by <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
@@ -594,33 +564,9 @@
 <p>Проблема детализации касается в основном картографической основы, поскольку подбирается она прежде всего в соответствии с охватом исследуемой территории и физическим размером итогового изображения. В случае если предполагается совмещение картографической основы и тематических данных, важным фактором будет также детализация самих тематических данных.</p>
 <p>В качестве примера для выбора подходящей основы рассмотрим задачу построения карты Европы, которая бы вписывалась в размер страницы данной книги. База данных Natural Earth содержит 3 уровня детализации, из которых надо выбрать подходящий. Сравним их:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cnt010</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_10m_admin_0_countries'</span><span class="op">)</span></span>
-<span><span class="co">## Reading layer `ne_10m_admin_0_countries' from data source </span></span>
-<span><span class="co">##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' </span></span>
-<span><span class="co">##   using driver `GPKG'</span></span>
-<span><span class="co">## Simple feature collection with 255 features and 94 fields</span></span>
-<span><span class="co">## Geometry type: MULTIPOLYGON</span></span>
-<span><span class="co">## Dimension:     XY</span></span>
-<span><span class="co">## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.6341</span></span>
-<span><span class="co">## Geodetic CRS:  WGS 84</span></span>
-<span><span class="va">cnt050</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_50m_admin_0_countries'</span><span class="op">)</span></span>
-<span><span class="co">## Reading layer `ne_50m_admin_0_countries' from data source </span></span>
-<span><span class="co">##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' </span></span>
-<span><span class="co">##   using driver `GPKG'</span></span>
-<span><span class="co">## Simple feature collection with 241 features and 94 fields</span></span>
-<span><span class="co">## Geometry type: MULTIPOLYGON</span></span>
-<span><span class="co">## Dimension:     XY</span></span>
-<span><span class="co">## Bounding box:  xmin: -180 ymin: -89.99893 xmax: 180 ymax: 83.59961</span></span>
-<span><span class="co">## Geodetic CRS:  WGS 84</span></span>
-<span><span class="va">cnt110</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_admin_0_countries'</span><span class="op">)</span></span>
-<span><span class="co">## Reading layer `ne_110m_admin_0_countries' from data source </span></span>
-<span><span class="co">##   `/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg' </span></span>
-<span><span class="co">##   using driver `GPKG'</span></span>
-<span><span class="co">## Simple feature collection with 177 features and 94 fields</span></span>
-<span><span class="co">## Geometry type: MULTIPOLYGON</span></span>
-<span><span class="co">## Dimension:     XY</span></span>
-<span><span class="co">## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513</span></span>
-<span><span class="co">## Geodetic CRS:  WGS 84</span></span>
+<code class="sourceCode R"><span><span class="va">cnt010</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_10m_admin_0_countries'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="va">cnt050</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_50m_admin_0_countries'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="va">cnt110</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_admin_0_countries'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">prj</span> <span class="op">=</span> <span class="st">'+proj=laea +lat_0=50 +lon_0=10'</span></span>
 <span></span>
@@ -893,15 +839,18 @@
 <span>    levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Unknown"</span>, <span class="st">"Road"</span>, <span class="st">"Secondary Highway"</span>, <span class="st">"Major Highway"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="va">box</span> <span class="op">=</span> <span class="va">countries_vw</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">exp</span> <span class="op">=</span> <span class="fl">75000</span></span>
+<span></span>
+<span><span class="va">box_pl</span> <span class="op">=</span> <span class="va">countries_vw</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span> <span class="op">(</span><span class="va">SOVEREIGNT</span> <span class="op">==</span> <span class="st">'Poland'</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="va">exp</span>, <span class="op">-</span><span class="va">exp</span>, <span class="va">exp</span>, <span class="va">exp</span><span class="op">)</span> <span class="co"># expand by 50 km each side</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">countries_vw</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">auto</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">type</span>, linewidth <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="va">box</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="va">box</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="va">box_pl</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span>, expand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="va">box_pl</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span><span class="op">)</span><span class="op">]</span>, expand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-34-1.png" width="100%"></div>
 <p>По умолчанию ситуация с символами тревожная, но проблему можно решить путем ручной настройки толщин линий и цветов:</p>
@@ -916,59 +865,135 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'orange'</span>, <span class="st">'red'</span>, <span class="st">'firebrick'</span>, <span class="st">'darkviolet'</span><span class="op">)</span>, </span>
 <span>                     name <span class="op">=</span> <span class="st">'Road class'</span>,</span>
 <span>                     guide <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op">(</span>reverse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="va">box</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="va">box</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="va">box_pl</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span>, expand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="va">box_pl</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span><span class="op">)</span><span class="op">]</span>, expand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="inline-figure">
-<img src="10-Maps_files/figure-html/unnamed-chunk-35-1.png" width="100%">
-Вернем отображение населенных пунктов, но уже с более дробной классификацией:</div>
+<div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-35-1.png" width="100%"></div>
+<p>Вернем отображение населенных пунктов, но уже с более дробной классификацией:</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">brks</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100000</span>, <span class="fl">500000</span>, <span class="fl">1000000</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>scipen <span class="op">=</span> <span class="fl">999</span><span class="op">)</span></span>
+<span><span class="va">brks</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100000</span>, <span class="fl">500000</span>, <span class="fl">1000000</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="va">map_pl</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">countries_vw</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">auto</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">type</span>, linewidth <span class="op">=</span> <span class="va">type</span><span class="op">)</span>, </span>
 <span>          show.legend <span class="op">=</span> <span class="st">"line"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_linewidth.html">scale_linewidth_ordinal</a></span><span class="op">(</span>range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">1</span><span class="op">)</span>, </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_linewidth.html">scale_linewidth_ordinal</a></span><span class="op">(</span>range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">1</span><span class="op">)</span>, </span>
 <span>                          name <span class="op">=</span> <span class="st">'Road class'</span>,</span>
 <span>                          guide <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op">(</span>reverse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'orange'</span>, <span class="st">'firebrick'</span>, <span class="st">'red'</span>, <span class="st">'darkviolet'</span><span class="op">)</span>, </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'grey20'</span>, <span class="st">'firebrick'</span>, <span class="st">'red'</span>, <span class="st">'darkviolet'</span><span class="op">)</span>, </span>
 <span>                     name <span class="op">=</span> <span class="st">'Road class'</span>,</span>
 <span>                     guide <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op">(</span>reverse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">cities_eu</span>, mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>size <span class="op">=</span> <span class="va">POP_MAX</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"black"</span>,</span>
 <span>          fill <span class="op">=</span> <span class="st">"white"</span>,  shape <span class="op">=</span> <span class="fl">21</span>, stroke <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_size.html">scale_size_binned</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">brks</span>, range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span>, </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_size.html">scale_size_binned</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">brks</span>, range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">4</span><span class="op">)</span>, </span>
 <span>                    name <span class="op">=</span> <span class="st">'Population, ppl'</span>, trans <span class="op">=</span> <span class="st">'sqrt'</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggnewscale/man/new_scale.html">new_scale</a></span><span class="op">(</span><span class="st">'size'</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggrepel/man/geom_text_repel.html">geom_label_repel</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">cities_eu</span>, stat <span class="op">=</span> <span class="st">"sf_coordinates"</span>, force_pull <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>                <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">NAME</span>, geometry <span class="op">=</span> <span class="va">geom</span>, size <span class="op">=</span> <span class="va">POP_MAX</span><span class="op">)</span>,</span>
 <span>                fontface <span class="op">=</span> <span class="st">'bold'</span>, label.padding<span class="op">=</span><span class="fl">.1</span>, label.size <span class="op">=</span> <span class="cn">NA</span>, </span>
-<span>                fill <span class="op">=</span> <span class="fu"><a href="https://scales.r-lib.org/reference/alpha.html">alpha</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="fl">0.8</span><span class="op">)</span>, , show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_size.html">scale_size_binned</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">brks</span>, range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">5</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">'Population, ppl'</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="va">box</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="va">box</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>                fill <span class="op">=</span> <span class="fu"><a href="https://scales.r-lib.org/reference/alpha.html">alpha</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="fl">0.8</span><span class="op">)</span>, show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_size.html">scale_size_binned</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">brks</span>, range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2.5</span>, <span class="fl">4</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">'Population, ppl'</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="va">box_pl</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span>, expand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="va">box_pl</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span><span class="op">)</span><span class="op">]</span>, expand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span>, title <span class="op">=</span> <span class="st">'Poland'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">map_pl</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-36-1.png" width="100%"></div>
 <p>Более сложная ситуация возникает, когда требуется варьировать одновременно несколько графических переменных. Например, если крупнейшие населенные пункты необходимо показывать квадратом, а не кружком. Или автомобильные дороги должны быть толще, чем железные. В этом случае у вас есть два варианта решения проблемы. Вариант “в лоб” — разнести классы объектов по разным слоям и назначить им индивидуальные значки. Вариант более вдумчивый — настроить отображение там образом, чтобы данные брались из одного слоя и классифицировались непосредственно при отображении. Но в этом случае с высокой вероятностью придется делать индивидуальные символы для каждого типа объекта.</p>
 </div>
 </div>
-<div id="легенды" class="section level2" number="10.8">
+<div id="масштабные-линейки-и-указатели-направления-на-север." class="section level2" number="10.8">
 <h2>
-<span class="header-section-number">10.8</span> Легенды<a class="anchor" aria-label="anchor" href="#%D0%BB%D0%B5%D0%B3%D0%B5%D0%BD%D0%B4%D1%8B"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.8</span> Масштабные линейки и указатели направления на север.<a class="anchor" aria-label="anchor" href="#%D0%BC%D0%B0%D1%81%D1%88%D1%82%D0%B0%D0%B1%D0%BD%D1%8B%D0%B5-%D0%BB%D0%B8%D0%BD%D0%B5%D0%B9%D0%BA%D0%B8-%D0%B8-%D1%83%D0%BA%D0%B0%D0%B7%D0%B0%D1%82%D0%B5%D0%BB%D0%B8-%D0%BD%D0%B0%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BD%D0%B0-%D1%81%D0%B5%D0%B2%D0%B5%D1%80."><i class="fas fa-link"></i></a>
 </h2>
+<p>Стандартные элементы компоновки карты — масштабная линейка и указатель на север. С точки зрения <strong>ggplot</strong> они являются аннотациями. Соответствующие аннотации можно найти в пакете <a href="https://paleolimbot.github.io/ggspatial/">ggspatial</a>.</p>
+<p>Масштабную линейку и указатель севера, отображаемые по умолчанию:</p>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">map_pl</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/annotation_north_arrow.html">annotation_north_arrow</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/annotation_scale.html">annotation_scale</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-37-1.png" width="100%"></div>
+<p>можно кастомизировать, изменив их стиль, размер, расположение и прочие параметры. Например, в данном случае целесообразно переместить их в левый верхний угол и уменьшить в размере:</p>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">suppl</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/annotation_north_arrow.html">annotation_north_arrow</a></span><span class="op">(</span>style <span class="op">=</span> <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/north_arrow_orienteering.html">north_arrow_fancy_orienteering</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>                         height <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">1</span>, <span class="st">'cm'</span><span class="op">)</span>,</span>
+<span>                         width <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">1</span>, <span class="st">'cm'</span><span class="op">)</span>,</span>
+<span>                         pad_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="st">"cm"</span><span class="op">)</span>,</span>
+<span>                         pad_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="st">"cm"</span><span class="op">)</span>,</span>
+<span>                         which_north <span class="op">=</span> <span class="st">"true"</span>,</span>
+<span>                         location <span class="op">=</span> <span class="st">'tl'</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/annotation_scale.html">annotation_scale</a></span><span class="op">(</span>location <span class="op">=</span> <span class="st">'tl'</span>,</span>
+<span>                   style <span class="op">=</span> <span class="st">'ticks'</span>,</span>
+<span>                   height <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="st">"cm"</span><span class="op">)</span>,</span>
+<span>                   pad_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="st">"cm"</span><span class="op">)</span>,</span>
+<span>                   pad_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">2.0</span>, <span class="st">"cm"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">map_pl</span> <span class="op">+</span> <span class="va">suppl</span></span></code></pre></div>
+<div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-38-1.png" width="100%"></div>
 </div>
-<div id="масштабные-линейки" class="section level2" number="10.9">
+<div id="карты-врезки" class="section level2" number="10.9">
 <h2>
-<span class="header-section-number">10.9</span> Масштабные линейки<a class="anchor" aria-label="anchor" href="#%D0%BC%D0%B0%D1%81%D1%88%D1%82%D0%B0%D0%B1%D0%BD%D1%8B%D0%B5-%D0%BB%D0%B8%D0%BD%D0%B5%D0%B9%D0%BA%D0%B8"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.9</span> Карты-врезки<a class="anchor" aria-label="anchor" href="#%D0%BA%D0%B0%D1%80%D1%82%D1%8B-%D0%B2%D1%80%D0%B5%D0%B7%D0%BA%D0%B8"><i class="fas fa-link"></i></a>
 </h2>
-</div>
-<div id="карты-врезки" class="section level2" number="10.10">
-<h2>
-<span class="header-section-number">10.10</span> Карты-врезки<a class="anchor" aria-label="anchor" href="#%D0%BA%D0%B0%D1%80%D1%82%D1%8B-%D0%B2%D1%80%D0%B5%D0%B7%D0%BA%D0%B8"><i class="fas fa-link"></i></a>
-</h2>
-<div id="questions_maps" class="section level3" number="10.10.1">
+<p>Карты-врезки используются для того чтобы дополнить картографическое изображение пространственной информацией, которая не помещается на основное изображение. Достаточно часто такие карты показывают:</p>
+<ul>
+<li>фрагменты изображаемой территории в более крупном масштабе;</li>
+<li>ту же самую территорию или ее окружение в более мелком масштабе;</li>
+</ul>
+<p>При этом с содержательной точки зрения карты-врезки могут как быть идентичными основной карте (показывать те же явления, но в другом масштабе), так и отличаться от нее. Например, на гидрогеологической картах врезки показывают артезианские бассейны для той же территории.</p>
+<p>В качестве примера врезки разместим карту Европы, которая показывает местоположение отображаемой страны на карте Европы и выделяет ее другим цветом. Для этого понадобится создать карту-врезку как новый объект ggplot и добавить ее на основную карту на слой аннотаций как объект <code>ggplotGrob</code>.</p>
+<p>Начнем с построения карты-врезки:</p>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">inset_map</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">cnt110</span>, linewidth <span class="op">=</span> <span class="fl">0.25</span>,</span>
+<span>          fill <span class="op">=</span> <span class="st">'grey'</span>,</span>
+<span>          show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">cnt110</span>, <span class="va">SOVEREIGNT</span> <span class="op">==</span> <span class="st">'Poland'</span><span class="op">)</span>, </span>
+<span>          fill <span class="op">=</span> <span class="st">'cyan'</span>, linewidth <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>          show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="va">prj</span>, label_graticule <span class="op">=</span> <span class="st">''</span>,</span>
+<span>           xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">box</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">box</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>           ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">box</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="va">box</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>panel.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">'azure'</span><span class="op">)</span>,</span>
+<span>        plot.margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="st">"cm"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">inset_map</span></span></code></pre></div>
+<div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-39-1.png" width="100%"></div>
+<p>Теперь разместим ее в одном из углов. Поскольку мы знаем ограничивающий прямоугольник отображаемой области, это сделать можно путем аффинных преобразований относительно выбранного угла карты. Например, относительно левого нижнего:</p>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">lowleft</span> <span class="op">=</span> <span class="va">box_pl</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span> <span class="co"># левый нижний угол</span></span>
+<span><span class="va">ratio</span> <span class="op">=</span> <span class="op">(</span><span class="va">box</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span> <span class="op">-</span> <span class="va">box</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">box</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> <span class="op">-</span> <span class="va">box</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="co"># пропорции карты-врезки</span></span>
+<span><span class="va">dx</span> <span class="op">=</span> <span class="va">box_pl</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> <span class="op">-</span> <span class="va">box_pl</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="co"># ширина основной карты</span></span>
+<span></span>
+<span><span class="co"># высота основной карты, как если бы она имела </span></span>
+<span><span class="co"># такие же пропорции, как и врезка</span></span>
+<span><span class="va">dy</span> <span class="op">=</span> <span class="va">dx</span> <span class="op">*</span> <span class="va">ratio</span> </span>
+<span></span>
+<span><span class="co"># Находим ограничивающий прямоугольник врезки</span></span>
+<span><span class="co"># Которая будет иметь длину стороны 0,25 от длины карты</span></span>
+<span></span>
+<span><span class="va">box_ins</span> <span class="op">=</span> <span class="fl">0.25</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>,  <span class="va">dx</span>, <span class="va">dy</span><span class="op">)</span> <span class="op">+</span> <span class="va">lowleft</span> </span>
+<span></span>
+<span><span class="co"># собираем аннотацию </span></span>
+<span><span class="va">inset</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotation_custom.html">annotation_custom</a></span><span class="op">(</span></span>
+<span>    grob <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplotGrob.html">ggplotGrob</a></span><span class="op">(</span><span class="va">inset_map</span><span class="op">)</span>,</span>
+<span>    xmin <span class="op">=</span> <span class="va">box_ins</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, xmax <span class="op">=</span> <span class="va">box_ins</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>,</span>
+<span>    ymin <span class="op">=</span> <span class="va">box_ins</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, ymax <span class="op">=</span> <span class="va">box_ins</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">map_pl</span> <span class="op">+</span></span>
+<span>  <span class="va">suppl</span> <span class="op">+</span></span>
+<span>  <span class="va">inset</span></span></code></pre></div>
+<div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-40-1.png" width="100%"></div>
+<p>Код построения карты-врезки целесообразно вынести в функцию для последующего использования.</p>
+<div id="questions_maps" class="section level3" number="10.9.1">
 <h3>
-<span class="header-section-number">10.10.1</span> Вопросы<a class="anchor" aria-label="anchor" href="#questions_maps"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.9.1</span> Вопросы<a class="anchor" aria-label="anchor" href="#questions_maps"><i class="fas fa-link"></i></a>
 </h3>
 <ol style="list-style-type: decimal">
 <li>Какие типы геометрии <strong>ggplot2</strong> позволяют визуализировать данные типа <strong>sf</strong> и <strong>stars</strong>?</li>
@@ -984,9 +1009,9 @@
 <li>Если на карте точечные объекты (например, населенные пункты) размещены слишком густо, как можно добиться их прореживания?</li>
 </ol>
 </div>
-<div id="tasks_map" class="section level3" number="10.10.2">
+<div id="tasks_map" class="section level3" number="10.9.2">
 <h3>
-<span class="header-section-number">10.10.2</span> Упражнения<a class="anchor" aria-label="anchor" href="#tasks_map"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.9.2</span> Упражнения<a class="anchor" aria-label="anchor" href="#tasks_map"><i class="fas fa-link"></i></a>
 </h3>
 <ol style="list-style-type: decimal">
 <li>Используя возможности <strong>ggplot2</strong>, и данные <em>Natural Earth</em> масштаба 10M, создайте политико-административную и физическую карты Европы в конической проекции. Определите самостоятельно необходимые для этого слои. В качестве данных о рельефе для физической карты скачайте <a href="https://github.com/tsamsonov/r-geo-course/blob/master/data/world/gebco_2020_04s1.5.tif">цифровую модель рельефа GEBCO</a>, оптимизированную для отображения в соответствующих масштабах.</li>
