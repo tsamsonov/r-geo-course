@@ -934,9 +934,9 @@ dem
 ##              Min. 1st Qu. Median      Mean 3rd Qu. Max.
 ## gebco.tif  -10348   -4287  -2458 -1890.525     215 6581
 ## dimension(s):
-##   from  to offset delta refsys point values x/y
-## x    1 900   -180   0.4 WGS 84 FALSE   NULL [x]
-## y    1 450     90  -0.4 WGS 84 FALSE   NULL [y]
+##   from  to offset delta refsys point x/y
+## x    1 900   -180   0.4 WGS 84 FALSE [x]
+## y    1 450     90  -0.4 WGS 84 FALSE [y]
 
 img = read_stars('data/world/BlueMarbleJuly.tif') # Цветной космический снимок (RGB)
 img
@@ -945,10 +945,10 @@ img
 ##                     Min. 1st Qu. Median     Mean 3rd Qu. Max.
 ## BlueMarbleJuly.tif     1      13     33 63.13569      75  255
 ## dimension(s):
-##      from  to offset delta refsys point values x/y
-## x       1 720   -180   0.5 WGS 84 FALSE   NULL [x]
-## y       1 360     90  -0.5 WGS 84 FALSE   NULL [y]
-## band    1   3     NA    NA     NA    NA   NULL
+##      from  to offset delta refsys point x/y
+## x       1 720   -180   0.5 WGS 84 FALSE [x]
+## y       1 360     90  -0.5 WGS 84 FALSE [y]
+## band    1   3     NA    NA     NA    NA
 ```
 
 ### Внутренняя структура {#stars_inner}
@@ -993,10 +993,14 @@ str(img)
 ##   .. ..$ point : logi NA
 ##   .. ..$ values: NULL
 ##   .. ..- attr(*, "class")= chr "dimension"
-##   ..- attr(*, "raster")=List of 3
+##   ..- attr(*, "raster")=List of 4
 ##   .. ..$ affine     : num [1:2] 0 0
 ##   .. ..$ dimensions : chr [1:2] "x" "y"
 ##   .. ..$ curvilinear: logi FALSE
+##   .. ..$ blocksizes : int [1:3, 1:2] 720 720 720 1 1 1
+##   .. .. ..- attr(*, "dimnames")=List of 2
+##   .. .. .. ..$ : NULL
+##   .. .. .. ..$ : chr [1:2] "x" "y"
 ##   .. ..- attr(*, "class")= chr "stars_raster"
 ##   ..- attr(*, "class")= chr "dimensions"
 ##  - attr(*, "class")= chr "stars"
@@ -1016,10 +1020,10 @@ img[[1]][100, 200, 2]
 
 ```r
 attr(img, 'dimensions')
-##      from  to offset delta refsys point values x/y
-## x       1 720   -180   0.5 WGS 84 FALSE   NULL [x]
-## y       1 360     90  -0.5 WGS 84 FALSE   NULL [y]
-## band    1   3     NA    NA     NA    NA   NULL
+##      from  to offset delta refsys point x/y
+## x       1 720   -180   0.5 WGS 84 FALSE [x]
+## y       1 360     90  -0.5 WGS 84 FALSE [y]
+## band    1   3     NA    NA     NA    NA
 ```
 
 Этот атрибут представляет собой список, длина которого равна количеству измерений в массиве данных переменной. Обычно измерения имеют имена, в данном случае это `x`, `y` и `band`. Описание каждого измерения выполнено по единому шаблону, который включает следующие параметры:
@@ -1086,10 +1090,14 @@ attr(img, 'dimensions')[['x']]
 
 ```r
 img |> attr('dimensions') |> attr('raster') |> str()
-## List of 3
+## List of 4
 ##  $ affine     : num [1:2] 0 0
 ##  $ dimensions : chr [1:2] "x" "y"
 ##  $ curvilinear: logi FALSE
+##  $ blocksizes : int [1:3, 1:2] 720 720 720 1 1 1
+##   ..- attr(*, "dimnames")=List of 2
+##   .. ..$ : NULL
+##   .. ..$ : chr [1:2] "x" "y"
 ##  - attr(*, "class")= chr "stars_raster"
 ```
 
@@ -1229,9 +1237,9 @@ dem_greenland
 ##             Min. 1st Qu. Median     Mean 3rd Qu. Max.
 ## gebco.tif  -4041    -811    -49 70.50328 1187.25 3228
 ## dimension(s):
-##   from  to offset delta refsys point values x/y
-## x  251 425   -180   0.4 WGS 84 FALSE   NULL [x]
-## y   13  80     90  -0.4 WGS 84 FALSE   NULL [y]
+##   from  to offset delta refsys point x/y
+## x  251 425   -180   0.4 WGS 84 FALSE [x]
+## y   13  80     90  -0.4 WGS 84 FALSE [y]
 
 plot(dem_greenland)
 ```
@@ -1250,9 +1258,9 @@ dem_country
 ##            Min. 1st Qu. Median     Mean 3rd Qu. Max. NA's
 ## gebco.tif   261   877.5   1628 1824.854    2635 5036  485
 ## dimension(s):
-##   from  to offset delta refsys point values x/y
-## x  602 638   -180   0.4 WGS 84 FALSE   NULL [x]
-## y  129 152     90  -0.4 WGS 84 FALSE   NULL [y]
+##   from  to offset delta refsys point x/y
+## x  602 638   -180   0.4 WGS 84 FALSE [x]
+## y  129 152     90  -0.4 WGS 84 FALSE [y]
 plot(dem_country)
 ```
 
@@ -1278,10 +1286,10 @@ ch1
 ##                     Min. 1st Qu. Median    Mean 3rd Qu. Max.
 ## BlueMarbleJuly.tif     1       5     14 51.1141      47  255
 ## dimension(s):
-##      from  to offset delta refsys point values x/y
-## x       1 720   -180   0.5 WGS 84 FALSE   NULL [x]
-## y       1 360     90  -0.5 WGS 84 FALSE   NULL [y]
-## band    1   1     NA    NA     NA    NA   NULL
+##      from  to offset delta refsys point x/y
+## x       1 720   -180   0.5 WGS 84 FALSE [x]
+## y       1 360     90  -0.5 WGS 84 FALSE [y]
+## band    1   1     NA    NA     NA    NA
 plot(ch1)
 ```
 
@@ -1297,10 +1305,10 @@ frag
 ##                     Min. 1st Qu. Median     Mean 3rd Qu. Max.
 ## BlueMarbleJuly.tif     1      20     50 65.96065     106  221
 ## dimension(s):
-##      from  to offset delta refsys point values x/y
-## x     320 470   -180   0.5 WGS 84 FALSE   NULL [x]
-## y     100 255     90  -0.5 WGS 84 FALSE   NULL [y]
-## band    1   3     NA    NA     NA    NA   NULL
+##      from  to offset delta refsys point x/y
+## x     320 470   -180   0.5 WGS 84 FALSE [x]
+## y     100 255     90  -0.5 WGS 84 FALSE [y]
+## band    1   3     NA    NA     NA    NA
 plot(st_rgb(frag))
 ```
 
@@ -1315,13 +1323,13 @@ etopo = read_stars(c('data/etopo1_bed.tif', 'data/etopo1_ice.tif'))
 etopo
 ## stars object with 2 dimensions and 2 attributes
 ## attribute(s):
-##                   Min. 1st Qu.  Median      Mean 3rd Qu. Max.
-## etopo1_bed.tif  -10632   -4287 -2451.5 -2113.199      86 6159
-## etopo1_ice.tif  -10632   -4287 -2451.5 -1892.726     215 6159
+##        Min. 1st Qu.  Median      Mean 3rd Qu. Max.
+## bed  -10632   -4287 -2451.5 -2113.199      86 6159
+## ice  -10632   -4287 -2451.5 -1892.726     215 6159
 ## dimension(s):
-##   from  to offset delta refsys point values x/y
-## x    1 720   -180   0.5 WGS 84 FALSE   NULL [x]
-## y    1 360     90  -0.5 WGS 84 FALSE   NULL [y]
+##   from  to offset delta refsys point x/y
+## x    1 720   -180   0.5 WGS 84 FALSE [x]
+## y    1 360     90  -0.5 WGS 84 FALSE [y]
 ```
 Для начала переименуем переменные:
 
@@ -1334,9 +1342,9 @@ etopo
 ## bed  -10632   -4287 -2451.5 -2113.199      86 6159
 ## ice  -10632   -4287 -2451.5 -1892.726     215 6159
 ## dimension(s):
-##   from  to offset delta refsys point values x/y
-## x    1 720   -180   0.5 WGS 84 FALSE   NULL [x]
-## y    1 360     90  -0.5 WGS 84 FALSE   NULL [y]
+##   from  to offset delta refsys point x/y
+## x    1 720   -180   0.5 WGS 84 FALSE [x]
+## y    1 360     90  -0.5 WGS 84 FALSE [y]
 ```
 
 После этого посчитаем, например, толщину покровного оледеления как разность `ice` и `bed` через _мутирование_:
@@ -1378,9 +1386,9 @@ icedepth
 ##        Min. 1st Qu. Median     Mean 3rd Qu. Max.
 ## depth  -198       0      0 220.4736       0 4286
 ## dimension(s):
-##   from  to offset delta refsys point values x/y
-## x    1 720   -180   0.5 WGS 84 FALSE   NULL [x]
-## y    1 360     90  -0.5 WGS 84 FALSE   NULL [y]
+##   from  to offset delta refsys point x/y
+## x    1 720   -180   0.5 WGS 84 FALSE [x]
+## y    1 360     90  -0.5 WGS 84 FALSE [y]
 ```
 
 ### Экспорт {#raster_export}
@@ -1838,7 +1846,7 @@ plot(st_geometry(countries_merc),
 Проекция _Мольвейде_:
 
 ```r
-img_moll = st_warp(img, crs = st_crs('+proj=moll'))
+img_moll = st_warp(img, crs = st_crs('+proj=moll'), use_gdal = TRUE)
 plot(st_rgb(img_moll, probs = c(0.01, 0.99),
        stretch = "percent"), main = NULL, reset = FALSE)
 plot(st_geometry(countries_moll), 

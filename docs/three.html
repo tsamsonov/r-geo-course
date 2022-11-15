@@ -111,7 +111,7 @@
 <span class="header-section-number">12.1</span> Предварительные условия<a class="anchor" aria-label="anchor" href="#mapping3d_prerequisites"><i class="fas fa-link"></i></a>
 </h2>
 <p>Для выполнения кода данной лекции вам понадобятся следующие пакеты:</p>
-<div class="sourceCode" id="cb590"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb611"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/stars/">stars</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
@@ -132,7 +132,7 @@
 <span class="header-section-number">12.3.1</span> Освещение цифровой модели рельефа<a class="anchor" aria-label="anchor" href="#three_lighting"><i class="fas fa-link"></i></a>
 </h3>
 <p>Построение трехмерной модели обычно начинается с создания изображения рельефа. В качестве примера рассмотрим ЦМР на территорию в окрестностях Хибин и Ловозёрских тундр в Мурманской области. Чтобы построить изображение рельефа, для начана надо получить матрицу со значениями цвета RGB, а затем вывести ее на экран посредством <code><a href="https://www.rayshader.com/reference/plot_map.html">plot_map()</a></code>. Градиентная окраска по высоте получается функцией <code><a href="https://www.rayshader.com/reference/height_shade.html">height_shade()</a></code>, аналитическая отмывка — через <code><a href="https://www.rayshader.com/reference/sphere_shade.html">sphere_shade()</a></code>:</p>
-<div class="sourceCode" id="cb591"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb612"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dem</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html">read_stars</a></span><span class="op">(</span><span class="st">'data/dem_khibiny.tif'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">elev</span> <span class="op">=</span> <span class="va">dem</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
@@ -144,13 +144,13 @@
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/height_shade.html">height_shade</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-2-1.png" width="100%"></div>
-<div class="sourceCode" id="cb592"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb613"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">elev</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/sphere_shade.html">sphere_shade</a></span><span class="op">(</span>zscale <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-2-2.png" width="100%"></div>
-<div class="sourceCode" id="cb593"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb614"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">dem_colors</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html">colorRampPalette</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"darkolivegreen"</span>, <span class="st">"lightyellow"</span>, <span class="st">"orange"</span>, <span class="st">"firebrick"</span>, <span class="st">"white"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -160,7 +160,7 @@
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-2-3.png" width="100%"></div>
 <p>Функция <code><a href="https://www.rayshader.com/reference/sphere_shade.html">sphere_shade()</a></code> имеет несколько встроенных палитр, которые позволяют раскрашивать поверхность в зависимости от восвещенности точки поверхности. В частности, она содержит стандартную черно-белую палитру, и четыре отмывки в швейцарском стиле Эдуарда Имгофа. Каждая палитра имеет, по сути, три цвета: фона, света и тени:</p>
-<div class="sourceCode" id="cb594"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb615"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">palettes</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'bw'</span>, <span class="st">'desert'</span>, <span class="st">'imhof1'</span>,<span class="st">'imhof2'</span>,<span class="st">'imhof3'</span>,<span class="st">'imhof4'</span>, <span class="st">'unicorn'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">pal</span> <span class="kw">in</span> <span class="va">palettes</span><span class="op">)</span> <span class="op">{</span></span>
@@ -170,7 +170,7 @@
 <span><span class="op">}</span></span></code></pre></div>
 <p><img src="12-3DModels_files/figure-html/unnamed-chunk-3-1.png" width="100%"><img src="12-3DModels_files/figure-html/unnamed-chunk-3-2.png" width="100%"><img src="12-3DModels_files/figure-html/unnamed-chunk-3-3.png" width="100%"><img src="12-3DModels_files/figure-html/unnamed-chunk-3-4.png" width="100%"><img src="12-3DModels_files/figure-html/unnamed-chunk-3-5.png" width="100%"><img src="12-3DModels_files/figure-html/unnamed-chunk-3-6.png" width="100%"><img src="12-3DModels_files/figure-html/unnamed-chunk-3-7.png" width="100%"></p>
 <p>Добавим принудительно посчитанные тени:</p>
-<div class="sourceCode" id="cb595"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb616"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elev</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/height_shade.html">height_shade</a></span><span class="op">(</span>texture <span class="op">=</span> <span class="fu">dem_colors</span><span class="op">(</span><span class="fl">256</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/sphere_shade.html">sphere_shade</a></span><span class="op">(</span><span class="va">elev</span>, texture <span class="op">=</span> <span class="st">'bw'</span>, zscale<span class="op">=</span><span class="fl">10</span><span class="op">)</span>, alphalayer<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -178,7 +178,7 @@
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-4-1.png" width="100%"></div>
 <p>Рассеянный свет (ambient light) позволяет отделить долины от вершин хребтов:</p>
-<div class="sourceCode" id="cb596"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb617"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elev</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/height_shade.html">height_shade</a></span><span class="op">(</span>texture <span class="op">=</span> <span class="fu">dem_colors</span><span class="op">(</span><span class="fl">256</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/sphere_shade.html">sphere_shade</a></span><span class="op">(</span><span class="va">elev</span>, texture <span class="op">=</span> <span class="st">'bw'</span>, zscale<span class="op">=</span><span class="fl">10</span><span class="op">)</span>, alphalayer<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -187,7 +187,7 @@
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-5-1.png" width="100%"></div>
 <p>Для построение трехмерной сцены вместо <code><a href="https://www.rayshader.com/reference/plot_map.html">plot_map()</a></code> необходимо использовать <code><a href="https://www.rayshader.com/reference/plot_3d.html">plot_3d()</a></code>. При этом будет открыто интерактивное окно OpenGL, в котором вы сможете вращать созданную сцену:</p>
-<div class="sourceCode" id="cb597"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb618"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elev</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/height_shade.html">height_shade</a></span><span class="op">(</span>texture <span class="op">=</span> <span class="fu">dem_colors</span><span class="op">(</span><span class="fl">256</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/sphere_shade.html">sphere_shade</a></span><span class="op">(</span><span class="va">elev</span>, texture <span class="op">=</span> <span class="st">'bw'</span>, zscale<span class="op">=</span><span class="fl">10</span><span class="op">)</span>, alphalayer<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -199,10 +199,10 @@
 <span></span>
 <span><span class="co"># rgl::rglwidget(width = 800, height = 600)</span></span></code></pre></div>
 <p>Чтобы сохранить текущий вид сцены, необходимо использовать функцию <code><a href="https://www.rayshader.com/reference/render_snapshot.html">render_snapshot()</a></code>. Для закрытия сцены используется функция <code><a href="https://dmurdoch.github.io/rgl/dev/reference/rgl.open.html">rgl::rgl.close()</a></code></p>
-<div class="sourceCode" id="cb598"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb619"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://www.rayshader.com/reference/render_snapshot.html">render_snapshot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-7-1.png" width="100%"></div>
-<div class="sourceCode" id="cb599"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb620"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rgl</span><span class="fu">::</span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/rgl.open.html">rgl.close</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="three_add" class="section level3" number="12.3.2">
@@ -210,7 +210,7 @@
 <span class="header-section-number">12.3.2</span> Векторные слои<a class="anchor" aria-label="anchor" href="#three_add"><i class="fas fa-link"></i></a>
 </h3>
 <p>Прочтем векторные данные:</p>
-<div class="sourceCode" id="cb600"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb621"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span> <span class="op">=</span> <span class="st">'data/khibiny.gpkg'</span></span>
 <span><span class="va">rivers</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">db</span>, <span class="st">'rivers'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="va">lakes</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">db</span>, <span class="st">'lakes'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -224,7 +224,7 @@
 <span><span class="va">blocks</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">db</span>, <span class="st">'blocks'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="va">poppol</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">db</span>, <span class="st">'poppol'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p>Добавим их через оверлей объектов:</p>
-<div class="sourceCode" id="cb601"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb622"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ext</span> <span class="op">=</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/extent.html">extent</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="va">dem</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">elev</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/height_shade.html">height_shade</a></span><span class="op">(</span>texture <span class="op">=</span> <span class="fu">dem_colors</span><span class="op">(</span><span class="fl">256</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -241,7 +241,7 @@
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-9-1.png" width="100%"></div>
 <p>Визуализируем в 3D:</p>
-<div class="sourceCode" id="cb602"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb623"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elev</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/height_shade.html">height_shade</a></span><span class="op">(</span>texture <span class="op">=</span> <span class="fu">dem_colors</span><span class="op">(</span><span class="fl">256</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/sphere_shade.html">sphere_shade</a></span><span class="op">(</span><span class="va">elev</span>, texture <span class="op">=</span> <span class="st">'bw'</span>, zscale<span class="op">=</span><span class="fl">10</span><span class="op">)</span>, alphalayer<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -261,10 +261,10 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://www.rayshader.com/reference/render_snapshot.html">render_snapshot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-10-1.png" width="100%"></div>
-<div class="sourceCode" id="cb603"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb624"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rgl</span><span class="fu">::</span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/rgl.open.html">rgl.close</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Чтобы приблизить изображение, повернуть, изменить угол наклона и т.д., используйте параметры функции <code><a href="https://www.rayshader.com/reference/plot_3d.html">plot_3d()</a></code>:</p>
-<div class="sourceCode" id="cb604"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb625"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elev</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/height_shade.html">height_shade</a></span><span class="op">(</span>texture <span class="op">=</span> <span class="fu">dem_colors</span><span class="op">(</span><span class="fl">256</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/sphere_shade.html">sphere_shade</a></span><span class="op">(</span><span class="va">elev</span>, texture <span class="op">=</span> <span class="st">'bw'</span>, zscale<span class="op">=</span><span class="fl">10</span><span class="op">)</span>, alphalayer<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -284,10 +284,10 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://www.rayshader.com/reference/render_snapshot.html">render_snapshot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-11-1.png" width="100%"></div>
-<div class="sourceCode" id="cb605"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb626"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rgl</span><span class="fu">::</span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/rgl.open.html">rgl.close</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Расширим состав визуализируемых объектов:</p>
-<div class="sourceCode" id="cb606"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb627"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plt</span> <span class="op">=</span> <span class="va">elev</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/height_shade.html">height_shade</a></span><span class="op">(</span>texture <span class="op">=</span> <span class="fu">dem_colors</span><span class="op">(</span><span class="fl">256</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/add_overlay.html">add_overlay</a></span><span class="op">(</span><span class="fu"><a href="https://www.rayshader.com/reference/sphere_shade.html">sphere_shade</a></span><span class="op">(</span><span class="va">elev</span>, texture <span class="op">=</span> <span class="st">'bw'</span>, zscale<span class="op">=</span><span class="fl">10</span><span class="op">)</span>, alphalayer<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -317,7 +317,7 @@
 <span></span>
 <span><span class="fu"><a href="https://www.rayshader.com/reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">plt</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-12-1.png" width="100%"></div>
-<div class="sourceCode" id="cb607"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb628"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://www.rayshader.com/reference/plot_3d.html">plot_3d</a></span><span class="op">(</span><span class="va">plt</span>, <span class="va">elev</span>, zscale <span class="op">=</span> <span class="fl">30</span>, fov <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>        theta <span class="op">=</span> <span class="op">-</span><span class="fl">45</span>, zoom <span class="op">=</span> <span class="fl">0.25</span>, phi <span class="op">=</span> <span class="fl">30</span>,</span>
@@ -326,7 +326,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://www.rayshader.com/reference/render_snapshot.html">render_snapshot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-12-2.png" width="100%"></div>
-<div class="sourceCode" id="cb608"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb629"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rgl</span><span class="fu">::</span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/rgl.open.html">rgl.close</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="three_labels" class="section level3" number="12.3.3">
@@ -334,7 +334,7 @@
 <span class="header-section-number">12.3.3</span> Подписи<a class="anchor" aria-label="anchor" href="#three_labels"><i class="fas fa-link"></i></a>
 </h3>
 <p>Для размещения подписей следует использовать функцию <code><a href="https://www.rayshader.com/reference/generate_label_overlay.html">generate_label_overlay()</a></code>:</p>
-<div class="sourceCode" id="cb609"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb630"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">popmajor</span> <span class="op">=</span> <span class="va">poppol</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">CLASS_ID</span> <span class="op">&lt;</span> <span class="fl">41300000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -355,7 +355,7 @@
 <span>                                     seed<span class="op">=</span><span class="fl">1</span>, heightmap <span class="op">=</span> <span class="va">elev</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://www.rayshader.com/reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">plt_lbl</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-13-1.png" width="100%"></div>
-<div class="sourceCode" id="cb610"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb631"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://www.rayshader.com/reference/plot_3d.html">plot_3d</a></span><span class="op">(</span><span class="va">plt_lbl</span>, <span class="va">elev</span>, zscale <span class="op">=</span> <span class="fl">30</span>, fov <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>        theta <span class="op">=</span> <span class="op">-</span><span class="fl">45</span>, zoom <span class="op">=</span> <span class="fl">0.5</span>, phi <span class="op">=</span> <span class="fl">30</span>,</span>
@@ -364,10 +364,10 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://www.rayshader.com/reference/render_snapshot.html">render_snapshot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-13-2.png" width="100%"></div>
-<div class="sourceCode" id="cb611"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb632"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rgl</span><span class="fu">::</span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/rgl.open.html">rgl.close</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Как видно, оверлей подписей выглядит не очень в трехмерноме режиме. В этом случае необходимо эти подписи наносить уже после того как трехмерный режим активирован:</p>
-<div class="sourceCode" id="cb612"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb633"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://www.rayshader.com/reference/plot_3d.html">plot_3d</a></span><span class="op">(</span><span class="va">plt</span>, <span class="va">elev</span>, zscale <span class="op">=</span> <span class="fl">30</span>, fov <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>        theta <span class="op">=</span> <span class="op">-</span><span class="fl">45</span>, zoom <span class="op">=</span> <span class="fl">0.5</span>, phi <span class="op">=</span> <span class="fl">35</span>,</span>
 <span>        windowsize <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1400</span>, <span class="fl">800</span><span class="op">)</span><span class="op">)</span></span>
@@ -384,7 +384,7 @@
 <span></span>
 <span><span class="fu"><a href="https://www.rayshader.com/reference/render_snapshot.html">render_snapshot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-14-1.png" width="100%"></div>
-<div class="sourceCode" id="cb613"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb634"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rgl</span><span class="fu">::</span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/rgl.open.html">rgl.close</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -398,7 +398,7 @@
 <span class="header-section-number">12.4.1</span> Вращение относительно точки<a class="anchor" aria-label="anchor" href="#three_animation_circle"><i class="fas fa-link"></i></a>
 </h3>
 <p>Наиболее простой спобособ визуализации сцены — вращение относительно фиксированной точки. В этом случае необходимо менять только угол поворота камеры. По умолчанию <code><a href="https://www.rayshader.com/reference/render_movie.html">render_movie()</a></code> создает 12-секундный ролик с частотой 30 кадров в секунду (т.е. 360 кадров всего). Именно такой результат будет получен, если вызывать ее без параметров:</p>
-<div class="sourceCode" id="cb614"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb635"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://www.rayshader.com/reference/plot_3d.html">plot_3d</a></span><span class="op">(</span><span class="va">plt</span>, <span class="va">elev</span>, zscale <span class="op">=</span> <span class="fl">30</span>, fov <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>        theta <span class="op">=</span> <span class="op">-</span><span class="fl">45</span>, zoom <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>        windowsize <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1400</span>, <span class="fl">800</span><span class="op">)</span><span class="op">)</span></span>
@@ -419,7 +419,7 @@
 <span class="header-section-number">12.4.2</span> Облёт по траектории<a class="anchor" aria-label="anchor" href="#three_animation_path"><i class="fas fa-link"></i></a>
 </h3>
 <p>Для того чтобы территорию облететь по заданной траектории, необходимо эту траекторию создать. Проще всего такую задачу решить в настольной ГИС (ArcGIS, QGIS), оцифровав необходимую линию. Также можно создать объект через редактор пакета <a href="https://github.com/r-spatial/mapedit"><strong>mapedit</strong></a>. Подгрузим готовую траекторию из базы данных и посмотрим на ее контур:</p>
-<div class="sourceCode" id="cb615"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb636"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">traj_line</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">db</span>, <span class="st">'trajectory'</span><span class="op">)</span></span>
 <span><span class="co">## Reading layer `trajectory' from data source </span></span>
 <span><span class="co">##   `/Users/tsamsonov/GitHub/r-geo-course/data/khibiny.gpkg' using driver `GPKG'</span></span>
@@ -440,7 +440,7 @@
 <span>  <span class="fu"><a href="https://www.rayshader.com/reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="12-3DModels_files/figure-html/unnamed-chunk-17-1.png" width="100%"></div>
 <p>Готовой функции для облета по траектории в rayshader пока что нет, поэтому необходимо соорудить эту функциональность самим. Рендер будем выполнять покадрово, обрезая растр таким образом чтобы текущая точка траектории оказывалась в его середине:</p>
-<div class="sourceCode" id="cb616"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb637"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/magick/">magick</a></span><span class="op">)</span></span>
 <span><span class="va">anim_wd</span> <span class="op">=</span> <span class="st">'anim'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="va">anim_wd</span><span class="op">)</span></span>
@@ -563,7 +563,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2022-10-20.</p>
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2022-11-15.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

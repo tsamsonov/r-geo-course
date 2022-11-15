@@ -385,14 +385,14 @@ temp
 ##          Min. 1st Qu. Median      Mean 3rd Qu.  Max.  NA's
 ## tmean1  -42.1 -34.075 -30.85 -31.98754   -29.5 -27.8 98298
 ## dimension(s):
-##      from   to offset     delta                       refsys point
-## x       1 2160   -180  0.166667 +proj=longlat +datum=WGS8...    NA
-## y       1  900     90 -0.166667 +proj=longlat +datum=WGS8...    NA
-## band    1   12     NA        NA                           NA    NA
-##                  values x/y
-## x                  NULL [x]
-## y                  NULL [y]
-## band tmean1,...,tmean12
+##      from   to offset     delta                       refsys             values
+## x       1 2160   -180  0.166667 +proj=longlat +datum=WGS8...               NULL
+## y       1  900     90 -0.166667 +proj=longlat +datum=WGS8...               NULL
+## band    1   12     NA        NA                           NA tmean1,...,tmean12
+##      x/y
+## x    [x]
+## y    [y]
+## band
 land
 ## stars object with 2 dimensions and 4 attributes
 ## attribute(s):
@@ -413,12 +413,9 @@ land
 ##  Max.   :100.0    Max.   :6410    
 ##  NA's   :393060   NA's   :389580  
 ## dimension(s):
-##   from   to offset.xmin delta.xmax                       refsys point values
-## x    1 1080        -180   0.333333 +proj=longlat +ellps=WGS8...  NULL   NULL
-## y    1  540          90  -0.333333 +proj=longlat +ellps=WGS8...  NULL   NULL
-##   x/y
-## x [x]
-## y [y]
+##   from   to offset.xmin delta.xmax                       refsys point x/y
+## x    1 1080        -180   0.333333 +proj=longlat +ellps=WGS8...  NULL [x]
+## y    1  540          90  -0.333333 +proj=longlat +ellps=WGS8...  NULL [y]
 
 (cover = st_warp(land['cover'], temp %>% slice(band, 1), method = 'near'))
 ## stars object with 2 dimensions and 1 attribute
@@ -432,9 +429,9 @@ land
 ##  Broadleaf Deciduous Forest          :    0  
 ##  (Other)                             :    0  
 ## dimension(s):
-##   from   to offset     delta                       refsys point values x/y
-## x    1 2160   -180  0.166667 +proj=longlat +datum=WGS8...    NA   NULL [x]
-## y    1  900     90 -0.166667 +proj=longlat +datum=WGS8...    NA   NULL [y]
+##   from   to offset     delta                       refsys x/y
+## x    1 2160   -180  0.166667 +proj=longlat +datum=WGS8... [x]
+## y    1  900     90 -0.166667 +proj=longlat +datum=WGS8... [y]
 # используем 'near', поскольку растр категориальный
 ```
 

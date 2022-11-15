@@ -27,6 +27,28 @@
     
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
 <link rel="stylesheet" href="default">
 <link rel="stylesheet" href="custom.css">
 </head>
@@ -49,7 +71,31 @@
 </form>
 
       <nav aria-label="Table of contents"><h2>Table of contents</h2>
-        <ul class="book-toc list-unstyled"><li><a class="" href="index.html"><span class="header-section-number">Глава 10</span> Основы картографии</a></li></ul>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">Введение</a></li>
+<li class="book-part">Основы языка R</li>
+<li><a class="" href="basics.html"><span class="header-section-number">1</span> Типы данных</a></li>
+<li><a class="" href="data-structures.html"><span class="header-section-number">2</span> Структуры данных</a></li>
+<li><a class="" href="tables.html"><span class="header-section-number">3</span> Таблицы</a></li>
+<li><a class="" href="controls.html"><span class="header-section-number">4</span> Функции</a></li>
+<li class="book-part">Графика и статистика</li>
+<li><a class="" href="graphics.html"><span class="header-section-number">5</span> Базовая графика</a></li>
+<li><a class="" href="advgraphics.html"><span class="header-section-number">6</span> Продвинутая графика</a></li>
+<li><a class="" href="stats.html"><span class="header-section-number">7</span> Основы статистики</a></li>
+<li><a class="" href="temporal.html"><span class="header-section-number">8</span> Временные ряды</a></li>
+<li class="book-part">Пространственные данные и карты</li>
+<li><a class="" href="spatial.html"><span class="header-section-number">9</span> Пространственные данные</a></li>
+<li><a class="active" href="maps.html"><span class="header-section-number">10</span> Основы картографии</a></li>
+<li><a class="" href="mapping.html"><span class="header-section-number">11</span> Тематические карты</a></li>
+<li><a class="" href="three.html"><span class="header-section-number">12</span> Трехмерные модели</a></li>
+<li class="book-part">Пространственный анализ</li>
+<li><a class="" href="vector.html"><span class="header-section-number">13</span> Векторный анализ</a></li>
+<li><a class="" href="interp.html"><span class="header-section-number">14</span> Интерполяция геополей</a></li>
+<li><a class="" href="raster.html"><span class="header-section-number">15</span> Растровый анализ</a></li>
+<li><a class="" href="network.html"><span class="header-section-number">16</span> Анализ сетей и траекторий</a></li>
+<li class="book-part">Решение проблем</li>
+<li><a class="" href="package-troubles.html"><span class="header-section-number">A</span> Установка пакетов</a></li>
+</ul>
 
         <div class="book-extra">
           <p><a id="book-repo" href="https://github.com/tsamsonov/r-geo-course">View book source <i class="fab fa-github"></i></a></p>
@@ -65,7 +111,7 @@
 <span class="header-section-number">10.1</span> Предварительные требования<a class="anchor" aria-label="anchor" href="#maps_prerequisites"><i class="fas fa-link"></i></a>
 </h2>
 <p>Необходимые для работы пакеты:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb519"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/stars/">stars</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
@@ -111,7 +157,7 @@
 <code><a href="https://rdrr.io/pkg/rnaturalearth/man/ne_coastline.html">ne_coastline()</a></code> береговая линия</li>
 </ul>
 <p>Для загрузки других слоев необходимо использовать функцию <code><a href="https://rdrr.io/pkg/rnaturalearth/man/ne_download.html">ne_download()</a></code>, передав ей масштаб, название слоя и его категорию. Для начала мы поработаем с данными масштаба 110 млн:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb520"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">countries</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/rnaturalearth/man/ne_countries.html">ne_countries</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">110</span>, returnclass <span class="op">=</span> <span class="st">'sf'</span><span class="op">)</span></span>
 <span><span class="va">coast</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/rnaturalearth/man/ne_coastline.html">ne_coastline</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">110</span>, returnclass <span class="op">=</span> <span class="st">'sf'</span><span class="op">)</span></span>
 <span></span>
@@ -134,14 +180,14 @@
 <span><span class="co">## It has 119 fields</span></span>
 <span><span class="co">## Integer64 fields read as strings:  wof_id ne_id</span></span></code></pre></div>
 <p>В то же время, каждый раз выкачивать данные для работы бывает неэффективно. Поэтому вы можете скачать себе полную базу данных Natural Earth в формате GeoPackage (GPKG) по ссылке <a href="https://www.naturalearthdata.com/downloads/" class="uri">https://www.naturalearthdata.com/downloads/</a> и положить ее в любую удобную локацию. В этом случае общение с интернетом в процессе построения карт не потребуется:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb521"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ne</span> <span class="op">=</span> <span class="st">'/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg'</span></span>
 <span><span class="va">rivers</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_rivers_lake_centerlines'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="va">lakes</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_lakes'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="va">land</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_land'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="va">borders</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_admin_0_boundary_lines_land'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p>В дальнейшем нам понадобятся данные другой детализации, поэтому объединим текущие данные в список, соответствующий масштабу 110М. Для этого используем функцию <code>lst</code> из пакета <em>tibble</em>, которая элементам списка дает такие же имена как объединяемым элементам:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb522"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lyr110</span> <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/lst.html">lst</a></span><span class="op">(</span><span class="va">ocean</span>, <span class="va">land</span>, <span class="va">coast</span>, <span class="va">countries</span>, </span>
 <span>             <span class="va">rivers</span>, <span class="va">lakes</span>, <span class="va">cities</span>, <span class="va">borders</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -165,20 +211,20 @@
 <code><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf_text()</a></code> позволяет размещать подписи объектов без плашки.</li>
 </ul>
 <p>Создадим на основе прочитанных данных простую карту мира. Будем конструировать карту последовательно, обсуждая что необходимо в ней поменять, чтобы она стала лучше. Для начала просто покажем страны:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb523"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lyr110</span><span class="op">$</span><span class="va">countries</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-5-1.png" width="100%"></div>
 <p>Можно обратить внимание на то, что когда вы отображаете страны полигонами с заливкой, на карте появляются несуществующие границы: на южном полюсе (Антарктида) и вдоль 180-го меридана (на Чукотке). Чтобы такого не происходило, страны всегда визуализируют в 2 слоя: полигонами без обводки и линейными границами поверх:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb524"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lyr110</span><span class="op">$</span><span class="va">countries</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lyr110</span><span class="op">$</span><span class="va">borders</span>, linewidth <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-6-1.png" width="100%"></div>
 <p>Убрав обводку стран, мы потеряли береговую линию. Будет логично добавить на карту океан. Однако если отобразить его полигоном с обводкой, как мы попытались изначально поступить при визуализации стран, по границе карты возникнут несуществующие береговые линии:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb525"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lyr110</span><span class="op">$</span><span class="va">countries</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lyr110</span><span class="op">$</span><span class="va">borders</span>, linewidth <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span></span>
@@ -187,7 +233,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-7-1.png" width="100%"></div>
 <p>Это означает, что для отображения морских акваторий следует использовать аналогичный прием совмещения полигональных объектов без обводки и их линейной границы:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb526"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lyr110</span><span class="op">$</span><span class="va">countries</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lyr110</span><span class="op">$</span><span class="va">borders</span>, linewidth <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span></span>
@@ -198,7 +244,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-8-1.png" width="100%"></div>
 <p>Добавим раскраску стран по их политической принадлежности. При отображении пространственных данных действуют принципы задания графических переменных, аналогичные построению обычных графиков: через <code>mapping = aes(...)</code>. Воспользуемся готовым атрибутивным полем в таблице данных для создания политико-административной раскраски:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb527"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lyr110</span><span class="op">$</span><span class="va">countries</span>, color <span class="op">=</span> <span class="cn">NA</span>, </span>
 <span>          mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">mapcolor7</span><span class="op">)</span><span class="op">)</span>, show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
@@ -209,7 +255,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-9-1.png" width="100%"></div>
 <p>Нанесем на карту точки и подписи крупнейших столиц. Для нанесения подписей используем <code><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf_text()</a></code> с параметром <code>nudge_y</code>, чтобы сдвинуть подписи вверх относительно пунсонов. Помимо этого, чтобы понизить многословность кода, для дальнейших экспериментов перенесем посторяющиеся слои вы список:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb528"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lyr110</span><span class="op">$</span><span class="va">megacities</span> <span class="op">=</span> <span class="va">lyr110</span><span class="op">$</span><span class="va">cities</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">SCALERANK</span> <span class="op">==</span> <span class="fl">0</span>, </span>
 <span>         <span class="op">!</span> <span class="va">NAME</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Washington, D.C.'</span>, <span class="st">'Paris'</span>, <span class="st">'Riyadh'</span>, <span class="st">'Rome'</span>, <span class="st">'São Paulo'</span>, <span class="st">'Kolkata'</span><span class="op">)</span><span class="op">)</span></span>
@@ -231,7 +277,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-10-1.png" width="100%"></div>
 <p>С подписями точечных объектов, однако, более удобно работать с применением пакета <code>ggrepel</code>, который расставляет их автоматически вокруг точек:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb529"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="va">basemap</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggrepel/man/geom_text_repel.html">geom_text_repel</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lyr110</span><span class="op">$</span><span class="va">megacities</span>, stat <span class="op">=</span> <span class="st">"sf_coordinates"</span>,</span>
@@ -240,7 +286,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-11-1.png" width="100%"></div>
 <p>В данном случае все неплохо, но подписи читаются недостаточно хорошо из-за контраста с фоном и береговой линией. Для улучшения читаемости можно сделать заливку стран менее насыщенной, увеличив прозрачность. При этом надо и обводку для точек сделать менее контрастной, чтобы она не выделялась на фоне стран — все-таки, на общегеографических и политико-административных картах равнозначны:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb530"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">basemap0</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lyr110</span><span class="op">$</span><span class="va">countries</span>, color <span class="op">=</span> <span class="cn">NA</span>, </span>
 <span>          alpha <span class="op">=</span> <span class="fl">0.5</span>,</span>
@@ -260,7 +306,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-12-1.png" width="100%"></div>
 <p>В качестве альтернативного решения можно добавить лекий полупрозрачный фон под подписями городов. Для этого нужно изменить геометрию с <code>geom_text_repel</code> на <code>geom_label_repel</code> и определить цвет заливки фона:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb531"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="va">basemap</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggrepel/man/geom_text_repel.html">geom_label_repel</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lyr110</span><span class="op">$</span><span class="va">megacities</span>, stat <span class="op">=</span> <span class="st">"sf_coordinates"</span>,</span>
@@ -278,7 +324,7 @@
 <span class="header-section-number">10.5</span> Проекции и градусные сетки<a class="anchor" aria-label="anchor" href="#%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%86%D0%B8%D0%B8-%D0%B8-%D0%B3%D1%80%D0%B0%D0%B4%D1%83%D1%81%D0%BD%D1%8B%D0%B5-%D1%81%D0%B5%D1%82%D0%BA%D0%B8"><i class="fas fa-link"></i></a>
 </h2>
 <p>Когда вы отображаете данные в градусах, не определяя проекцию, они визуализируются в цилиндрической равнопромежуточной проекции. Такая проекция не очень удобна для визуализации земного шара. Запишем исходную карту без проекции в отдельную переменную и визуализируем ее с помощью разных проекций:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb532"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lyr110</span><span class="op">$</span><span class="va">countries</span>, color <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>          mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">mapcolor7</span><span class="op">)</span><span class="op">)</span>, show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
@@ -301,20 +347,20 @@
 <span></span>
 <span><span class="va">map</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="st">"+proj=moll"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-14-1.png" width="100%"></div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb533"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="st">"+proj=eck3"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-14-2.png" width="100%"></div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb534"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="st">"+proj=eqearth"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-14-3.png" width="100%"></div>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb535"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="st">"+proj=times"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-14-4.png" width="100%"></div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb536"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="st">"+proj=mill"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-14-5.png" width="100%"></div>
 <p>Добавим теперь линии градусной сетки:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb537"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lons</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span>, by <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span><span class="va">lats</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">90</span>, <span class="fl">90</span>, by <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span></span>
@@ -346,7 +392,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="st">"+proj=moll"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">degree_labels</span><span class="op">(</span><span class="va">grat</span>, vjust <span class="op">=</span> <span class="op">+</span><span class="fl">1.5</span>, hjust <span class="op">=</span> <span class="op">+</span><span class="fl">1.5</span>, size <span class="op">=</span> <span class="fl">3</span>, lon <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-15-1.png" width="100%"></div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb538"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">map</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">grat</span>, linewidth <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span></span>
@@ -354,7 +400,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="st">"+proj=eck3"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">degree_labels</span><span class="op">(</span><span class="va">grat</span>, vjust <span class="op">=</span> <span class="op">+</span><span class="fl">1.5</span>, hjust <span class="op">=</span> <span class="op">+</span><span class="fl">1.5</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-15-2.png" width="100%"></div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb539"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">map</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">grat</span>, linewidth <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span></span>
@@ -362,7 +408,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="st">"+proj=eqearth"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">degree_labels</span><span class="op">(</span><span class="va">grat</span>, vjust <span class="op">=</span> <span class="op">+</span><span class="fl">1.5</span>, hjust <span class="op">=</span> <span class="op">+</span><span class="fl">1.5</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-15-3.png" width="100%"></div>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb540"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">map</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">grat</span>, linewidth <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span></span>
@@ -375,7 +421,7 @@
 <span class="header-section-number">10.5.1</span> Отображение растровых данных<a class="anchor" aria-label="anchor" href="#%D0%BE%D1%82%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-%D1%80%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B2%D1%8B%D1%85-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85"><i class="fas fa-link"></i></a>
 </h3>
 <p>На общегеографических картах довольно часто присутствует изображение рельефа. Чтобы добавить его на карту, можно использовать специальный тип геометрии <code>geom_stars</code>:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb541"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dem</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_stars.html">read_stars</a></span><span class="op">(</span><span class="st">'data/world/gebco.tif'</span><span class="op">)</span> <span class="co"># Цифровая модель рельефа</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -385,7 +431,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-16-1.png" width="100%"></div>
 <p>Для начала попробуем раскрасить рельеф в традиционной цветовой шкале, и посмотреть как это будет выглядеть:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb542"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pal</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'navyblue'</span>, <span class="st">'steelblue'</span>, <span class="st">'azure'</span>, <span class="st">'darkslategray'</span>, <span class="st">'olivedrab'</span>, <span class="st">'lightyellow'</span>, <span class="st">'firebrick'</span>, <span class="st">'pink'</span>, <span class="st">'white'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Вынесем повторяющиемя слои в отдельный список</span></span>
@@ -403,7 +449,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-17-1.png" width="100%"></div>
 <p>Видно, что по умолчаню цвета распределяются равномерно вдоль шкалы. Нам же необходимо ассоциировать их с конкретными высотами. Это можно сделать, определив в функции <code>scale_fill_gradientn</code> параметр <code>values</code>. Он принимает значения от 0 до 1 и указывает позицию цвета между минимумом и максимум. Чтобы сформировать такие позиции, необходимо сначала сделать гипсометрическую шкалу в метрах, а затем отмасштабировать ее на дипазон <span class="math inline">\([0, 1]\)</span> посредством функции <code>rescale</code> из пакета <code>scales</code>:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb543"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">val</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">dem</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, <span class="op">-</span><span class="fl">4000</span>, <span class="op">-</span><span class="fl">200</span>, <span class="fl">0</span>, <span class="fl">100</span>, <span class="fl">300</span>, <span class="fl">1000</span>, <span class="fl">2500</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">dem</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/rescale.html">rescale</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -418,7 +464,7 @@
 - отрицательные высоты на суше закрашиваются таким же цветом, как и отрицательные высота на море
 - нет резкого перехода через отметку 0, при котором цвет должен меняться с голубого на темно-зеленый.</p>
 <p>Чтобы убедиться в этом рассмотрим фрагмент карты подробнее, обратив внимание на Персидский залив, Каспийское и Черное моря:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb544"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">anno</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html">annotate</a></span><span class="op">(</span><span class="st">"rect"</span>, xmin <span class="op">=</span> <span class="fl">45</span>, xmax <span class="op">=</span> <span class="fl">60</span>, ymin <span class="op">=</span> <span class="fl">22</span>, ymax <span class="op">=</span> <span class="fl">32</span>, </span>
 <span>           color <span class="op">=</span> <span class="st">'white'</span>, linewidth <span class="op">=</span> <span class="fl">2</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
@@ -437,7 +483,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-19-1.png" width="100%"></div>
 <p>Чтобы не возникало такого эффекта, необходимо разделить цифровую модель рельефа на ldt: одна для суши, вторая для мора. Для этого используем стандартный синтаксис вида <code>stars[sf]</code>, который позволяет обрезать объект типа <code>stars</code> заданным объектом типа <code>sf</code>:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb545"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/s2.html">sf_use_s2</a></span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">dem_land</span> <span class="op">=</span> <span class="va">dem</span><span class="op">[</span><span class="va">lyr110</span><span class="op">$</span><span class="va">land</span><span class="op">]</span></span>
 <span><span class="va">dem_ocean</span> <span class="op">=</span> <span class="va">dem</span><span class="op">[</span><span class="va">lyr110</span><span class="op">$</span><span class="va">ocean</span><span class="op">]</span></span>
@@ -473,7 +519,7 @@
 <span><span class="va">map</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-20-1.png" width="100%"></div>
 <p>Проверим ранее указанную область:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb546"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">75</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="va">anno</span></span></code></pre></div>
@@ -484,7 +530,7 @@
 <span class="header-section-number">10.5.2</span> Проецирование растровых данных<a class="anchor" aria-label="anchor" href="#%D0%BF%D1%80%D0%BE%D0%B5%D1%86%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D1%80%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B2%D1%8B%D1%85-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85"><i class="fas fa-link"></i></a>
 </h3>
 <p>В отличие от векторных данных, растровые необходимо трансформировать заранее в нужную проекцию. Для этого воспользуемся функцией <code>st_warp</code>:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb547"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hydro_lyrs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_wrap_dateline</a></span><span class="op">(</span><span class="va">lyr110</span><span class="op">$</span><span class="va">coast</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.4</span>, color <span class="op">=</span> <span class="st">'steelblue4'</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_wrap_dateline</a></span><span class="op">(</span><span class="va">lyr110</span><span class="op">$</span><span class="va">rivers</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span>, color <span class="op">=</span> <span class="st">'steelblue4'</span><span class="op">)</span>,</span>
@@ -526,7 +572,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-22-1.png" width="100%"></div>
 <p>Обратим внимание, что растр проецируется немного не так, как векторные данные, его область остается прямоугольной. Поэтому при построении карт мира необходимо растры после проецирования обрезать прямоугольником, охватывающим весь мир:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb548"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prjs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"+proj=moll"</span>, <span class="st">"+proj=eck3"</span>, <span class="st">"+proj=eqearth"</span>, <span class="st">"+proj=times"</span><span class="op">)</span></span>
 <span><span class="va">lon_labs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">F</span>,<span class="cn">T</span>,<span class="cn">T</span>,<span class="cn">T</span><span class="op">)</span></span>
 <span></span>
@@ -563,7 +609,7 @@
 <p>Один из обязательных признаков хорошей карты — это использование пространственных данных подходящей детализации. Избыточная детализация приводит к тому, что карта становится неопрятной, пестрит трудно воспринимаемыми деталями, производит непрофессиональное впечатление. Помимо этого, избыточная детализация данных приводит к тому, что карта будет медленно прорисовываться. Это справедливо как для карт, создаваемых программным путём, так и для карт, которые составляются в ГИС-пакетах. В некоторых случаях можно столкнуться с обратной ситуацией, когда данные менее детальны, чем это требуется для карты. В этом случае у пользователя карты будет складываться впечатление, что карта недостаточно точна и информативна.</p>
 <p>Проблема детализации касается в основном картографической основы, поскольку подбирается она прежде всего в соответствии с охватом исследуемой территории и физическим размером итогового изображения. В случае если предполагается совмещение картографической основы и тематических данных, важным фактором будет также детализация самих тематических данных.</p>
 <p>В качестве примера для выбора подходящей основы рассмотрим задачу построения карты Европы, которая бы вписывалась в размер страницы данной книги. База данных Natural Earth содержит 3 уровня детализации, из которых надо выбрать подходящий. Сравним их:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb549"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cnt010</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_10m_admin_0_countries'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="va">cnt050</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_50m_admin_0_countries'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="va">cnt110</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_110m_admin_0_countries'</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
@@ -608,7 +654,7 @@
 <span class="header-section-number">10.6.2.1</span> Геометрическое упрощение<a class="anchor" aria-label="anchor" href="#%D0%B3%D0%B5%D0%BE%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5-%D1%83%D0%BF%D1%80%D0%BE%D1%89%D0%B5%D0%BD%D0%B8%D0%B5"><i class="fas fa-link"></i></a>
 </h4>
 <p>В качестве примера рассмотрим геометрическое упрощение рек и полигонов государств. Визуализируем для начала исходные данные:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb550"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">countries</span> <span class="op">=</span> <span class="va">cnt010</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">prj</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crop.html">st_crop</a></span><span class="op">(</span><span class="va">box</span><span class="op">)</span></span>
@@ -619,7 +665,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-25-1.png" width="100%"></div>
 <p>Невооруженным взглядом видно, что их детализация избыточна. Для геометрического упрощения воспользуемся функцией <code><a href="https://rdrr.io/pkg/rmapshaper/man/ms_simplify.html">ms_simplify()</a></code> из пакета <strong>rmapshaper</strong>. В данной функции доступно два алгоритма геометрического упрощения: Дугласа-Пейкера и Висвалингам-Уайатта. Принципы работы этих алгоритмов разные, поэтому сопоставимая детализация достиагается в них при разном количестве точек:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb551"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">countries_dp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/rmapshaper/man/ms_simplify.html">ms_simplify</a></span><span class="op">(</span><span class="va">countries</span>, </span>
 <span>                           method <span class="op">=</span> <span class="st">'dp'</span>, <span class="co"># алгоритм Дугласа-Пейкера</span></span>
 <span>                           keep <span class="op">=</span> <span class="fl">0.04</span><span class="op">)</span> <span class="co"># оставить 4% точек</span></span>
@@ -633,7 +679,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">'Геометрическое упрощение алгоритмом Дугласа-Пейкера'</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-26-1.png" width="100%"></div>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb552"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">countries_vw</span>, linewidth <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span></span>
@@ -642,7 +688,7 @@
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-26-2.png" width="100%"></div>
 <p>Видно, что результаты упрощения алгоритмом Дугласа-Пейкера довольно угловатые и неестественные. Но при этом он лучше сохраняет различные характерные точки в структуре линии типа вершин фьордов. Тем не менее для целей картографической генерализации алгоритм Висвалингам-Уайатта можно назвать предпочтительным.</p>
 <p>Помимо этого, при геометрическом упрощении возникаеют сложности топологического согласования с другими слоями. Обратим внимание на то, как речки согласуются с береговой линией:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb553"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rivers</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_10m_rivers_lake_centerlines'</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">prj</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crop.html">st_crop</a></span><span class="op">(</span><span class="va">box</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -664,7 +710,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-27-1.png" width="100%"></div>
 <p>Здесь видно, что изза упрощения линий удалились эстуарии рек, и теперь речки не дотягивают до своих устьев. Чтобы такого эффекта не происходило, необходимо зафиксировать вершины эстуариев, запретив их удалять. Наиболее просто это сделать в линейном варианте, когда упрощению подвергаются береговые линии, а не полигоны стран:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb554"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">coast</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_10m_coastline'</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">prj</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crop.html">st_crop</a></span><span class="op">(</span><span class="va">box</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -691,7 +737,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mouths</span>, color <span class="op">=</span> <span class="st">'red'</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-28-1.png" width="100%"></div>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb555"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">coast_split</span> <span class="op">=</span> <span class="fu">lwgeom</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lwgeom/man/st_split.html">st_split</a></span><span class="op">(</span><span class="va">coast</span>, <span class="va">mouths</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_collection_extract.html">st_collection_extract</a></span><span class="op">(</span><span class="st">'LINESTRING'</span><span class="op">)</span></span>
@@ -718,7 +764,7 @@
 </h4>
 <p>Отбор применятся внутри множества пространственных объектов для того чтобы уменьшить их количество. Наиболее просто реализуется отбор для объектов, которые не состоят в пространственных отношениях. Как правило, это точечные объекты. Более сложна процедура отбора во множестве топологически связанных объектов. Например, прореживание транспортной или гидрографической сети. В данном разделе мы посмотрим как можно отбирать точечные объекты. Наиболее простой случай реализуется тогда, когда объекты можно отобрать по атрибутам, без использования пространственных отношений. К счастью, данные Natural Earth содержат атрибуты, которые можно использовать в качестве критериев отбора.</p>
 <p>Для начала попробуем нанести все населенные пункты:</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb556"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cities_eu</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_10m_populated_places'</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">prj</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crop.html">st_crop</a></span><span class="op">(</span><span class="va">box</span><span class="op">)</span></span>
@@ -740,7 +786,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-29-1.png" width="100%"></div>
 <p>Очевидно, что при такой плотности нормальную карту составить не получится. Попробуем для начала остаить только столицы и разнести их через <strong>ggrepel</strong>:</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb557"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">capitals</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">cities_eu</span>, <span class="va">FEATURECLA</span> <span class="op">==</span> <span class="st">'Admin-0 capital'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -752,7 +798,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-30-1.png" width="100%"></div>
 <p>Очевидно, на данную схему можно также дополнительно нанести дополнительно крупные населенные пункты, отобрав их уже по численности населения. Оставим для примера те, в которых живет более <span class="math inline">\(700 000\)</span> жителей:</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb558"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">major_cities</span> <span class="op">=</span> <span class="va">cities_eu</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="op">(</span><span class="va">FEATURECLA</span> <span class="op">==</span> <span class="st">'Admin-0 capital'</span><span class="op">)</span> <span class="op">|</span> <span class="op">(</span><span class="va">POP_MIN</span> <span class="op">&gt;=</span> <span class="fl">700000</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>FEATURECLA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">ordered</a></span><span class="op">(</span><span class="va">FEATURECLA</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">cities_eu</span><span class="op">$</span><span class="va">FEATURECLA</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -785,7 +831,7 @@
 <li>более 1 000 000 жителей</li>
 </ul>
 <p>С помощью ggplot это делается путем определения эстетики <code>size</code> и назначения шкалы отображения <code>scale_size_binned</code>. Аналогичным образом варьируется размер шрифта подписи,</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb559"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">brks</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100000</span>, <span class="fl">1000000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -815,7 +861,7 @@
 <span class="header-section-number">10.7.2</span> Готовые классы<a class="anchor" aria-label="anchor" href="#%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D1%8B%D0%B5-%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D1%8B"><i class="fas fa-link"></i></a>
 </h3>
 <p>Если объекты уже наделены классами, их можно непосредственно отобразить на графические переменные. Например, слой дорог в Natural Earth содержит дороги разных классов, а также паромные переправы:</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb560"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">roads</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="va">ne</span>, <span class="st">'ne_10m_roads'</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">prj</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crop.html">st_crop</a></span><span class="op">(</span><span class="va">box</span><span class="op">)</span></span>
@@ -831,7 +877,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">roads</span><span class="op">[</span><span class="st">'type'</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-33-1.png" width="100%"></div>
 <p>Как правило, дороги отображаются линиями разного цвета и толщины: чем более важна дорога, тем толще будет ее линия и интенсивнее цвет. Попробуем реализовать это средствами ggplot2, при этом ограничим охват территорией Польши, чтобы не перегружать изображение.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb561"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">auto</span> <span class="op">=</span> <span class="va">roads</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">featurecla</span> <span class="op">==</span> <span class="st">'Road'</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">ordered</a></span><span class="op">(</span></span>
@@ -854,7 +900,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-34-1.png" width="100%"></div>
 <p>По умолчанию ситуация с символами тревожная, но проблему можно решить путем ручной настройки толщин линий и цветов:</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb562"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">countries_vw</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">auto</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">type</span>, linewidth <span class="op">=</span> <span class="va">type</span><span class="op">)</span>, </span>
@@ -870,7 +916,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-35-1.png" width="100%"></div>
 <p>Вернем отображение населенных пунктов, но уже с более дробной классификацией:</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb563"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>scipen <span class="op">=</span> <span class="fl">999</span><span class="op">)</span></span>
 <span><span class="va">brks</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100000</span>, <span class="fl">500000</span>, <span class="fl">1000000</span><span class="op">)</span></span>
 <span></span>
@@ -910,13 +956,13 @@
 </h2>
 <p>Стандартные элементы компоновки карты — масштабная линейка и указатель на север. С точки зрения <strong>ggplot</strong> они являются аннотациями. Соответствующие аннотации можно найти в пакете <a href="https://paleolimbot.github.io/ggspatial/">ggspatial</a>.</p>
 <p>Масштабную линейку и указатель севера, отображаемые по умолчанию:</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb564"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_pl</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/annotation_north_arrow.html">annotation_north_arrow</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/annotation_scale.html">annotation_scale</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-37-1.png" width="100%"></div>
 <p>можно кастомизировать, изменив их стиль, размер, расположение и прочие параметры. Например, в данном случае целесообразно переместить их в левый верхний угол и уменьшить в размере:</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb565"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">suppl</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/annotation_north_arrow.html">annotation_north_arrow</a></span><span class="op">(</span>style <span class="op">=</span> <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/north_arrow_orienteering.html">north_arrow_fancy_orienteering</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                         height <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">1</span>, <span class="st">'cm'</span><span class="op">)</span>,</span>
@@ -947,7 +993,7 @@
 <p>При этом с содержательной точки зрения карты-врезки могут как быть идентичными основной карте (показывать те же явления, но в другом масштабе), так и отличаться от нее. Например, на гидрогеологической картах врезки показывают артезианские бассейны для той же территории.</p>
 <p>В качестве примера врезки разместим карту Европы, которая показывает местоположение отображаемой страны на карте Европы и выделяет ее другим цветом. Для этого понадобится создать карту-врезку как новый объект ggplot и добавить ее на основную карту на слой аннотаций как объект <code>ggplotGrob</code>.</p>
 <p>Начнем с построения карты-врезки:</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb566"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">inset_map</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">cnt110</span>, linewidth <span class="op">=</span> <span class="fl">0.25</span>,</span>
 <span>          fill <span class="op">=</span> <span class="st">'grey'</span>,</span>
@@ -965,7 +1011,7 @@
 <span><span class="va">inset_map</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-39-1.png" width="100%"></div>
 <p>Теперь разместим ее в одном из углов. Поскольку мы знаем ограничивающий прямоугольник отображаемой области, это сделать можно путем аффинных преобразований относительно выбранного угла карты. Например, относительно левого нижнего:</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb567"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lowleft</span> <span class="op">=</span> <span class="va">box_pl</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span> <span class="co"># левый нижний угол</span></span>
 <span><span class="va">ratio</span> <span class="op">=</span> <span class="op">(</span><span class="va">box</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span> <span class="op">-</span> <span class="va">box</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">box</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> <span class="op">-</span> <span class="va">box</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="co"># пропорции карты-врезки</span></span>
 <span><span class="va">dx</span> <span class="op">=</span> <span class="va">box_pl</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> <span class="op">-</span> <span class="va">box_pl</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="co"># ширина основной карты</span></span>
@@ -991,7 +1037,7 @@
 <span>  <span class="va">inset</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-Maps_files/figure-html/unnamed-chunk-40-1.png" width="100%"></div>
 <p>Код построения карты-врезки целесообразно вынести в функцию для последующего использования:</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb568"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">annotation_inset</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">map</span>, <span class="va">inset</span>, <span class="va">scale</span> <span class="op">=</span> <span class="fl">0.25</span>, <span class="va">rx</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">ry</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">scaledir</span> <span class="op">=</span> <span class="st">'auto'</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  </span>
 <span>  <span class="co"># Scale limits for main map</span></span>
@@ -1003,7 +1049,7 @@
 <span>  <span class="va">ylim_ins</span> <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot_build.html">ggplot_build</a></span><span class="op">(</span><span class="va">inset</span><span class="op">)</span><span class="op">$</span><span class="va">layout</span><span class="op">$</span><span class="va">panel_params</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y_range</span></span>
 <span>  </span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="va">scaledir</span> <span class="op">==</span> <span class="st">'auto'</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">along_x</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diff.html">diff</a></span><span class="op">(</span><span class="va">xlim</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html">diff</a></span><span class="op">(</span><span class="va">ylim</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/diff.html">diff</a></span><span class="op">(</span><span class="va">xlim_ins</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html">diff</a></span><span class="op">(</span><span class="va">ylim_ins</span><span class="op">)</span></span>
+<span>    <span class="va">along_x</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diff.html">diff</a></span><span class="op">(</span><span class="va">xlim</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html">diff</a></span><span class="op">(</span><span class="va">ylim</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/diff.html">diff</a></span><span class="op">(</span><span class="va">xlim_ins</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html">diff</a></span><span class="op">(</span><span class="va">ylim_ins</span><span class="op">)</span></span>
 <span>    <span class="va">scaledir</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">along_x</span>, <span class="st">'x'</span>, <span class="st">'y'</span><span class="op">)</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/message.html">message</a></span><span class="op">(</span><span class="st">'Scaling inset along '</span>, <span class="va">scaledir</span>, <span class="st">' axis'</span><span class="op">)</span></span>
 <span>  <span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="op">!</span> <span class="op">(</span><span class="va">scaledir</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'x'</span>, <span class="st">'y'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -1035,7 +1081,7 @@
 <span>  </span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Прооверим работоспособность для 9 разных местоположений карты-врезки:</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb569"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_simple</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">countries_vw</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="va">box_pl</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1045,7 +1091,7 @@
 <span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">0</span><span class="op">:</span><span class="fl">2</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span> </span>
 <span>  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">0</span><span class="op">:</span><span class="fl">2</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">map_simple</span> <span class="op">+</span> <span class="fu">annotation_inset</span><span class="op">(</span><span class="va">map_simple</span>, <span class="va">inset_map</span>, rx <span class="op">=</span> <span class="va">i</span>, ry <span class="op">=</span> <span class="va">j</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">map_simple</span> <span class="op">+</span> <span class="fu">annotation_inset</span><span class="op">(</span><span class="va">map_simple</span>, <span class="va">inset_map</span>, <span class="fl">0.3</span>, <span class="va">i</span>, <span class="va">j</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="10-Maps_files/figure-html/unnamed-chunk-42-1.png" width="100%"><img src="10-Maps_files/figure-html/unnamed-chunk-42-2.png" width="100%"><img src="10-Maps_files/figure-html/unnamed-chunk-42-3.png" width="100%"><img src="10-Maps_files/figure-html/unnamed-chunk-42-4.png" width="100%"><img src="10-Maps_files/figure-html/unnamed-chunk-42-5.png" width="100%"><img src="10-Maps_files/figure-html/unnamed-chunk-42-6.png" width="100%"><img src="10-Maps_files/figure-html/unnamed-chunk-42-7.png" width="100%"><img src="10-Maps_files/figure-html/unnamed-chunk-42-8.png" width="100%"><img src="10-Maps_files/figure-html/unnamed-chunk-42-9.png" width="100%"></p>
 <div id="questions_maps" class="section level3" number="10.9.1">
 <h3>
@@ -1081,15 +1127,47 @@
 </div>
 </div>
   <div class="chapter-nav">
-<div class="empty"></div>
-<div class="empty"></div>
+<div class="prev"><a href="spatial.html"><span class="header-section-number">9</span> Пространственные данные</a></div>
+<div class="next"><a href="mapping.html"><span class="header-section-number">11</span> Тематические карты</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
-      <div id="book-on-this-page"></div>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#maps"><span class="header-section-number">10</span> Основы картографии</a></li>
+<li><a class="nav-link" href="#maps_prerequisites"><span class="header-section-number">10.1</span> Предварительные требования</a></li>
+<li><a class="nav-link" href="#maps_intro"><span class="header-section-number">10.2</span> Введение</a></li>
+<li><a class="nav-link" href="#spatial_natural"><span class="header-section-number">10.3</span> Данные Natural Earth</a></li>
+<li><a class="nav-link" href="#spatial_ggplot2"><span class="header-section-number">10.4</span> Визуализация средствами ggplot2</a></li>
+<li>
+<a class="nav-link" href="#%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%86%D0%B8%D0%B8-%D0%B8-%D0%B3%D1%80%D0%B0%D0%B4%D1%83%D1%81%D0%BD%D1%8B%D0%B5-%D1%81%D0%B5%D1%82%D0%BA%D0%B8"><span class="header-section-number">10.5</span> Проекции и градусные сетки</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%D0%BE%D1%82%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-%D1%80%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B2%D1%8B%D1%85-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85"><span class="header-section-number">10.5.1</span> Отображение растровых данных</a></li>
+<li><a class="nav-link" href="#%D0%BF%D1%80%D0%BE%D0%B5%D1%86%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D1%80%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B2%D1%8B%D1%85-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85"><span class="header-section-number">10.5.2</span> Проецирование растровых данных</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#%D0%B4%D0%B5%D1%82%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85"><span class="header-section-number">10.6</span> Детализация данных</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%D0%B2%D1%8B%D0%B1%D0%BE%D1%80-%D0%BA%D0%B0%D1%80%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B9-%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D1%8B"><span class="header-section-number">10.6.1</span> Выбор картографической основы</a></li>
+<li><a class="nav-link" href="#%D0%B3%D0%B5%D0%BD%D0%B5%D1%80%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BA%D0%B0%D1%80%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B9-%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D1%8B"><span class="header-section-number">10.6.2</span> Генерализация картографической основы</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D1%8F-%D0%BE%D0%B1%D1%8A%D0%B5%D0%BA%D1%82%D0%BE%D0%B2-%D0%BF%D0%BE-%D1%82%D0%B8%D0%BF%D0%B0%D0%BC"><span class="header-section-number">10.7</span> Классификация объектов по типам</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%D0%B2%D1%8B%D1%87%D0%B8%D1%81%D0%BB%D1%8F%D0%B5%D0%BC%D1%8B%D0%B5-%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D1%8B"><span class="header-section-number">10.7.1</span> Вычисляемые классы</a></li>
+<li><a class="nav-link" href="#%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D1%8B%D0%B5-%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D1%8B"><span class="header-section-number">10.7.2</span> Готовые классы</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#%D0%BC%D0%B0%D1%81%D1%88%D1%82%D0%B0%D0%B1%D0%BD%D1%8B%D0%B5-%D0%BB%D0%B8%D0%BD%D0%B5%D0%B9%D0%BA%D0%B8-%D0%B8-%D1%83%D0%BA%D0%B0%D0%B7%D0%B0%D1%82%D0%B5%D0%BB%D0%B8-%D0%BD%D0%B0%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BD%D0%B0-%D1%81%D0%B5%D0%B2%D0%B5%D1%80."><span class="header-section-number">10.8</span> Масштабные линейки и указатели направления на север.</a></li>
+<li>
+<a class="nav-link" href="#%D0%BA%D0%B0%D1%80%D1%82%D1%8B-%D0%B2%D1%80%D0%B5%D0%B7%D0%BA%D0%B8"><span class="header-section-number">10.9</span> Карты-врезки</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#questions_maps"><span class="header-section-number">10.9.1</span> Вопросы</a></li>
+<li><a class="nav-link" href="#tasks_map"><span class="header-section-number">10.9.2</span> Упражнения</a></li>
+</ul>
+</li>
+</ul>
 
       <div class="book-extra">
         <ul class="list-unstyled">
-          
+<li><a id="book-source" href="https://github.com/tsamsonov/r-geo-course/blob/master/10-Maps.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/tsamsonov/r-geo-course/edit/master/10-Maps.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
 </div>
     </nav>
@@ -1101,7 +1179,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2022-10-20.</p>
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2022-11-15.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

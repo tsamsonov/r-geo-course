@@ -31,7 +31,7 @@ ocean = ne_download(scale = 110,
                     category = 'physical',
                     returnclass = 'sf')
 ## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/Rtmp1HUo8M", layer: "ne_110m_ocean"
+## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpiCK3YQ", layer: "ne_110m_ocean"
 ## with 2 features
 ## It has 3 fields
 cities = ne_download(scale = 110,
@@ -39,7 +39,7 @@ cities = ne_download(scale = 110,
                      category = 'cultural',
                      returnclass = 'sf')
 ## OGR data source with driver: ESRI Shapefile 
-## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/Rtmp1HUo8M", layer: "ne_110m_populated_places"
+## Source: "/private/var/folders/5s/rkxr4m8j24569d_p6nj9ld200000gn/T/RtmpiCK3YQ", layer: "ne_110m_populated_places"
 ## with 243 features
 ## It has 137 fields
 ## Integer64 fields read as strings:  POP_MAX POP_MIN POP_OTHER MAX_POP10 MAX_POP20 MAX_POP50 MAX_POP300 MAX_POP310 MAX_NATSCA MIN_AREAKM MAX_AREAKM MIN_AREAMI MAX_AREAMI MIN_PERKM MAX_PERKM MIN_PERMI MAX_PERMI POP1950 POP1955 POP1960 POP1965 POP1970 POP1975 POP1980 POP1985 POP1990 POP1995 POP2000 POP2005 POP2010 POP2015 POP2020 POP2025 POP2050 WOF_ID NE_ID GEONAMESID

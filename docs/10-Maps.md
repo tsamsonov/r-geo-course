@@ -1130,7 +1130,7 @@ annotation_inset = function(map, inset, scale = 0.25, rx = 0, ry = 0, scaledir =
   ylim_ins = ggplot2::ggplot_build(inset)$layout$panel_params[[1]]$y_range
   
   if (scaledir == 'auto') {
-    along_x = diff(xlim)/diff(ylim) > diff(xlim_ins)/diff(ylim_ins)
+    along_x = diff(xlim)/diff(ylim) < diff(xlim_ins)/diff(ylim_ins)
     scaledir = ifelse(along_x, 'x', 'y')
     message('Scaling inset along ', scaledir, ' axis')
   } else if (! (scaledir %in% c('x', 'y'))) {
@@ -1175,7 +1175,7 @@ map_simple = ggplot() +
 
 for (i in 0:2 / 2) 
   for (j in 0:2 / 2)
-    print(map_simple + annotation_inset(map_simple, inset_map, rx = i, ry = j))
+    print(map_simple + annotation_inset(map_simple, inset_map, 0.3, i, j))
 ```
 
 <img src="10-Maps_files/figure-html/unnamed-chunk-42-1.png" width="100%" /><img src="10-Maps_files/figure-html/unnamed-chunk-42-2.png" width="100%" /><img src="10-Maps_files/figure-html/unnamed-chunk-42-3.png" width="100%" /><img src="10-Maps_files/figure-html/unnamed-chunk-42-4.png" width="100%" /><img src="10-Maps_files/figure-html/unnamed-chunk-42-5.png" width="100%" /><img src="10-Maps_files/figure-html/unnamed-chunk-42-6.png" width="100%" /><img src="10-Maps_files/figure-html/unnamed-chunk-42-7.png" width="100%" /><img src="10-Maps_files/figure-html/unnamed-chunk-42-8.png" width="100%" /><img src="10-Maps_files/figure-html/unnamed-chunk-42-9.png" width="100%" />

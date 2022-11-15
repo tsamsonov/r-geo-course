@@ -110,7 +110,7 @@
 <h2>Предварительные условия<a class="anchor" aria-label="anchor" href="#%D0%BF%D1%80%D0%B5%D0%B4%D0%B2%D0%B0%D1%80%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%B8%D1%8F"><i class="fas fa-link"></i></a>
 </h2>
 <p>Для выполнения кода данной лекции вам понадобятся следующие пакеты:</p>
-<div class="sourceCode" id="cb702"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb723"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/edzer/sp/">sp</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap">tmap</a></span><span class="op">)</span></span>
@@ -151,7 +151,7 @@
 </h3>
 <p>Локальные операции связаны с алгебраическими преобразованиями значений в ячейках. Например, цифровую модель высот в футах можно перевести в цифровую модель высот в метрах. Для этого нужно значение в каждой ячейке умножить на <span class="math inline">\(0.3048\)</span>. В локальных операциях могут участвовать несколько растров. Например, если у нас есть растровые поверхности плотности населения за разные года, мы можем вычесть одну поверхность из другой, чтобы получить поверхность изменений плотности, выяснить где она увеличилась, уменьшилась или осталось прежней. К локальным операциям относится также оверлей растров, при котором получается взвешенная сумма значений по нескольким растрам. И в том и в другом случае анализируются ячейки с нескольких растров, которые совпадают в пространстве.</p>
 <p>В качестве примера определим мощность покровного оледенения в Антарктике и Гренландии, путем вычитание двух моделей <a href="https://www.ngdc.noaa.gov/mgg/global/">ETOPO1</a>, одна из которых показывает рельеф коренных пород (bedrock), а вторая — видимый рельеф поверхности (ice surface):</p>
-<div class="sourceCode" id="cb703"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb724"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ЛОКАЛЬНЫЕ ОПЕРАЦИИ</span></span>
 <span><span class="co"># Вычисление толщины покровного оледенения</span></span>
 <span></span>
@@ -180,14 +180,14 @@
 <span>     main <span class="op">=</span> <span class="st">'ETOPO Bedrock'</span>,</span>
 <span>     legend <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-2-1.png" width="100%"></div>
-<div class="sourceCode" id="cb704"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb725"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span><span class="op">(</span><span class="va">ice</span>, </span>
 <span>     breaks <span class="op">=</span> <span class="va">brks</span>, </span>
 <span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/gray.colors.html">gray.colors</a></span><span class="op">(</span><span class="va">nclass</span><span class="op">)</span>,</span>
 <span>     main <span class="op">=</span> <span class="st">'ETOPO Ice surface'</span>,</span>
 <span>     legend <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-2-2.png" width="100%"></div>
-<div class="sourceCode" id="cb705"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb726"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># вычисление разности</span></span>
 <span><span class="va">ice.depth</span> <span class="op">=</span> <span class="va">ice</span> <span class="op">-</span> <span class="va">bed</span></span>
@@ -199,7 +199,7 @@
 <span>     lwd <span class="op">=</span> <span class="fl">0.5</span>, </span>
 <span>     add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-2-3.png" width="100%"></div>
-<div class="sourceCode" id="cb706"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb727"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># сделаем пустыми все ячейки, в которых толщина льда равна нулю</span></span>
 <span><span class="va">ice.depth</span><span class="op">[</span><span class="va">ice.depth</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span> <span class="op">=</span> <span class="cn">NA</span></span>
@@ -231,14 +231,14 @@
 </div>
 <p>Фокальные операции с фиксированной окрестностью — привычное дело в обработке изображений. Они работают по принципу “плавающего окна”. Выбранная окрестность (квадратная, круглая и т.д.) представляется в виде матрицы коэффициентов — так называемого ядра свёртки (convolution kernel). Далее эта матрица перемещается, позиционируясь последовательно над каждой ячейкой растра, и значение в этой ячейке заменяется на взвешенную сумму значений ячеек в окрестности, умноженных на соответствующие коэффициенты ядра свертки. Например, если ядро состоит из единиц, то будет посчитана обычная сумма.</p>
 <p>С помощью фокального анализа можно выполнить сглаживание изображения, которое убирает из него мелкие детали (высокочастотные составляющие яркостного сигнала). В качестве такого изображения может быть цифровая модель рельефа или космический снимок. Чтобы выполнить сглаживание, коэффициенты должны быть такими, чтобы получаемая взвешенная сумма осредняла значения в соседних ячейках. Самый простой вариант — это рассчитать среднее арифметическое. В этом случае коэффициенты ядра свертки будут равны <span class="math inline">\(1/k\)</span>, где <span class="math inline">\(k\)</span> — количество ячеек в окрестности. Для матрицы <span class="math inline">\(3\times3\)</span> они будут равны, соответственно <span class="math inline">\(1/9\)</span>:</p>
-<div class="sourceCode" id="cb707"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb728"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ФОКАЛЬНЫЕ ОПЕРАЦИИ</span></span>
 <span></span>
 <span><span class="co"># Вырежем кусок из ЦМР</span></span>
 <span><span class="va">dem</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/crop.html">crop</a></span><span class="op">(</span><span class="va">ice</span>, <span class="fu"><a href="https://rdrr.io/pkg/raster/man/extent.html">extent</a></span><span class="op">(</span><span class="op">-</span><span class="fl">120</span>, <span class="op">-</span><span class="fl">75</span>, <span class="fl">10</span>, <span class="fl">40</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/spplot.html">spplot</a></span><span class="op">(</span><span class="va">dem</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-4-1.png" width="100%"></div>
-<div class="sourceCode" id="cb708"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb729"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Среднее</span></span>
 <span><span class="va">wgt</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>,</span>
@@ -254,7 +254,7 @@
 <span>       names.attr<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Исходный рельеф'</span>, <span class="st">'Сглаживание средним'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-4-2.png" width="100%"></div>
 <p>Более мягким эффектом сглаживания, который к тому же не нарушает дифференцируемость поверхности, является гауссово сглаживание. Коэффициенты в матрице Гаусса убывают от центральной ячейки к краям матрицы по закону Гаусса-Лапласа, что позволяет придать центральной ячейке более высокий вес по сравнению с ячейками, располагающимися на краю анализируемой окрестности:</p>
-<div class="sourceCode" id="cb709"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb730"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Гауссово (параметр 0.5 - это стандартное отклонение в единицах измерения растра)</span></span>
 <span><span class="va">wgt</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/focalWeight.html">focalWeight</a></span><span class="op">(</span><span class="va">dem</span>, <span class="fl">0.5</span>, <span class="st">"Gauss"</span><span class="op">)</span></span>
 <span><span class="va">filtered</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/focal.html">focal</a></span><span class="op">(</span><span class="va">dem</span>, <span class="va">wgt</span><span class="op">)</span></span>
@@ -263,7 +263,7 @@
 <div class="inline-figure"><img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-5-1.png" width="100%"></div>
 <p>Еще одна интересная область применения фильтрации — это обнаружение границ (change detection). Границы на изображении возникают в тех местах, где его яркость резко меняет свое значение (в одном или нескольких каналах). Например, на фотографии контур лица может быть распознан по перепаду яркости между его изображением и фоном (если он имеет существенно отличный цвет). Поскольку перепад яркости соответствует экстремальным значениям производной поверхности (отрицательным или положительным), его также можно определить путем фокального анализа, а затем отсечь ячейки растра, в которых значение этой производной по модулю превышает заданный порог (то есть, имеет необходимый контраст).</p>
 <p>Рассмотрим, как можно выделить уступы континентального склона океана путем применения фильтра Собеля для выделения границ:</p>
-<div class="sourceCode" id="cb710"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb731"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Матрица Собеля:</span></span>
 <span><span class="va">wgt</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">1</span>,</span>
 <span>                <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>,</span>
@@ -276,7 +276,7 @@
 <span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/gray.colors.html">gray.colors</a></span><span class="op">(</span><span class="fl">128</span><span class="op">)</span>,</span>
 <span>     main <span class="op">=</span> <span class="st">'Производная поверхности'</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-6-1.png" width="100%"></div>
-<div class="sourceCode" id="cb711"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb732"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Отберем все ячейки, обладающие высокими значениями производных</span></span>
 <span><span class="va">faults</span> <span class="op">=</span> <span class="op">(</span><span class="va">filtered</span> <span class="op">&lt;</span> <span class="op">-</span><span class="fl">1500</span><span class="op">)</span> <span class="op">|</span> <span class="op">(</span><span class="va">filtered</span> <span class="op">&gt;</span> <span class="fl">1500</span><span class="op">)</span></span>
@@ -293,12 +293,12 @@
 <span>     add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-6-2.png" width="100%"></div>
 <p>Еще один распространенный случай использования фокальных операций — это морфометрический анализ поверхностей. Квадратная окрестность <span class="math inline">\(3\times3\)</span> вокруг каждой ячейки формирует локальную поверхность, производные которой дают представление об уклоне, экспозиции и прочих морфометрических параметрах. Их можно вычислить с помощью функции <code><a href="https://rdrr.io/pkg/terra/man/terrain.html">terrain()</a></code> из пакета <code>raster</code>:</p>
-<div class="sourceCode" id="cb712"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb733"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Морфометрия рельефа — фиксированное соседство</span></span>
 <span><span class="va">dem</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="st">'data/dem_fergana.tif'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/spplot.html">spplot</a></span><span class="op">(</span><span class="va">dem</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-7-1.png" width="100%"></div>
-<div class="sourceCode" id="cb713"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb734"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># углы наклона</span></span>
 <span><span class="va">slope</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/terrain.html">terrain</a></span><span class="op">(</span><span class="va">dem</span>, opt <span class="op">=</span> <span class="st">'slope'</span>, unit <span class="op">=</span> <span class="st">'degrees'</span><span class="op">)</span></span>
@@ -306,7 +306,7 @@
 <span>       col.regions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">heat.colors</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>,</span>
 <span>       names.attr<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Углы наклона'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-7-2.png" width="100%"></div>
-<div class="sourceCode" id="cb714"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb735"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># экспозиция</span></span>
 <span><span class="va">aspect</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/terrain.html">terrain</a></span><span class="op">(</span><span class="va">dem</span>, opt <span class="op">=</span> <span class="st">'aspect'</span>, unit <span class="op">=</span> <span class="st">'degrees'</span><span class="op">)</span></span>
@@ -315,7 +315,7 @@
 <span>       names.attr<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Экспозиции склона'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-7-3.png" width="100%"></div>
 <p>Вычисление производных поверхности позволяет не только исследовать рельеф, но также строить его изображения. Например, хорошо знакомую всем по картам аналитическую отмывку рельефа (<em>hillshade</em>). Яркость поверхности в этом способе изображения зависит от угла между направлением на источник освещения (откуда светит Солнце) и нормалью к поверхности. Нормаль можно вычислить как напрямую через производные поверхности, так и восстановить на основе значений угла наклона и экспозиции в точке, что и используется в пакете <strong>raster</strong>. Обратите внимание на то, что для того чтобы повысить наглядность (контрастность) изображения, мы умножаем высоты рельефа на 20. Это стандартная практика для мелкомасштабных карт:</p>
-<div class="sourceCode" id="cb715"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb736"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># отмывка</span></span>
 <span><span class="va">slope2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/terrain.html">terrain</a></span><span class="op">(</span><span class="va">dem</span> <span class="op">*</span> <span class="fl">20</span>, opt <span class="op">=</span> <span class="st">'slope'</span><span class="op">)</span></span>
 <span><span class="va">aspect2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/terrain.html">terrain</a></span><span class="op">(</span><span class="va">dem</span> <span class="op">*</span> <span class="fl">20</span>, opt <span class="op">=</span> <span class="st">'aspect'</span><span class="op">)</span></span>
@@ -339,7 +339,7 @@
 <p>Расширенность окрестности означает, что она определяется не фиксированным шаблоном, а условием, которое должно выполниться для того, чтобы анализ в ячейке считался выполненным. Типичный пример анализа на основе расширенной окрестности — это операции, основанные на вычислении расстояний на растровой матрице, такие как аллокация, определение кратчайшего пути на поверхности сопротивления, и собственно, само вычисление расстояние.</p>
 <p>В мелкомасштабных тематических атласах часто можно встретить карты доступности той или иной географической локации, которые в форме изолиний показывают время движения до ближайшего населенного пункта. Эти изолинии можно построить по растровой поверхности, в каждой ячейке которой зафиксировано расстояние до ближайшего населенного пункта.</p>
 <p>Рассмотрим построение аналогичной поверхности на примере доступности станций метро (по расстоянию). Для этого нам понадобится представить растр в виде матрицы точек, рассчитать для этих точек расстояния до ближайших станций метро и присвоить эти значения выходному растру:</p>
-<div class="sourceCode" id="cb716"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb737"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Определение Евклидовых расстояний — расширенное соседство</span></span>
 <span></span>
 <span><span class="co"># Чтение данных</span></span>
@@ -415,12 +415,12 @@
 </h3>
 <p><strong>Зональные операции</strong> связаны с агрегированием растровых данных по площадным зонам. В пределах каждой зоны вычисляется одна или несколько характеристик значений анализируемого растра: среднее, максимум и т.д. Как правило, зоны задаются в виде вспомогательного растрового или векторного набора данных. В случае растра каждая ячейка должна содержать идентификатор (номер) зоны, к которой она относится. Совокупность ячеек, имеющих одинаковый идентификатор, определяет территорию, которую покрывает зона с этим идентификатором. Если зоны представлены векторным набором пространственных объектов, то каждый объект (полигон) также должен иметь собственный идентификатор. Теоретически в одном наборе данных может быть несколько пространственно не связанных объектов, относящихся к одной зоне (например, зона экваториального климата состоит из трех ареалов). В этом случае агрегирование данных будет произведено сразу по трем полигонам. Таким образом, количество получаемых в результате зональной статистики значений определяется количеством зон, но может не совпадать с общим количеством полигонов, которыми эти зоны представлены.</p>
 <p>В качестве примера рассмотрим вычисление среднеклиматических параметров <em>WorldClim</em> в пределах различных типов земельного покрова (Land Cover), которые доступны в пакете <strong>tmap</strong>:</p>
-<div class="sourceCode" id="cb717"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb738"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">temp</span> <span class="op">=</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/getData.html">getData</a></span><span class="op">(</span><span class="st">"worldclim"</span>, var <span class="op">=</span> <span class="st">"tmean"</span>, res <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_as_stars.html">st_as_stars</a></span><span class="op">(</span><span class="op">)</span> <span class="op">/</span> <span class="fl">10</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span><span class="op">(</span><span class="va">temp</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-10-1.png" width="100%"></div>
-<div class="sourceCode" id="cb718"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb739"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">land</span>, package <span class="op">=</span> <span class="st">'tmap'</span><span class="op">)</span></span>
@@ -437,21 +437,21 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">'bottom'</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-10-2.png" width="100%"></div>
 <p>Предварительно необходимо убедиться, что оба растра имеют совпадающий охват (экстент) и пространственное разрешение. Обратите внимание на то, что, поскольку растр земельного покрова категориальный, для его передискретизации необходимо использовать метод ближайшего соседа (<em>Nearest Neighbor</em>), который для каждого пиксела нового растра берет значение в ближайшем к нему пикселе исходного растра:</p>
-<div class="sourceCode" id="cb719"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb740"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">temp</span></span>
 <span><span class="co">## stars object with 3 dimensions and 1 attribute</span></span>
 <span><span class="co">## attribute(s), summary of first 1e+05 cells:</span></span>
 <span><span class="co">##          Min. 1st Qu. Median      Mean 3rd Qu.  Max.  NA's</span></span>
 <span><span class="co">## tmean1  -42.1 -34.075 -30.85 -31.98754   -29.5 -27.8 98298</span></span>
 <span><span class="co">## dimension(s):</span></span>
-<span><span class="co">##      from   to offset     delta                       refsys point</span></span>
-<span><span class="co">## x       1 2160   -180  0.166667 +proj=longlat +datum=WGS8...    NA</span></span>
-<span><span class="co">## y       1  900     90 -0.166667 +proj=longlat +datum=WGS8...    NA</span></span>
-<span><span class="co">## band    1   12     NA        NA                           NA    NA</span></span>
-<span><span class="co">##                  values x/y</span></span>
-<span><span class="co">## x                  NULL [x]</span></span>
-<span><span class="co">## y                  NULL [y]</span></span>
-<span><span class="co">## band tmean1,...,tmean12</span></span>
+<span><span class="co">##      from   to offset     delta                       refsys             values</span></span>
+<span><span class="co">## x       1 2160   -180  0.166667 +proj=longlat +datum=WGS8...               NULL</span></span>
+<span><span class="co">## y       1  900     90 -0.166667 +proj=longlat +datum=WGS8...               NULL</span></span>
+<span><span class="co">## band    1   12     NA        NA                           NA tmean1,...,tmean12</span></span>
+<span><span class="co">##      x/y</span></span>
+<span><span class="co">## x    [x]</span></span>
+<span><span class="co">## y    [y]</span></span>
+<span><span class="co">## band</span></span>
 <span><span class="va">land</span></span>
 <span><span class="co">## stars object with 2 dimensions and 4 attributes</span></span>
 <span><span class="co">## attribute(s):</span></span>
@@ -472,12 +472,9 @@
 <span><span class="co">##  Max.   :100.0    Max.   :6410    </span></span>
 <span><span class="co">##  NA's   :393060   NA's   :389580  </span></span>
 <span><span class="co">## dimension(s):</span></span>
-<span><span class="co">##   from   to offset.xmin delta.xmax                       refsys point values</span></span>
-<span><span class="co">## x    1 1080        -180   0.333333 +proj=longlat +ellps=WGS8...  NULL   NULL</span></span>
-<span><span class="co">## y    1  540          90  -0.333333 +proj=longlat +ellps=WGS8...  NULL   NULL</span></span>
-<span><span class="co">##   x/y</span></span>
-<span><span class="co">## x [x]</span></span>
-<span><span class="co">## y [y]</span></span>
+<span><span class="co">##   from   to offset.xmin delta.xmax                       refsys point x/y</span></span>
+<span><span class="co">## x    1 1080        -180   0.333333 +proj=longlat +ellps=WGS8...  NULL [x]</span></span>
+<span><span class="co">## y    1  540          90  -0.333333 +proj=longlat +ellps=WGS8...  NULL [y]</span></span>
 <span></span>
 <span><span class="op">(</span><span class="va">cover</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_warp.html">st_warp</a></span><span class="op">(</span><span class="va">land</span><span class="op">[</span><span class="st">'cover'</span><span class="op">]</span>, <span class="va">temp</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="va">band</span>, <span class="fl">1</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">'near'</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">## stars object with 2 dimensions and 1 attribute</span></span>
@@ -491,12 +488,12 @@
 <span><span class="co">##  Broadleaf Deciduous Forest          :    0  </span></span>
 <span><span class="co">##  (Other)                             :    0  </span></span>
 <span><span class="co">## dimension(s):</span></span>
-<span><span class="co">##   from   to offset     delta                       refsys point values x/y</span></span>
-<span><span class="co">## x    1 2160   -180  0.166667 +proj=longlat +datum=WGS8...    NA   NULL [x]</span></span>
-<span><span class="co">## y    1  900     90 -0.166667 +proj=longlat +datum=WGS8...    NA   NULL [y]</span></span>
+<span><span class="co">##   from   to offset     delta                       refsys x/y</span></span>
+<span><span class="co">## x    1 2160   -180  0.166667 +proj=longlat +datum=WGS8... [x]</span></span>
+<span><span class="co">## y    1  900     90 -0.166667 +proj=longlat +datum=WGS8... [y]</span></span>
 <span><span class="co"># используем 'near', поскольку растр категориальный</span></span></code></pre></div>
 <p>Для вычисления средней температуры за каждый месяц в пределах каждой зоны земельного покрова выполним следующую последовательность действий:</p>
-<div class="sourceCode" id="cb720"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb741"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">months</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span></span>
 <span><span class="va">cover_types</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span><span class="op">(</span><span class="va">cover</span><span class="op">$</span><span class="va">cover</span><span class="op">)</span></span>
 <span><span class="va">zonal_stats</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">cover_types</span>, <span class="kw">function</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">{</span></span>
@@ -514,14 +511,14 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>month <span class="op">=</span> <span class="va">months</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span><span class="op">-</span><span class="va">month</span>, names_to <span class="op">=</span> <span class="st">'cover'</span>, values_to <span class="op">=</span> <span class="st">'tmean'</span><span class="op">)</span></span></code></pre></div>
 <p>Визуализируем полученные результаты:</p>
-<div class="sourceCode" id="cb721"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb742"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">zonal_stats</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">month</span>, y <span class="op">=</span> <span class="va">tmean</span>, color <span class="op">=</span> <span class="va">cover</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">pal</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">months</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-13-1.png" width="100%"></div>
 <p>Перед вычислением целесообразно разделить растр землепользования на северное и южное полушарие (т.к. ход температур в них противоположный):</p>
-<div class="sourceCode" id="cb722"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb743"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cover_north</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/crop.html">crop</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/methods/as.html">as</a></span><span class="op">(</span><span class="va">cover</span><span class="op">[</span><span class="st">'cover'</span><span class="op">]</span>, <span class="st">'Raster'</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/raster/man/extent.html">extent</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span>, <span class="fl">0</span>, <span class="fl">90</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">cover_south</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/crop.html">crop</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/methods/as.html">as</a></span><span class="op">(</span><span class="va">cover</span><span class="op">[</span><span class="st">'cover'</span><span class="op">]</span>, <span class="st">'Raster'</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/raster/man/extent.html">extent</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span>, <span class="op">-</span><span class="fl">60</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -561,7 +558,7 @@
 <span class="header-section-number">15.2.4</span> Глобальные операции<a class="anchor" aria-label="anchor" href="#raster_global"><i class="fas fa-link"></i></a>
 </h3>
 <p>Глобальные операции охватывают все ячейки растра. По сути, можно говорить, что это частный случай зональной операции, когда зона одна и покрывает растр целиком. В пакете raster для расчета глобальных статистик можно использовать функцию <code><a href="https://rdrr.io/pkg/raster/man/cellStats.html">cellStats()</a></code>, передав ей название растра и агрегирующей функции:</p>
-<div class="sourceCode" id="cb723"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb744"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/cellStats.html">cellStats</a></span><span class="op">(</span><span class="va">temp_north</span>, <span class="va">max</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/cellStats.html">cellStats</a></span><span class="op">(</span><span class="va">temp_south</span>, <span class="va">min</span><span class="op">)</span> </span></code></pre></div>
 </div>
@@ -572,7 +569,7 @@
 </h2>
 <p>Растровая модель данных обеспечивает сплошное покрытие территории (с дискретностью, определяемой размером ячейки). В то же время, достаточно часто требуется получить значения растра в заданных местоположениях. Местоположения могут быть как конкретными объектами (например, точками почвенных разрезов), так и абстрактными географическими локациями, для которых известны координаты.</p>
 <p>Для извлечения растровых данных можно воспользоваться функцией <code><a href="https://rdrr.io/pkg/terra/man/extract.html">extract()</a></code>. Получать данные можно как по координатам (записанным в фрейм данных), так и используя пространственные объекты класса <code>Spatial</code>. Например, узнаем мощность покровного оледенения в точке в центре Гренландии:</p>
-<div class="sourceCode" id="cb724"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb745"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">coords</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">45</span>, y <span class="op">=</span> <span class="fl">70</span><span class="op">)</span></span>
 <span><span class="va">z</span> <span class="op">=</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/extract.html">extract</a></span><span class="op">(</span><span class="va">ice.depth</span>, <span class="va">coords</span><span class="op">)</span></span>
 <span></span>
@@ -587,11 +584,11 @@
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="va">coords</span>, labels <span class="op">=</span> <span class="va">z</span>, pos <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-16-1.png" width="100%"></div>
 <p>Одна из наиболее распространенных задач по извлечению растровых данных — это построение профиля вдоль заданной линии. Воспользуемся интерактивным редактором для проведения линии профиля</p>
-<div class="sourceCode" id="cb725"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb746"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/mapview/man/mapView.html">mapview</a></span><span class="op">(</span><span class="va">temp</span><span class="op">$</span><span class="va">tmean6</span><span class="op">)</span></span>
 <span><span class="va">profile</span> <span class="op">=</span> <span class="fu">mapedit</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mapedit/man/drawFeatures.html">drawFeatures</a></span><span class="op">(</span><span class="va">mp</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="images/mapedit_profile.png" width="100%"></div>
-<div class="sourceCode" id="cb726"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb747"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">temprof</span> <span class="op">=</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/extract.html">extract</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/methods/as.html">as</a></span><span class="op">(</span><span class="va">temp</span>, <span class="st">'Raster'</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/methods/as.html">as</a></span><span class="op">(</span><span class="va">profile</span>, <span class="st">'Spatial'</span><span class="op">)</span>,</span>
 <span>                          along <span class="op">=</span> <span class="cn">TRUE</span>, cellnumbers <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">temprof</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
@@ -610,7 +607,7 @@
 <span><span class="co">## [5,]    -7.3   -17.9   -22.6</span></span>
 <span><span class="co">## [6,]    -7.1   -17.9   -22.6</span></span></code></pre></div>
 <p>Для построения линии профиля далее нам необходимо преобразовать идентификаторы ячеек растра в расстояние от начала профиля:</p>
-<div class="sourceCode" id="cb727"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb748"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tempdf</span> <span class="op">=</span> <span class="va">temprof</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
@@ -639,7 +636,7 @@
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_text.html">tm_text</a></span><span class="op">(</span><span class="st">'label'</span>, remove.overlap <span class="op">=</span> <span class="cn">TRUE</span>, auto.placement <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_layout.html">tm_layout</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'left'</span>, <span class="st">'bottom'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-21-1.png" width="100%"></div>
-<div class="sourceCode" id="cb728"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb749"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">tempdf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="co"># dplyr::filter(month == 7) %&gt;% </span></span>
@@ -742,7 +739,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2022-10-20.</p>
+    <p>"<strong>Визуализация и анализ географических данных на языке R</strong>" was written by Тимофей Самсонов. It was last built on 2022-11-15.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
