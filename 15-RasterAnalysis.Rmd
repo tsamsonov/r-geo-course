@@ -304,8 +304,10 @@ head(stats)
 
 zonal_stats = stats |> 
   rename(cover = 1) |> 
-  pivot_longer(-cover, names_to = 'month', values_to = 'tavg', 
-               names_prefix = 'wc2.1_10m_tavg_', names_transform = as.integer) |> 
+  pivot_longer(-cover, 
+               names_to = 'month', values_to = 'tavg', 
+               names_prefix = 'wc2.1_10m_tavg_', 
+               names_transform = as.integer) |> 
   mutate(month = ordered(month, 1:12, month.abb))
 head(zonal_stats)
 ```
@@ -313,43 +315,45 @@ head(zonal_stats)
 Визуализируем полученные результаты:
 ```{r}
 ggplot(zonal_stats) +
-  geom_line(aes(x = month, y = tavg, color = cover, group = cover), size = 1) +
+  geom_line(aes(x = month, y = tavg, 
+                color = cover, group = cover), size = 1) +
   scale_color_manual(values = pal)
 ```
 
 Перед вычислением целесообразно разделить растр землепользования на северное и южное полушарие (т.к. ход температур в них противоположный):
 ```{r, fig.height=10}
-cover_north = crop(as(cover['cover'], 'Raster'), extent(-180, 180, 0, 90))
-cover_south = crop(as(cover['cover'], 'Raster'), extent(-180, 180, -60, 0))
 
-temp_north = crop(as(temp, 'Raster'), extent(-180, 180, 0, 90))
-temp_south = crop(as(temp, 'Raster'), extent(-180, 180, -60, 0))
+cover_north = crop(cover, ext(-180, 180, 0, 90))
+cover_south = crop(cover, ext(-180, 180, -60, 0))
 
-mtemp_north_tidy = zonal(temp_north, cover_north, 'mean') %>% 
-  as_tibble() %>% 
-  pivot_longer(-zone, 
-               names_to = 'month', 
-               values_to = 'tmean', 
-               names_prefix = 'tmean',
-               names_transform = list(month = as.integer)) %>% 
-  mutate(hemisphere = 'north')
+temp_north = crop(temp, ext(-180, 180, 0, 90))
+temp_south = crop(temp, ext(-180, 180, -60, 0))
 
-mtemp_south_tidy = zonal(temp_south, cover_south, 'mean') %>% 
-  as_tibble() %>% 
-  pivot_longer(-zone, 
-               names_to = 'month', 
-               values_to = 'tmean', 
-               names_prefix = 'tmean',
-               names_transform = list(month = as.integer)) %>% 
-  mutate(hemisphere = 'south')
+mtemp_north_tidy = zonal(temp_north, cover_north, mean, na.rm = TRUE) |>  
+  rename(cover = 1) |> 
+  pivot_longer(-cover, 
+               names_to = 'month', values_to = 'tavg', 
+               names_prefix = 'wc2.1_10m_tavg_', 
+               names_transform = as.integer) |> 
+  mutate(month = ordered(month, 1:12, month.abb),
+         hemisphere = 'north')
 
-mtemp_tidy2 = bind_rows(mtemp_north_tidy, mtemp_south_tidy) %>% 
-  mutate(cover = levels(cover$cover)[zone])
+mtemp_south_tidy = zonal(temp_south, cover_south, mean, na.rm = TRUE) |>  
+  rename(cover = 1) |> 
+  pivot_longer(-cover, 
+               names_to = 'month', values_to = 'tavg', 
+               names_prefix = 'wc2.1_10m_tavg_', 
+               names_transform = as.integer) |> 
+  mutate(month = ordered(month, 1:12, month.abb),
+         hemisphere = 'south')
+
+mtemp_tidy2 = bind_rows(mtemp_north_tidy, mtemp_south_tidy)
 
 ggplot(mtemp_tidy2) +
-  geom_line(aes(x = month, y = tmean, color = cover), size = 1) +
+  geom_line(aes(x = month, y = tavg, 
+                color = cover, group = cover), 
+            size = 1) +
   scale_color_manual(values = pal) +
-  scale_x_continuous(breaks = 1:12) +
   facet_wrap(~hemisphere, ncol = 1)
 ```
 
@@ -357,8 +361,8 @@ ggplot(mtemp_tidy2) +
 
 Глобальные операции охватывают все ячейки растра. По сути, можно говорить, что это частный случай зональной операции, когда зона одна и покрывает растр целиком. В пакете raster для расчета глобальных статистик можно использовать функцию `cellStats()`, передав ей название растра и агрегирующей функции:
 ```{r, eval = FALSE,}
-cellStats(temp_north, max) 
-cellStats(temp_south, min) 
+global(temp_north, max, na.rm = T) 
+global(temp_south, min, na.rm = T) 
 ```
 
 ## Извлечение данных {#raster_extract}
