@@ -18,7 +18,9 @@ library(mapedit)
 library(classInt)
 library(geosphere)
 library(dplyr)
+library(ggplot2)
 library(terra)
+library(tidyterra)
 ```
 
 ## Введение {#raster_intro}
@@ -39,17 +41,27 @@ library(terra)
 
 ```{r}
 # отображение данных
-classes = classIntervals(values(bed), 20)
-brks = classes$brks
-nclass = length(brks) - 1
+# classes = classIntervals(values(bed), 20)
+# brks = classes$brks
+# nclass = length(brks) - 1
 
-plot(bed, 
-     breaks = brks, 
+ggplot() +
+  geom_spatraster(data = bed) +
+  scale_fill_hypso_tint_c(palette = "gmt_globe") +
+  ggtitle('ETOPO Bedrock')
+
+ggplot() +
+  geom_spatraster(data = ice) +
+  scale_fill_hypso_tint_c(palette = "gmt_globe") +
+  ggtitle('ETOPO Ice surface')
+
+plot(bed,
+     breaks = brks,
      col = gray.colors(nclass),
      main = 'ETOPO Bedrock',
      legend = F)
-plot(ice, 
-     breaks = brks, 
+plot(ice,
+     breaks = brks,
      col = gray.colors(nclass),
      main = 'ETOPO Ice surface',
      legend = F)
@@ -202,8 +214,10 @@ plot(aspect,
 Вычисление производных поверхности позволяет не только исследовать рельеф, но также строить его изображения. Например, хорошо знакомую всем по картам аналитическую отмывку рельефа (_hillshade_). Яркость поверхности в этом способе изображения зависит от угла между направлением на источник освещения (откуда светит Солнце) и нормалью к поверхности. Нормаль можно вычислить как напрямую через производные поверхности, так и восстановить на основе значений угла наклона и экспозиции в точке, что и используется в пакете __raster__. Обратите внимание на то, что для того чтобы повысить наглядность (контрастность) изображения, мы умножаем высоты рельефа на 20. Это стандартная практика для мелкомасштабных карт:
 ```{r}
 # отмывка
-slope2 = terrain(dem * 20, 'slope', unit = 'radians')
-aspect2 = terrain(dem * 20, 'aspect', unit = 'radians')
+slope2 = terrain(dem * 20, 'slope', 
+                 unit = 'radians')
+aspect2 = terrain(dem * 20, 'aspect', 
+                  unit = 'radians')
                  
 # параметры angle и direction функции hillShade определяют азимут и высоту источника освещения:
 hill_vert = shade(slope2, aspect2, angle = 90, direction = 315)
@@ -228,29 +242,26 @@ plot(hill_comb,
 # Определение Евклидовых расстояний — расширенное соседство
 
 # Чтение данных
-roads = st_read("data/roads.gpkg") # Дороги
-poi = st_read("data/poi_point.gpkg") # Точки интереса
-rayons = st_read("data/boundary_polygon.gpkg") # Границы районов
-stations = st_read("data/metro_stations.gpkg") # Станции метро
-water = st_read("data/water_polygon.gpkg") # Водные объекты
+roads = read_sf("data/roads.gpkg") # Дороги
+poi = read_sf("data/poi_point.gpkg") # Точки интереса
+rayons = read_sf("data/boundary_polygon.gpkg") # Границы районов
+stations = read_sf("data/metro_stations.gpkg") # Станции метро
+water = read_sf("data/water_polygon.gpkg") # Водные объекты
 
-# Создаем пустой растр с охватом, равным охвату станции
-dist_grid = stations %>% 
-  st_bbox() %>% 
-  st_as_stars(dx = 25, dy = 25) %>% 
-  mutate(dist = st_as_sf(., as_points = TRUE, merge = FALSE) %>% 
-           st_distance(stations, .) %>% 
-           apply(2, min))
+dist_grid = stations |> 
+  rast(resolution = 25) |> 
+  rasterize(stations, y = _) |> 
+  gridDist(NA)
 
 # Визуализируем результат
 ggplot() +
-  geom_stars(data = dist_grid['dist']) +
-  scale_fill_gradientn(colours = c('white', 'red', 'black')) +
-  coord_sf(crs = st_crs(stations)) +
-  geom_sf(data = water, size = 0.1) +
-  geom_sf(data = roads, size = 0.1) +
-  geom_sf(data = stations) +
-  ggtitle('Расстояние до ближайшей станции метро') +
+  geom_spatraster_contour_filled(data = dist_grid) +
+  geom_spatraster_contour(data = dist_grid, linewidth = 0.25, color = 'black') +
+  geom_sf(data = water, linewidth = 0.1) +
+  geom_sf(data = roads, linewidth = 0.1) +
+  geom_sf(data = stations, color = 'darkviolet') +
+  labs(title = 'Расстояние до ближайшей станции метро',
+       fill = 'м') +
   theme_bw()
 ```
 
