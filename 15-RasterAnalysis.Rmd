@@ -11,13 +11,13 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, collapse = TRUE, out.wid
 Для выполнения кода данной лекции вам понадобятся следующие пакеты:
 ```{r}
 library(sf)
-library(tmap)
 library(stars)
 library(mapview)
 library(mapedit)
 library(classInt)
 library(geosphere)
 library(dplyr)
+library(tidyr)
 library(ggplot2)
 library(terra)
 library(tidyterra)
@@ -270,13 +270,11 @@ ggplot() +
 __Зональные операции__ связаны с агрегированием растровых данных по площадным зонам. В пределах каждой зоны вычисляется одна или несколько характеристик значений анализируемого растра: среднее, максимум и т.д. Как правило, зоны задаются в виде вспомогательного растрового или векторного набора данных. В случае растра каждая ячейка должна содержать идентификатор (номер) зоны, к которой она относится. Совокупность ячеек, имеющих одинаковый идентификатор, определяет территорию, которую покрывает зона с этим идентификатором. Если зоны представлены векторным набором пространственных объектов, то каждый объект (полигон) также должен иметь собственный идентификатор. Теоретически в одном наборе данных может быть несколько пространственно не связанных объектов, относящихся к одной зоне (например, зона экваториального климата состоит из трех ареалов). В этом случае агрегирование данных будет произведено сразу по трем полигонам. Таким образом, количество получаемых в результате зональной статистики значений определяется количеством зон, но может не совпадать с общим количеством полигонов, которыми эти зоны представлены.
 
 В качестве примера рассмотрим вычисление среднеклиматических параметров _WorldClim_ в пределах различных типов земельного покрова (Land Cover), которые доступны в пакете __tmap__:
-```{r, fig.width=8, fig.height=8}
-temp = raster::getData("worldclim", var = "tmean", res = 10) %>% 
-  st_as_stars() / 10
-plot(temp)
-
+```{r, fig.width=8, fig.height=8, cache = T}
+temp = geodata::worldclim_global(var = "tavg", res = 10, path = tempdir())
 
 data(land, package = 'tmap')
+land = rast(land['cover'])
 
 pal = c("#003200", "#3C9600", "#006E00", "#556E19", "#00C800", "#8CBE8C",
 		   "#467864", "#B4E664", "#9BC832", "#EBFF64", "#F06432", "#9132E6",
@@ -284,7 +282,7 @@ pal = c("#003200", "#3C9600", "#006E00", "#556E19", "#00C800", "#8CBE8C",
 		   "#FFFFFF", "#5ADCDC")
 
 ggplot() +
-  geom_stars(data = land) +
+  geom_spatraster(data = land) +
   scale_fill_manual(values = pal, guide = guide_legend(ncol = 3), name = NULL) + 
   coord_sf(crs = st_crs(land)) +
   theme(legend.position = 'bottom')
@@ -295,36 +293,28 @@ ggplot() +
 temp
 land
 
-(cover = st_warp(land['cover'], temp %>% slice(band, 1), method = 'near'))
+(cover = project(land, temp, method = 'near'))
 # используем 'near', поскольку растр категориальный
 ```
 
 Для вычисления средней температуры за каждый месяц в пределах каждой зоны земельного покрова выполним следующую последовательность действий:
 ```{r}
-months = 1:12
-cover_types = levels(cover$cover)
-zonal_stats = lapply(cover_types, function(X) {
-  sapply(months, function(Y) {
-    temp_month = temp %>% slice(band, Y) %>% pull(1)
-    cover %>% 
-      mutate(masked = ifelse(cover == X, temp_month, NA)) %>% 
-      dplyr::select(masked) %>% 
-      pull(masked) %>% 
-      mean(na.rm = TRUE)
-  })
-}) %>% 
-  bind_cols() %>% 
-  set_names(cover_types) %>% 
-  mutate(month = months) %>% 
-  pivot_longer(-month, names_to = 'cover', values_to = 'tmean')
+stats = zonal(temp, cover, mean, na.rm = TRUE)
+head(stats)
+
+zonal_stats = stats |> 
+  rename(cover = 1) |> 
+  pivot_longer(-cover, names_to = 'month', values_to = 'tavg', 
+               names_prefix = 'wc2.1_10m_tavg_', names_transform = as.integer) |> 
+  mutate(month = ordered(month, 1:12, month.abb))
+head(zonal_stats)
 ```
 
 Визуализируем полученные результаты:
 ```{r}
 ggplot(zonal_stats) +
-  geom_line(aes(x = month, y = tmean, color = cover), size = 1) +
-  scale_color_manual(values = pal) +
-  scale_x_continuous(breaks = months)
+  geom_line(aes(x = month, y = tavg, color = cover, group = cover), size = 1) +
+  scale_color_manual(values = pal)
 ```
 
 Перед вычислением целесообразно разделить растр землепользования на северное и южное полушарие (т.к. ход температур в них противоположный):
