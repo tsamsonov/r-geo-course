@@ -40,11 +40,6 @@ library(tidyterra)
 ```
 
 ```{r}
-# отображение данных
-# classes = classIntervals(values(bed), 20)
-# brks = classes$brks
-# nclass = length(brks) - 1
-
 ggplot() +
   geom_spatraster(data = bed) +
   scale_fill_hypso_tint_c(palette = "gmt_globe") +
@@ -54,17 +49,6 @@ ggplot() +
   geom_spatraster(data = ice) +
   scale_fill_hypso_tint_c(palette = "gmt_globe") +
   ggtitle('ETOPO Ice surface')
-
-plot(bed,
-     breaks = brks,
-     col = gray.colors(nclass),
-     main = 'ETOPO Bedrock',
-     legend = F)
-plot(ice,
-     breaks = brks,
-     col = gray.colors(nclass),
-     main = 'ETOPO Ice surface',
-     legend = F)
 ```
 
 ## Растровая алгебра
@@ -374,15 +358,14 @@ global(temp_south, min, na.rm = T)
 coords = data.frame(x = -45, y = 70)
 z = terra::extract(ice.depth, coords)
 
-plot(bed, 
-     breaks = brks, 
-     col = gray.colors(nclass),
+plot(bed,
+     col = gray.colors(255),
      legend = F)
 plot(ice.depth, 
      col = cm.colors(255),
      add = TRUE)
 points(coords)
-text(coords, labels = z, pos = 4)
+text(coords, labels = z$etopo1_ice, pos = 4)
 ```
 
 
@@ -401,50 +384,44 @@ profile = st_read('data/profile.gpkg', quiet = TRUE)
 ```
 
 ```{r}
-temprof = raster::extract(as(temp, 'Raster'), as(profile, 'Spatial'),
-                          along = TRUE, cellnumbers = TRUE)
-head(temprof[[1]])
+temprof = terra::extract(temp, profile, cells = TRUE, xy = TRUE)
 ```
 
 Для построения линии профиля далее нам необходимо преобразовать идентификаторы ячеек растра в расстояние от начала профиля:
 ```{r}
-tempdf = temprof[[1]] %>% 
-  as_tibble() %>% 
-  drop_na() %>% 
-  bind_cols(st_coordinates(temp)[.$cell, ] %>% as_tibble()) %>% 
-  mutate(dist = 0.001 * c(0, dplyr::select(., x, y) %>% 
-                             geosphere::distGeo() %>% 
-                             cumsum() %>% 
-                             head(-1))) %>% 
-  dplyr::select(-c(x, y, cell, band)) %>% 
-  pivot_longer(tmean1:tmean12, 
-               names_to = 'month', 
-               values_to = 'tmean', 
-               names_prefix = 'tmean',
-               names_transform = list(month = \(x) factor(x,  ordered = TRUE, levels = 1:12)))
+tempdf = temprof %>%
+  mutate(dist = 0.001 * c(0, dplyr::select(., x, y) |>  
+                             geosphere::distGeo() |> 
+                             cumsum() |> 
+                             head(-1))) |>  
+  select(-c(x, y, cell, ID)) |> 
+  pivot_longer(-dist, 
+               names_to = 'month', values_to = 'tavg', 
+               names_prefix = 'wc2.1_10m_tavg_', 
+               names_transform = as.integer)
 
-pts = profile %>% 
-  st_cast('POINT') %>% 
+pts = profile |>   
+  st_cast('POINT') %>%
+  bind_cols(st_coordinates(.)) |>  
   mutate(label = c('A', 'B'))
 
-tm_shape(slice(temp, band, 1)) +
-  tm_raster('tmean1', midpoint = 0, palette = '-RdBu') +
-tm_shape(profile) +
-  tm_lines() +
-tm_shape(pts) +
-  tm_bubbles(size = 0.1) +
-  tm_text('label', remove.overlap = TRUE, auto.placement = TRUE) +
-tm_layout(legend.position = c('left', 'bottom'))
+ggplot() +
+  geom_spatraster(data = temp$wc2.1_10m_tavg_07) +
+  scale_fill_gradient2(low = 'navyblue', 
+                       mid = 'khaki', 
+                       high = 'orangered') +
+  geom_sf(data = profile) +
+  geom_sf(data = pts) +
+  ggrepel::geom_text_repel(data = pts, aes(X, Y, label = label)) +
+  labs(x = NULL, y = NULL)
 
-tempdf %>% 
-  # dplyr::filter(month == 7) %>% 
-  ggplot(aes(x = dist, y = tmean)) +
-    geom_line() +
-    geom_smooth(span = 0.1) +
-    annotate('text', x = 0, y = 10, label = 'A') +
-    annotate('text', x = max(tempdf$dist), y = 10, label = 'B') +
-    ggtitle('Профиль среднемесячной температуры июня по линии A—B') +
-    facet_wrap(~month)
+ggplot(tempdf, aes(x = dist, y = tavg)) +
+  geom_line() +
+  geom_smooth(span = 0.1) +
+  annotate('text', x = 0, y = 10, label = 'A') +
+  annotate('text', x = max(tempdf$dist), y = 10, label = 'B') +
+  ggtitle('Профиль среднемесячной температуры июня по линии A—B') +
+  facet_wrap(~month)
 ```
 
 ## Контрольные вопросы и упражнения {#questions_tasks_raster}
@@ -469,15 +446,15 @@ tempdf %>%
 
 ### Упражнения {#tasks_raster}
 
-1. В пакете __tmap__ содержится растровый каталог `land`, включающий в себя растр `elevation`. Используя пакет __mapedit__, оцифруйте произвольную линию и постройте средствами __ggplot__ профиль рельефа вдоль этой линии.
-
-2. _Индекс континентальности Хромова_ рассчитывается по формуле $K = (A - 5.4 \sin \phi)/A$, где $A$ — годовая амплитуда хода температуры, $\phi$ — широта точки. Используя данные __WorldClim__, рассчитайте растр индекса континентальности на территорию суши и нанесите его на карту средствами __tmap__.
+1. _Индекс континентальности Хромова_ рассчитывается по формуле $K = (A - 5.4 \sin \phi)/A$, где $A$ — годовая амплитуда хода температуры, $\phi$ — широта точки. Используя данные __WorldClim__, рассчитайте растр индекса континентальности на территорию суши и нанесите его на карту средствами __tmap__.
 
     > __Подсказка:__ используйте функцию `xyFromCell()`, чтобы получить широты всех ячеек растра температур. Далее создайте новый растр и запишите в него широты в качестве значений. Растры минимальных и максимальных значений из стека растров можно получить, используя обычные статистические функции `min()` и `max()`.
 
-3. Постройте растр, который содержит расстояние до береговой линии. Используйте данные __Natural Earth__. Задайте грубое разрешение растра, чтобы расчеты не производились долго (100 x 50 ячеек будет достаточно). Где находится самая удаленная от берега точка на суше? А самая удаленная точка на океане? Постройте карту, которая отображает полученный растр и береговую линию.
+1. Постройте растр, который содержит расстояние до береговой линии. Используйте данные __Natural Earth__. Задайте грубое разрешение растра, чтобы расчеты не производились долго (100 x 50 ячеек будет достаточно). Где находится самая удаленная от берега точка на суше? А самая удаленная точка на океане? Постройте карту, которая отображает полученный растр и береговую линию.
 
-4. Рассчитайте морфометрические коэффициенты  TPI, TRI и roughness для [цифровой модели рельефа Ферганской долины](https://github.com/tsamsonov/r-geo-course/blob/master/data/dem_fergana.tif), которая использовалась в текущей лекции. В чем их суть? Изучите справку к инструменту `terrain()`.
+1. Рассчитайте морфометрические коэффициенты  TPI, TRI и roughness для [цифровой модели рельефа Ферганской долины](https://github.com/tsamsonov/r-geo-course/blob/master/data/dem_fergana.tif), которая использовалась в текущей лекции. В чем их суть? Изучите справку к инструменту `terrain()`.
+
+1. В пакете __tmap__ содержится растровый каталог `land`, включающий в себя растр `elevation`. Используя пакет __mapedit__, оцифруйте произвольную линию и постройте средствами __ggplot__ профиль рельефа вдоль этой линии.
 
 ----
 _Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, `lubridate::year(Sys.Date())`. DOI: [10.5281/zenodo.901911](https://doi.org/10.5281/zenodo.901911)
