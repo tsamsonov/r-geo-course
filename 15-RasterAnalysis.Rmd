@@ -26,6 +26,7 @@ library(tidyr)
 library(ggplot2)
 library(terra)
 library(tidyterra)
+library(ggnewscale)
 ```
 
 ## Введение {#raster_intro}
@@ -76,29 +77,23 @@ ggplot() +
 # Вычисление толщины покровного оледенения
 
 #  Береговая линия для ориентировки
-countries = st_read('data/countries.gpkg')
-borders = countries |> st_geometry()
+countries = read_sf('data/countries.gpkg')
 
 # вычисление разности
 ice.depth = ice - bed
-plot(ice.depth, 
-     col = cm.colors(255),
-     main = 'Мощность покровного оледенения')
-plot(borders, 
-     border = 'black', 
-     lwd = 0.5, 
-     add = TRUE)
-
-# сделаем пустыми все ячейки, в которых толщина льда равна нулю
 ice.depth[ice.depth == 0] = NA
 
-plot(ice.depth, 
-     col = cm.colors(255), 
-     main = 'Мощность покровного оледенения')
-plot(borders, 
-     border = 'black', 
-     lwd = 0.5, 
-     add = TRUE)
+ggplot() +
+  geom_spatraster(data = bed) +
+  scale_fill_gradient(low = 'black', high = 'white',
+                      guide="none") +
+  new_scale_fill() +
+  geom_spatraster(data = ice.depth) +
+  scale_fill_gradient(low = 'white', high = 'navyblue', 
+                      na.value = "transparent") +
+  geom_sf(data = countries, fill = NA) +
+  labs(title = 'Мощность покровного оледенения',
+         fill = '[м]')
 ```
 
 ### Фокальные операции {#raster_focal}
@@ -397,20 +392,26 @@ global(temp_south, min, na.rm = T)
 
 Для извлечения растровых данных можно воспользоваться функцией `extract()`. Получать данные можно как по координатам (записанным в фрейм данных), так и используя пространственные объекты класса `Spatial`. Например, узнаем мощность покровного оледенения в точке в центре Гренландии:
 ```{r}
-coords = data.frame(x = -45, y = 70)
-z = terra::extract(ice.depth, coords)
+pnt = tibble(
+  x = -45, y = 70,
+  z = terra::extract(ice.depth, bind_cols(x,y))[, 2]
+)
 
-plot(bed,
-     col = gray.colors(255),
-     legend = F)
-plot(ice.depth, 
-     col = cm.colors(255),
-     add = TRUE)
-points(coords)
-text(coords, labels = z$etopo1_ice, pos = 4)
+ggplot() +
+  geom_spatraster(data = bed) +
+  scale_fill_gradient(low = 'black', high = 'white',
+                      guide="none") +
+  new_scale_fill() +
+  geom_spatraster(data = ice.depth) +
+  scale_fill_gradient(low = 'white', high = 'navyblue', 
+                      na.value = "transparent") +
+  geom_point(aes(x, y), pnt, size = 2, color = 'red') +
+  geom_text(aes(x, y, label = z), pnt, fontface = 'bold',
+            vjust = 'bottom', hjust = 'left',
+            nudge_x = 3, nudge_y = 3) +
+  labs(title = 'Мощность покровного оледенения',
+       fill = '[м]')
 ```
-
-
 Одна из наиболее распространенных задач по извлечению растровых данных — это построение профиля вдоль заданной линии. Воспользуемся интерактивным редактором для проведения линии профиля
 ```{r, eval = FALSE}
 mp = mapview(temp$tmean6)
@@ -465,6 +466,15 @@ ggplot(tempdf, aes(x = dist, y = tavg)) +
   ggtitle('Профиль среднемесячной температуры июня по линии A—B') +
   facet_wrap(~month)
 ```
+
+## Краткий обзор {#temporal_review}
+
+Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
+```{r, echo=FALSE}
+knitr::include_url('https://tsamsonov.github.io/r-geo-course-slides/15_Raster.html#1', height = '390px')
+```
+
+> Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.
 
 ## Контрольные вопросы и упражнения {#questions_tasks_raster}
 
