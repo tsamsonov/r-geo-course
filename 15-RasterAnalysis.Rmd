@@ -200,19 +200,25 @@ dem = rast('data/dem_fergana.tif')
 
 ggplot() +
   geom_spatraster(data = dem) +
-  scale_fill_hypso_c()
+  scale_fill_hypso_c() +
+  labs(title = 'Ферганская долина', fill = 'Высота, [м]')
 
 # углы наклона
 slope = terrain(dem, 'slope', unit = 'degrees')
-plot(slope, 
-     col = rev(heat.colors(20)),
-     main = 'Углы наклона')
+
+ggplot() +
+  geom_spatraster(data = slope) +
+  scale_fill_gradient(low = 'lightcyan', high = 'darkred') +
+  labs(title = 'Углы наклона', fill = 'Градусы [°]')
 
 # экспозиция
 aspect = terrain(dem, 'aspect', unit = 'degrees')
-plot(aspect, 
-     col = rainbow(20),
-     main = c('Экспозиции склона'))
+
+ggplot() +
+  geom_spatraster(data = aspect) +
+  scale_fill_gradientn(colors = rainbow(9), values = 0:8 / 8) +
+  labs(title = 'Экспозиция', fill = 'Градусы [°]')
+
 ```
 
 Вычисление производных поверхности позволяет не только исследовать рельеф, но также строить его изображения. Например, хорошо знакомую всем по картам аналитическую отмывку рельефа (_hillshade_). Яркость поверхности в этом способе изображения зависит от угла между направлением на источник освещения (откуда светит Солнце) и нормалью к поверхности. Нормаль можно вычислить как напрямую через производные поверхности, так и восстановить на основе значений угла наклона и экспозиции в точке, что и используется в пакете __raster__. Обратите внимание на то, что для того чтобы повысить наглядность (контрастность) изображения, мы умножаем высоты рельефа на 20. Это стандартная практика для мелкомасштабных карт:
