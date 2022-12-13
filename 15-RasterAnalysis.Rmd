@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
 # Растровый анализ {#raster}
 
 ```{r setup-raster, echo = FALSE, purl = FALSE, include=FALSE}
@@ -129,8 +134,11 @@ wgt = matrix(c(1, 1, 1,
 
 # выполним обработку ЦМР с помощью фокального фильтра
 filtered = focal(dem, w = wgt)
-plot(c(dem, filtered),
-       main = c('Исходный рельеф', 'Сглаживание средним'))
+
+ggplot() +
+  geom_spatraster(data = c(dem, filtered)) +
+  scale_fill_hypso_tint_c(palette = "etopo1") + 
+  facet_wrap(~lyr)
 ```
 
 Более мягким эффектом сглаживания, который к тому же не нарушает дифференцируемость поверхности, является гауссово сглаживание. Коэффициенты в матрице Гаусса убывают от центральной ячейки к краям матрицы по закону Гаусса-Лапласа, что позволяет придать центральной ячейке более высокий вес по сравнению с ячейками, располагающимися на краю анализируемой окрестности:
@@ -139,8 +147,10 @@ plot(c(dem, filtered),
 wgt = focalMat(dem, 0.5, "Gauss")
 filtered = focal(dem, wgt)
 
-plot(c(dem, filtered),
-       main = c('Исходный рельеф', 'Гауссово сглаживание'))
+ggplot() +
+  geom_spatraster(data = c(dem, filtered)) +
+  scale_fill_hypso_tint_c(palette = "etopo1") + 
+  facet_wrap(~lyr)
 ```
 
 Еще одна интересная область применения фильтрации --- это обнаружение границ (change detection). Границы на изображении возникают в тех местах, где его яркость резко меняет свое значение (в одном или нескольких каналах). Например, на фотографии контур лица может быть распознан по перепаду яркости между его изображением и фоном (если он имеет существенно отличный цвет). Поскольку перепад яркости соответствует экстремальным значениям производной поверхности (отрицательным или положительным), его также можно определить путем фокального анализа, а затем отсечь ячейки растра, в которых значение этой производной по модулю превышает заданный порог (то есть, имеет необходимый контраст). 
@@ -160,8 +170,15 @@ plot(filtered,
      main = 'Производная поверхности')
 
 # Отберем все ячейки, обладающие высокими значениями производных
-faults = (filtered < -1500) | (filtered > 1500)
+faults = abs(filtered) > 1500
 faults[faults == 0] = NA
+
+ggplot() +
+  geom_spatraster(data = dem) +
+  scale_fill_hypso_tint_c(palette = "etopo1") + 
+  ggnewscale::new_scale_fill() +
+  geom_spatraster(data = faults) +
+  scale_fill_discrete(type = 'black', na.value = "transparent")
 
 # Визуализируем результат
 plot(dem, 
