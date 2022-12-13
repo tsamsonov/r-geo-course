@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
 # Растровый анализ {#raster}
 
 
@@ -18,6 +23,7 @@ library(tidyr)
 library(ggplot2)
 library(terra)
 library(tidyterra)
+library(ggnewscale)
 ```
 
 ## Введение {#raster_intro}
@@ -92,45 +98,26 @@ ggplot() +
 # Вычисление толщины покровного оледенения
 
 #  Береговая линия для ориентировки
-countries = st_read('data/countries.gpkg')
-## Reading layer `admin_0_map_units' from data source 
-##   `/Users/tsamsonov/GitHub/r-geo-course/data/countries.gpkg' 
-##   using driver `GPKG'
-## Simple feature collection with 183 features and 72 fields
-## Geometry type: MULTIPOLYGON
-## Dimension:     XY
-## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.64513
-## Geodetic CRS:  WGS 84
-borders = countries |> st_geometry()
+countries = read_sf('data/countries.gpkg')
 
 # вычисление разности
 ice.depth = ice - bed
-plot(ice.depth, 
-     col = cm.colors(255),
-     main = 'Мощность покровного оледенения')
-plot(borders, 
-     border = 'black', 
-     lwd = 0.5, 
-     add = TRUE)
+ice.depth[ice.depth == 0] = NA
+
+ggplot() +
+  geom_spatraster(data = bed) +
+  scale_fill_gradient(low = 'black', high = 'white',
+                      guide="none") +
+  new_scale_fill() +
+  geom_spatraster(data = ice.depth) +
+  scale_fill_gradient(low = 'white', high = 'navyblue', 
+                      na.value = "transparent") +
+  geom_sf(data = countries, fill = NA) +
+  labs(title = 'Мощность покровного оледенения',
+         fill = '[м]')
 ```
 
 <img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-4-1.png" width="100%" />
-
-```r
-
-# сделаем пустыми все ячейки, в которых толщина льда равна нулю
-ice.depth[ice.depth == 0] = NA
-
-plot(ice.depth, 
-     col = cm.colors(255), 
-     main = 'Мощность покровного оледенения')
-plot(borders, 
-     border = 'black', 
-     lwd = 0.5, 
-     add = TRUE)
-```
-
-<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-4-2.png" width="100%" />
 
 ### Фокальные операции {#raster_focal}
 
@@ -172,8 +159,11 @@ wgt = matrix(c(1, 1, 1,
 
 # выполним обработку ЦМР с помощью фокального фильтра
 filtered = focal(dem, w = wgt)
-plot(c(dem, filtered),
-       main = c('Исходный рельеф', 'Сглаживание средним'))
+
+ggplot() +
+  geom_spatraster(data = c(dem, filtered)) +
+  scale_fill_hypso_tint_c(palette = "etopo1") + 
+  facet_wrap(~lyr)
 ```
 
 <img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-6-2.png" width="100%" />
@@ -185,8 +175,10 @@ plot(c(dem, filtered),
 wgt = focalMat(dem, 0.5, "Gauss")
 filtered = focal(dem, wgt)
 
-plot(c(dem, filtered),
-       main = c('Исходный рельеф', 'Гауссово сглаживание'))
+ggplot() +
+  geom_spatraster(data = c(dem, filtered)) +
+  scale_fill_hypso_tint_c(palette = "etopo1") + 
+  facet_wrap(~lyr)
 ```
 
 <img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-7-1.png" width="100%" />
@@ -204,9 +196,11 @@ wgt = matrix(c(1, 2, 1,
 filtered = focal(dem, wgt)
 
 # Это поверхность производных:
-plot(filtered,
-     col = gray.colors(128),
-     main = 'Производная поверхности')
+
+ggplot() +
+  geom_spatraster(data = filtered) +
+  scale_fill_gradient2(low = 'navyblue', high = 'darkred') +
+  ggtitle('Производная поверхности')
 ```
 
 <img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-8-1.png" width="100%" />
@@ -214,18 +208,15 @@ plot(filtered,
 ```r
 
 # Отберем все ячейки, обладающие высокими значениями производных
-faults = (filtered < -1500) | (filtered > 1500)
+faults = abs(filtered) > 1500
 faults[faults == 0] = NA
 
-# Визуализируем результат
-plot(dem, 
-     col = rev(rainbow(20)),
-     main = 'Уступы континентального склона',
-     legend = FALSE)
-plot(faults,
-     col = 'black',
-     legend = FALSE,
-     add = TRUE)
+ggplot() +
+  geom_spatraster(data = dem) +
+  scale_fill_hypso_tint_c(palette = "etopo1") + 
+  ggnewscale::new_scale_fill() +
+  geom_spatraster(data = faults) +
+  scale_fill_discrete(type = 'black', na.value = "transparent")
 ```
 
 <img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-8-2.png" width="100%" />
@@ -236,7 +227,11 @@ plot(faults,
 ```r
 # Морфометрия рельефа — фиксированное соседство
 dem = rast('data/dem_fergana.tif')
-plot(dem)
+
+ggplot() +
+  geom_spatraster(data = dem) +
+  scale_fill_hypso_c() +
+  labs(title = 'Ферганская долина', fill = 'Высота, [м]')
 ```
 
 <img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-9-1.png" width="100%" />
@@ -245,9 +240,11 @@ plot(dem)
 
 # углы наклона
 slope = terrain(dem, 'slope', unit = 'degrees')
-plot(slope, 
-     col = heat.colors(20),
-     main = 'Углы наклона')
+
+ggplot() +
+  geom_spatraster(data = slope) +
+  scale_fill_gradient(low = 'lightcyan', high = 'darkred') +
+  labs(title = 'Углы наклона', fill = 'Градусы [°]')
 ```
 
 <img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-9-2.png" width="100%" />
@@ -256,9 +253,11 @@ plot(slope,
 
 # экспозиция
 aspect = terrain(dem, 'aspect', unit = 'degrees')
-plot(aspect, 
-     col = rainbow(20),
-     main = c('Экспозиции склона'))
+
+ggplot() +
+  geom_spatraster(data = aspect) +
+  scale_fill_gradientn(colors = rainbow(9), values = 0:8 / 8) +
+  labs(title = 'Экспозиция', fill = 'Градусы [°]')
 ```
 
 <img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-9-3.png" width="100%" />
@@ -267,24 +266,50 @@ plot(aspect,
 
 ```r
 # отмывка
-slope2 = terrain(dem * 20, 'slope', 
+slope_rad10 = terrain(dem * 10, 'slope', 
                  unit = 'radians')
-aspect2 = terrain(dem * 20, 'aspect', 
+
+slope_rad5 = terrain(dem * 5, 'slope', 
+                 unit = 'radians')
+
+aspect_tad = terrain(dem, 'aspect', 
                   unit = 'radians')
                  
 # параметры angle и direction функции hillShade определяют азимут и высоту источника освещения:
-hill_vert = shade(slope2, aspect2, angle = 90, direction = 315)
 
-hill = shade(slope2, aspect2, angle = 45, direction = 315)
+hill = shade(slope_rad10, aspect_tad, angle = 45, direction = 315)
+
+hill_vert = shade(slope_rad5, aspect_tad, angle = 90, direction = 315)
 
 hill_comb = hill * hill_vert
 
-plot(hill_comb, 
-     col = gray.colors(128),
-     main = 'Отмывка рельефа')
+ggplot() +
+  geom_spatraster(data = hill) +
+  scale_fill_gradient(low = 'black', high = 'white') +
+  ggtitle('Отмывка классическая')
 ```
 
 <img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-10-1.png" width="100%" />
+
+```r
+
+ggplot() +
+  geom_spatraster(data = hill_vert) +
+  scale_fill_gradient(low = 'black', high = 'white') +
+  ggtitle('Отмывка отвесная')
+```
+
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-10-2.png" width="100%" />
+
+```r
+
+ggplot() +
+  geom_spatraster(data = hill_comb) +
+  scale_fill_gradient(low = 'black', high = 'white') +
+  ggtitle('Отмывка комбинированная')
+```
+
+<img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-10-3.png" width="100%" />
 
 #### Расширенная окрестность {#raster_focal_extended}
 
@@ -333,7 +358,7 @@ __Зональные операции__ связаны с агрегирован
 temp = geodata::worldclim_global(var = "tavg", res = 10, path = tempdir())
 
 data(land, package = 'tmap')
-land = rast(land['cover'])
+terraland = rast(land['cover'])
 
 pal = c("#003200", "#3C9600", "#006E00", "#556E19", "#00C800", "#8CBE8C",
 		   "#467864", "#B4E664", "#9BC832", "#EBFF64", "#F06432", "#9132E6",
@@ -341,9 +366,8 @@ pal = c("#003200", "#3C9600", "#006E00", "#556E19", "#00C800", "#8CBE8C",
 		   "#FFFFFF", "#5ADCDC")
 
 ggplot() +
-  geom_spatraster(data = land) +
+  geom_spatraster(data = terraland) +
   scale_fill_manual(values = pal, guide = guide_legend(ncol = 3), name = NULL) + 
-  coord_sf(crs = st_crs(land)) +
   theme(legend.position = 'bottom')
 ```
 
@@ -365,7 +389,7 @@ temp
 ## names       : wc2.1~vg_01, wc2.1~vg_02, wc2.1~vg_03, wc2.1~vg_04, wc2.1~vg_05, wc2.1~vg_06, ... 
 ## min values  :    -45.8840,   -44.80000,   -57.92575,   -64.19250,   -64.81150,   -64.35825, ... 
 ## max values  :     34.0095,    32.82425,    32.90950,    34.19375,    36.25325,    38.35550, ...
-land
+terraland
 ## class       : SpatRaster 
 ## dimensions  : 540, 1080, 1  (nrow, ncol, nlyr)
 ## resolution  : 0.3333333, 0.3333333  (x, y)
@@ -377,7 +401,7 @@ land
 ## min value   : Broadleaf Evergreen Forest 
 ## max value   :               Water bodies
 
-(cover = project(land, temp, method = 'near'))
+(cover = project(terraland, temp, method = 'near'))
 ## class       : SpatRaster 
 ## dimensions  : 1080, 2160, 1  (nrow, ncol, nlyr)
 ## resolution  : 0.1666667, 0.1666667  (x, y)
@@ -511,22 +535,28 @@ global(temp_south, min, na.rm = T)
 Для извлечения растровых данных можно воспользоваться функцией `extract()`. Получать данные можно как по координатам (записанным в фрейм данных), так и используя пространственные объекты класса `Spatial`. Например, узнаем мощность покровного оледенения в точке в центре Гренландии:
 
 ```r
-coords = data.frame(x = -45, y = 70)
-z = terra::extract(ice.depth, coords)
+pnt = tibble(
+  x = -45, y = 70,
+  z = terra::extract(ice.depth, bind_cols(x,y))[, 2]
+)
 
-plot(bed,
-     col = gray.colors(255),
-     legend = F)
-plot(ice.depth, 
-     col = cm.colors(255),
-     add = TRUE)
-points(coords)
-text(coords, labels = z$etopo1_ice, pos = 4)
+ggplot() +
+  geom_spatraster(data = bed) +
+  scale_fill_gradient(low = 'black', high = 'white',
+                      guide="none") +
+  new_scale_fill() +
+  geom_spatraster(data = ice.depth) +
+  scale_fill_gradient(low = 'white', high = 'navyblue', 
+                      na.value = "transparent") +
+  geom_point(aes(x, y), pnt, size = 2, color = 'red') +
+  geom_text(aes(x, y, label = z), pnt, fontface = 'bold',
+            vjust = 'bottom', hjust = 'left',
+            nudge_x = 3, nudge_y = 3) +
+  labs(title = 'Мощность покровного оледенения',
+       fill = '[м]')
 ```
 
 <img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-18-1.png" width="100%" />
-
-
 Одна из наиболее распространенных задач по извлечению растровых данных — это построение профиля вдоль заданной линии. Воспользуемся интерактивным редактором для проведения линии профиля
 
 ```r
@@ -587,6 +617,13 @@ ggplot(tempdf, aes(x = dist, y = tavg)) +
 ```
 
 <img src="15-RasterAnalysis_files/figure-html/unnamed-chunk-23-2.png" width="100%" />
+
+## Краткий обзор {#temporal_review}
+
+Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
+<iframe src="https://tsamsonov.github.io/r-geo-course-slides/15_Raster.html#1" width="100%" height="390px" data-external="1"></iframe>
+
+> Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.
 
 ## Контрольные вопросы и упражнения {#questions_tasks_raster}
 
