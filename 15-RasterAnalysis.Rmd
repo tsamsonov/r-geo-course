@@ -218,21 +218,37 @@ plot(aspect,
 Вычисление производных поверхности позволяет не только исследовать рельеф, но также строить его изображения. Например, хорошо знакомую всем по картам аналитическую отмывку рельефа (_hillshade_). Яркость поверхности в этом способе изображения зависит от угла между направлением на источник освещения (откуда светит Солнце) и нормалью к поверхности. Нормаль можно вычислить как напрямую через производные поверхности, так и восстановить на основе значений угла наклона и экспозиции в точке, что и используется в пакете __raster__. Обратите внимание на то, что для того чтобы повысить наглядность (контрастность) изображения, мы умножаем высоты рельефа на 20. Это стандартная практика для мелкомасштабных карт:
 ```{r}
 # отмывка
-slope2 = terrain(dem * 20, 'slope', 
+slope_rad10 = terrain(dem * 10, 'slope', 
                  unit = 'radians')
-aspect2 = terrain(dem * 20, 'aspect', 
+
+slope_rad5 = terrain(dem * 5, 'slope', 
+                 unit = 'radians')
+
+aspect_tad = terrain(dem, 'aspect', 
                   unit = 'radians')
                  
 # параметры angle и direction функции hillShade определяют азимут и высоту источника освещения:
-hill_vert = shade(slope2, aspect2, angle = 90, direction = 315)
 
-hill = shade(slope2, aspect2, angle = 45, direction = 315)
+hill = shade(slope_rad10, aspect_tad, angle = 45, direction = 315)
+
+hill_vert = shade(slope_rad5, aspect_tad, angle = 90, direction = 315)
 
 hill_comb = hill * hill_vert
 
-plot(hill_comb, 
-     col = gray.colors(128),
-     main = 'Отмывка рельефа')
+ggplot() +
+  geom_spatraster(data = hill) +
+  scale_fill_gradient(low = 'black', high = 'white') +
+  ggtitle('Отмывка классическая')
+
+ggplot() +
+  geom_spatraster(data = hill_vert) +
+  scale_fill_gradient(low = 'black', high = 'white') +
+  ggtitle('Отмывка отвесная')
+
+ggplot() +
+  geom_spatraster(data = hill_comb) +
+  scale_fill_gradient(low = 'black', high = 'white') +
+  ggtitle('Отмывка комбинированная')
 ```
 
 #### Расширенная окрестность {#raster_focal_extended}
