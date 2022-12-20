@@ -2,7 +2,12 @@
 
 
 
-## Загрузка данных
+В данной лекции рассматриваются задачи 
+
+
+## Анализ сетей
+
+### Загрузка данных
 
 
 ```r
@@ -10,14 +15,17 @@ library(sf)
 library(tidyverse)
 library(classInt)
 library(osrm) # Использование онлайн-сервиса маршрутизации OSRM
-library(cartography) # Удобное построение тематических карт средствами plot()
+library(sfnetworks)
+library(tidygraph)
 
 # Чтение данных
-roads = st_read("data/roads.gpkg") # Дороги
-poi = st_read("data/poi_point.gpkg") # Точки интереса
-rayons = st_read("data/boundary_polygon.gpkg") # Границы районов
-stations = st_read("data/metro_stations.gpkg") # Станции метро
-water = st_read("data/water_polygon.gpkg") # Водные объекты
+
+db = 'data/moscow.gpkg'
+roads = read_sf(db, "roads") # Дороги
+poi = read_sf(db, "poi") # Точки интереса
+rayons = read_sf(db, "districts") # Границы районов
+stations = read_sf(db, "metro_stations") # Станции метро
+water = read_sf(db, "water") # Водные объекты
 
 # Прочитаем текущие параметры компоновки
 def = par(no.readonly = TRUE)
@@ -26,24 +34,27 @@ def = par(no.readonly = TRUE)
 par(mar = c(0,0,0,0))
 
 # Получим ограничивающий прямоугольник слоя дорог в качестве общего охвата карты
-frame = roads %>% st_bbox() %>% st_as_sfc() %>% st_geometry()
+frame = roads |>  
+  st_bbox() |>
+  st_as_sfc() |> 
+  st_geometry()
 
-poi.food = poi %>% 
-            dplyr::select(NAME, AMENITY) %>% 
-            dplyr::filter(AMENITY %in% c("restaurant", "bar", "cafe", "pub", "fast_food"))
+poi.food = poi |>  
+    select(NAME, AMENITY) |> 
+    filter(AMENITY %in% c("restaurant", "bar", "cafe", "pub", "fast_food"))
 
 ## ОБЗОР ИСХОДНЫХ ДАННЫХ -------------------------------------
 
 # Визуализируем входные данные
 plot(frame)
-plot(water %>% st_geometry(), 
+plot(water |>  st_geometry(), 
      col = "lightskyblue1",
      border = "lightskyblue3",
      add = TRUE)
-plot(roads %>% st_geometry(),
+plot(roads |>  st_geometry(),
      col = "gray70", 
      add = TRUE)
-plot(poi %>% st_geometry(), 
+plot(poi |>  st_geometry(), 
      col = "deepskyblue4", 
      pch = 20, 
      cex = 0.2, 
@@ -58,34 +69,35 @@ plotBasemap = function(add = FALSE){
   
   plot(frame, add = add)
 
-  plot(water %>% st_geometry(), 
+  plot(water |>  st_geometry(), 
        col = "lightskyblue1",
        border = "lightskyblue3",
        add = TRUE)
   
-  plot(roads %>% st_geometry(),
+  plot(roads |>  st_geometry(),
        col = "gray70",
        add = TRUE)
   
-  plot(poi.food %>% st_geometry(), 
+  plot(poi.food |>  st_geometry(), 
        col = "deepskyblue4", 
        pch = 20, 
        cex = 0.3, 
        add = TRUE)
-  plot(stations %>% st_geometry(), 
+  plot(stations |>  st_geometry(), 
        col = "slategray4", 
        pch = 20, 
        cex = 2, 
        add = TRUE)
-  text(stations %>% st_centroid() %>% st_coordinates(),
+  text(stations |>  st_centroid() %>% st_coordinates(),
        labels = "M",
        col = "white",
        cex = 0.4)
 }
 ```
 
+### Онлайн-анализ через сервис OSRM
 
-## Анализ зон транспортной доступности  {#transport_zones}
+#### Анализ зон транспортной доступности  {#transport_zones}
 
 Зоны транспортной доступности представляют из себя зоны окружения объектов, построенные не по евклидову расстоянию, а по расстоянию или времени движения по дорожной сети. В задачах логистики и геомаркетинга зоны транспортной доступности часто называют _зонами обслуживания_ (service area), поскольку используются для определения территории, которую может покрыть объект, предоставляющий некоторые услуги. Например, для пожарного депо зона 10-минутной доступности показывает территорию города, в любую точку которой пожарная машина может доехать __из__ данного депо в течение 10 минут. И наоборот, для торгового центра зона 10-минутной доступности показывает территорию города, __из__ любой точки которой можно добраться до ТЦ в течение 10 минут. Очевидно, что продолжительность прямого и обратного маршрута неодинакова, на нее может оказывать влияние схема движения, приоритет дорог и так далее.
 
@@ -107,7 +119,8 @@ WGS84 = st_crs(4326)
 UTM = st_crs(poi)
 
 # Выберем целевой объект
-psel = poi %>% dplyr::filter(NAME == "Центральный детский магазин" & SHOP == "toys")
+psel = poi |>  
+  filter(NAME == "Центральный детский магазин" & SHOP == "toys")
 
 # Преобразуем координаты точки в WGS84
 psel.wgs = st_transform(psel, WGS84)
@@ -125,18 +138,18 @@ selected_poi = poi.food[service_area_utm, ]
 # Визуализируем результат
 plotBasemap()
 
-plot(service_area_utm %>% st_geometry(),
+plot(service_area_utm |> st_geometry(),
      col = adjustcolor("violetred3", alpha.f = 0.2),
      border = "violetred3",
      add = TRUE)
 
-plot(selected_poi  %>% st_geometry(), 
+plot(selected_poi |> st_geometry(), 
      col = "violetred3", 
      pch = 20, 
      cex = 0.5, 
      add = TRUE)
 
-plot(psel %>% st_geometry(), 
+plot(psel |> st_geometry(), 
      col = "violetred4", 
      pch = 20, 
      cex = 4, 
@@ -147,7 +160,7 @@ plot(psel %>% st_geometry(),
 
 Итак, в данном разделе мы научились строить зоны транспортной доступности в виде полигонов, ограниченных изохроной времени движения.
 
-## Построение маршрутов и матриц времени движения {#routes}
+#### Построение маршрутов и матриц времени движения {#routes}
 
 В этом разделе модуля пространственного анализа мы посмотрим, каким образом можно построить оптимальный маршрут между двумя точками, а также получить матрицу времени движения между точками (на примере станций метро). Для решения этих задач используем следующие функции пакета osrm:
 
@@ -156,16 +169,17 @@ plot(psel %>% st_geometry(),
 
 Так же, как и в предыдущем разделе, нам понадобятся преобразования координат. Построим оптимальный маршрут между книжным магазином "Молодая Гвардия" на Полянке и чебуречной "Дружба" на метро Сухаревская:
 
+
 ```r
 
 ## ПОСТРОЕНИЕ МАРШРУТОВ -------------------------------------
 
 # Выбираем и проецируем начальную точку
-origin = poi %>% dplyr::filter(NAME == 'Молодая Гвардия')
+origin = poi |> filter(NAME == 'Молодая Гвардия')
 origin_wgs = st_transform(origin, WGS84)
   
 # Выбираем и проецируем конечную точку
-destination = poi %>% dplyr::filter(NAME == 'Чебуречная "Дружба"')
+destination = poi |>  filter(NAME == 'Чебуречная "Дружба"')
 destination_wgs = st_transform(destination, WGS84)
 
 # Строим маршрут
@@ -180,46 +194,216 @@ route.utm = st_transform(route, UTM)
 # Визуализируем результат:
 plotBasemap()
 
-plot(route.utm %>% st_geometry(),
+plot(route.utm |> st_geometry(),
      lwd = 3,
      col = "orange",
      add = TRUE)
 
-plot(origin %>% st_geometry(), 
+plot(origin |> st_geometry(), 
      col = "tomato3", 
      pch = 20, 
      cex = 3, 
      add = TRUE)
-text(origin %>% st_coordinates(),
+text(origin |> st_coordinates(),
      labels = "O",
      col = "tomato4",
      cex = 0.5)
 
-plot(destination %>% st_geometry(), 
+plot(destination |> st_geometry(), 
      col = "tomato", 
      pch = 20, 
      cex = 4, 
      add = TRUE)
-text(destination %>% st_coordinates(),
+text(destination |> st_coordinates(),
      labels = "D",
      col = "tomato4",
      cex = 0.7)
 ```
 
 <img src="16-NetworkAnalysis_files/figure-html/unnamed-chunk-4-1.png" width="100%" />
+
+### Оффлайн-анализ через sfnetworks
+
+#### Подготовка данных
+
+Пакет `sfnetworks` использует методы пакетов `tidygraph` и `igraph` для анализа сетевых данных. Если OSRM содержит только базовые функции сетевого анализа, то sfnetworks позволяет выполнять достаточно сложные теоретические расчеты на географических сетях. Рассмотрим их на примере имеющегося у нас датасета по центру Москвы.
+
+Чтобы граф построился корректно, необходимо продублировать линии, не являющиеся односторонними, а также округлить координаты. Первая операция нужна для того чтобы разрешить проеезд по двусторонним ребрам в обе стороны. Вторая операция важна для того чтобы устранить ошибки пристыковки линий, из-за которых они могут быть не распознаны как топологически связанные.
+
+
+```r
+lines = roads |> 
+  st_cast('LINESTRING')
+
+twoway = lines |> 
+  filter(is.na(ONEWAY) | ONEWAY != 'yes') |> 
+  st_reverse() |> 
+  bind_rows(lines)
+
+
+net = twoway |> 
+  st_geometry() |>
+  lapply(function(x) round(x, 0)) |>
+  st_sfc(crs = st_crs(roads)) |>
+  as_sfnetwork()
+
+net
+## # A sfnetwork with 2133 nodes and 2825 edges
+## #
+## # CRS:  WGS 84 / UTM zone 37N 
+## #
+## # A directed multigraph with 223 components with spatially explicit edges
+## #
+## # Node Data:     2,133 × 1 (active)
+## # Geometry type: POINT
+## # Dimension:     XY
+## # Bounding box:  xmin: 410947 ymin: 6176676 xmax: 415891 ymax: 6181910
+##                  x
+##        <POINT [m]>
+## 1 (410948 6177750)
+## 2 (410947 6177750)
+## 3 (411054 6177640)
+## 4 (410947 6177557)
+## 5 (410978 6179110)
+## 6 (410947 6179112)
+## # … with 2,127 more rows
+## #
+## # Edge Data:     2,825 × 3
+## # Geometry type: LINESTRING
+## # Dimension:     XY
+## # Bounding box:  xmin: 410947 ymin: 6176676 xmax: 415891 ymax: 6181910
+##    from    to                                                                  x
+##   <int> <int>                                                   <LINESTRING [m]>
+## 1     1     2                                   (410948 6177750, 410947 6177750)
+## 2     3     4 (411054 6177640, 411046 6177634, 411011 6177606, 410957 6177564, …
+## 3     5     6                   (410978 6179110, 410948 6179112, 410947 6179112)
+## # … with 2,822 more rows
+```
+
+Визуализировать граф можно как посредством стандартной функции `plot`, так и с помощью функции `autoplot`, которая задействует функциональность `ggplot2`:
+
+
+```r
+plot(net)
+```
+
+<img src="16-NetworkAnalysis_files/figure-html/unnamed-chunk-6-1.png" width="100%" />
+
+```r
+autoplot(net)
+```
+
+<img src="16-NetworkAnalysis_files/figure-html/unnamed-chunk-6-2.png" width="100%" />
+
+Для того чтобы работать с компонентами графа (ребрами и вершинами), необходимо их _активировать_. 
+
+
+```r
+net |> 
+  activate("edges")
+## # A sfnetwork with 2133 nodes and 2825 edges
+## #
+## # CRS:  WGS 84 / UTM zone 37N 
+## #
+## # A directed multigraph with 223 components with spatially explicit edges
+## #
+## # Edge Data:     2,825 × 3 (active)
+## # Geometry type: LINESTRING
+## # Dimension:     XY
+## # Bounding box:  xmin: 410947 ymin: 6176676 xmax: 415891 ymax: 6181910
+##    from    to                                                                  x
+##   <int> <int>                                                   <LINESTRING [m]>
+## 1     1     2                                   (410948 6177750, 410947 6177750)
+## 2     3     4 (411054 6177640, 411046 6177634, 411011 6177606, 410957 6177564, …
+## 3     5     6                   (410978 6179110, 410948 6179112, 410947 6179112)
+## 4     7     8                   (410947 6179209, 411033 6179201, 411040 6179200)
+## 5     9    10 (411022 6181910, 411004 6181900, 410992 6181894, 410988 6181892, …
+## 6    11    12                   (410947 6179043, 410959 6179044, 410962 6179044)
+## # … with 2,819 more rows
+## #
+## # Node Data:     2,133 × 1
+## # Geometry type: POINT
+## # Dimension:     XY
+## # Bounding box:  xmin: 410947 ymin: 6176676 xmax: 415891 ymax: 6181910
+##                  x
+##        <POINT [m]>
+## 1 (410948 6177750)
+## 2 (410947 6177750)
+## 3 (411054 6177640)
+## # … with 2,130 more rows
+
+net |> 
+  activate("nodes")
+## # A sfnetwork with 2133 nodes and 2825 edges
+## #
+## # CRS:  WGS 84 / UTM zone 37N 
+## #
+## # A directed multigraph with 223 components with spatially explicit edges
+## #
+## # Node Data:     2,133 × 1 (active)
+## # Geometry type: POINT
+## # Dimension:     XY
+## # Bounding box:  xmin: 410947 ymin: 6176676 xmax: 415891 ymax: 6181910
+##                  x
+##        <POINT [m]>
+## 1 (410948 6177750)
+## 2 (410947 6177750)
+## 3 (411054 6177640)
+## 4 (410947 6177557)
+## 5 (410978 6179110)
+## 6 (410947 6179112)
+## # … with 2,127 more rows
+## #
+## # Edge Data:     2,825 × 3
+## # Geometry type: LINESTRING
+## # Dimension:     XY
+## # Bounding box:  xmin: 410947 ymin: 6176676 xmax: 415891 ymax: 6181910
+##    from    to                                                                  x
+##   <int> <int>                                                   <LINESTRING [m]>
+## 1     1     2                                   (410948 6177750, 410947 6177750)
+## 2     3     4 (411054 6177640, 411046 6177634, 411011 6177606, 410957 6177564, …
+## 3     5     6                   (410978 6179110, 410948 6179112, 410947 6179112)
+## # … with 2,822 more rows
+```
+
+В частности, для выполнения анализа необходимо вычислить веса всех ребер графа. Обычно вес зависит от времени передвижения, но за неимением такой информации можно использовать и длину:
+
+
+```r
+net = net |> 
+  activate("edges") |> 
+  mutate(weight = edge_length())
+```
+
+#### Вычисление центральности
+
+
+```r
+net = net |> 
+  activate("edges") |> 
+  mutate(bc = centrality_edge_betweenness())
+
+ggplot() +
+  geom_sf(data = st_as_sf(net, "edges"), aes(col = bc, linewidth = bc)) +
+  scale_color_viridis_c() +
+  ggtitle("Центральность по промежуточности")
+```
+
+<img src="16-NetworkAnalysis_files/figure-html/unnamed-chunk-9-1.png" width="100%" />
+
+
+## Краткий обзор {#temporal_review}
+
+Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:
+<iframe src="https://tsamsonov.github.io/r-geo-course-slides/16_Networks.html#1" width="100%" height="390px" data-external="1"></iframe>
+
+> Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.
+
 ## Контрольные вопросы и упражнения {#qtasks_network_analysis}
 
 ### Вопросы {#questions_network_analysis}
 
 ### Упражнения {#tasks_network_analysis}
-
-1. Одна из гипотез, часто используемых в [геомаркетинге](https://ru.wikipedia.org/wiki/%D0%93%D0%B5%D0%BE%D0%BC%D0%B0%D1%80%D0%BA%D0%B5%D1%82%D0%B8%D0%BD%D0%B3) — это так называемые _аттракторы потоков_ — пространственные объекты, которые сосредотачивают в своей близости высокую плотность пешеходного трафика. Типичный пример аттрактора — любая транспортная локация: выход из метро, железнодорожная платформа, автобусная остановка. Владельцы предприятий сферы услуг в теории стремятся размещать свои точки вблизи к аттракторам. Используя данные из настоящей лекции, проведите проверку реалистичности этой теории. Для этого:
-
-    - постройте вокруг выходов станций метро несколько буферных зон увеличивающегося радиуса
-    - выберите ими пункты общественного питания
-    - рассчитайте их плотность как отношение количества к площади буфера
-    
-    Далее постройте график зависимости между радиусом буфера и плотностью объектов интереса. Рассчитайте также коэффициент корреляции между этими величинами.
 
 ----
 _Самсонов Т.Е._ **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, 2022. DOI: [10.5281/zenodo.901911](https://doi.org/10.5281/zenodo.901911)
