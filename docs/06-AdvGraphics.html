@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.309">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Визуализация и анализ географических данных на языке R - 6&nbsp; Продвинутая графика</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./07-BaseStats.html" rel="next">
+<link href="./05-BaseGraphics.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06-AdvGraphics.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Продвинутая графика</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Визуализация и анализ географических данных на языке R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Введение</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-Basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Типы данных</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-DataStructures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Структуры данных</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-Tables.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Таблицы</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-Functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Функции</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-BaseGraphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Базовая графика</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-AdvGraphics.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Продвинутая графика</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-BaseStats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Основы статистики</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-AdvStats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Продвинутая статистика</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Библиография</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#advgraphics_prerequisites" id="toc-advgraphics_prerequisites" class="nav-link active" data-scroll-target="#advgraphics_prerequisites"><span class="header-section-number">6.1</span> Предварительные требования</a></li>
+  <li><a href="#advgraphics_eurostat" id="toc-advgraphics_eurostat" class="nav-link" data-scroll-target="#advgraphics_eurostat"><span class="header-section-number">6.2</span> Загрузка данных Евростата</a></li>
+  <li><a href="#advgraphics_nasapower" id="toc-advgraphics_nasapower" class="nav-link" data-scroll-target="#advgraphics_nasapower"><span class="header-section-number">6.3</span> Загрузка данных NASA POWER</a></li>
+  <li><a href="#advgraphics_soildb" id="toc-advgraphics_soildb" class="nav-link" data-scroll-target="#advgraphics_soildb"><span class="header-section-number">6.4</span> Загрузка данных Soil Data Access</a></li>
+  <li><a href="#advgraphics_template" id="toc-advgraphics_template" class="nav-link" data-scroll-target="#advgraphics_template"><span class="header-section-number">6.5</span> Базовый шаблон ggplot</a></li>
+  <li><a href="#advgraphics_geoms" id="toc-advgraphics_geoms" class="nav-link" data-scroll-target="#advgraphics_geoms"><span class="header-section-number">6.6</span> Геометрические типы и преобразования</a></li>
+  <li><a href="#advgraphics_aes" id="toc-advgraphics_aes" class="nav-link" data-scroll-target="#advgraphics_aes"><span class="header-section-number">6.7</span> Графические переменные и группировки</a></li>
+  <li><a href="#advgraphics_coords" id="toc-advgraphics_coords" class="nav-link" data-scroll-target="#advgraphics_coords"><span class="header-section-number">6.8</span> Системы координат</a></li>
+  <li><a href="#advgraphics_titles" id="toc-advgraphics_titles" class="nav-link" data-scroll-target="#advgraphics_titles"><span class="header-section-number">6.9</span> Названия осей и легенды</a></li>
+  <li><a href="#advgraphics_axes" id="toc-advgraphics_axes" class="nav-link" data-scroll-target="#advgraphics_axes"><span class="header-section-number">6.10</span> Разметка осей</a></li>
+  <li><a href="#advgraphics_labels" id="toc-advgraphics_labels" class="nav-link" data-scroll-target="#advgraphics_labels"><span class="header-section-number">6.11</span> Подписи и аннотации</a></li>
+  <li><a href="#advgraphics_facets" id="toc-advgraphics_facets" class="nav-link" data-scroll-target="#advgraphics_facets"><span class="header-section-number">6.12</span> Фасеты</a></li>
+  <li><a href="#advgraphics_themes" id="toc-advgraphics_themes" class="nav-link" data-scroll-target="#advgraphics_themes"><span class="header-section-number">6.13</span> Темы</a></li>
+  <li><a href="#advgraphics_review" id="toc-advgraphics_review" class="nav-link" data-scroll-target="#advgraphics_review"><span class="header-section-number">6.14</span> Краткий обзор</a></li>
+  <li><a href="#questions_tasks_advgraphics" id="toc-questions_tasks_advgraphics" class="nav-link" data-scroll-target="#questions_tasks_advgraphics"><span class="header-section-number">6.15</span> Контрольные вопросы и упражнения</a>
+  <ul class="collapse">
+  <li><a href="#questions_advgraphics" id="toc-questions_advgraphics" class="nav-link" data-scroll-target="#questions_advgraphics"><span class="header-section-number">6.15.1</span> Вопросы</a></li>
+  <li><a href="#tasks_advgraphics" id="toc-tasks_advgraphics" class="nav-link" data-scroll-target="#tasks_advgraphics"><span class="header-section-number">6.15.2</span> Упражнения</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="advgraphics" class="quarto-section-identifier"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Продвинутая графика</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+<section id="advgraphics_prerequisites" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="advgraphics_prerequisites"><span class="header-section-number">6.1</span> Предварительные требования</h2>
+<p>Для работы по теме текущей лекции вам понадобятся пакеты <strong>ggplot2</strong>, <strong>dplyr</strong> и <strong>tidyr</strong> из <strong>tidyverse</strong>. Помимо этого, мы будем работать напрямую с данными <a href="https://ec.europa.eu/eurostat/web/main/home"><strong>Евростата</strong></a>, NASA <a href="https://power.larc.nasa.gov/"><strong>POWER</strong></a> и USDA NRCS <a href="https://sdmdataaccess.nrcs.usda.gov/"><strong>Soil Data Access</strong></a> к которым можно обращаться напрямую с использованием пакетов <a href="https://ropengov.github.io/eurostat/"><code>eurostat</code></a>, <a href="https://docs.ropensci.org/nasapower/"><code>nasapower</code></a> и <a href="http://ncss-tech.github.io/soilDB/docs/"><code>soildb</code></a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(eurostat)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nasapower)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(soilDB)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
+which was just loaded, will retire in October 2023.
+Please refer to R-spatial evolution reports for details, especially
+https://r-spatial.org/r/2023/05/15/evolution4.html.
+It may be desirable to make the sf package available;
+package maintainers should consider adding sf to Suggests:.
+The sp package is now running under evolution status 2
+     (status 2 uses the sf package in place of rgdal)</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Пакет soilDB лучше устанавливать из консоли командой <code>install.packages('soilDB', dependencies = TRUE)</code>. Указание параметра <code>dependencies = TRUE</code> обеспечит установку других пакетов, от которых он зависит.</p>
+</blockquote>
+<p>В настоящей главе мы кратко познакомимся с системой <a href="https://ggplot2.tidyverse.org/"><strong>ggplot2</strong></a>. <strong>gg</strong> расшифровывается как <em>grammar of graphics</em>. Под этим понимается определенная (какая — мы узнаем далее) система правил, позволяющих описывать и строить графики. ggplot довольно сильно отличается от стандартной графической подсистемы R. Прежде всего — модульным подходом к построению изображений. В ggplot вы собираете графики «по кирпичикам», отдельно определяя источник данных, способы изображения, параметры системы координат и т.д. – путем вызова и <em>сложения</em> результатов соответствующих функций.</p>
+<p>При построении элементарных графиков <strong>ggplot</strong> может показаться (и по факту так и есть) сложнее, чем стандартная графическая подсистема. Однако при усложнении требований к внешнему виду и информационному насыщению графика сложность ggplot оказывается преимуществом, и с ее помощью <em>относительно просто</em> можно получать элегантные и информативные визуализации, на создание которых с помощью стандартной подсистемы пришлось бы затратить невероятные усилия! В этой главе мы кратко познакомимся с ggplot, а далее на протяжении курса будем регулярно ее использовать, осваивая новые возможности.</p>
+</section>
+<section id="advgraphics_eurostat" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="advgraphics_eurostat"><span class="header-section-number">6.2</span> Загрузка данных Евростата</h2>
+<p>Таблицы данных Евростата имеют уникальные коды, по которым их можно загружать, используя API (Application programming interface). В этой лекции мы будем работать с данными о крупнейших международных партнерах Евросоюза по импорту и экспорту основных видов товаров. Например, <a href="https://ec.europa.eu/eurostat/databrowser/view/EXT_LT_MAINAGRI/default/table?lang=en">таблица данных по продуктам питания, напиткам и табаку</a> имеет код <strong>EXT_LT_MAINAGRI</strong>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="images/eurostat.png" class="img-fluid" width="1417"></p>
+</div>
+</div>
+<p>Для чтения таблиц по кодам в пакете eurostat имеется функция <code>get_eurostat()</code>. Чтобы год измерения получить в виде числа, а не объекта типа <code>Date</code>, используем второй параметр <code>time_format = num</code>. Для перехода от кодов продукции и стран к их полным наименованиям, дополнительно вызовем функцию <code>label_eurostat()</code> из того же пакета:</p>
+<div class="cell" data-hash="06-AdvGraphics_cache/html/unnamed-chunk-3_80ce4b0dd332456b83325837b0c5e46b">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>tables <span class="ot">=</span> <span class="fu">c</span>(<span class="st">'ext_lt_mainagri'</span>, <span class="st">'ext_lt_mainrawm'</span>, <span class="st">'ext_lt_mainmine'</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>           <span class="st">'ext_lt_mainchem'</span>,<span class="st">'ext_lt_mainmanu'</span>, <span class="st">'ext_lt_mainmach'</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>trades <span class="ot">=</span> <span class="fu">lapply</span>(tables, <span class="cf">function</span>(X) { <span class="co"># прочтем несколько таблиц в список</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_eurostat</span>(X) <span class="sc">|&gt;</span> <span class="fu">label_eurostat</span>()</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span> </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>() <span class="sc">|&gt;</span> <span class="co"># объединим прочитанные таблицы в одну</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>geo) <span class="sc">|&gt;</span> <span class="co"># убираем столбец с территорией торговли, т.к. там только Евросоюз</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(stringr<span class="sc">::</span><span class="fu">str_detect</span>(indic_et, <span class="st">'Exports in|Imports in'</span>)) <span class="sc">|&gt;</span> <span class="co"># оставим только экспорт и импорт</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> indic_et, <span class="at">values_from =</span> values) <span class="sc">|&gt;</span>  <span class="co"># вынесем данные по экспорту и импорту в отдельные переменные</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">export =</span> <span class="st">`</span><span class="at">Exports in million of ECU/EURO</span><span class="st">`</span>, <span class="co"># дадим им краткие названия</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">import =</span> <span class="st">`</span><span class="at">Imports in million of ECU/EURO</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">partner =</span> <span class="fu">as.factor</span>(partner))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in label_eurostat(y[[i]], i, eu_order = eu_order, lang = lang,
+countrycode = countrycode, : All labels for partner were not found.
+
+Warning in label_eurostat(y[[i]], i, eu_order = eu_order, lang = lang,
+countrycode = countrycode, : All labels for partner were not found.
+
+Warning in label_eurostat(y[[i]], i, eu_order = eu_order, lang = lang,
+countrycode = countrycode, : All labels for partner were not found.
+
+Warning in label_eurostat(y[[i]], i, eu_order = eu_order, lang = lang,
+countrycode = countrycode, : All labels for partner were not found.
+
+Warning in label_eurostat(y[[i]], i, eu_order = eu_order, lang = lang,
+countrycode = countrycode, : All labels for partner were not found.
+
+Warning in label_eurostat(y[[i]], i, eu_order = eu_order, lang = lang,
+countrycode = countrycode, : All labels for partner were not found.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>trades <span class="co"># посмотрим, что получилось</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 28,548 × 5
+   sitc06                   partner                    time       export  import
+   &lt;chr&gt;                    &lt;fct&gt;                      &lt;date&gt;      &lt;dbl&gt;   &lt;dbl&gt;
+ 1 Food, drinks and tobacco African, Caribbean and Pa… 2022-01-01 1.45e4 15908. 
+ 2 Food, drinks and tobacco Andorra                    2022-01-01 3.40e2     0.8
+ 3 Food, drinks and tobacco United Arab Emirates       2022-01-01 3.11e3    64.3
+ 4 Food, drinks and tobacco Afghanistan                2022-01-01 6.72e1    15.2
+ 5 Food, drinks and tobacco Africa                     2022-01-01 2.41e4 20596. 
+ 6 Food, drinks and tobacco Antigua and Barbuda        2022-01-01 1.72e1     0.7
+ 7 Food, drinks and tobacco Anguilla (UK)              2022-01-01 1.3 e0     0  
+ 8 Food, drinks and tobacco Albania                    2022-01-01 7.34e2   234. 
+ 9 Food, drinks and tobacco Armenia                    2022-01-01 1.71e2    18.6
+10 Food, drinks and tobacco America                    2022-01-01 3.84e4 51209. 
+# ℹ 28,538 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="advgraphics_nasapower" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="advgraphics_nasapower"><span class="header-section-number">6.3</span> Загрузка данных NASA POWER</h2>
+<p>NASA <a href="https://power.larc.nasa.gov/"><strong>POWER</strong></a> — это проект <em>NASA</em>, предоставляющий метеорологические, климатические и энергетические данные для целей исследования возобновляемых источников энергии, энергетической эффективности зданий и сельскохозяйственных приложений. Доступ к этим данным, как и Евростату, можно получить через программный интерфейса (API), используя пакет <a href="https://docs.ropensci.org/nasapower/"><strong>nasapower</strong></a>.</p>
+<p>В основе выгрузки данных лежат реанализы с разрешением <span class="math inline">\(0.5^\circ\)</span> Выгрузим данные по температуре, относительной влажности и осадкам в Екатеринбурге (<span class="math inline">\(60.59~в.д.\)</span>, <span class="math inline">\(56.84~с.ш.\)</span>) за период с 1 по 30 апреля 1995 года:</p>
+<div class="cell" data-hash="06-AdvGraphics_cache/html/unnamed-chunk-4_ce11e7b7abd64c611cc586f35d64d4d4">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>daily_single_ag <span class="ot">&lt;-</span> <span class="fu">get_power</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">community =</span> <span class="st">"ag"</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">lonlat =</span> <span class="fu">c</span>(<span class="fl">60.59</span>, <span class="fl">56.84</span>),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"RH2M"</span>, <span class="st">"T2M"</span>),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">dates =</span> <span class="fu">c</span>(<span class="st">"1995-04-01"</span>, <span class="st">"1995-04-30"</span>),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">temporal_api =</span> <span class="st">"daily"</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>daily_single_ag <span class="co"># посмотрим, что получилось</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Аналогичным путем можно выгрузить данные, осредненные по годам. Например, можно получить данные по суммарной и прямой солнечной радиации (<span class="math inline">\(кВт/ч/м^2/день\)</span>) для той же точки с 1995 по 2015 год:</p>
+<div class="cell" data-hash="06-AdvGraphics_cache/html/unnamed-chunk-5_6d448e4f3315db380d46a68f74020c29">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>interannual_sse <span class="ot">&lt;-</span> <span class="fu">get_power</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">community =</span> <span class="st">"ag"</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">lonlat =</span> <span class="fu">c</span>(<span class="fl">60.59</span>, <span class="fl">56.84</span>),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">dates =</span> <span class="dv">1995</span><span class="sc">:</span><span class="dv">2015</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">temporal_api =</span> <span class="st">"climatology"</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"CLRSKY_SFC_SW_DWN"</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>           <span class="st">"ALLSKY_SFC_SW_DWN"</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>interannual_sse <span class="co"># посмотрим, что получилось</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="advgraphics_soildb" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="advgraphics_soildb"><span class="header-section-number">6.4</span> Загрузка данных Soil Data Access</h2>
+<p><strong>Soil Data Access</strong> — это онлайн-сервис департамента сельского хозяйства США, который позволяет получать подробные данные о почвенных ресурсах этой страны. Наиболее часто запрашиваются данные по так называемым почвенным <a href="https://en.wikipedia.org/wiki/Soil_series"><em>сериям</em></a> — группам почвенных профилей, обладающих схожими характеристиками и, таким образом, идентичными с точки зрения сельскохозяйственного использования. Как правило, серии именуются по названию населенного пункта, рядом с которым впервые были найдены подобные почвы.</p>
+<p>Например, серия <em>Cecil</em> имеет следующее покрытие и обеспеченность разрезами в базе данных SDA при запросе на сайте <a href="https://casoilresource.lawr.ucdavis.edu/see/#cecil">Series Extent Explorer</a>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="images/cecil.png" class="img-fluid" width="978"></p>
+</div>
+</div>
+<p>Для запросов данных по почвенным сериям достаточно вызвать функцию <code>fetchOSD</code> и передать ей имя одной или более серий:</p>
+<div class="cell" data-hash="06-AdvGraphics_cache/html/unnamed-chunk-7_530d9bd0947e5de3876602da0c3ea596">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>soils <span class="ot">=</span> <span class="fu">c</span>(<span class="st">'wilkes'</span>,  <span class="st">'chewacla'</span>, <span class="st">'congaree'</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>series <span class="ot">=</span> <span class="fu">fetchOSD</span>(soils, <span class="at">extended =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Результирющий объект представляет собой список со множеством таблиц, которые характеризуют как почвенную серию в целом, так и отдельные ее разрезы:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(series)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 17
+ $ SPC             :Formal class 'SoilProfileCollection' [package "aqp"] with 9 slots
+  .. ..@ idcol       : chr "id"
+  .. ..@ hzidcol     : chr "hzID"
+  .. ..@ depthcols   : chr [1:2] "top" "bottom"
+  .. ..@ metadata    :List of 8
+  .. .. ..$ aqp_df_class    : chr "data.frame"
+  .. .. ..$ aqp_group_by    : chr ""
+  .. .. ..$ aqp_hzdesgn     : chr "hzname"
+  .. .. ..$ aqp_hztexcl     : chr "texture_class"
+  .. .. ..$ depth_units     : chr "cm"
+  .. .. ..$ stringsAsFactors: logi FALSE
+  .. .. ..$ original.order  : int [1:22] 1 2 3 4 5 6 7 8 9 10 ...
+  .. .. ..$ origin          : chr "OSD via Soilweb / fetchOSD"
+  .. ..@ horizons    :'data.frame': 22 obs. of  22 variables:
+  .. .. ..$ id                   : chr [1:22] "CHEWACLA" "CHEWACLA" "CHEWACLA" "CHEWACLA" ...
+  .. .. ..$ top                  : int [1:22] 0 10 36 66 97 119 152 0 20 46 ...
+  .. .. ..$ bottom               : int [1:22] 10 36 66 97 119 152 203 20 46 56 ...
+  .. .. ..$ hzname               : chr [1:22] "Ap" "Bw1" "Bw2" "Bw3" ...
+  .. .. ..$ soil_color           : chr [1:22] "#7D593AFF" "#795B36FF" "#795B36FF" "#7D593AFF" ...
+  .. .. ..$ hue                  : chr [1:22] "7.5YR" "10YR" "10YR" "7.5YR" ...
+  .. .. ..$ value                : int [1:22] 4 4 4 4 5 5 4 4 4 3 ...
+  .. .. ..$ chroma               : int [1:22] 4 4 4 4 8 1 4 4 3 3 ...
+  .. .. ..$ dry_hue              : chr [1:22] "7.5YR" "10YR" "10YR" "7.5YR" ...
+  .. .. ..$ dry_value            : int [1:22] 6 6 6 6 6 6 6 6 6 5 ...
+  .. .. ..$ dry_chroma           : int [1:22] 4 4 4 4 7 1 4 4 3 3 ...
+  .. .. ..$ texture_class        : Ord.factor w/ 21 levels "coarse sand"&lt;..: 13 18 17 13 17 17 13 13 13 NA ...
+  .. .. ..$ cf_class             : logi [1:22] NA NA NA NA NA NA ...
+  .. .. ..$ pH                   : logi [1:22] NA NA NA NA NA NA ...
+  .. .. ..$ pH_class             : Ord.factor w/ 12 levels "ultra acid"&lt;"extremely acid"&lt;..: 3 3 3 3 3 3 3 4 NA NA ...
+  .. .. ..$ distinctness         : chr [1:22] "clear" "gradual" "gradual" "gradual" ...
+  .. .. ..$ topography           : chr [1:22] "smooth" "wavy" "wavy" "wavy" ...
+  .. .. ..$ dry_color_estimated  : logi [1:22] TRUE TRUE TRUE TRUE TRUE TRUE ...
+  .. .. ..$ moist_color_estimated: logi [1:22] FALSE FALSE FALSE FALSE FALSE FALSE ...
+  .. .. ..$ narrative            : chr [1:22] "Ap--0 to 4 inches; brown (7.5YR 4/4) loam; weak medium granular structure; friable; common very fine, fine, and"| __truncated__ "Bw1--4 to 14 inches; dark yellowish brown (10YR 4/4) silty clay loam; weak medium subangular blocky structure; "| __truncated__ "Bw2--14 to 26 inches; dark yellowish brown (10YR 4/4) clay loam; weak medium subangular blocky structure; friab"| __truncated__ "Bw3--26 to 38 inches; brown (7.5YR 4/4) loam; weak medium subangular blocky structure; friable; common fine roo"| __truncated__ ...
+  .. .. ..$ hzID                 : chr [1:22] "1" "2" "3" "4" ...
+  .. .. ..$ hzd                  : num [1:22] 2.5 7.5 7.5 7.5 7.5 7.5 0 2.5 7.5 2.5 ...
+  .. ..@ site        :'data.frame': 3 obs. of  31 variables:
+  .. .. ..$ id                     : chr [1:3] "CHEWACLA" "CONGAREE" "WILKES"
+  .. .. ..$ soilseriesiid          : int [1:3] 24628 1057 23800
+  .. .. ..$ series_status          : chr [1:3] "established" "established" "established"
+  .. .. ..$ benchmarksoilflag      : chr [1:3] "TRUE" "FALSE" "FALSE"
+  .. .. ..$ soiltaxclasslastupdated: chr [1:3] "2010-02-11 00:00:00" "2002-07-18 00:00:00" "1997-06-06 00:00:00"
+  .. .. ..$ mlraoffice             : chr [1:3] "raleigh, nc" "raleigh, nc" "raleigh, nc"
+  .. .. ..$ family                 : chr [1:3] "fine-loamy, mixed, active, thermic fluvaquentic dystrudepts" "fine-loamy, mixed, active, nonacid, thermic oxyaquic udifluvents" "loamy, mixed, active, thermic, shallow typic hapludalfs"
+  .. .. ..$ soilorder              : chr [1:3] "inceptisols" "entisols" "alfisols"
+  .. .. ..$ suborder               : chr [1:3] "udepts" "fluvents" "udalfs"
+  .. .. ..$ greatgroup             : chr [1:3] "dystrudepts" "udifluvents" "hapludalfs"
+  .. .. ..$ subgroup               : chr [1:3] "fluvaquentic dystrudepts" "oxyaquic udifluvents" "typic hapludalfs"
+  .. .. ..$ tax_partsize           : chr [1:3] "fine-loamy" "fine-loamy" "loamy"
+  .. .. ..$ tax_partsizemod        : logi [1:3] NA NA NA
+  .. .. ..$ tax_ceactcl            : chr [1:3] "active" "active" "active"
+  .. .. ..$ tax_reaction           : chr [1:3] NA "nonacid" NA
+  .. .. ..$ tax_tempcl             : chr [1:3] "thermic" "thermic" "thermic"
+  .. .. ..$ tax_minclass           : chr [1:3] "mixed" "mixed" "mixed"
+  .. .. ..$ taxfamhahatmatcl       : logi [1:3] NA NA NA
+  .. .. ..$ originyear             : logi [1:3] NA NA NA
+  .. .. ..$ establishedyear        : int [1:3] 1937 1904 1916
+  .. .. ..$ descriptiondateinitial : chr [1:3] "2010-02-11 00:00:00+00" "2002-07-18 00:00:00+00" "2007-09-06 00:00:00+00"
+  .. .. ..$ descriptiondateupdated : chr [1:3] "2010-02-11 00:00:00+00" "2002-07-18 00:00:00+00" "2021-01-27 16:02:50+00"
+  .. .. ..$ statsgoflag            : chr [1:3] "TRUE" "TRUE" "TRUE"
+  .. .. ..$ areasymbol             : chr [1:3] "NC" "SC" "NC"
+  .. .. ..$ areaname               : chr [1:3] "North Carolina" "South Carolina" "North Carolina"
+  .. .. ..$ areatypename           : chr [1:3] "State or Territory" "State or Territory" "State or Territory"
+  .. .. ..$ subgroup_mod           : chr [1:3] "fluvaquentic" "oxyaquic" "typic"
+  .. .. ..$ greatgroup_mod         : chr [1:3] "dystr" "udi" "hapl"
+  .. .. ..$ drainagecl             : chr [1:3] "somewhat poorly" "well to moderately well" "well"
+  .. .. ..$ ac                     : int [1:3] 1259397 209527 611580
+  .. .. ..$ n_polygons             : int [1:3] 39681 8781 31818
+  .. ..@ sp          :Formal class 'SpatialPoints' [package "sp"] with 3 slots
+  .. .. .. ..@ coords     : num [1, 1] 0
+  .. .. .. ..@ bbox       : logi [1, 1] NA
+  .. .. .. ..@ proj4string:Formal class 'CRS' [package "sp"] with 1 slot
+  .. .. .. .. .. ..@ projargs: chr NA
+  .. ..@ diagnostic  :'data.frame': 0 obs. of  0 variables
+  .. ..@ restrictions:'data.frame': 0 obs. of  0 variables
+ $ competing       :'data.frame':   1 obs. of  3 variables:
+  ..$ series   : chr "CHEWACLA"
+  ..$ competing: chr "OAKBORO"
+  ..$ family   : chr "fine-loamy, mixed, active, thermic fluvaquentic dystrudepts"
+ $ geog_assoc_soils:'data.frame':   45 obs. of  2 variables:
+  ..$ series: chr [1:45] "CHEWACLA" "CHEWACLA" "CHEWACLA" "CHEWACLA" ...
+  ..$ gas   : chr [1:45] "ALTAVISTA" "AUGUSTA" "BIBB" "BUNCOMBE" ...
+ $ geomcomp        :'data.frame':   3 obs. of  9 variables:
+  ..$ series         : chr [1:3] "CHEWACLA" "CONGAREE" "WILKES"
+  ..$ Interfluve     : num [1:3] 0.75 0 0.167
+  ..$ Crest          : num [1:3] 0 0 0.0309
+  ..$ Head Slope     : int [1:3] 0 0 0
+  ..$ Nose Slope     : int [1:3] 0 0 0
+  ..$ Side Slope     : num [1:3] 0 0 0.802
+  ..$ Base Slope     : num [1:3] 0.25 1 0
+  ..$ n              : int [1:3] 4 1 162
+  ..$ shannon_entropy: num [1:3] 0.811 0 0.841
+ $ hillpos         :'data.frame':   3 obs. of  8 variables:
+  ..$ series         : chr [1:3] "CHEWACLA" "CONGAREE" "WILKES"
+  ..$ Toeslope       : num [1:3] 0.948 0.786 0
+  ..$ Footslope      : num [1:3] 0.0313 0.2143 0
+  ..$ Backslope      : num [1:3] 0 0 0.624
+  ..$ Shoulder       : num [1:3] 0 0 0.24
+  ..$ Summit         : num [1:3] 0.0208 0 0.1357
+  ..$ n              : int [1:3] 96 14 221
+  ..$ shannon_entropy: num [1:3] 0.346 0.75 1.309
+ $ mtnpos          : logi FALSE
+ $ terrace         :'data.frame':   2 obs. of  5 variables:
+  ..$ series         : chr [1:2] "CHEWACLA" "CONGAREE"
+  ..$ Tread          : num [1:2] 0.979 1
+  ..$ Riser          : num [1:2] 0.0211 0
+  ..$ n              : int [1:2] 95 37
+  ..$ shannon_entropy: num [1:2] 0.148 0
+ $ flats           :'data.frame':   2 obs. of  7 variables:
+  ..$ series         : chr [1:2] "CHEWACLA" "CONGAREE"
+  ..$ Dip            : num [1:2] 0.2576 0.0625
+  ..$ Talf           : num [1:2] 0.742 0.812
+  ..$ Flat           : int [1:2] 0 0
+  ..$ Rise           : num [1:2] 0 0.125
+  ..$ n              : int [1:2] 66 16
+  ..$ shannon_entropy: num [1:2] 0.823 0.868
+ $ shape_across    :'data.frame':   3 obs. of  8 variables:
+  ..$ series         : chr [1:3] "CHEWACLA" "CONGAREE" "WILKES"
+  ..$ Concave        : num [1:3] 0.0706 0.0233 0
+  ..$ Linear         : num [1:3] 0.911 0.954 0.406
+  ..$ Convex         : num [1:3] 0.0186 0.0233 0.5943
+  ..$ Complex        : int [1:3] 0 0 0
+  ..$ Undulating     : int [1:3] 0 0 0
+  ..$ n              : int [1:3] 269 86 175
+  ..$ shannon_entropy: num [1:3] 0.5 0.318 0.974
+ $ shape_down      :'data.frame':   3 obs. of  8 variables:
+  ..$ series         : chr [1:3] "CHEWACLA" "CONGAREE" "WILKES"
+  ..$ Concave        : num [1:3] 0.2974 0.0238 0
+  ..$ Linear         : num [1:3] 0.684 0.929 0.611
+  ..$ Convex         : num [1:3] 0.0186 0.0476 0.3886
+  ..$ Complex        : int [1:3] 0 0 0
+  ..$ Undulating     : int [1:3] 0 0 0
+  ..$ n              : int [1:3] 269 84 175
+  ..$ shannon_entropy: num [1:3] 1.002 0.437 0.964
+ $ pmkind          :'data.frame':   6 obs. of  5 variables:
+  ..$ series: chr [1:6] "CHEWACLA" "CHEWACLA" "CONGAREE" "CONGAREE" ...
+  ..$ pmkind: chr [1:6] "Alluvium" "Residuum" "Alluvium" "Fluviomarine deposits" ...
+  ..$ n     : int [1:6] 206 1 72 13 1 262
+  ..$ total : int [1:6] 207 207 86 86 86 262
+  ..$ P     : num [1:6] 0.9952 0.0048 0.8372 0.1512 0.0116 ...
+ $ pmorigin        :'data.frame':   24 obs. of  5 variables:
+  ..$ series  : chr [1:24] "CHEWACLA" "CHEWACLA" "CHEWACLA" "CHEWACLA" ...
+  ..$ pmorigin: chr [1:24] "Igneous and metamorphic rock" "Sedimentary rock" "Granite and gneiss" "Mixed" ...
+  ..$ n       : int [1:24] 29 11 2 2 1 1 1 1 1 1 ...
+  ..$ total   : int [1:24] 51 51 51 51 51 51 51 51 51 51 ...
+  ..$ P       : num [1:24] 0.5686 0.2157 0.0392 0.0392 0.0196 ...
+ $ mlra            :'data.frame':   21 obs. of  4 variables:
+  ..$ series    : chr [1:21] "CHEWACLA" "CHEWACLA" "CHEWACLA" "CHEWACLA" ...
+  ..$ mlra      : chr [1:21] "148" "135A" "136" "133A" ...
+  ..$ area_ac   : int [1:21] 7950 4246 924833 105029 85487 57348 30799 19465 14231 9914 ...
+  ..$ membership: num [1:21] 0.006 0.003 0.734 0.083 0.068 0.046 0.024 0.015 0.011 0.008 ...
+ $ climate.annual  :'data.frame':   24 obs. of  12 variables:
+  ..$ series     : chr [1:24] "CHEWACLA" "CHEWACLA" "CHEWACLA" "CHEWACLA" ...
+  ..$ climate_var: chr [1:24] "Elevation (m)" "Effective Precipitation (mm)" "Frost-Free Days" "Mean Annual Air Temperature (degrees C)" ...
+  ..$ minimum    : num [1:24] 0 128.8 177 12.1 986 ...
+  ..$ q01        : num [1:24] 7 216 188 13 1069 ...
+  ..$ q05        : num [1:24] 33 246 196 13.5 1094 ...
+  ..$ q25        : num [1:24] 125 310.2 208 14.9 1136 ...
+  ..$ q50        : num [1:24] 191 348.8 218 15.7 1175 ...
+  ..$ q75        : num [1:24] 247 443 227 16.4 1277 ...
+  ..$ q95        : num [1:24] 347 569.4 235 17.3 1394 ...
+  ..$ q99        : num [1:24] 479 740.4 244 17.8 1575 ...
+  ..$ maximum    : num [1:24] 919 1382.8 300 19.7 2202 ...
+  ..$ n          : int [1:24] 29787 29787 29787 29787 29787 29787 29787 29787 7547 7547 ...
+ $ climate.monthly :'data.frame':   72 obs. of  14 variables:
+  ..$ series     : chr [1:72] "CHEWACLA" "CHEWACLA" "CHEWACLA" "CHEWACLA" ...
+  ..$ climate_var: chr [1:72] "ppt1" "ppt2" "ppt3" "ppt4" ...
+  ..$ minimum    : num [1:72] 61 64 81 63 60 78 83 74 68 53 ...
+  ..$ q01        : num [1:72] 75 71 93 71 69 83 92 85 81 72 ...
+  ..$ q05        : num [1:72] 83 73 99 75 72 89 99 90 86 76 ...
+  ..$ q25        : num [1:72] 93 83 105 82 81 96 108 96 91 82 ...
+  ..$ q50        : num [1:72] 105 106 119 88 92 101 115 102 98 86 ...
+  ..$ q75        : num [1:72] 116 121 128 95 101 106 123 110 105 91 ...
+  ..$ q95        : num [1:72] 131 135 137 111 112 117 133 129 118 100 ...
+  ..$ q99        : num [1:72] 150 144 147 122 125 133 143 142 137 109 ...
+  ..$ maximum    : num [1:72] 248 227 239 150 167 198 220 207 192 158 ...
+  ..$ n          : int [1:72] 29787 29787 29787 29787 29787 29787 29787 29787 29787 29787 ...
+  ..$ month      : Factor w/ 12 levels "1","2","3","4",..: 1 2 3 4 5 6 7 8 9 10 ...
+  ..$ variable   : Factor w/ 2 levels "Potential ET (mm)",..: 2 2 2 2 2 2 2 2 2 2 ...
+ $ NCCPI           :'data.frame':   3 obs. of  16 variables:
+  ..$ series             : chr [1:3] "CHEWACLA" "CONGAREE" "WILKES"
+  ..$ n                  : int [1:3] 266 94 158
+  ..$ nccpi_irrigated_q01: num [1:3] 0.188 0.816 0.268
+  ..$ nccpi_irrigated_q05: num [1:3] 0.346 0.825 0.269
+  ..$ nccpi_irrigated_q25: num [1:3] 0.564 0.861 0.32
+  ..$ nccpi_irrigated_q50: num [1:3] 0.597 0.907 0.361
+  ..$ nccpi_irrigated_q75: num [1:3] 0.654 0.925 0.419
+  ..$ nccpi_irrigated_q95: num [1:3] 0.849 0.979 0.561
+  ..$ nccpi_irrigated_q99: num [1:3] 0.93 0.984 0.614
+  ..$ nccpi_q01          : num [1:3] 0.347 0.5926 0.0426
+  ..$ nccpi_q05          : num [1:3] 0.56 0.651 0.0564
+  ..$ nccpi_q25          : num [1:3] 0.624 0.76 0.146
+  ..$ nccpi_q50          : num [1:3] 0.685 0.813 0.231
+  ..$ nccpi_q75          : num [1:3] 0.711 0.852 0.268
+  ..$ nccpi_q95          : num [1:3] 0.837 0.936 0.379
+  ..$ nccpi_q99          : num [1:3] 0.84 0.947 0.57
+ $ soilweb.metadata:'data.frame':   20 obs. of  2 variables:
+  ..$ product    : chr [1:20] "block diagram archive" "cached sketches" "component pedons" "KSSL snapshot" ...
+  ..$ last_update: chr [1:20] "2019-12-17" "2023-08-24" "2023-02-21" "2020-03-18" ...</code></pre>
+</div>
+</div>
+</section>
+<section id="advgraphics_template" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="advgraphics_template"><span class="header-section-number">6.5</span> Базовый шаблон ggplot</h2>
+<p>Для начала посмотрим, как можно показать суммарный экспорт по годам:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>trades_total <span class="ot">=</span> trades <span class="sc">|&gt;</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(time) <span class="sc">|&gt;</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">export =</span> <span class="fu">sum</span>(export),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">import =</span> <span class="fu">sum</span>(import))</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> trades_total) <span class="sc">+</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Базовый (минимально необходимый) шаблон построения графика через <strong>ggplot</strong> выглядит следующим образом:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> <span class="sc">&lt;</span>DATA<span class="sc">&gt;</span>) <span class="sc">+</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="er">&lt;</span>GEOM_FUNCTION<span class="sc">&gt;</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="sc">&lt;</span>MAPPINGS<span class="sc">&gt;</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>где:</p>
+<ul>
+<li><code>DATA</code> — источник данных (фрейм, тиббл)</li>
+<li><code>GEOM_FUNCTION</code> — функция, отвечающая за геометрический тип графика (точки, линии, гистограммы и т.д.)</li>
+<li><code>MAPPINGS</code> — перечень соответствий между переменными данных (содержащихся в <code>DATA</code>) и графическими переменными (координатами, размерами, цветами и т.д.)</li>
+</ul>
+</section>
+<section id="advgraphics_geoms" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="advgraphics_geoms"><span class="header-section-number">6.6</span> Геометрические типы и преобразования</h2>
+<p>ggplot предлагает несколько десятков различных видов геометрий для отображения данных. С их полным перечнем можно познакомиться <a href="https://ggplot2.tidyverse.org/reference/">тут</a>. Мы рассмотрим несколько наиболее употребительных, а геометрии, связанные со статистическими преобразованиями, оставим для следующей темы.</p>
+<p>В первом примере мы отображали данные по экспорту за разные года, однако точечный тип не очень подходит для данного типа графика, поскольку он показывает динамику изменения. А это означает, что желательно соединить точки линиями. Для этого используем геометрию <code>geom_line()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> trades_total) <span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Поскольку в данном случае величина является агрегированной за год, более правильным может быть показ ее изменений в виде ступенчатого линейного графика, который получается через геометрию <code>geom_step()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> trades_total) <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_step</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Можно совместить несколько геометрий, добавив их последовательно на график:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> trades_total) <span class="sc">+</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export)) <span class="sc">+</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Если у нескольких геометрий одинаковые отображения, их можно вынести в вызов функции <code>ggplot()</code> (чтобы не дублировать):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> trades_total, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export)) <span class="sc">+</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Наглядность линейного графика можно усилить, добавив “заливку” области с использованием <code>geom_area()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> trades_total, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export)) <span class="sc">+</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> <span class="co"># полигон с прозрачностью 0,5</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Для построения столбчатой диаграммы следует использовать геометрию <code>geom_col()</code>. Например, вот так выглядит структура экспорта продукции машиностроения из Евросоюза по ведущим партнерам:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>trades <span class="sc">|&gt;</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(sitc06 <span class="sc">==</span> <span class="st">'Machinery and transport equipment'</span>, </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>                time <span class="sc">==</span> <span class="fu">as.Date</span>(<span class="st">'2017-01-01'</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> partner, <span class="at">y =</span> export)) <span class="sc">+</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Развернуть диаграмму можно, используя функцию <code>coord_flip()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>trades <span class="sc">|&gt;</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sitc06 <span class="sc">==</span> <span class="st">'Machinery and transport equipment'</span>, </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>         time <span class="sc">==</span> <span class="fu">as.Date</span>(<span class="st">'2017-01-01'</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> partner, <span class="at">y =</span> export)) <span class="sc">+</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="advgraphics_aes" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="advgraphics_aes"><span class="header-section-number">6.7</span> Графические переменные и группировки</h2>
+<p>Графические переменные — это параметры, определяющие внешний вид символов. К ним относятся цвет (тон, насыщенность и светлота), размер, форма, ориентировка, внутренняя структура символа. В ggplot значения графических переменных могут быть едиными для всех измерений, а могут зависеть от величины измерений. С точки зрения управления здесь все просто: если вы хотите, чтобы какой-то графический параметр зависел от значения показателя, он должен быть указан внутри конструкции <code>mapping = aes(...)</code>. Если необходимо, чтобы этот параметр был одинаковым для всех измерений, вы должны его указать внутри <code>&lt;GEOM_FUNCTION&gt;(...)</code>, то есть не передавать в <code>mapping</code>.</p>
+<p>Для управления цветом, формой и размером (толщиной) графического примитива следует использовать параметры <em>color</em>, <em>shape</em> и <em>size</em> соответственно. Посмотрим, как они работают внутри и за пределами функции <code>aes()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># один цвет для графика (параметр за пределами aes)</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_total) <span class="sc">+</span> </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export), <span class="at">color =</span> <span class="st">'blue'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>trade_russia <span class="ot">=</span> trades <span class="sc">|&gt;</span> <span class="fu">filter</span>(partner <span class="sc">==</span> <span class="st">'Russia'</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trade_russia) <span class="sc">+</span> <span class="co"># у каждой группы данных свой цвет (параметр внутри aes)</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export, <span class="at">color =</span> sitc06))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-18-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trade_russia, </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export, <span class="at">color =</span> sitc06)) <span class="sc">+</span> <span class="co"># а теперь и с точками</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-18-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Аналогичным образом работает параметр формы значка:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># один значок для графика</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_total) <span class="sc">+</span> </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export), <span class="at">shape =</span> <span class="dv">15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trade_russia) <span class="sc">+</span> <span class="co"># у каждой группы данных свой значок</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export, <span class="at">shape =</span> sitc06))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-19-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Для изменения размера значка или линии используйте параметр <code>size</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># изменение размера значка и линии</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_total, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export)) <span class="sc">+</span> </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Если вы используете зависимые от значений графические переменные и при этом хотите добавить на график еще одну геометрию (c постоянными параметрами), то вам необходимо сгруппировать объекты второй геометрии по той же переменной, по которой вы осуществляете разбиение в первой геометрии. Для этого используйте параметр <code>group</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trade_russia, <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export)) <span class="sc">+</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">shape =</span> sitc06)) <span class="sc">+</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> sitc06))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Для изменения цвета столбчатых диаграмм следует использовать параметр <code>fill</code>, а цвет и толщина обводки определяются параметрами <code>color</code> и <code>size</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>trades <span class="sc">|&gt;</span> </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sitc06 <span class="sc">==</span> <span class="st">'Machinery and transport equipment'</span>, </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>         time <span class="sc">==</span> <span class="fu">as.Date</span>(<span class="st">'2017-01-01'</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> partner, <span class="at">y =</span> export)) <span class="sc">+</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">'plum4'</span>, <span class="at">color =</span> <span class="st">'black'</span>, <span class="at">size =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Цвет на столбчатых диаграммах можно использовать для отображения дополнительных переменных, например типа экспортируемой продукции. По умолчанию столбики будут образовывать стек</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>trades <span class="sc">|&gt;</span> </span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(time <span class="sc">==</span> <span class="fu">as.Date</span>(<span class="st">'2017-01-01'</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> partner, <span class="at">y =</span> export, <span class="at">fill =</span> sitc06)) <span class="sc">+</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">size =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Если вам важно не абсолютное количество, а процентное соотношение величин, вы можете применить вид группировки <code>position == 'fill</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>trades <span class="sc">|&gt;</span> </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(time <span class="sc">==</span> <span class="fu">as.Date</span>(<span class="st">'2017-01-01'</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> partner, <span class="at">y =</span> export, <span class="at">fill =</span> sitc06)) <span class="sc">+</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">size =</span> <span class="fl">0.2</span>, <span class="at">position =</span> <span class="st">'fill'</span>) <span class="sc">+</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 18 rows containing missing values (`geom_col()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Еще один вид группировки — это группировка по соседству. Чтобы использовать ее, применить метод <code>position == 'dodge</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>trade_russia <span class="sc">|&gt;</span> </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(time <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">'2013-01-01'</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export, <span class="at">fill =</span> sitc06)) <span class="sc">+</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">color =</span> <span class="st">'black'</span>, <span class="at">size =</span> <span class="fl">0.2</span>, <span class="at">position =</span> <span class="st">'dodge'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="advgraphics_coords" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="advgraphics_coords"><span class="header-section-number">6.8</span> Системы координат</h2>
+<p><strong>ggplot</strong> поддерживает множество полезных преобразований координат, таких как смена осей X и Y, переход к логарифмическим координатам и использование полярной системы вместо декартовой прямоугольной.</p>
+<p>Смена переменных происходит благодаря уже знакомой нам функции <code>coord_flip()</code>. Рассмотрим, например, как изменилась структура экспорта/импорта по годам:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>trades_type <span class="ot">=</span> trades <span class="sc">|&gt;</span> </span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sitc06, time) <span class="sc">|&gt;</span> </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">export =</span> <span class="fu">sum</span>(export),</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">import =</span> <span class="fu">sum</span>(import))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'sitc06'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_type) <span class="sc">+</span> </span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> export, <span class="at">y =</span> import, <span class="at">color =</span> sitc06, <span class="at">size =</span> time), <span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_type) <span class="sc">+</span> </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> export, <span class="at">y =</span> import, <span class="at">color =</span> sitc06, <span class="at">size =</span> time), <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-26-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Поскольку объемы продукции различаются <em>на порядки</em>, для различимости малых объемов целесообразно перейти к логарифмической шкале. Для этого используем <code>scale_log_x()</code> и <code>scale_log_y()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_type, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> export, <span class="at">y =</span> import, <span class="at">color =</span> sitc06, <span class="at">size =</span> time)) <span class="sc">+</span> </span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Преобразование в полярную систему координат используется для того чтобы получить круговую секторную диаграмму Найтингейл (<em>coxcomb chart</em>):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>trades <span class="sc">|&gt;</span> </span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sitc06 <span class="sc">==</span> <span class="st">'Machinery and transport equipment'</span>, time <span class="sc">==</span> <span class="fu">as.Date</span>(<span class="st">'2017-01-01'</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> partner, <span class="at">y =</span> export, <span class="at">fill =</span> partner)) <span class="sc">+</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_polar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Разумеется, здесь тоже можно использовать преобразование шкалы по оси <em>Y</em> (которая теперь отвечает за радиус). Применим правило квадратного корня, добавив вызов функции <code>scale_y_sqrt()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>trades <span class="sc">|&gt;</span> </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sitc06 <span class="sc">==</span> <span class="st">'Machinery and transport equipment'</span>, time <span class="sc">==</span> <span class="fu">as.Date</span>(<span class="st">'2017-01-01'</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> partner, <span class="at">y =</span> export, <span class="at">fill =</span> partner)) <span class="sc">+</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_polar</span>() <span class="sc">+</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_sqrt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Чтобы построить классическую секторную диаграмму, необходимо, чтобы угол поворота соответствовал величине показателя (оси <em>Y</em>), а не названию категории (оси <em>X</em>). Для этого при вызове функции <code>coord_polar()</code> следует указать параметр <code>theta = 'y'</code>, а при вызове <code>geom_col()</code> оставить параметр <code>x</code> пустым:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>trades <span class="sc">|&gt;</span> </span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sitc06 <span class="sc">==</span> <span class="st">'Machinery and transport equipment'</span>, time <span class="sc">==</span> <span class="fu">as.Date</span>(<span class="st">'2017-01-01'</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> <span class="st">''</span>, <span class="at">y =</span> export, <span class="at">fill =</span> partner), <span class="at">color =</span> <span class="st">'black'</span>, <span class="at">size =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_polar</span>(<span class="at">theta =</span> <span class="st">'y'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="advgraphics_titles" class="level2" data-number="6.9">
+<h2 data-number="6.9" class="anchored" data-anchor-id="advgraphics_titles"><span class="header-section-number">6.9</span> Названия осей и легенды</h2>
+<p>ggplot предоставляет ряд функций для аннотирования осей и легенды. Для этого можно использовать одну из следующих функций:</p>
+<ul>
+<li><code>labs(...)</code> модифицирует заголовок легенды для соответствующей графической переменной, либо заголовок/подзаголовок графика</li>
+<li><code>xlab(label)</code> модифицирует подпись оси X</li>
+<li><code>ylab(label)</code> модифицирует подпись оси Y</li>
+<li><code>ggtitle(label, subtitle = NULL)</code> модифицирует заголовок и подзаголовок графика</li>
+</ul>
+<p>Создадим подписи легенд, отвечающих за цвет и размер значка на графике соотношения импорта и экспорта разных видов продукции:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_type) <span class="sc">+</span> </span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> export, <span class="at">y =</span> import, <span class="at">color =</span> sitc06, <span class="at">size =</span> time), <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="st">"Вид продукции"</span>, <span class="at">size =</span> <span class="st">'Год'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Добавим заголовок и подзаголовок графика:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_type) <span class="sc">+</span> </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> export, <span class="at">y =</span> import, <span class="at">color =</span> sitc06, <span class="at">size =</span> time), <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="st">"Вид продукции"</span>, <span class="at">size =</span> <span class="st">'Год'</span>) <span class="sc">+</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">'Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)'</span>,</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">subtitle =</span> <span class="st">'Данные по ключевым партнерам'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Изменим подписи осей:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_type) <span class="sc">+</span> </span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> export, <span class="at">y =</span> import, <span class="at">color =</span> sitc06, <span class="at">size =</span> time), <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="st">"Вид продукции"</span>, <span class="at">size =</span> <span class="st">'Год'</span>) <span class="sc">+</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">'Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)'</span>,</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">subtitle =</span> <span class="st">'Данные по ключевым партнерам'</span>) <span class="sc">+</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">'Экспорт'</span>) <span class="sc">+</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">'Импорт'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="advgraphics_axes" class="level2" data-number="6.10">
+<h2 data-number="6.10" class="anchored" data-anchor-id="advgraphics_axes"><span class="header-section-number">6.10</span> Разметка осей</h2>
+<p>Первое, что вам скорее всего захочется убрать — это экспоненциальная запись чисел. На самом деле, эта запись не является параметром <strong>ggplot</strong> или стандартной системы <strong>graphics</strong>. Количество значащих цифр, после которых число автоматически представляется в экспоненциальном виде, управляется параметром <code>scipen</code>. Мы можем задать его достаточно большим, чтобы запретить переводить любые разумные числа в экспоненциальный вид:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">999</span>)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_type) <span class="sc">+</span> </span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> export, <span class="at">y =</span> import, <span class="at">color =</span> sitc06, <span class="at">size =</span> time), <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="st">"Вид продукции"</span>, <span class="at">size =</span> <span class="st">'Год'</span>) <span class="sc">+</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">'Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)'</span>,</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">subtitle =</span> <span class="st">'Данные по ключевым партнерам'</span>) <span class="sc">+</span></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">'Экспорт'</span>) <span class="sc">+</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">'Импорт'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Для управления разметкой осей необходимо использовать функции <code>scale_x_continuous()</code>, <code>scale_y_continuous()</code>, <code>scale_x_log10(...)</code>, <code>scale_y_log10(...)</code>, <code>scale_x_reverse(...)</code>, <code>scale_y_reverse(...)</code>, <code>scale_x_sqrt(...)</code>, <code>scale_y_sqrt(...)</code>, которые, с одной стороны, указывают тип оси, а с другой стороны — позволяют управлять параметрами сетки координат и подписями.</p>
+<p>Для изменения координат линий сетки и подписей необходимо использовать, соответственно, параметры <code>breaks</code> и <code>labels</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_type, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> export, <span class="at">y =</span> import, <span class="at">color =</span> sitc06, <span class="at">size =</span> time)) <span class="sc">+</span> </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">500000</span>, <span class="dv">100000</span>)) <span class="sc">+</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">500000</span>, <span class="dv">100000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>В данном случае, как раз, будет достаточно полезным параметр <code>labels</code>, поскольку метки можно сделать более компактными, поделив их на 1000 (и не забыть потом указать, что объемы теперь указаны не в миллионах, а в миллиардах долларов):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>brks <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">500000</span>, <span class="dv">100000</span>)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_type, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> export, <span class="at">y =</span> import, <span class="at">color =</span> sitc06, <span class="at">size =</span> time)) <span class="sc">+</span> </span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>(<span class="at">breaks =</span> brks, <span class="at">labels =</span> brks <span class="sc">/</span> <span class="dv">1000</span>) <span class="sc">+</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>(<span class="at">breaks =</span> brks, <span class="at">labels =</span> brks <span class="sc">/</span> <span class="dv">1000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Для обычной шкалы используйте функции <code>scale_x_continuous()</code> и <code>scale_y_continuous()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_type, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> export, <span class="at">y =</span> import, <span class="at">color =</span> sitc06, <span class="at">size =</span> time)) <span class="sc">+</span> </span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> brks, <span class="at">labels =</span> brks <span class="sc">/</span> <span class="dv">1000</span>) <span class="sc">+</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> brks, <span class="at">labels =</span> brks <span class="sc">/</span> <span class="dv">1000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Для того чтобы принудительно указать диапазоны осей и графических переменных, следует использовать функции <code>lims(...)</code>, <code>xlim(...)</code> и <code>ylim(...)</code>. Например, мы можем приблизиться в левый нижний угол графика, задав диапазон 0-200000 по обеим осям:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_type, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> export, <span class="at">y =</span> import, <span class="at">color =</span> sitc06, <span class="at">size =</span> time)) <span class="sc">+</span> </span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">75000</span>) <span class="sc">+</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">75000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 126 rows containing missing values (`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Функция <code>lims()</code> работает еще хитрее: она позволяет применять графические переменные только к ограниченному набору значений исходных данных. Например, таким путем я могу выделить на графике продукцию машиностроения:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_type, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> export, <span class="at">y =</span> import, <span class="at">color =</span> sitc06, <span class="at">size =</span> time)) <span class="sc">+</span> </span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lims</span>(<span class="at">color =</span> <span class="st">'Machinery and transport equipment'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="advgraphics_labels" class="level2" data-number="6.11">
+<h2 data-number="6.11" class="anchored" data-anchor-id="advgraphics_labels"><span class="header-section-number">6.11</span> Подписи и аннотации</h2>
+<p>С точки зрения <strong>ggplot</strong> текст на графике, отображающий входные данные, является одной из разновидностей геометрии. Размещается он с помощью функции <code>geom_text()</code>. Как и в случае с другими геометриями, параметры, зависящие от исходных данных, должны быть переданы внутри <code>mapping = aes(...)</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> trades_total, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export)) <span class="sc">+</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> <span class="co"># полигон с прозрачностью 0,5</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">floor</span>(export <span class="sc">/</span> <span class="dv">1000</span>))) <span class="co"># добавляем подписи</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Выравнивание подписи относительно якорной точки (снизу, сверху, справа, слева) по горизонтали и вертикали управляется параметрами <code>hjust</code> и <code>vjust</code>, а смещения по осям X (в координатах графика) — параметрами <code>nudge_x</code> и <code>nudge_y</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> trades_total, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export)) <span class="sc">+</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> <span class="co"># полигон с прозрачностью 0,5</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">floor</span>(export <span class="sc">/</span> <span class="dv">1000</span>)), </span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="dv">0</span>, <span class="at">nudge_y =</span> <span class="dv">40000</span>) <span class="co"># добавляем подписи</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Подписи с фоновой плашкой добавляются через функцию <code>geom_label()</code>, которая имеет аналогичный синтаксис:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>trades <span class="sc">|&gt;</span> </span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sitc06 <span class="sc">==</span> <span class="st">'Machinery and transport equipment'</span>, time <span class="sc">==</span> <span class="fu">as.Date</span>(<span class="st">'2017-01-01'</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> partner, <span class="at">y =</span> export)) <span class="sc">+</span></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">'plum4'</span>, <span class="at">color =</span> <span class="st">'black'</span>, <span class="at">size =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_label</span>(<span class="fu">aes</span>(<span class="at">y =</span> export <span class="sc">/</span> <span class="dv">2</span>, <span class="at">label =</span> <span class="fu">floor</span>(export <span class="sc">/</span> <span class="dv">1000</span>))) <span class="co"># добавляем подписи</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-42-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><strong>Аннотации</strong> представляют собой объекты, размещаемые на графике вручную, и используемые, как правило, для выделения объектов и областей. Для размещения аннотаций используется функция <code>annotate()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> trades_total, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export)) <span class="sc">+</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> <span class="co"># полигон с прозрачностью 0,5</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">floor</span>(export <span class="sc">/</span> <span class="dv">1000</span>)), </span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="dv">0</span>, <span class="at">nudge_y =</span> <span class="dv">40000</span>) <span class="sc">+</span></span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">as.Date</span>(<span class="st">'2009-01-01'</span>), <span class="at">y =</span> <span class="dv">550000</span>, <span class="at">label =</span> <span class="st">"Это провал"</span>, <span class="at">color =</span> <span class="st">'red'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-43-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Аннотировать можно не только подписями, но и регионами. Например, мы можем выделить область, которая соответствует импорту/экспорту продукции химической промышленности:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_type, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> export, <span class="at">y =</span> import, <span class="at">color =</span> sitc06, <span class="at">size =</span> time)) <span class="sc">+</span> </span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> <span class="dv">100000</span>, <span class="at">xmax =</span> <span class="dv">250000</span>, <span class="at">ymin =</span> <span class="dv">75000</span>, <span class="at">ymax =</span> <span class="dv">175000</span>,  <span class="at">alpha =</span> .<span class="dv">2</span>, <span class="at">color =</span> <span class="st">'black'</span>, <span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">175000</span>, <span class="at">y =</span> <span class="dv">190000</span>, <span class="at">label =</span> <span class="st">"Chemicals"</span>, <span class="at">color =</span> <span class="st">'coral'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-44-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="advgraphics_facets" class="level2" data-number="6.12">
+<h2 data-number="6.12" class="anchored" data-anchor-id="advgraphics_facets"><span class="header-section-number">6.12</span> Фасеты</h2>
+<p>Фасеты представляют собой множество графиков, каждый из которых отображает свою переменную или набор значений. Для разбиения на фасеты используется функция facet_wrap(), которой необходимо передать переменную разбиения с <em>тильдой</em>. Например, рассмотрим изменение структуры импорта по годам:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>brks <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">150</span>, <span class="dv">200</span>)</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>trades <span class="sc">|&gt;</span> </span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sitc06 <span class="sc">==</span> <span class="st">'Machinery and transport equipment'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> partner, <span class="at">y =</span> import)) <span class="sc">+</span></span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> brks <span class="sc">*</span> <span class="fl">1e3</span>, <span class="at">labels =</span> brks) <span class="sc">+</span></span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">'Импорт продукции машиностроения (мдрд долл. США)'</span>,</span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">'Данные по ключевым партнерам'</span>) <span class="sc">+</span></span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-45-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="advgraphics_themes" class="level2" data-number="6.13">
+<h2 data-number="6.13" class="anchored" data-anchor-id="advgraphics_themes"><span class="header-section-number">6.13</span> Темы</h2>
+<p>Система <strong>ggplot</strong> интересна также тем, что для нее существует множество предопределенных “тем” или скинов для оформления графиков. <a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">Часть из них</a> входит в состав самой библиотеки. Дополнительные темы можно установить через пакет <a href="https://cran.r-project.org/web/packages/ggthemes/index.html"><strong>ggthemes</strong></a>. Чтобы изменить тему оформления ggplot, достаточно прибавить в конце построения графика соответствующую функцию. Например, классическая черно-белая тема получается прибавлением функции <code>theme_bw()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> trades_total, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> export)) <span class="sc">+</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> <span class="co"># полигон с прозрачностью 0,5</span></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">floor</span>(export <span class="sc">/</span> <span class="dv">1000</span>)), </span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="dv">0</span>, <span class="at">nudge_y =</span> <span class="dv">40000</span>) <span class="sc">+</span></span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-46-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(trades_type) <span class="sc">+</span> </span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> export, <span class="at">y =</span> import, <span class="at">color =</span> sitc06, <span class="at">size =</span> time), <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="st">"Вид продукции"</span>, <span class="at">size =</span> <span class="st">'Год'</span>) <span class="sc">+</span></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">'Соотношение импорта и экспорта в странах Евросоюза (млн долл. США)'</span>,</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">subtitle =</span> <span class="st">'Данные по ключевым партнерам'</span>) <span class="sc">+</span></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">'Экспорт'</span>) <span class="sc">+</span></span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">'Импорт'</span>) <span class="sc">+</span></span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="06-AdvGraphics_files/figure-html/unnamed-chunk-46-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="advgraphics_review" class="level2" data-number="6.14">
+<h2 data-number="6.14" class="anchored" data-anchor-id="advgraphics_review"><span class="header-section-number">6.14</span> Краткий обзор</h2>
+<p>Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:</p>
+<div class="cell">
+<iframe src="https://tsamsonov.github.io/r-geo-course-slides/06_AdvGraphics.html#1" width="672" height="390px" data-external="1">
+</iframe>
+</div>
+<blockquote class="blockquote">
+<p>Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.</p>
+</blockquote>
+</section>
+<section id="questions_tasks_advgraphics" class="level2" data-number="6.15">
+<h2 data-number="6.15" class="anchored" data-anchor-id="questions_tasks_advgraphics"><span class="header-section-number">6.15</span> Контрольные вопросы и упражнения</h2>
+<section id="questions_advgraphics" class="level3" data-number="6.15.1">
+<h3 data-number="6.15.1" class="anchored" data-anchor-id="questions_advgraphics"><span class="header-section-number">6.15.1</span> Вопросы</h3>
+<ol type="1">
+<li>Назовите три основных компоненты шаблона построения графика в <strong>ggplot2</strong>.</li>
+<li>Как называются геометрии <strong>ggplot2</strong>, отвечающие за построение точек, линий и ступенчатых линий?</li>
+<li>Как называется геометрия <strong>ggplot2</strong>, отвечающая за построение столбчатой диаграммы?</li>
+<li>Как сделать так, чтобы графический параметр <strong>ggplot2</strong> был постоянным для всех измерений?</li>
+<li>Как сделать так, чтобы графический параметр <strong>ggplot2</strong> зависел от значения переменной?</li>
+<li>Перечислите названия параметров, отвечающих за цвет, размер, заливку и тип значка графического примитива.</li>
+<li>Если вы используете зависимые от значений графические переменные и при этом хотите добавить на график еще одну геометрию с постоянными параметрами, то как это можно реализовать?</li>
+<li>Перечислите названия режимов группировки столбчатых диаграмм и пути их реализации.</li>
+<li>Какая функция ggplot2 позволяет поменять местами оси координат?</li>
+<li>Перечислите типы шкал для осей координат, которые доступны в <strong>ggplot2</strong>.</li>
+<li>Назовите функцию, позволяющую перейти к полярной системе координат при построении графика в <strong>ggplot2</strong>.</li>
+<li>В чем отличие построения розы-диаграммы (<em>coxcomb chart</em>) и секторной диаграммы (<em>pie chart</em>) средствами <strong>ggplot2</strong>?</li>
+<li>Что делает функция <code>labs()</code>?</li>
+<li>Какие функции позволяют определить названия осей и заголовок графика?</li>
+<li>Что делает функция <code>lims()</code>?</li>
+<li>Как ограничить область построения графика заданным диапазоном значений координат?</li>
+<li>Как ограничить применение графических переменных только к определенным значениям измерений?</li>
+<li>Назовите геометрии, которые позволяют размещать подписи и подписи с плашками (фоном) на графиках <strong>ggplot2</strong>.</li>
+<li>Чем отличаются аннотации от геометрии подписей в <strong>ggplot</strong>? Какие виды аннотаций можно создавать?</li>
+<li>Каким образом можно построить фасетный график, на котором каждое изображение соответствует значению переменной? Каков синтаксис вызова соответствующей функции?</li>
+<li>Как поменять стиль отображения (тему) графика <strong>ggplot2</strong>?</li>
+<li>Как получить программный доступ к таблицам Евростата, не прибегая к закачке файлов? Какой пакет можно использовать для этого?</li>
+<li>Что является уникальным идентификатором таблицы в данных Евростата и как его узнать?</li>
+<li>Как преобразовать коды Евростата в загруженных таблицах в человеко-читаемые обозначения?</li>
+</ol>
+</section>
+<section id="tasks_advgraphics" class="level3" data-number="6.15.2">
+<h3 data-number="6.15.2" class="anchored" data-anchor-id="tasks_advgraphics"><span class="header-section-number">6.15.2</span> Упражнения</h3>
+<blockquote class="blockquote">
+<p>Упражнения данной главы частично повторяют упражнения предыдущей главы по базовой графике в целях сравнения двух графических систем R.</p>
+</blockquote>
+<ol type="1">
+<li><p>Постройте для набора данных <em>quakes</em> пакета <strong>datasets</strong> гистограммы распределения глубин и магнитуд, а также диаграмму рассеяния для двух этих характеристик. Используйте сначала функцию <code>qplot()</code>, а затем выполните то же самое с использованием полного синтаксиса <code>ggplot2()</code>.</p></li>
+<li><p>На портале открытых данных Тульской области есть <a href="https://opendata71.ru/opendata/7107096442-stateforestregisterTularegion/table"><strong>данные</strong></a> о распределении площади лесов и запасов древесины по преобладающим породам и группам возраста. Скачайте эти данные в виде таблицы CSV и постройте по ним круговую и столбчатую диаграмму для категории <code>Площадь земель, занятых лесными насаждениями (покрытых лесной растительностью), всего</code>. Подберите цвета, попробуйте изменить ориентировку столбцов на горизонтальную, а для круговой диаграммы поменять угол поворота.</p></li>
+<li><p>Используя <a href="https://raw.githubusercontent.com/tsamsonov/r-geo-course/master/data/garabashi.xlsx">данные</a><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> по балансу масс ледника Гарабаши, постройте график с тремя кривыми (аккумуляции, абляции и <em>кумулятивного</em> баланса) за период 1981 по 2017 г. Добавьте на график легенду. Обратите внимание на то, что таблица содержит агрегирующие строки (1982-1997, 1998-2017, 1982-2017), которые вам необходимо предварительно исключить.</p>
+<blockquote class="blockquote">
+<p><strong>Подсказка:</strong> Чтобы построить кривую кумулятивного баланса, используйте функцию <code>cumsum</code>.</p>
+</blockquote></li>
+<li><p>Загрузите <a href="https://ec.europa.eu/eurostat/databrowser/view/tet00034/default/table?lang=en">таблицу данных по импорту/экспорту продуктов питания, напитков и табака</a> с портала Евростата (с использованием пакета <strong>eurostat</strong>). Постройте линейный график изменения <em>суммарных</em> величин импорта и экспорта по данному показателю (у вас должно получиться 2 графика на одном изображении). Используйте <em>цвет</em> для разделения графиков. Добавьте текстовые подписи величин импорта и экспорта. Постройте также две круговых диаграммы, показывающих соотношение ведущих импортеров и экспортеров за последний имеющийся год. Сделайте сначала это отдельными графиками, а затем одним фасетным графиком (для этого потребуется привести таблицу к длинной форме).</p></li>
+<li><p>Постройте линейный график хода температуры , а также столбчатую диаграмму хода суммарной солнечной радиации в Екатеринбурге на примере данных NASA POWER, загруженных в разделе <a href="#advgraphics_nasapower">6.3</a>.<!-- \@ref(advgraphics_nasapower). --></p>
+<blockquote class="blockquote">
+<p><strong>Подсказка</strong>: Для построения столбчатой диаграммы вам потребуется использовать функцию <code>geom_col()</code>, поскольку высота столбика отражает не встречаемость значения, а величину переменной. Также вам потребуется преобразовать таблицу среднемесячных величин к длинной форме, где название месяца будет отдельной переменной (тип — упорядоченный фактор).</p>
+</blockquote></li>
+</ol>
+<table class="table">
+<tbody>
+<tr class="odd">
+<td><em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, 2023. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a></td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+</section>
+<aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p><em>Рототаева О.В., Носенко Г.А., Керимов А.М., Кутузов С.С., Лаврентьев И.И., Никитин С.А., Керимов А.А., Тарасова Л.Н.</em> Изменения баланса массы ледника Гарабаши (Эльбрус) на рубеже XX–XXI вв. <strong>Лёд и Снег</strong>. 2019;59(1):5-22. https://doi.org/10.15356/2076-6734-2019-1-5-22<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
+        }
+        return container.innerHTML
+      } else {
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        console.log("RESIZE");
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./05-BaseGraphics.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Базовая графика</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./07-BaseStats.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Основы статистики</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.309">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Тимофей Самсонов">
+<meta name="dcterms.date" content="2023-09-22">
+
+<title>Визуализация и анализ географических данных на языке R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./01-Basics.html" rel="next">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Введение</a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Визуализация и анализ географических данных на языке R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Введение</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-Basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Типы данных</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-DataStructures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Структуры данных</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-Tables.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Таблицы</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-Functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Функции</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-BaseGraphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Базовая графика</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-AdvGraphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Продвинутая графика</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-BaseStats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Основы статистики</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-AdvStats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Продвинутая статистика</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Библиография</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#введение" id="toc-введение" class="nav-link active" data-scroll-target="#введение">Введение</a>
+  <ul class="collapse">
+  <li><a href="#программное-обеспечение" id="toc-программное-обеспечение" class="nav-link" data-scroll-target="#программное-обеспечение">Программное обеспечение</a></li>
+  <li><a href="#установка-и-подключение-пакетов" id="toc-установка-и-подключение-пакетов" class="nav-link" data-scroll-target="#установка-и-подключение-пакетов">Установка и подключение пакетов</a></li>
+  <li><a href="#выполнение-программного-кода" id="toc-выполнение-программного-кода" class="nav-link" data-scroll-target="#выполнение-программного-кода">Выполнение программного кода</a></li>
+  <li><a href="#установка-рабочей-директории" id="toc-установка-рабочей-директории" class="nav-link" data-scroll-target="#установка-рабочей-директории">Установка рабочей директории</a></li>
+  <li><a href="#диагностические-функции" id="toc-диагностические-функции" class="nav-link" data-scroll-target="#диагностические-функции">Диагностические функции</a></li>
+  <li><a href="#получение-справки" id="toc-получение-справки" class="nav-link" data-scroll-target="#получение-справки">Получение справки</a></li>
+  <li><a href="#комментарии" id="toc-комментарии" class="nav-link" data-scroll-target="#комментарии">Комментарии</a></li>
+  <li><a href="#стандарт-оформления-кода-на-r" id="toc-стандарт-оформления-кода-на-r" class="nav-link" data-scroll-target="#стандарт-оформления-кода-на-r">Стандарт оформления кода на R</a></li>
+  <li><a href="#зарезервированные-слова" id="toc-зарезервированные-слова" class="nav-link" data-scroll-target="#зарезервированные-слова">Зарезервированные слова</a></li>
+  <li><a href="#названия-переменных" id="toc-названия-переменных" class="nav-link" data-scroll-target="#названия-переменных">Названия переменных</a></li>
+  <li><a href="#названия-специальных-символов" id="toc-названия-специальных-символов" class="nav-link" data-scroll-target="#названия-специальных-символов">Названия специальных символов</a></li>
+  <li><a href="#управляющие-последовательности" id="toc-управляющие-последовательности" class="nav-link" data-scroll-target="#управляющие-последовательности">Управляющие последовательности</a></li>
+  <li><a href="#ссылка-на-пособие" id="toc-ссылка-на-пособие" class="nav-link" data-scroll-target="#ссылка-на-пособие">Ссылка на пособие</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Визуализация и анализ географических данных на языке R</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Тимофей Самсонов </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 22, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+<section id="введение" class="level1 unnumbered">
+<h1 class="unnumbered">Введение</h1>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Внимание
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Разделы курса по пространственной статистике c октября 2021 г. переехали в <a href="https://tsamsonov.github.io/r-spatstat-course" title="Пространственная статистика">отдельный репозиторий</a>.</p>
+</div>
+</div>
+<p>Добро пожаловать в курс <em>“Визуализация и анализ географических данных на языке R”</em>! В данном курсе мы освоим азы программирования на языке <strong>R</strong>, а затем научимся использовать его для решения географических задач. Никаких предварительных знаний и навыков программирования не требуется.</p>
+<section id="программное-обеспечение" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="программное-обеспечение">Программное обеспечение</h2>
+<p>Для успешного прохождения курса на вашем компьютере должно быть установлено следующее программное обеспечение:</p>
+<ul>
+<li>Язык <a href="https://cran.r-project.org">R</a></li>
+<li>Среда разработки <a href="https://www.rstudio.com/products/rstudio/download3/">RStudio</a></li>
+</ul>
+<p>Выбирайте инсталлятор, соответствующий вашей операционной системе. Обратите внимание на то, что <strong>RStudio</strong> не будет работать, пока вы не установите базовые библиотеки языка <strong>R</strong>. Поэтому обе вышеуказанные компоненты ПО обязательны для установки.</p>
+</section>
+<section id="установка-и-подключение-пакетов" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="установка-и-подключение-пакетов">Установка и подключение пакетов</h2>
+<p>Существует <a href="https://cran.r-project.org/web/packages/">множество</a> дополнительных пакетов <strong>R</strong> практически на все случаи жизни (вы тоже можете написать свой). Как и дистрибутив <strong>R</strong>, они доступны через <a href="https://cran.r-project.org">CRAN (Comprehensive R Archive Network)</a>. Одним из таких пакетов является, например, пакет <a href="https://cran.r-project.org/web/packages/writexl/index.html"><code>writexl</code></a>, позволяющий записывать файлы в форматах <strong>Microsoft Excel</strong>.</p>
+<p>Наиболее часто используются два способа установки пакетов в <strong>RStudio</strong>.</p>
+<p>Во-первых, вы можете сделать это в графическом интерфесе, нажав кнопку <em>Install</em> на панели <em>Packages</em> (по умолчанию эта панель расположена в нижней правой четверти окна программы). В появившемся окне введите название пакета и нажмите <em>Install</em>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/InstallPackages.png" class="img-fluid figure-img" width="753"></p>
+<figcaption class="figure-caption">Установка пакета</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Во-вторых, вы можете вызвать <em>из консоли</em> команду <code>install.packages()</code>, передав ей в качестве параметра название пакета, заключенное в кавычки:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"writexl"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<blockquote class="blockquote">
+<p><strong>Никогда не включайте команду <code>install.packages()</code> в тело скрипта.</strong> Это приведет к тому, что каждый раз при запуске программы среда <strong>RStudio</strong> будет пытаться заново установить пакет, который уже установлен. Запускайте эту функцию <em>только из консоли</em>.</p>
+</blockquote>
+<p>Подключение пакета осуществляется с помощью функции <code>library()</code>, при этом название пакета можно в кавычки не заключать:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(writexl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="выполнение-программного-кода" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="выполнение-программного-кода">Выполнение программного кода</h2>
+<p>, Существует несколько способов выполнения исходного кода:</p>
+<ul>
+<li><strong>Выполнить одну строку</strong>: поставить курсор в любую строку и нажать над редактором кода кнопку <em>Run</em> или сочетание клавиш <code>Ctrl</code>+<code>Enter</code> (<code>Cmd</code>+<code>Enter</code> для OS X).</li>
+<li><strong>Выполнить несколько строк</strong>: выделить необходимые строки и нажать над редактором кода кнопку <em>Run</em> или сочетание клавиш <code>Ctrl</code>+<code>Enter</code> (<code>Cmd</code>+<code>Enter</code> для OS X).</li>
+<li><strong>Выполнить весь код</strong> можно сразу тремя способами:
+<ul>
+<li>Выделить весь текст и нажать над редактором кода кнопку <em>Run</em> или сочетание клавиш <code>Ctrl+Enter</code> (<code>Cmd</code>+<code>Enter</code> для OS X)</li>
+<li>Нажать клавиатурное сочетание <code>Ctrl</code>+<code>Alt</code>+<code>Enter</code> (<code>Cmd</code>+<code>Alt</code>+<code>Enter</code> для OS X)</li>
+<li>Нажать в правом верхнем углу редактора кода кнопку <em>Source</em></li>
+</ul></li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>Команды <em>Source</em> и <code>Ctrl</code>+<code>Alt</code>+<code>Enter</code> могут не сработать</strong>, если у вас не установлена рабочая директория, или если в пути к рабочей директории содержатся кириллические символы (не актуально для Windows 10+, macOS и Linux, которые являются системами, основанными на кодировке Unicode).</p>
+</blockquote>
+<p>Существует также ряд дополнительных опций выполнения кода, которые вы можете найти в меню <em>Code &gt; Run Region</em>.</p>
+<blockquote class="blockquote">
+<p><strong>Выполняя код построчно, делайте это последовательно, начиная с первой строки программы.</strong> Одна из самых распространенных ошибок новичков заключается в попытке выполнить некую строку, не выполнив <em>предыдущий код</em>. Нет никаких гарантий, что что-то получится, если открыть файл, поставить курсор в произвольную строку посередине программы и попытаться выполнить ее. Возможно, вам и повезет — если эта строка никак не зависит от предыдущего кода. Однако в реальных программах такие строки составляют лишь небольшую долю от общего объема. Как правило, в них происходит инициализация новых переменных стартовыми значениями.</p>
+</blockquote>
+</section>
+<section id="установка-рабочей-директории" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="установка-рабочей-директории">Установка рабочей директории</h2>
+<p>Вы можете открывать и сохранять любые поддерживаемые файлы в <strong>R</strong>, указывая полный системный путь к файлу. Например, так может выглядеть открытие и сохранение таблицы в формате <em>CSV</em> на компьютере <em>Mac</em>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"/Volumes/Data/GitHub/r-geo-course/data/oxr_vod.csv"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(d, <span class="st">"/Volumes/Data/GitHub/r-geo-course/data/oxr_vod_copy.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Однако, если вам требуется открыть или сохранить несколько файлов (и не только данных, но и графиков, карт и т.п.), программа будет выглядеть громоздко. К тому же, прописывать каждый раз полный путь достаточно утомительно и неприятно (даже путем копирования и вставки), а главное — может привести к ошибкам.</p>
+<p>Чтобы облегчить работу с файлами, в <strong>R</strong> существует понятие домашней директории. Домашняя директория задается для текущей сессии <strong>R</strong> с помощью функции <code>setwd()</code>. После установки домашней директории <strong>R</strong> будет полагать, что все открываемые и сохраняемые файлы должны находиться в ней:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"/Volumes/Data/GitHub/r-geo-course/data"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(<span class="st">"oxr_vod.csv"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(d, <span class="st">"oxr_vod_copy.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Как видно, мы добавили дополнительную строчку кода, но сэкономили на длине двух других строк. При увеличении количества обращений к файлам польза домашней директории будет возрастать. При этом вы можете открывать и сохранять файлы в поддиректориях, наддиректориях и соседних директориях, используя синтаксис, стандартный для большинства операционных систем:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># сохранить файл в поддиректорию data</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(d, <span class="st">"data/oxr_vod_copy.csv"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># сохранить файл в наддиректорию по отношению к текущей директории</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(d, <span class="st">"../oxr_vod_copy.csv"</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># сохранить файл в директорию data, соседнюю по отношению к текущей директории</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(d, <span class="st">"../data/oxr_vod_copy.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<blockquote class="blockquote">
+<p><strong>Если вы перенесли код и данные с другого компьютера</strong> (возможно, вы получили их от своего коллеги или скачали с репозитория данного пособия), необходимо заменить путь, указанный в функции <code>setwd()</code> на путь к каталогу, в который вы положили данные.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Рабочая директория и местоположение скрипта могут не совпадать</strong>. Вы можете хранить их в разных местах. Однако рекомендуется держать их вместе, что облегчит передачу вашей программы вместе с данными другим пользователям.</p>
+</blockquote>
+<p>К сожалению, не существует надежного программного способа сказать среде выполнения <strong>R</strong>, что в качестве домашей директории следует использовать директорию в которой лежит сам скрипт (что, вообще говоря, было бы крайне удобно). Возможно, в будущем разработчики языка добавят такую полезную функцию. Однако, если для работы с <strong>R</strong> вы пользуетесь средой <strong>RStudio</strong>, задача может быть решена путем использования проектов. Подробнее читайте <a href="https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects">здесь</a>.</p>
+</section>
+<section id="диагностические-функции" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="диагностические-функции">Диагностические функции</h2>
+<p>В <strong>R</strong> существует ряд диагностических функций, которые позволяют узнавать техническую информацию об объектах и переменных. Эти функции полезны, когда необходимо понять, какого типа, размера и содержания данные хранятся в той или иной переменной. Нижеприведенный список функций не являются исчерпывающим, но охватывает часто употребляемые функции:</p>
+<table class="table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 80%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Функция</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>class()</code></td>
+<td>Класс (тип данных или структура данных) объекта</td>
+</tr>
+<tr class="even">
+<td><code>attr()</code></td>
+<td>Атрибуты объекта</td>
+</tr>
+<tr class="odd">
+<td><code>str()</code></td>
+<td>Компактное представление внутренней структуры объекта.</td>
+</tr>
+<tr class="even">
+<td><code>names()</code></td>
+<td>Названия элементов объекта</td>
+</tr>
+<tr class="odd">
+<td><code>colnames()</code></td>
+<td>Названия колонок фрейма данных или матрицы</td>
+</tr>
+<tr class="even">
+<td><code>rownames()</code></td>
+<td>Названия строк фрейма данных или матрицы</td>
+</tr>
+<tr class="odd">
+<td><code>mode()</code></td>
+<td>Режим хранения объекта.</td>
+</tr>
+<tr class="even">
+<td><code>length()</code></td>
+<td>Размер (длина) объекта.</td>
+</tr>
+<tr class="odd">
+<td><code>dim()</code></td>
+<td>Измерение объекта.</td>
+</tr>
+</tbody>
+</table>
+<p>Помимо этого, часто используются следующие функции, имеющие отношение не к конкретным объектам, а к параметрам работы текущей сессии:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Функция</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>sessionInfo()</code></td>
+<td>Информация о текущей сессии R и подключенных пакетах.</td>
+</tr>
+<tr class="even">
+<td><code>gc()</code></td>
+<td>Информация об объеме памяти, занимаемой текущей сессией R (находящейся под управлением <a href="https://ru.wikipedia.org/wiki/%D0%A1%D0%B1%D0%BE%D1%80%D0%BA%D0%B0_%D0%BC%D1%83%D1%81%D0%BE%D1%80%D0%B0">сборщика мусора</a>).</td>
+</tr>
+<tr class="odd">
+<td><code>options()</code></td>
+<td>Получение и установка параметров среды.</td>
+</tr>
+<tr class="even">
+<td><code>getwd()</code></td>
+<td>Получение текущей рабочей директории</td>
+</tr>
+<tr class="odd">
+<td><code>setwd()</code></td>
+<td>Установка текущей рабочей директории</td>
+</tr>
+<tr class="even">
+<td><code>par()</code></td>
+<td>Получение и установка графических параметров</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="получение-справки" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="получение-справки">Получение справки</h2>
+<p>Правильно оформленная функция <strong>R</strong> содержит документированное описание ее параметров и правил использования. Справку можно получить несколькими способами:</p>
+<ul>
+<li>Найти интересующую вас функцию вручную на вкладке <strong>Packages</strong>, выбрав нужный пакет.</li>
+<li>Воспользоваться строкой поиска на вкладке <strong>Help</strong>.</li>
+<li>Ввести знак вопроса и название функции в консоли (будет искать только среди подключенных в настоящий момент пакетов):</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(writexl)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>?write_xlsx <span class="co"># равносильно вызову функции help(write_xlsx)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/write_xlsx.png" class="img-fluid figure-img" width="785"></p>
+<figcaption class="figure-caption">Справка по функции <code>write_xlsx</code></figcaption>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Ввести двойной знак вопроса и название функции в консоли (будет искать по всем установленным пакетам, независимо от того, подключены ли они в настоящий момент). Например, вот так можно найти все варианты справочных материалов по функции <code>aggregate</code>:</li>
+</ul>
+<pre><code>&gt; ??aggregate</code></pre>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/ch0_aggregate.png" class="img-fluid figure-img" width="780"></p>
+<figcaption class="figure-caption">Справочные материалы по функциям <code>aggregate</code> из установленных пакетов</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Во многих пакетах есть также подробная документация с примерами использования функций в виде руководств и так называемых <a href="https://ru.wikipedia.org/wiki/%D0%92%D0%B8%D0%BD%D1%8C%D0%B5%D1%82%D0%BA%D0%B0_(%D0%BB%D0%B8%D1%82%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D0%B0)"><em>виньеток</em></a> (<em>vignettes</em>), которые представляют из себя расширенные руководства (статьи) по использованию пакета. С документацией пакета можно ознакомиться, щелкнув на его названии на вкладке <em>Packages</em> и перейдя по ссылке <em>User guides, package vignettes and other documentation</em>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/ch0_vignette.png" class="img-fluid figure-img" width="696"></p>
+<figcaption class="figure-caption">Документация пакета <code>sf</code></figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="комментарии" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="комментарии">Комментарии</h2>
+<p><strong>Комментарии</strong> — это фрагменты текста программы, начинающиеся с символа <code>#</code>. Комментарии не воспринимаются как исполняемый код и служат для документирования программы. При выполнении программы содержимое комментария в зависимости от настроек среды может выводиться или не выводиться в консоль, однако их содержание никак не влияет на результаты выполнения программы.</p>
+<blockquote class="blockquote">
+<p><strong>Всегда пишите комментарии</strong>, чтобы по прошествии времени можно было открыть файл и быстро восстановить в памяти логику программы и смысл отдельных операций. Комментарии особенно необходимы, если вашей программой будет пользоваться кто-то другой — без них будет трудно разобраться в программном коде.</p>
+</blockquote>
+<p>Действие комментария продолжается от символа <code>#</code> до конца строки. Соответственно, вы можете поставить данный символ в самом начале строки и тогда комментарий будет занимать всю строку. Комментарий также можно расположить справа от исполняемого кода, и тогда он будет занимать только часть строки.</p>
+<blockquote class="blockquote">
+<p><strong>Прервать комментарий и написать справа от него исполняемый код нельзя</strong></p>
+</blockquote>
+<p>Полнострочные комментарии часто используются для выделения разделов в программе и написания объемных пояснений. Часто в них вводят имитации разделительных линий с помощью символов дефиса (<code>-</code>) или подчеркивания (<code>_</code>), а заголовки набирают прописными буквами. Короткие комментарии справа от фрагментов кода обычно служат пояснением конкретных простых операций. Подобная логика употребления комментариев не является обязательной. Вы можете оформлять их на свое усмотрение. Главное, чтобы они выполняли свою основную функцию — пояснять смысл выполняемых действий. Например:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ОПЕРАЦИИ С ЧИСЛАМИ</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># В данном разделе рассматриваются арифметические операции, такие как сложение, вычитание, деление, деление с остатком, взятие остатка и возведение в степень:</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="dv">3</span> <span class="sc">+</span> <span class="dv">2</span> <span class="co"># Сложение</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>b <span class="ot">=</span> <span class="dv">4</span> <span class="sc">^</span> <span class="dv">8</span> <span class="co"># Возведение в степень</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>c <span class="ot">=</span> b <span class="sc">%%</span> a <span class="co"># Взятие остатка</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Деление</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>d <span class="ot">=</span> c <span class="sc">/</span> a </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Умножение</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>e <span class="ot">=</span> d <span class="sc">*</span> b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Однако, усердствовать с комментированием каждой мелочи в программе, разумеется, не стоит. Со временем у вас выработается взвешенный подход к документированию программ и понимание того, какие ее фрагменты требуют пояснения, а какие самоочевидны.</p>
+<blockquote class="blockquote">
+<p><strong>Для быстрой вставки комментария, обозначающего новый раздел программы</strong>, воспользуйтесь командой меню <em>Code &gt; Insert Section</em> или клавиатурным сочетанием <code>Ctrl</code>+<code>Shift</code>+<code>R</code> (<code>Cmd</code>+<code>Shift</code>+<code>R</code> для OS X)</p>
+</blockquote>
+</section>
+<section id="стандарт-оформления-кода-на-r" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="стандарт-оформления-кода-на-r">Стандарт оформления кода на R</h2>
+<p>Очень важно сразу же приучить себя грамотно, структурированно и красиво оформлять код на языке <strong>R</strong>. Это существенно облегчит чтение и понимание ваших программ не только вами, но и другими пользователями и разработчиками. Помимо вышеуказанных рекомендаций по написанию комментариев существует также определенное количество хорошо зарекомендовавших себя и широко используемых практик оформления кода. Эти практики есть в каждом языке программирования и их можно найти в литературе (и в Интернете) в виде негласных сводов правил (<em>style guides</em>).</p>
+<p>В частности, одним из полезных для изучения является стандарт <a href="https://style.tidyverse.org/"><strong>tidyverse</strong></a>, систематизированный <a href="http://hadley.nz/">Хэдли Уикхемом</a> — одним из ведущих идеологов развития языка R и его библиотек.</p>
+<blockquote class="blockquote">
+<p><strong>Стандарт оформления кода иногда также называют <em>стилем программирования</em>.</strong> Однако под стилем программирования традиционно понимают все же фундаментальный подход (<em>парадигму</em>) к построению программ: процедурный, функциональный, логический, объектно-ориентированный стиль и некоторые <a href="https://ru.wikipedia.org/wiki/Парадигма_программирования">другие</a>.</p>
+</blockquote>
+<p>К числу негласных правил оформления кода на <strong>R</strong> можно отнести следующие:</p>
+<ol type="1">
+<li>Последовательно используйте знак присвоения <code>&lt;-</code> или <code>=</code> на протяжении всей программы. Если вы начали использовать <code>=</code> – применяйте его на протяжении всей программы, не используя <code>&lt;-</code>.</li>
+</ol>
+<blockquote class="blockquote">
+<p><strong>Традиционный подход предполагает использование <code>&lt;-</code></strong>, однако все больше программистов использует знак <code>=</code> в своих программах, что делает <strong>R</strong> более похожим на другие языки программирования. Помните, что использование <code>=</code> официально не рекомендуется, поскольку существует много старого кода на R, который может ошибочно выполняться в сочетании с кодом, использующим <code>=</code>. Но вы, скорее всего, с такими проблемами не столкнетесь. Так что выбор за вами!</p>
+</blockquote>
+<ol start="2" type="1">
+<li>После запятой всегда ставьте пробел, перед запятой – нет:</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Правильно:</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">matrix</span>(a, <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Неправильно:</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span> ,<span class="dv">2</span> ,<span class="dv">3</span> ,<span class="dv">4</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span> , <span class="dv">2</span> , <span class="dv">3</span> , <span class="dv">4</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">matrix</span>(a,<span class="dv">2</span>,<span class="dv">2</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">matrix</span>(a ,<span class="dv">2</span> ,<span class="dv">2</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">matrix</span>(a , <span class="dv">2</span> , <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="3" type="1">
+<li>Отделяйте любые бинарные операторы (такие как <code>=, +, -, &lt;-, *</code>) пробелами с двух сторон:</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="fu">sin</span>(b <span class="sc">+</span> pi <span class="sc">*</span> <span class="fl">0.5</span>) <span class="co"># правильно</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>a<span class="ot">=</span><span class="fu">sin</span>(b<span class="sc">+</span>pi<span class="sc">*</span><span class="fl">0.5</span>) <span class="co"># неправильно</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="4" type="1">
+<li>Между названием функции и открывающей скобкой пробела быть не должно. То же самое касается обращения к элементам вектора, матрицы и т.п.:</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Правильно:</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sin</span>(b)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>a[<span class="dv">2</span>]</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Неправильно:</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sin</span> (b)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>a [<span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="5" type="1">
+<li>В то же время, при вызове команд управления выполнением программы (условные операторы и циклы) перед и после скобок пробел <strong>должен</strong> стоять:</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Правильно:</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (a <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(a)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>i <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> (i <span class="sc">&lt;</span> a) {</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(i)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  i <span class="ot">=</span> i <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Неправильно:</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(a <span class="sc">&gt;</span> <span class="dv">0</span>){</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(a)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>i <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span>(i <span class="sc">&lt;</span> a){</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(i)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  i <span class="ot">=</span> i <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="зарезервированные-слова" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="зарезервированные-слова">Зарезервированные слова</h2>
+<p>В <strong>R</strong> существует небольшое количество зарезервированных слов, которые нельзя использовать в качестве имен переменных, функций и проч. Список этих слов можно получить, набрав в консоли <code>?Reserved</code>. К ним относятся:</p>
+<table class="table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 76%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Слово</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>if</code></td>
+<td>Условный оператор ЕСЛИ</td>
+</tr>
+<tr class="even">
+<td><code>else</code></td>
+<td>Условный оператор ИНАЧЕ</td>
+</tr>
+<tr class="odd">
+<td><code>repeat</code></td>
+<td>Цикл без внешнего условия</td>
+</tr>
+<tr class="even">
+<td><code>while</code></td>
+<td>Цикл “пока верно условие, повторять”</td>
+</tr>
+<tr class="odd">
+<td><code>function</code></td>
+<td>Функция</td>
+</tr>
+<tr class="even">
+<td><code>for</code></td>
+<td>Цикл “пройти по элементам последовательности”</td>
+</tr>
+<tr class="odd">
+<td><code>in</code></td>
+<td>Оператор вхождения в множество</td>
+</tr>
+<tr class="even">
+<td><code>next</code></td>
+<td>Переход на новую итерацию цикла</td>
+</tr>
+<tr class="odd">
+<td><code>break</code></td>
+<td>Принудительный выход из цикла или условного оператора</td>
+</tr>
+<tr class="even">
+<td><code>TRUE</code></td>
+<td>Логическое значение ИСТИНА</td>
+</tr>
+<tr class="odd">
+<td><code>FALSE</code></td>
+<td>Логическое значение ЛОЖЬ</td>
+</tr>
+<tr class="even">
+<td><code>NULL</code></td>
+<td>Пустое значение</td>
+</tr>
+<tr class="odd">
+<td><code>Inf</code></td>
+<td>Бесконечность</td>
+</tr>
+<tr class="even">
+<td><code>NaN</code></td>
+<td>Нечисловое значние</td>
+</tr>
+<tr class="odd">
+<td><code>NA</code></td>
+<td>Отсутствующее значение</td>
+</tr>
+<tr class="even">
+<td><code>NA_integer_</code></td>
+<td>Отсутствующее целое число</td>
+</tr>
+<tr class="odd">
+<td><code>NA_real_</code></td>
+<td>Отсутствующее число с плавающей точкой</td>
+</tr>
+<tr class="even">
+<td><code>NA_complex_</code></td>
+<td>Отсутствующее комплексное число</td>
+</tr>
+<tr class="odd">
+<td><code>NA_character_</code></td>
+<td>Отсутствующая строка</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="названия-переменных" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="названия-переменных">Названия переменных</h2>
+<p>В качестве названий переменных <strong>нельзя использовать заразервированные слова</strong>, а также не рекомендуется использовать названия общеупотребительных (диагностических) функций и констант. Также не следует давать переменным названия, совпадающие с широко распространенными функциями – например, котороткими функциями из пакета <code>base</code>, такими как <code>t()</code>, <code>с()</code> и т.д., так как это может привести к путанице в программе и даже ошибкам выполнения кода. Каждый раз, создавая переменную, спрашивайте себя, не совпадает ли ее название с названием одной из используемых вами функций.</p>
+</section>
+<section id="названия-специальных-символов" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="названия-специальных-символов">Названия специальных символов</h2>
+<p>В <strong>R</strong>, как и во многих других языках программирования используются различные специальные символы. Их смысл и значение мы узнаем по ходу изучения языка, а пока что ознакомьтесь с ними, чтобы понимать как их произносить, когда они будут встречаться в программе.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Символ</th>
+<th>Название</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$</code></td>
+<td>доллар</td>
+</tr>
+<tr class="even">
+<td><code>#</code></td>
+<td>шарп (решетка)</td>
+</tr>
+<tr class="odd">
+<td><code>&amp;</code></td>
+<td>амперсанд (и)</td>
+</tr>
+<tr class="even">
+<td><code>/</code></td>
+<td>слеш (косая черта)</td>
+</tr>
+<tr class="odd">
+<td><code>\</code></td>
+<td>обратный слеш (обратная косая черта)</td>
+</tr>
+<tr class="even">
+<td><code>|</code></td>
+<td>пайп (вертикальная черта)</td>
+</tr>
+<tr class="odd">
+<td><code>^</code></td>
+<td>циркумфлекс (крышечка)</td>
+</tr>
+<tr class="even">
+<td><code>@</code></td>
+<td>эт (собачка)</td>
+</tr>
+<tr class="odd">
+<td><code>~</code></td>
+<td>тильда</td>
+</tr>
+<tr class="even">
+<td><code>''</code></td>
+<td>одинарные кавычки</td>
+</tr>
+<tr class="odd">
+<td><code>""</code></td>
+<td>двойные кавычки</td>
+</tr>
+<tr class="even">
+<td><code>``</code></td>
+<td>обратные кавычки</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="управляющие-последовательности" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="управляющие-последовательности">Управляющие последовательности</h2>
+<p>При работе со строками вам может понадобиться знание так называемых <a href="https://ru.wikipedia.org/wiki/%D0%A3%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D1%8F%D1%8E%D1%89%D0%B0%D1%8F_%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D1%8C"><em>управляющих последовательностей</em></a> (<em>escape</em>-последовательностей). Под этим понимается совокупность подряд идущих символов, которая интерпретируется обрабатывающим механизмом как единое целое. Как правило, такие последовательности начинаются с хорошо узнаваемого символа, не являющегося буквенно-цифровым (см. предыдущий раздел)</p>
+<p>В частности, последовательности, начинающиеся с символа обратной косой черты (<code>\</code>) используются для <a href="https://ru.wikipedia.org/wiki/%D0%A3%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D1%8F%D1%8E%D1%89%D0%B8%D0%B5_%D1%81%D0%B8%D0%BC%D0%B2%D0%BE%D0%BB%D1%8B">управления выводом</a> программы. Например, последовательность <code>\n</code> приводит к переносу строки в том месте, где она расположена, а последовательность <code>\t</code> позволит вставить символ табуляции. То есть, фраза <code>"Визуализация и анализ\nгеографических данных на языке R"</code> будет выведена в две строки с переносом после слова <code>"анализ"</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Визуализация и анализ</span><span class="sc">\n</span><span class="st">географических данных на языке R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Визуализация и анализ
+географических данных на языке R</code></pre>
+</div>
+</div>
+<p>Такая возможность бывает полезна, когда вы хотите, например, вывести длинный заголовок графика в несколько строк, а система построения графиков не умеет расставлять переносы автоматически. Управляющие символы позволяют менять не только текстовый вывод. В частности, символ <code>\a</code>, будучи отправленным в консоль, приведет в извлечению звука.</p>
+<p>При этом вы можете столкнуться с ситуацией, когда необходимо подавить возможность управления выводом через символы в строке. Например, если последовательность символов является частью более длинной последовательности. Классический сюжет — пути к папкам в операционной системе <em>Windows</em>, наподобие <code>d:\aikido\training</code>. Вы хотите вывести на экран путь к каталогу с результатами ваших тренировок по айкидо, а вместо этого программа издаёт звук и вставляет посередине пути символ табуляции:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"d:</span><span class="sc">\a</span><span class="st">ikido</span><span class="sc">\t</span><span class="st">raining"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>d:ikido    raining</code></pre>
+</div>
+</div>
+<p>Чтобы исключить подобное безобразие, следует нежелательные последовательности <em>экранировать</em>. Экранирование обычно делается тем же специальным символом, с которого начинается сама управляющая последовательность. То есть, вы должны принудительно вставить еще один такой же символ:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"d:</span><span class="sc">\\</span><span class="st">aikido</span><span class="sc">\\</span><span class="st">training"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>d:\aikido\training</code></pre>
+</div>
+</div>
+<p>Однако в данном конкретном случае проще заменить обратные слеши на прямые — Windows может работать с путями и таким образом:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"d:/aikido/training"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>d:/aikido/training</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>В UNIX-подобных операционных системах (Linux, macOS) такой проблемы нет, поскольку для формирования пути к каталогу можно использовать <em>только</em> прямую косую черту (<code>/</code>). С учетом того, что Windows <em>допускает</em> и такой способ задания путей, в данном контексте рекомендуется всегде использовать прямые, а не обратные косые черты.</p>
+</blockquote>
+<p>Дополнительные сведения по управляющим последовательностям в R можно почерпнуть, если набрать в консоли <code>?Quotes</code>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/quotes.png" class="img-fluid figure-img" width="797"></p>
+<figcaption class="figure-caption">Справка по управляющим последовательностям в R</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="ссылка-на-пособие" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="ссылка-на-пособие">Ссылка на пособие</h2>
+<p>Если этот курс лекций оказался полезным для вас, и вы хотите процитировать его с списке литературы вашей работы, то ссылку можно оформить по следующей форме:</p>
+<table class="table">
+<tbody>
+<tr class="odd">
+<td><em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, 2023. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a></td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
+        }
+        return container.innerHTML
+      } else {
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        console.log("RESIZE");
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./01-Basics.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Типы данных</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,2168 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.309">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Визуализация и анализ географических данных на языке R - 3&nbsp; Таблицы</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./04-Functions.html" rel="next">
+<link href="./02-DataStructures.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03-Tables.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Таблицы</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Визуализация и анализ географических данных на языке R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Введение</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-Basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Типы данных</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-DataStructures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Структуры данных</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-Tables.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Таблицы</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-Functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Функции</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-BaseGraphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Базовая графика</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-AdvGraphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Продвинутая графика</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-BaseStats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Основы статистики</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-AdvStats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Продвинутая статистика</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Библиография</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#tables_prerequisites" id="toc-tables_prerequisites" class="nav-link active" data-scroll-target="#tables_prerequisites"><span class="header-section-number">3.1</span> Предварительные требования</a></li>
+  <li><a href="#tables_datastructures" id="toc-tables_datastructures" class="nav-link" data-scroll-target="#tables_datastructures"><span class="header-section-number">3.2</span> Структуры данных</a></li>
+  <li><a href="#tables_reading" id="toc-tables_reading" class="nav-link" data-scroll-target="#tables_reading"><span class="header-section-number">3.3</span> Чтение</a>
+  <ul class="collapse">
+  <li><a href="#tables_reading_inner" id="toc-tables_reading_inner" class="nav-link" data-scroll-target="#tables_reading_inner"><span class="header-section-number">3.3.1</span> Встроенные данные</a></li>
+  <li><a href="#tables_reading_text" id="toc-tables_reading_text" class="nav-link" data-scroll-target="#tables_reading_text"><span class="header-section-number">3.3.2</span> Текстовые таблицы</a></li>
+  <li><a href="#tables_reading_excel" id="toc-tables_reading_excel" class="nav-link" data-scroll-target="#tables_reading_excel"><span class="header-section-number">3.3.3</span> Таблицы Microsoft Excel</a></li>
+  <li><a href="#tables_reading_params" id="toc-tables_reading_params" class="nav-link" data-scroll-target="#tables_reading_params"><span class="header-section-number">3.3.4</span> Параметры</a></li>
+  </ul></li>
+  <li><a href="#tables_view" id="toc-tables_view" class="nav-link" data-scroll-target="#tables_view"><span class="header-section-number">3.4</span> Просмотр</a></li>
+  <li><a href="#tables_elements" id="toc-tables_elements" class="nav-link" data-scroll-target="#tables_elements"><span class="header-section-number">3.5</span> Столбцы, строки и ячейки</a>
+  <ul class="collapse">
+  <li><a href="#tables_elements_names" id="toc-tables_elements_names" class="nav-link" data-scroll-target="#tables_elements_names"><span class="header-section-number">3.5.1</span> Названия</a></li>
+  <li><a href="#tables_elements_columns" id="toc-tables_elements_columns" class="nav-link" data-scroll-target="#tables_elements_columns"><span class="header-section-number">3.5.2</span> Обращение к столбцам</a></li>
+  <li><a href="#tables_elements_rows" id="toc-tables_elements_rows" class="nav-link" data-scroll-target="#tables_elements_rows"><span class="header-section-number">3.5.3</span> Обращение к строкам</a></li>
+  <li><a href="#tables_elements_cells" id="toc-tables_elements_cells" class="nav-link" data-scroll-target="#tables_elements_cells"><span class="header-section-number">3.5.4</span> Обращение к ячейкам</a></li>
+  </ul></li>
+  <li><a href="#tables_manipuilations" id="toc-tables_manipuilations" class="nav-link" data-scroll-target="#tables_manipuilations"><span class="header-section-number">3.6</span> Преобразования</a>
+  <ul class="collapse">
+  <li><a href="#tables_manipiulations_grammar" id="toc-tables_manipiulations_grammar" class="nav-link" data-scroll-target="#tables_manipiulations_grammar"><span class="header-section-number">3.6.1</span> Грамматика манипуляций</a></li>
+  <li><a href="#tables_manipiulations_pipeline" id="toc-tables_manipiulations_pipeline" class="nav-link" data-scroll-target="#tables_manipiulations_pipeline"><span class="header-section-number">3.6.2</span> Конвейер манипуляций</a></li>
+  <li><a href="#tables_tidy" id="toc-tables_tidy" class="nav-link" data-scroll-target="#tables_tidy"><span class="header-section-number">3.6.3</span> Преобразование структуры</a></li>
+  </ul></li>
+  <li><a href="#tables_join" id="toc-tables_join" class="nav-link" data-scroll-target="#tables_join"><span class="header-section-number">3.7</span> Соединение</a></li>
+  <li><a href="#tables_write" id="toc-tables_write" class="nav-link" data-scroll-target="#tables_write"><span class="header-section-number">3.8</span> Запись</a></li>
+  <li><a href="#tables_rules" id="toc-tables_rules" class="nav-link" data-scroll-target="#tables_rules"><span class="header-section-number">3.9</span> Рекомендации по подготовке таблиц для чтения в R</a></li>
+  <li><a href="#tables_review" id="toc-tables_review" class="nav-link" data-scroll-target="#tables_review"><span class="header-section-number">3.10</span> Краткий обзор</a></li>
+  <li><a href="#tables_questions" id="toc-tables_questions" class="nav-link" data-scroll-target="#tables_questions"><span class="header-section-number">3.11</span> Контрольные вопросы и упражнения</a>
+  <ul class="collapse">
+  <li><a href="#tables_questions_questions" id="toc-tables_questions_questions" class="nav-link" data-scroll-target="#tables_questions_questions"><span class="header-section-number">3.11.1</span> Вопросы</a></li>
+  <li><a href="#tables_questions_tasks" id="toc-tables_questions_tasks" class="nav-link" data-scroll-target="#tables_questions_tasks"><span class="header-section-number">3.11.2</span> Упражнения</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="tables" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Таблицы</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+<section id="tables_prerequisites" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="tables_prerequisites"><span class="header-section-number">3.1</span> Предварительные требования</h2>
+<p>Для работы по теме текущей лекции вам понадобятся пакеты из <strong>tidyverse</strong>, а также <strong>writexl</strong>. Установите их, используя следующую команду:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">'tidyverse'</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">'writexl'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<blockquote class="blockquote">
+<p>Внимание: установка пакетов выполняется один раз из консоли. Вызов функции <code>install.packages()</code> не должен присутствовать в ваших скриптах</p>
+</blockquote>
+<p><a href="https://www.tidyverse.org"><strong>tidyverse</strong></a> – это не самостоятельный пакет, а набор пакетов R, которые позволяют автоматизировать решение рутинных задач по обработке данных (то, что принято называть <em>data science</em>). В комплект <strong>tidyverse</strong> входят следующие пакеты:</p>
+<table class="table">
+<colgroup>
+<col style="width: 52%">
+<col style="width: 47%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Пакет</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>tibble</strong></td>
+<td>Усовершенствованный вариант фрейма данных</td>
+</tr>
+<tr class="even">
+<td><strong>dplyr</strong></td>
+<td>Грамматика манипуляций над табличными данными</td>
+</tr>
+<tr class="odd">
+<td><strong>tidyr</strong></td>
+<td>Приведение таблиц в аккуратный вид, удобный для обработки</td>
+</tr>
+<tr class="even">
+<td><strong>readr</strong></td>
+<td>Чтение табличных данных из текстовых файлов</td>
+</tr>
+<tr class="odd">
+<td><strong>readxl</strong></td>
+<td>Чтение табличных данных из файлов Microsoft Excel</td>
+</tr>
+<tr class="even">
+<td><strong>haven</strong></td>
+<td>Чтение табличных данных из файлов SPSS, Stata и SAS</td>
+</tr>
+<tr class="odd">
+<td><strong>purrr</strong></td>
+<td>Функциональное программирование</td>
+</tr>
+<tr class="even">
+<td><strong>stringr</strong></td>
+<td>Работа со строками</td>
+</tr>
+<tr class="odd">
+<td><strong>forcats</strong></td>
+<td>Автоматизация работы с факторами</td>
+</tr>
+<tr class="even">
+<td><strong>ggplot2</strong></td>
+<td>Построение графиков на основе правил грамматики</td>
+</tr>
+</tbody>
+</table>
+<p>Вы можете подключать эти пакеты по одному, или сделать их все доступными в текущей сессии <strong>R</strong>, используя команду <code>library(tidyverse)</code>. В текущей лекции мы будем подключать их по мере необходмости, чтобы акцентировать внимание на принадлежности функций к соответствующим пакетам.</p>
+<blockquote class="blockquote">
+<p><strong>Вы можете вызвать функцию из любого пакета, не подключая его целиком в текущую сессию R.</strong> Это бывает особенно полезно, когда вы редко используете функции из пакета. В этом случае вызов функции будет выглядеть как <code>package::function()</code>, где <code>package</code> – название пакета, а <code>function</code> - название функции. Подобный синтаксис бывает особенно удобным, когда <em>в разных пакетах имеются функции с одинаковым именем</em>, и при вызове R использует не ту, которая нужна (по умолчанию будет использована функция из пакета, который был подключен <em>позже</em>).</p>
+</blockquote>
+</section>
+<section id="tables_datastructures" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="tables_datastructures"><span class="header-section-number">3.2</span> Структуры данных</h2>
+<p>Стандартным средством представления табличных данных в R являются <strong>фреймы данных</strong> (<code>data.frame</code>), кратко рассмотренные в предыдущей лекции. В современных пакетах типа <strong>tidyverse</strong> используется разновидность фрейма данных, которая называется <strong>тиббл</strong> (<code>tibble</code>).</p>
+<p>Создать тиббл можно напрямую, либо путем конвертации фрейма данных:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(writexl)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.3     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ ggplot2   3.4.3     ✔ tibble    3.2.1
+✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(conflicted)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">a =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">b =</span> <span class="dv">1</span>, </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">c =</span> <span class="sc">-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">1</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+      a     b     c
+  &lt;int&gt; &lt;dbl&gt; &lt;int&gt;
+1     1     1    -1
+2     2     1     0
+3     3     1     1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dfr <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">a =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">b =</span> <span class="dv">1</span>,  <span class="at">c =</span> <span class="sc">-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">1</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tibble</span>(dfr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+      a     b     c
+  &lt;int&gt; &lt;dbl&gt; &lt;int&gt;
+1     1     1    -1
+2     2     1     0
+3     3     1     1</code></pre>
+</div>
+</div>
+<p>Тиббл является расширением класса фрейма данных, то есть любая операция, применимая к фрейму, применима и к тибблу. Однако, тиббл поддерживает дополнительные возможности, которые оказываются очень удобны в анализе:</p>
+<ul>
+<li>При выводе в консоль тиббл печатает только те столбцы, которые помещаются на экран, и только первые 10 строк (что позволяет избежать переполнения консоли при печати больших таблиц)</li>
+<li>Тибблы поддерживают имена столбцов, которые недопустимы в фреймах данных (например, начинающиеся с цифры). Так называть столбцы, вообще говоря, неправильно, но это позволяет сохранить именно те названия, которые даны в исходных файлах. Например, географические таблицы часто содержат данные за разные года, и столбцы названы по этим годам.</li>
+<li>Тибблы поддерживают внутренние группировки данных. Установив группировку по одной или нескольким переменным, можно эффективным и компактным путем считать агрегирующие статистики по группам измерений.</li>
+<li>Тибблы можно создавать вручную не только по столбцам, но и по строкам.</li>
+</ul>
+<p>Для реализации последней возможности можно использовать функцию <code>tribble()</code> (переводится как <em>transposed tibble</em> — транспонированный тиббл), указав имена столбцов с помощью тильды (<code>~</code>):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tribble</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>a, <span class="sc">~</span>b, <span class="sc">~</span>c,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>   <span class="dv">1</span>,  <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>   <span class="dv">2</span>,  <span class="dv">1</span>,  <span class="dv">0</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>   <span class="dv">3</span>,  <span class="dv">1</span>,  <span class="dv">1</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+      a     b     c
+  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1     1     1    -1
+2     2     1     0
+3     3     1     1</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>В данной и последующих лекциях понятия мы будем использовать понятия таблица, фрейм данных и тиббл как взаимозаменяемые.</p>
+</blockquote>
+</section>
+<section id="tables_reading" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="tables_reading"><span class="header-section-number">3.3</span> Чтение</h2>
+<p>Существует множество способов получить набор табличных данных в текущей сессии R. Эти способы варьируются от загрузки данных из пакета до извлечения таблиц из текстовых документов и веб-страниц. В настоящей главе мы рассмотрим наиболее распространенные способы, нацеленные на работу с готовыми таблицами.</p>
+<section id="tables_reading_inner" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="tables_reading_inner"><span class="header-section-number">3.3.1</span> Встроенные данные</h3>
+<p>Пакеты R часто содержат тестовые наборы данных. Эти данные, как правило, предназначены для ознакомления с возможностями пакета. Чтобы узнать, какие данные есть в пакете, вы можете вызвать функцию <code>data(package = 'packagename')</code>, где <code>packagename</code> — это имя интересующего вас пакета. Например, посмотрим, какие данные есть в пакете <code>dplyr</code>, который мы далее будем использовать для манипуляций с таблицами:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="at">package =</span> <span class="st">'dplyr'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/data_dplyr.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption"><em>Данные, доступные в пакете dplyr</em></figcaption>
+</figure>
+</div>
+<p>На рисунке можно видеть перечень наборов данных и их краткие описания. Для загрузки набора данных передайте его название в качестве первого параметра функции <code>data()</code>. Ну-ка, что там с персонажами из <em>Star Wars</em>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(starwars, <span class="at">package =</span> <span class="st">'dplyr'</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>starwars</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 14
+   name     height  mass hair_color skin_color eye_color birth_year sex   gender
+   &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+ 1 Luke Sk…    172    77 blond      fair       blue            19   male  mascu…
+ 2 C-3PO       167    75 &lt;NA&gt;       gold       yellow         112   none  mascu…
+ 3 R2-D2        96    32 &lt;NA&gt;       white, bl… red             33   none  mascu…
+ 4 Darth V…    202   136 none       white      yellow          41.9 male  mascu…
+ 5 Leia Or…    150    49 brown      light      brown           19   fema… femin…
+ 6 Owen La…    178   120 brown, gr… light      blue            52   male  mascu…
+ 7 Beru Wh…    165    75 brown      light      blue            47   fema… femin…
+ 8 R5-D4        97    32 &lt;NA&gt;       white, red red             NA   none  mascu…
+ 9 Biggs D…    183    84 black      light      brown           24   male  mascu…
+10 Obi-Wan…    182    77 auburn, w… fair       blue-gray       57   male  mascu…
+# ℹ 77 more rows
+# ℹ 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;, films &lt;list&gt;,
+#   vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Обратите внимание, что после подключения набора данных он становится доступным в текущей сесси R именно с тем именем, с которым он сохранен в пакете</p>
+</blockquote>
+<p>Если вызвать функцию <code>data()</code> без параметров, будет выведен список данных со всех пакетов, которые подключены в текущей сессии R:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/data.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption"><em>Данные, доступные в текущей сессии R</em></figcaption>
+</figure>
+</div>
+<p>По умолчанию в RStudio всегда подключен пакет <em>datasets</em>, который устанавливается вместе с базовым дистрибутивом R. Если пакет подключен в текущую сессию, то можно получить набор данных по его имени, не указывая название пакета. Например, в пакете <em>datasets</em> есть набор данных <code>quakes</code> о землетрясениях на о. Фиджи:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(quakes)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(quakes) <span class="co"># просмотрим макушку таблицы</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     lat   long depth mag stations
+1 -20.42 181.62   562 4.8       41
+2 -20.62 181.03   650 4.2       15
+3 -26.00 184.10    42 5.4       43
+4 -17.97 181.66   626 4.1       19
+5 -20.42 181.96   649 4.0       11
+6 -19.68 184.31   195 4.0       12</code></pre>
+</div>
+</div>
+<p>Таким образом, если вы используйете пакет <code>dplyr</code> в своей программе, данные о героях Звездных Войн можно загрузить не указывая пакет, т.к. он был ранее подключен через функцию <code>library()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(starwars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="tables_reading_text" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="tables_reading_text"><span class="header-section-number">3.3.2</span> Текстовые таблицы</h3>
+<p>Текстовые таблицы бывают, как правило, двух типов: с разделителем (CSV) и с фиксированной шириной столбца.</p>
+<section id="tables_reading_text_csv" class="level4" data-number="3.3.2.1">
+<h4 data-number="3.3.2.1" class="anchored" data-anchor-id="tables_reading_text_csv"><span class="header-section-number">3.3.2.1</span> Файлы с разделителем</h4>
+<p><strong>CSV (Comma-separated value)</strong> — общее название для формата представления таблиц в виде текстовых файлов, организованных по следующему принципу:</p>
+<ol type="1">
+<li>Каждая строка в файле соответствует строке в таблице.</li>
+<li>Ячейки отделяются друг от друга символом-разделителем.</li>
+<li>Если ячейка пустая, то между соседними разделителями не должно быть никаких символов.</li>
+</ol>
+<p>Стандартным разделителем ячеек является запятая (<code>,</code>), а десятичным разделителем — точка (<code>.</code>). Однако это не является строгим правилом. Например, в ряде локалей (например, русской) запятая используется в качестве десятичного разделителя, поэтому колонки часто разделяют точкой с запятой (<code>;</code>).</p>
+<p>Формат CSV никак не оговаривает наличие заголовочной строки с названиями столбцов в начале файла — она может как отсутствовать, так и присутствовать. Поэтому при чтении таблиц из файлов необходимо информировать программу о наличии заголовка путем указания соответствующего параметра.</p>
+<blockquote class="blockquote">
+<p>Любая функция, используемая вами для чтения файлов, вне зависимости от пакета, который вы используете, как правило, содержит параметры, с помощью которых можно задать символы, отвечающие за десятичный разделитель и разделитель столбцов, а также наличие или отсутствие строки-заголовка и кодировку файла. Если таблица читается некорректно, ознакомьтесь со справкой к функции и при необходимости замените стандартные значения этих параметров на те, что соответствуют формату вашей таблицы.</p>
+</blockquote>
+<p>Например, вот так выглядит текстовая таблица в формате CSV с данными по численности населения в Федеральных округах Российской Федерации за 2005 и 2010-2013 гг. (по данным Росстата):</p>
+<pre><code>N,Region,Year05,Year10,Year11,Year12,Year13
+1,Центральный,4341,3761,3613,3651,3570
+2,Северо-Западный,3192,3088,2866,2877,2796
+3,Южный федеральный,1409,1446,1436,1394,1321
+4,Северо-Кавказский,496,390,397,395,374
+5,Приволжский,3162,2883,2857,2854,2849
+6,Уральский,1681,1860,1834,1665,1624
+7,Сибирский,2575,2218,2142,2077,1941
+8,Дальневосточный,871,870,821,765,713</code></pre>
+<p>Таблицы в формате <strong>CSV</strong> можно прочесть как с помощью стандартных средств языка R, так и с помощью пакета <code>readr</code>, который входит в набор пакетов <em>tidyverse</em>. Мы будем использовать последние, а стандартные средства языка оставим на самостоятельное изучение.</p>
+<p>Для чтения таблиц с разделителем в readr имеется несколько функций:</p>
+<ul>
+<li><code>read_csv()</code> читает файлы с разделителем запятой</li>
+<li><code>read_csv2()</code> читайт файоы с разделителем точкой-с-запятой (может быть особенно актуально для русских файлов)</li>
+<li><code>read_tsv()</code> читает файлы с разделителем табуляцией или пробелом</li>
+<li><code>read_delim()</code> читает файлы с произвольным разделителем (указывается в качестве параметра)</li>
+</ul>
+<p>Вышеуказанный файл сохранен с разделителем запятой, поэтому мы можем прочесть его посредством первой функции из списка:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">okruga =</span> <span class="fu">read_csv</span>(<span class="st">'data/okruga.csv'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 8 Columns: 7
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (1): Регион
+dbl (6): №, 2005, 2010, 2011, 2012, 2013
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 7
+    `№` Регион            `2005` `2010` `2011` `2012` `2013`
+  &lt;dbl&gt; &lt;chr&gt;              &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+1     1 Центральный         4341   3761   3613   3651   3570
+2     2 Северо-Западный     3192   3088   2866   2877   2796
+3     3 Южный федеральный   1409   1446   1436   1394   1321
+4     4 Северо-Кавказский    496    390    397    395    374
+5     5 Приволжский         3162   2883   2857   2854   2849
+6     6 Уральский           1681   1860   1834   1665   1624
+7     7 Сибирский           2575   2218   2142   2077   1941
+8     8 Дальневосточный      871    870    821    765    713</code></pre>
+</div>
+</div>
+<p>Как видно, функции пакета <code>readr</code> выдают диагностическую информацию о том, к какому типу были приведены столбцы таблицы при чтении. Помимо этого, первая строка была использована в качестве заголовочной.</p>
+</section>
+<section id="tables-reading-text-fwf" class="level4" data-number="3.3.2.2">
+<h4 data-number="3.3.2.2" class="anchored" data-anchor-id="tables-reading-text-fwf"><span class="header-section-number">3.3.2.2</span> Файлы с фиксированной шириной столбца</h4>
+<p>В файлах с фиксированной шириной на каждый столбец резервируется определенное количество символов. При этом данные выравниваются по правому краю, а короткие строки отбиваются слева пробелами. Такой формат часто используется в численных моделях (например, метеорологических) для представления входных данных или результатов расчетов. Например, файл ниже содержит данные об энергии ветра (<span class="math inline">\(Вт/м^2\)</span>) на высотах 50 и 110 м по точкам вдоль побережья Черного моря<!-- TODO: Дать ссылку на статью -->:</p>
+<pre><code>           1   43.500000       28.000000       111.05298       178.41447    
+           2   43.500000       28.500000       187.38620       301.05331    
+           3   44.000000       28.500000       168.82031       271.22421    
+           4   44.500000       28.500000       157.22586       252.59746    
+           5   44.500000       29.000000       189.46452       304.39597    
+           6   45.000000       29.000000       170.40709       273.77536    
+           7   45.000000       29.500000       198.92389       319.58777    
+           8   45.500000       29.500000       188.64406       303.07242    
+           9   46.000000       30.000000       180.10541       289.35379    
+          10   46.000000       30.500000       207.91818       334.03564</code></pre>
+<p>Для чтения таких файлов в <strong>readr</strong> есть функции:</p>
+<ul>
+<li><code>read_fwf()</code> читает файлы с фиксированной шириной столбца, позволяя задавать ширины столбцов (через <code>fwf_widths()</code>) или начальные позиции каждого столбца (через <code>fwf_positions()</code>)</li>
+<li><code>read_table()</code> читает наиболее распространенный вариант файла с фиксированной шириной столбца, в котором колонки разделены пробелами. Позиции столбцов определяются автоматически, что очень удобно.</li>
+</ul>
+<p>Прочитаем вышеприведенный файл с данными о ветровой энергии:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">wenergy =</span> <span class="fu">read_table</span>(<span class="st">'data/wind_energy.txt'</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">'id'</span>, <span class="st">'lat'</span>, <span class="st">'lon'</span>, <span class="st">'energy50'</span>, <span class="st">'energy110'</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  id = col_double(),
+  lat = col_double(),
+  lon = col_double(),
+  energy50 = col_double(),
+  energy110 = col_double()
+)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 92 parsing failures.
+row col  expected    actual                   file
+  1  -- 5 columns 6 columns 'data/wind_energy.txt'
+  2  -- 5 columns 6 columns 'data/wind_energy.txt'
+  3  -- 5 columns 6 columns 'data/wind_energy.txt'
+  4  -- 5 columns 6 columns 'data/wind_energy.txt'
+  5  -- 5 columns 6 columns 'data/wind_energy.txt'
+... ... ......... ......... ......................
+See problems(...) for more details.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 92 × 5
+      id   lat   lon energy50 energy110
+   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+ 1     1  43.5  28       111.      178.
+ 2     2  43.5  28.5     187.      301.
+ 3     3  44    28.5     169.      271.
+ 4     4  44.5  28.5     157.      253.
+ 5     5  44.5  29       189.      304.
+ 6     6  45    29       170.      274.
+ 7     7  45    29.5     199.      320.
+ 8     8  45.5  29.5     189.      303.
+ 9     9  46    30       180.      289.
+10    10  46    30.5     208.      334.
+# ℹ 82 more rows</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="tables_reading_excel" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="tables_reading_excel"><span class="header-section-number">3.3.3</span> Таблицы Microsoft Excel</h3>
+<p>Для чтения таблиц Microsoft Excel, так же как и для текcтовых файлов, существуют множество пакетов, таких как <a href="https://cran.r-project.org/web/packages/xlsx/index.html">xlsx</a>, <a href="https://cran.r-project.org/web/packages/openxlsx/index.html">openxlsx</a> и <a href="https://cran.r-project.org/web/packages/readxl/index.html">readxl</a>.</p>
+<p>D настоящем курсе мы будем пользоваться пакетом <strong>readxl</strong>, поскольку он не имеет внешних зависимостей, а его функции концептуально идентичны функциям пакета <strong>readr</strong>. Прочтем данные о лесовосстановлении (в тысяч га), полученные из регионального ежегодника Росстата за 2017 год. Эта таблица содержит колонку с названием субъекта и еще 8 колонок с данными по годам. Поскольку в таблице есть пропущенные значения, необходимо определить типы столбцов (в противном случае они могут быть определены как текстовые):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">reforest =</span> <span class="fu">read_excel</span>(<span class="st">'data/reforest.xlsx'</span>, </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">col_types =</span> <span class="fu">c</span>(<span class="st">'text'</span>, <span class="fu">rep</span>(<span class="st">'numeric'</span>, <span class="dv">8</span>))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in D26 / R26C4: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in E26 / R26C5: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in D27 / R27C4: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in E28 / R28C5: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in F32 / R32C6: got '-'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in H32 / R32C8: got '-'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in I33 / R33C9: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in G34 / R34C7: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in H34 / R34C8: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in G39 / R39C7: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in H39 / R39C8: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in I39 / R39C9: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in C41 / R41C3: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in D41 / R41C4: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in F41 / R41C6: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in G41 / R41C7: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in H41 / R41C8: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in I41 / R41C9: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in D42 / R42C4: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in E42 / R42C5: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in F42 / R42C6: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in G42 / R42C7: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in H42 / R42C8: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in I42 / R42C9: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in C45 / R45C3: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in D45 / R45C4: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in E45 / R45C5: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in D58 / R58C4: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in D60 / R60C4: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in D83 / R83C4: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in E83 / R83C5: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in F83 / R83C6: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in G83 / R83C7: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in H83 / R83C8: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in I83 / R83C9: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in I87 / R87C9: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in C89 / R89C3: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in G89 / R89C7: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in H89 / R89C8: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in C90 / R90C3: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in D90 / R90C4: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in E90 / R90C5: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in F90 / R90C6: got '…2)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in G90 / R90C7: got '-'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in H90 / R90C8: got '-'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in I90 / R90C9: got '-'</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 89 × 9
+   Region                `2005` `2010` `2011` `2012` `2013` `2014` `2015` `2016`
+   &lt;chr&gt;                  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+ 1 Российская Федерация   812.   812.   860    842.   872.   863    803.   840. 
+ 2 Центральный федераль…   52.6   62.7   60.9   60.3   70.9   71.2   72.6   77  
+ 3 Белгородская область     0.4    0.1    0.3    0.3    0.4    0.4    0.2    0.2
+ 4 Брянская область         2.9    2.8    3      3.2    3.5    3.3    3.1    3  
+ 5 Владимирская область     4.4    5.3    5.7    6      7.1    5.9    6      4.9
+ 6 Воронежская область      1.1    1.1    1.8    3      2.7    2.7    2.6    2.3
+ 7 Ивановская область       2.1    1.6    2.2    3.1    4      4.8    4.6    4.2
+ 8 Калужская область        2.2    2.3    2.3    2.5    2.4    3.1    3.2    3.2
+ 9 Костромская область     10     25.2   11     11.8   15.3   13.6   15.1   16.4
+10 Курская область          0.5    0.3    0.4    0.6    0.6    0.6    0.5    0.4
+# ℹ 79 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="tables_reading_params" class="level3" data-number="3.3.4">
+<h3 data-number="3.3.4" class="anchored" data-anchor-id="tables_reading_params"><span class="header-section-number">3.3.4</span> Параметры</h3>
+<p>Функции пакетов <code>readr</code> и <code>readxl</code> имеют идентичный набор параметров, позволяющих управлять процедурой чтения данных (многоточие используется вместо перечисления параметров):</p>
+<ul>
+<li><code>skip = n</code> позволяет пропустить первые n строк таблицы (например, если в них содержатся какие-то комментарии)</li>
+<li><code>col_names = FALSE</code> позволяет не интерпретировать первую строку как заголовочную (вместо этого она будет читаться как строка с данными)</li>
+<li><code>col_names = c(...)</code> позволяет задать имена столбцов (удобно, если в файле они длинные)</li>
+<li><code>col_types = cols(...)</code> позволяет задать типы столбцов (необходимо, если функция неправильно определяет их сама)</li>
+<li><code>na = '-'</code> позволяет указать символ, который используется для указания пропущенных значений (в данном случае указан прочерк-дефис)</li>
+<li><code>locale = locale(...)</code> управляет локалью (в том числе позволяет указать кодировку файла)</li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>Стандартной кодировкой для представления текста</strong> в UNIX-подобных системах (<em>Ubuntu</em>, <em>macOS</em> и т.д.) является <strong>UTF-8 (Unicode)</strong>, в русскоязычных версиях <em>Windows</em> — <strong>CP1251 (Windows-1251)</strong>. Текстовый файл <strong>CSV</strong>, созданный в разных операционных системах, будет по умолчанию сохраняться в соответствующей кодировке, если вы не указали ее явным образом. Если при загрузке таблицы в <strong>R</strong> вы видите вместо текста нечитаемые символы — <em>кракозябры</em> — то, скорее всего, вы читаете файл не в той кодировке, в которой он был сохранен. Если вы не знаете, что такое кодировка и Юникод, то вам <a href="https://ru.wikipedia.org/wiki/Набор_символов">сюда</a></p>
+</blockquote>
+<p>По умолчанию файлы читаются в той кодировке, которая соответствует операционной системе, на которой запущен R. Если файл создан в другой кодировке, придется указать ее при чтении. Например, вы пользуетесь macOS (UTF-8), а ваш коллега — Windows (CP1251), то для чтения созданного им файла вам, скорее всего, понадобится указать что-то вроде <code>locale = locale(encoding = 'CP1251')</code></p>
+</section>
+</section>
+<section id="tables_view" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="tables_view"><span class="header-section-number">3.4</span> Просмотр</h2>
+<p>Для просмотра фрейма данных в консоли <strong>RStudio</strong> вы можете использовать несколько опций. Пусть наш фрейм данных называется <code>reforest</code>. Тогда:</p>
+<ol type="1">
+<li><code>print(reforest)</code> — выводит фрейм в консоль целиком (можно написать просто <code>tab</code> в консоли).</li>
+<li><code>head(reforest, n)</code> — отбирает первые <span class="math inline">\(n\)</span> строк фрейма</li>
+<li><code>tail(reforest, n)</code> — отбирает последние <span class="math inline">\(n\)</span> строк фрейма</li>
+</ol>
+<p>По умолчанию для функций <code>head()</code> и <code>tail()</code> <span class="math inline">\(n=6\)</span>. Обычно этот параметр опускают, поскольку нужно просмотреть только первые несколько строк и шести вполне достаточно. Если вы напечатаете в консоли <code>head(reforest)</code> или <code>tail(reforest)</code>, то для выбранных строк будет вызвана функция <code>print()</code>, аналогично выводу всего фрейма:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ПРОСМОТР ТАБЛИЦЫ</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(reforest)</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a><span class="do">## # A tibble: 89 × 9</span></span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a><span class="do">##    Region                `2005` `2010` `2011` `2012` `2013` `2014` `2015` `2016`</span></span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a><span class="do">##    &lt;chr&gt;                  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a><span class="do">##  1 Российская Федерация   812.   812.   860    842.   872.   863    803.   840. </span></span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a><span class="do">##  2 Центральный федераль…   52.6   62.7   60.9   60.3   70.9   71.2   72.6   77  </span></span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a><span class="do">##  3 Белгородская область     0.4    0.1    0.3    0.3    0.4    0.4    0.2    0.2</span></span>
+<span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a><span class="do">##  4 Брянская область         2.9    2.8    3      3.2    3.5    3.3    3.1    3  </span></span>
+<span id="cb74-10"><a href="#cb74-10" aria-hidden="true" tabindex="-1"></a><span class="do">##  5 Владимирская область     4.4    5.3    5.7    6      7.1    5.9    6      4.9</span></span>
+<span id="cb74-11"><a href="#cb74-11" aria-hidden="true" tabindex="-1"></a><span class="do">##  6 Воронежская область      1.1    1.1    1.8    3      2.7    2.7    2.6    2.3</span></span>
+<span id="cb74-12"><a href="#cb74-12" aria-hidden="true" tabindex="-1"></a><span class="do">##  7 Ивановская область       2.1    1.6    2.2    3.1    4      4.8    4.6    4.2</span></span>
+<span id="cb74-13"><a href="#cb74-13" aria-hidden="true" tabindex="-1"></a><span class="do">##  8 Калужская область        2.2    2.3    2.3    2.5    2.4    3.1    3.2    3.2</span></span>
+<span id="cb74-14"><a href="#cb74-14" aria-hidden="true" tabindex="-1"></a><span class="do">##  9 Костромская область     10     25.2   11     11.8   15.3   13.6   15.1   16.4</span></span>
+<span id="cb74-15"><a href="#cb74-15" aria-hidden="true" tabindex="-1"></a><span class="do">## 10 Курская область          0.5    0.3    0.4    0.6    0.6    0.6    0.5    0.4</span></span>
+<span id="cb74-16"><a href="#cb74-16" aria-hidden="true" tabindex="-1"></a><span class="do">## # ℹ 79 more rows</span></span>
+<span id="cb74-17"><a href="#cb74-17" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(reforest)</span>
+<span id="cb74-18"><a href="#cb74-18" aria-hidden="true" tabindex="-1"></a><span class="do">## # A tibble: 6 × 9</span></span>
+<span id="cb74-19"><a href="#cb74-19" aria-hidden="true" tabindex="-1"></a><span class="do">##   Region                 `2005` `2010` `2011` `2012` `2013` `2014` `2015` `2016`</span></span>
+<span id="cb74-20"><a href="#cb74-20" aria-hidden="true" tabindex="-1"></a><span class="do">##   &lt;chr&gt;                   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb74-21"><a href="#cb74-21" aria-hidden="true" tabindex="-1"></a><span class="do">## 1 Российская Федерация    812.   812.   860    842.   872.   863    803.   840. </span></span>
+<span id="cb74-22"><a href="#cb74-22" aria-hidden="true" tabindex="-1"></a><span class="do">## 2 Центральный федеральн…   52.6   62.7   60.9   60.3   70.9   71.2   72.6   77  </span></span>
+<span id="cb74-23"><a href="#cb74-23" aria-hidden="true" tabindex="-1"></a><span class="do">## 3 Белгородская область      0.4    0.1    0.3    0.3    0.4    0.4    0.2    0.2</span></span>
+<span id="cb74-24"><a href="#cb74-24" aria-hidden="true" tabindex="-1"></a><span class="do">## 4 Брянская область          2.9    2.8    3      3.2    3.5    3.3    3.1    3  </span></span>
+<span id="cb74-25"><a href="#cb74-25" aria-hidden="true" tabindex="-1"></a><span class="do">## 5 Владимирская область      4.4    5.3    5.7    6      7.1    5.9    6      4.9</span></span>
+<span id="cb74-26"><a href="#cb74-26" aria-hidden="true" tabindex="-1"></a><span class="do">## 6 Воронежская область       1.1    1.1    1.8    3      2.7    2.7    2.6    2.3</span></span>
+<span id="cb74-27"><a href="#cb74-27" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(reforest)</span>
+<span id="cb74-28"><a href="#cb74-28" aria-hidden="true" tabindex="-1"></a><span class="do">## # A tibble: 6 × 9</span></span>
+<span id="cb74-29"><a href="#cb74-29" aria-hidden="true" tabindex="-1"></a><span class="do">##   Region                 `2005` `2010` `2011` `2012` `2013` `2014` `2015` `2016`</span></span>
+<span id="cb74-30"><a href="#cb74-30" aria-hidden="true" tabindex="-1"></a><span class="do">##   &lt;chr&gt;                   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb74-31"><a href="#cb74-31" aria-hidden="true" tabindex="-1"></a><span class="do">## 1 Хабаровский край        107.    70.2   68.7   67.2   58.4   50.5   59.6   60.3</span></span>
+<span id="cb74-32"><a href="#cb74-32" aria-hidden="true" tabindex="-1"></a><span class="do">## 2 Амурская область         33.3   29.8   32.2   33.6   35.5   37.7   28.5   27.7</span></span>
+<span id="cb74-33"><a href="#cb74-33" aria-hidden="true" tabindex="-1"></a><span class="do">## 3 Магаданская область       2.7    2.6    2.6    2.8    3      2.5    0.4   NA  </span></span>
+<span id="cb74-34"><a href="#cb74-34" aria-hidden="true" tabindex="-1"></a><span class="do">## 4 Сахалинская область      13.1   12.7   12.5    4.6    4.7    4.9    4.7    4.1</span></span>
+<span id="cb74-35"><a href="#cb74-35" aria-hidden="true" tabindex="-1"></a><span class="do">## 5 Еврейская автономная …    2.9   NA      2.6    2.5    2.3   NA     NA      2.4</span></span>
+<span id="cb74-36"><a href="#cb74-36" aria-hidden="true" tabindex="-1"></a><span class="do">## 6 Чукотский автономный …    0.3   NA     NA     NA     NA     NA     NA     NA</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>RStudio</code> предоставляет графический интерфейс для просмотра таблиц, в котором таблицу можно сортировать и фильтровать. Чтобы его активировать, надо вызвать функцию <code>View()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(tab)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Поскольку функции <code>head()</code> и <code>tail()</code> возвращают строки с хвоста или начала фрейма данных, их можно и подать на вход функции <code>View()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(<span class="fu">head</span>(reforest, <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<blockquote class="blockquote">
+<p><strong>Как правило, не следует оставлять вызовы функции <code>View()</code> в тексте законченной программы.</strong> Это приведет к тому, что при запуске будут открываться новые вкладки с просмотром таблиц, что может раздражать пользователя (в том числе и вас самих). Используйте <code>View()</code> для вывода окончательного результата в конце программы или при отладке программы. Все вызовы <code>View()</code> в программе можно легко закомментировать или раскомментировать, выполнив поиск с заменой <code>'View('</code> на <code>'# View('</code> и наоборот.</p>
+</blockquote>
+</section>
+<section id="tables_elements" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="tables_elements"><span class="header-section-number">3.5</span> Столбцы, строки и ячейки</h2>
+<section id="tables_elements_names" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="tables_elements_names"><span class="header-section-number">3.5.1</span> Названия</h3>
+<p>Столбцы, строки и ячейк представляют собой основные структурные элементы фрейма данных или тиббла. Перед тем как мы поднимемся на уровень выше и рассмотрим обобщенные операции преобразования таблиц, необходимо посмотреть, как извлекать структурные элементы таблиц.</p>
+<p>Столбцы и строки таблицы имеют названия, которые можно читать и записывать с помощью функций <code>colnames()</code> и <code>rownames()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Чтение названий столбцов и строк</span></span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(okruga)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "№"      "Регион" "2005"   "2010"   "2011"   "2012"   "2013"  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(okruga)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "1" "2" "3" "4" "5" "6" "7" "8"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Замена названий столбцов и строк</span></span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(okruga) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"N"</span>, <span class="st">"Region"</span>, <span class="st">"Year05"</span>, <span class="st">"Year10"</span>, <span class="st">"Year11"</span>, <span class="st">"Year12"</span>, <span class="st">"Year13"</span>)</span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(okruga)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 7
+      N Region            Year05 Year10 Year11 Year12 Year13
+  &lt;dbl&gt; &lt;chr&gt;              &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+1     1 Центральный         4341   3761   3613   3651   3570
+2     2 Северо-Западный     3192   3088   2866   2877   2796
+3     3 Южный федеральный   1409   1446   1436   1394   1321
+4     4 Северо-Кавказский    496    390    397    395    374
+5     5 Приволжский         3162   2883   2857   2854   2849
+6     6 Уральский           1681   1860   1834   1665   1624
+7     7 Сибирский           2575   2218   2142   2077   1941
+8     8 Дальневосточный      871    870    821    765    713</code></pre>
+</div>
+</div>
+<p>Названия строк редко заменяются, поскольку с точки зрения реляционной алгебры большого смысла они не имеют.</p>
+</section>
+<section id="tables_elements_columns" class="level3" data-number="3.5.2">
+<h3 data-number="3.5.2" class="anchored" data-anchor-id="tables_elements_columns"><span class="header-section-number">3.5.2</span> Обращение к столбцам</h3>
+<p>К столбцу можно обращаться по номеру и названию (с помощью оператора <code>$</code> или в кавычках внутри скобок). Если вы указываете в квадратных скобках номер без запятой, он трактуется именно как номер столбца, а не строки. Тип возвращаемого значения зависит от синтаксиса:</p>
+<ul>
+<li>обращение через <code>$</code> возвращает вектор;</li>
+<li>обращение в скобках с запятой к одному столбцу возвращает вектор;</li>
+<li>обращение в скобках с запятой к нескольким столбцам возвращает фрейм данных;</li>
+<li>обращение в скобках без запятой возвращает фрейм данных.</li>
+</ul>
+<p>Несколько примеров:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Один столбец - результат зависит от запятой</span></span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>okruga<span class="sc">$</span>Year05      <span class="co"># столбец в виде вектора</span></span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>okruga[, <span class="st">"Year05"</span>] <span class="co"># столбец в виде вектора</span></span>
+<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a>okruga[, <span class="dv">2</span>]        <span class="co"># столбец в виде вектора</span></span>
+<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-6"><a href="#cb83-6" aria-hidden="true" tabindex="-1"></a>okruga[<span class="st">"Year05"</span>] <span class="co"># столбец в виде фрейма данных/тиббла</span></span>
+<span id="cb83-7"><a href="#cb83-7" aria-hidden="true" tabindex="-1"></a>okruga[<span class="dv">2</span>]        <span class="co"># столбец в виде фрейма данных/тиббла</span></span>
+<span id="cb83-8"><a href="#cb83-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-9"><a href="#cb83-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Несколько столбцов - всегда фрейм данных/тиббл</span></span>
+<span id="cb83-10"><a href="#cb83-10" aria-hidden="true" tabindex="-1"></a>okruga[, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>)]</span>
+<span id="cb83-11"><a href="#cb83-11" aria-hidden="true" tabindex="-1"></a>okruga[, <span class="fu">c</span>(<span class="st">"Region"</span>, <span class="st">"Year11"</span>)]</span>
+<span id="cb83-12"><a href="#cb83-12" aria-hidden="true" tabindex="-1"></a>okruga[<span class="fu">c</span>(<span class="st">"Region"</span>, <span class="st">"Year11"</span>)]</span>
+<span id="cb83-13"><a href="#cb83-13" aria-hidden="true" tabindex="-1"></a>okruga[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="tables_elements_rows" class="level3" data-number="3.5.3">
+<h3 data-number="3.5.3" class="anchored" data-anchor-id="tables_elements_rows"><span class="header-section-number">3.5.3</span> Обращение к строкам</h3>
+<p>Обращаться к строкам можно по их номерам. В этом случае в качестве индекса можно передать номер (номера) интересующих строк, либо вектор логических значений, в котором интересующие строки помечены как TRUE, а остальные — FALSE (в этом случае длина вектора должна равняться количеству строк в таблице):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>okruga[<span class="dv">5</span>, ] <span class="co"># Одна строка</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>okruga[<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>, ] <span class="co"># Несколько строк</span></span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>okruga[okruga<span class="sc">$</span>Year10 <span class="sc">&gt;</span> <span class="dv">2000</span>, ] <span class="co"># Несколько строк через TRUE/FALSE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<blockquote class="blockquote">
+<p>В отличие от работы со столбцами, выбор строк всегда возвращает таблицу (фрейм или тиббл).</p>
+</blockquote>
+</section>
+<section id="tables_elements_cells" class="level3" data-number="3.5.4">
+<h3 data-number="3.5.4" class="anchored" data-anchor-id="tables_elements_cells"><span class="header-section-number">3.5.4</span> Обращение к ячейкам</h3>
+<p>Чтобы выбрать конкретные ячейки в таблице, необходимо задать оба измерения:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>okruga[<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="fu">c</span>(<span class="st">"Year11"</span>, <span class="st">"Year12"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  Year11 Year12
+   &lt;dbl&gt;  &lt;dbl&gt;
+1   2866   2877
+2   1436   1394</code></pre>
+</div>
+</div>
+<p>Обратите внимание на то, что при этом возвращаются все комбинации строк и столбцов. То есть, нельзя выбрать ячейки <code>2,"Year11"</code> и <code>3,"Year2"</code> — вместе с ними также будут выбраны ячейки <code>3,"Year11"</code> и <code>2,"Year2"</code>. Впрочем, подобные задачи возникают довольно редко</p>
+</section>
+</section>
+<section id="tables_manipuilations" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="tables_manipuilations"><span class="header-section-number">3.6</span> Преобразования</h2>
+<section id="tables_manipiulations_grammar" class="level3" data-number="3.6.1">
+<h3 data-number="3.6.1" class="anchored" data-anchor-id="tables_manipiulations_grammar"><span class="header-section-number">3.6.1</span> Грамматика манипуляций</h3>
+<p>Если проанализировать наиболее типичные манипуляции, которые осуществляются над таблицами, то их окажется совсем немного. К таким манипуляциям относятся выбор переменных, фильтрация строк, сортировка, вычисление новых столбцов, агрегирующие статистики и группировка.</p>
+<p>Все эти задачи можно решать стандартными средствами R (и мы увидим, как это делается). Однако некоторые из них достаточно громоздки в реализации (например, группировка). К счастью, экосистема R предлагает готовые средства, позволяющие справляться с подобными задачами простым и элегантным путем. Эти средства предоставляет пакет <a href="https://dplyr.tidyverse.org"><strong>dplyr</strong></a> (произносится как <em>deep liar</em> — ‘диплáйер’), входящий в набор инструментов <a href="https://www.tidyverse.org">tidyverse</a>.</p>
+<p>В основе конецепции <strong>dplyr</strong> лежит понятие о грамматике табличных манипуляций, которая включает в себя ограниченное число наиболее используемых операций, а также ряд вспомогательных функций.</p>
+<p>Основные функции пакета <strong>dplyr</strong> представлены в таблице ниже:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Функция</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>select()</code></td>
+<td>Выбор переменных по их названиям</td>
+</tr>
+<tr class="even">
+<td><code>dplyr::filter()</code></td>
+<td>Выбор строк по заданному критерию (запросу)</td>
+</tr>
+<tr class="odd">
+<td><code>arrange()</code></td>
+<td>Упорядочение по указанным переменным</td>
+</tr>
+<tr class="even">
+<td><code>mutate()</code></td>
+<td>Вычисление новых переменных (мутирование)</td>
+</tr>
+<tr class="odd">
+<td><code>summarise()</code></td>
+<td>Агрегирование значений переменных</td>
+</tr>
+<tr class="even">
+<td><code>group_by()</code></td>
+<td>Группировка строк (для последующего агрегирования)</td>
+</tr>
+</tbody>
+</table>
+<p>Как можно видеть, этих функций совсем немного. Дополнительно к ним пакет <strong>dplyr</strong> содержит еще множество вспомогательных функций, которые применяются при выполнении основных манипуляций.</p>
+<p>Рассмотрим применение этих функций на примере работы с таблицей по восстановлению лесного фонда в регионах России. Для начала переименуем столбцы с годами, чтобы их названия начинались с буквы <code>y</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>old_names <span class="ot">=</span> <span class="fu">colnames</span>(reforest)</span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(reforest) <span class="ot">=</span> <span class="fu">c</span>(old_names[<span class="dv">1</span>], <span class="fu">paste</span>(<span class="st">'y'</span>, old_names[<span class="dv">2</span><span class="sc">:</span><span class="dv">9</span>], <span class="at">sep =</span> <span class="st">''</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Начнем с <strong>выбора</strong> нужных переменных, используя <code>select()</code>. Оставим только название региона и данные за 2010 и 2015 гг:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">rdf =</span> <span class="fu">select</span>(reforest, Region, y2010, y2015))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 89 × 3
+   Region                        y2010 y2015
+   &lt;chr&gt;                         &lt;dbl&gt; &lt;dbl&gt;
+ 1 Российская Федерация          812.  803. 
+ 2 Центральный федеральный округ  62.7  72.6
+ 3 Белгородская область            0.1   0.2
+ 4 Брянская область                2.8   3.1
+ 5 Владимирская область            5.3   6  
+ 6 Воронежская область             1.1   2.6
+ 7 Ивановская область              1.6   4.6
+ 8 Калужская область               2.3   3.2
+ 9 Костромская область            25.2  15.1
+10 Курская область                 0.3   0.5
+# ℹ 79 more rows</code></pre>
+</div>
+</div>
+<p>Ту же самую задачу можно решить от противного — указать со знаком <code>-</code> те столбцы, которые надо убрать:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">rdf =</span> <span class="fu">select</span>(reforest, <span class="sc">-</span>y2005, <span class="sc">-</span>y2011<span class="sc">:-</span>y2014, <span class="sc">-</span>y2016))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 89 × 3
+   Region                        y2010 y2015
+   &lt;chr&gt;                         &lt;dbl&gt; &lt;dbl&gt;
+ 1 Российская Федерация          812.  803. 
+ 2 Центральный федеральный округ  62.7  72.6
+ 3 Белгородская область            0.1   0.2
+ 4 Брянская область                2.8   3.1
+ 5 Владимирская область            5.3   6  
+ 6 Воронежская область             1.1   2.6
+ 7 Ивановская область              1.6   4.6
+ 8 Калужская область               2.3   3.2
+ 9 Костромская область            25.2  15.1
+10 Курская область                 0.3   0.5
+# ℹ 79 more rows</code></pre>
+</div>
+</div>
+<p>Обратите внимание на то, что можно указывать еще и диапазоны названий столбцов, если они идут друг за другом.</p>
+<blockquote class="blockquote">
+<p>Названия столбцов в функциях <strong>dplyr</strong> указываются без кавычек, что позволяет сделат код проще и читаемее. Этот прием называется <em>квотацией</em>, с ним мы познакомимся подробнее в следующей лекции.</p>
+</blockquote>
+<p>Чтобы осуществить <strong>фильтрацию</strong>, необходимо задать условие, накладываемое на строки. Текущая таблица содержит данные по субъектам, федеральным округам и России в целом. Поскольку данные по округам и стране являются избыточными (их можно получить путем агрегирования данных по субъектам), выполним фильтрацию таблицы, убрав строки, в которых содержатся слова <code>Федерация</code> и <code>федеральный округ</code>. Для этого используем функцию <code>str_detect()</code> из пакета <strong>stringr</strong>, который также входит в <em>tidyverse</em>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>flt <span class="ot">=</span> <span class="sc">!</span>stringr<span class="sc">::</span><span class="fu">str_detect</span>(rdf<span class="sc">$</span>Region, <span class="st">'Федерация|федеральный округ'</span>) <span class="co"># готовим фильтр для строк</span></span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>(<span class="at">regdf =</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(rdf, flt)) <span class="co"># применяем фильтр</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 80 × 3
+   Region               y2010 y2015
+   &lt;chr&gt;                &lt;dbl&gt; &lt;dbl&gt;
+ 1 Белгородская область   0.1   0.2
+ 2 Брянская область       2.8   3.1
+ 3 Владимирская область   5.3   6  
+ 4 Воронежская область    1.1   2.6
+ 5 Ивановская область     1.6   4.6
+ 6 Калужская область      2.3   3.2
+ 7 Костромская область   25.2  15.1
+ 8 Курская область        0.3   0.5
+ 9 Липецкая область       0.4   1.1
+10 Московская область     2.7   8.9
+# ℹ 70 more rows</code></pre>
+</div>
+</div>
+<p>Условие можно прописать непосредственно при вызове <code>dplyr::filter()</code>. Например, выберем регионы, в которых объем лесовосстановительных работ в 2015 году был более 50 тыс. га:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">filter</span>(regdf, y2015 <span class="sc">&gt;</span> <span class="dv">50</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+  Region                y2010 y2015
+  &lt;chr&gt;                 &lt;dbl&gt; &lt;dbl&gt;
+1 Архангельская область  39.4  57.6
+2 Красноярский край      49    50.4
+3 Иркутская область      80.4 117. 
+4 Хабаровский край       70.2  59.6</code></pre>
+</div>
+</div>
+<p>Для <strong>сортировки</strong> таблицы посредством <code>arrange()</code> необходимо указать столбцы, по которым будет осуществлено упорядочение строк. Чаще всего это один столбец, например <em>y2015</em>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">arrange</span>(regdf, y2015) <span class="co"># по возрастанию</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 80 × 3
+   Region                              y2010 y2015
+   &lt;chr&gt;                               &lt;dbl&gt; &lt;dbl&gt;
+ 1 Орловская область                     0     0.1
+ 2 Астраханская область                  0.1   0.1
+ 3 Кабардино-Балкарская Республика       0.1   0.1
+ 4 Карачаево-Черкесская Республика       0.2   0.1
+ 5 Республика Северная Осетия – Алания  NA     0.1
+ 6 Ставропольский край                   0.4   0.1
+ 7 Белгородская область                  0.1   0.2
+ 8 Тульская область                      0.1   0.2
+ 9 Магаданская область                   2.6   0.4
+10 Курская область                       0.3   0.5
+# ℹ 70 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="fu">arrange</span>(regdf, <span class="fu">desc</span>(y2015)) <span class="co"># по убыванию</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 80 × 3
+   Region                y2010 y2015
+   &lt;chr&gt;                 &lt;dbl&gt; &lt;dbl&gt;
+ 1 Иркутская область      80.4 117. 
+ 2 Хабаровский край       70.2  59.6
+ 3 Архангельская область  39.4  57.6
+ 4 Красноярский край      49    50.4
+ 5 Вологодская область    32.3  49  
+ 6 Республика Коми        33.3  36.7
+ 7 Пермский край          22.9  32.5
+ 8 Кировская область      26    31.1
+ 9 Амурская область       29.8  28.5
+10 Томская область         9.3  25.6
+# ℹ 70 more rows</code></pre>
+</div>
+</div>
+<p><strong>Добавление</strong> новых переменных (столбцов) осуществляется посредством <code>mutate()</code>. Например, определим, как изменился объем лесовосстановительных работ в 2015 году по сравнению с 2010 годом:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">regdf =</span> <span class="fu">mutate</span>(regdf, <span class="at">delta =</span> y2015 <span class="sc">-</span> y2010))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 80 × 4
+   Region               y2010 y2015   delta
+   &lt;chr&gt;                &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+ 1 Белгородская область   0.1   0.2   0.1  
+ 2 Брянская область       2.8   3.1   0.300
+ 3 Владимирская область   5.3   6     0.7  
+ 4 Воронежская область    1.1   2.6   1.5  
+ 5 Ивановская область     1.6   4.6   3    
+ 6 Калужская область      2.3   3.2   0.9  
+ 7 Костромская область   25.2  15.1 -10.1  
+ 8 Курская область        0.3   0.5   0.2  
+ 9 Липецкая область       0.4   1.1   0.7  
+10 Московская область     2.7   8.9   6.2  
+# ℹ 70 more rows</code></pre>
+</div>
+</div>
+<p>Существует редко используемая разновидность мутирования, при которой сохраняются только столбцы, указанные в параметрах. Она называется <code>transmute()</code> — по сути это комбинация <code>mutate()</code> и <code>select()</code>. Если вы хотите просто сохранить какой-то из столбцов, то укажите его через оператор равенства:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">transmute</span>(regdf, <span class="at">Region =</span> Region, <span class="at">delta =</span> y2015 <span class="sc">-</span> y2010) <span class="co"># сохраняем только Region и delta</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 80 × 2
+   Region                 delta
+   &lt;chr&gt;                  &lt;dbl&gt;
+ 1 Белгородская область   0.1  
+ 2 Брянская область       0.300
+ 3 Владимирская область   0.7  
+ 4 Воронежская область    1.5  
+ 5 Ивановская область     3    
+ 6 Калужская область      0.9  
+ 7 Костромская область  -10.1  
+ 8 Курская область        0.2  
+ 9 Липецкая область       0.7  
+10 Московская область     6.2  
+# ℹ 70 more rows</code></pre>
+</div>
+</div>
+<p>Вы можете выполнять <strong>агрегирование</strong> данных и вычислять суммы, средние значения и т.д. используя <code>summarise()</code>. После того как мы избавились от избыточных данных в таблице, мы всегда можем получить их через агрегирование. Например, посчитаем суммарный, минимальный и максимальный объем лесовосстановительных работ по всей стране:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarise</span>(regdf, </span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">sumforest =</span> <span class="fu">sum</span>(y2015, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">minforest =</span> <span class="fu">min</span>(y2015, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb104-4"><a href="#cb104-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">maxforest =</span> <span class="fu">max</span>(y2015, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  sumforest minforest maxforest
+      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1      801.       0.1      117.</code></pre>
+</div>
+</div>
+<p>Как правило, <code>summarise()</code> используется в паре с агрегирующими функциями, которые берут вектор значений и возвращают одно значение. К таким функциям относятся стандартные операции типа <code>min()</code>, <code>max()</code>, <code>mean()</code>, <code>sum()</code> и т.д. В пакете <strong>dplyr</strong> также имеются полезные агрегирующие функции:</p>
+<ul>
+<li><code>n()</code> вычисляет количество элементов.</li>
+<li><code>n_distinct()</code> вычисляет количество уникальных элементов.</li>
+<li><code>first(x)</code>, <code>last(x)</code> и <code>nth(x, n)</code> извлекают, соответственно, первый, последний и n-ный элемент (они бывают особенно удобны, если вы сортируете строки по какому-то критерию).</li>
+</ul>
+<p>Достаточно часто данные надо агрегировать не по всей таблице, а <strong>по группам</strong> измерений. В этом случае сначала делается группировка, затем агрегирование данных в каждой группе. Предположим, что нам нужно найти регион с наибольшим объемом лесовосставновительных работ в каждом Федеральном округе. Для этого нам потребуется:</p>
+<ul>
+<li>Дополнить каждую строку региона информацией о принадлежности к федеральному округу</li>
+<li>Сгруппировать субъекты по федеральным округам — Отсортировать каждую группу по убыванию значения поля</li>
+<li>Взять первую строку в каждой группе</li>
+<li>Объединить строки в одну таблицу</li>
+</ul>
+<p>Для начала вернемся на этап, когда мы избавлялись от федеральных округов в таблице. Поскольку в исходной таблице данные были упорядочены по округам, эту информацию можно использовать для создания нового столбца с названием округа каждого субъекта. В этом нам поможет функция <code>fill()</code> из пакета <strong>tidyr</strong>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>flt2 <span class="ot">=</span> stringr<span class="sc">::</span><span class="fu">str_detect</span>(rdf<span class="sc">$</span>Region, <span class="st">'федеральный округ'</span>) <span class="co"># ищем округа</span></span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>(<span class="at">rdf2 =</span> <span class="fu">mutate</span>(rdf, <span class="at">okrug =</span> <span class="fu">if_else</span>(flt2, Region, <span class="cn">NA</span>))) <span class="co"># перенесем названия округов в новый столбец</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 89 × 4
+   Region                        y2010 y2015 okrug                        
+   &lt;chr&gt;                         &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                        
+ 1 Российская Федерация          812.  803.  &lt;NA&gt;                         
+ 2 Центральный федеральный округ  62.7  72.6 Центральный федеральный округ
+ 3 Белгородская область            0.1   0.2 &lt;NA&gt;                         
+ 4 Брянская область                2.8   3.1 &lt;NA&gt;                         
+ 5 Владимирская область            5.3   6   &lt;NA&gt;                         
+ 6 Воронежская область             1.1   2.6 &lt;NA&gt;                         
+ 7 Ивановская область              1.6   4.6 &lt;NA&gt;                         
+ 8 Калужская область               2.3   3.2 &lt;NA&gt;                         
+ 9 Костромская область            25.2  15.1 &lt;NA&gt;                         
+10 Курская область                 0.3   0.5 &lt;NA&gt;                         
+# ℹ 79 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">rdf2 =</span> tidyr<span class="sc">::</span><span class="fu">fill</span>(rdf2, okrug)) <span class="co"># заполним все пустые строчки предыдущим значением</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 89 × 4
+   Region                        y2010 y2015 okrug                        
+   &lt;chr&gt;                         &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                        
+ 1 Российская Федерация          812.  803.  &lt;NA&gt;                         
+ 2 Центральный федеральный округ  62.7  72.6 Центральный федеральный округ
+ 3 Белгородская область            0.1   0.2 Центральный федеральный округ
+ 4 Брянская область                2.8   3.1 Центральный федеральный округ
+ 5 Владимирская область            5.3   6   Центральный федеральный округ
+ 6 Воронежская область             1.1   2.6 Центральный федеральный округ
+ 7 Ивановская область              1.6   4.6 Центральный федеральный округ
+ 8 Калужская область               2.3   3.2 Центральный федеральный округ
+ 9 Костромская область            25.2  15.1 Центральный федеральный округ
+10 Курская область                 0.3   0.5 Центральный федеральный округ
+# ℹ 79 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">regdf =</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(rdf2, flt)) <span class="co"># оставим только регионы</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 80 × 4
+   Region               y2010 y2015 okrug                        
+   &lt;chr&gt;                &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                        
+ 1 Белгородская область   0.1   0.2 Центральный федеральный округ
+ 2 Брянская область       2.8   3.1 Центральный федеральный округ
+ 3 Владимирская область   5.3   6   Центральный федеральный округ
+ 4 Воронежская область    1.1   2.6 Центральный федеральный округ
+ 5 Ивановская область     1.6   4.6 Центральный федеральный округ
+ 6 Калужская область      2.3   3.2 Центральный федеральный округ
+ 7 Костромская область   25.2  15.1 Центральный федеральный округ
+ 8 Курская область        0.3   0.5 Центральный федеральный округ
+ 9 Липецкая область       0.4   1.1 Центральный федеральный округ
+10 Московская область     2.7   8.9 Центральный федеральный округ
+# ℹ 70 more rows</code></pre>
+</div>
+</div>
+<p>Теперь мы можем определить регион с максимальным объемом лесовосстановительных работ в каждом Федеральном округе, используя вспомогательную функцию <code>row_number()</code> которая возвращает номер для каждой строки таблицы:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>regdf_gr <span class="ot">=</span> <span class="fu">group_by</span>(regdf, okrug)</span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>regdf_arr <span class="ot">=</span> <span class="fu">arrange</span>(regdf_gr, <span class="fu">desc</span>(y2015))</span>
+<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a>(<span class="at">regdf_res =</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(regdf_arr, <span class="fu">row_number</span>() <span class="sc">==</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 4
+# Groups:   okrug [8]
+  Region                y2010 y2015 okrug                              
+  &lt;chr&gt;                 &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                              
+1 Иркутская область      80.4 117.  Сибирский федеральный округ        
+2 Хабаровский край       70.2  59.6 Дальневосточный федеральный округ  
+3 Архангельская область  39.4  57.6 Северо-Западный федеральный округ  
+4 Пермский край          22.9  32.5 Приволжский федеральный округ      
+5 Свердловская область   25.6  24.4 Уральский федеральный округ        
+6 Костромская область    25.2  15.1 Центральный федеральный округ      
+7 Волгоградская область   1.8   0.9 Южный федеральный округ            
+8 Чеченская Республика    0.9   0.7 Северо-Кавказский федеральный округ</code></pre>
+</div>
+</div>
+<p><code>group_by()</code> часто используется в паре с <code>summarise()</code>. Например мы можем получить суммарный объем лесовосстановительных работ по каждому федеральному округу:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>regdf_gr <span class="ot">=</span> <span class="fu">group_by</span>(regdf, okrug)</span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summarise</span>(regdf_gr, <span class="at">total =</span> <span class="fu">sum</span>(y2015, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 2
+  okrug                               total
+  &lt;chr&gt;                               &lt;dbl&gt;
+1 Дальневосточный федеральный округ   108. 
+2 Приволжский федеральный округ       110. 
+3 Северо-Западный федеральный округ   194. 
+4 Северо-Кавказский федеральный округ   1.1
+5 Сибирский федеральный округ         259. 
+6 Уральский федеральный округ          52.9
+7 Центральный федеральный округ        72.7
+8 Южный федеральный округ               3.3</code></pre>
+</div>
+</div>
+<p>Использование <strong>dplyr</strong> целым обладает рядом преимуществ по сравнению с применением стандартных средств <strong>R</strong>:</p>
+<ul>
+<li>вызов функций с говорящими названиями операции более понятными;</li>
+<li>код выглядит более чистым и легко читаемым за счет отсутствия обращений к фреймам данных через квадратные скобки, доллары и «закавыченные» названия переменных;</li>
+<li>код с использованием функций <strong>dplyr</strong> часто оказывается короче, чем его традиционные аналоги;</li>
+<li>операции dplyr можно выстраивать в конвейеры с помощью пайп-оператора <code>|&gt;</code>.</li>
+</ul>
+<p>Последнюю возможность мы рассмотрим в следующем параграфе.</p>
+</section>
+<section id="tables_manipiulations_pipeline" class="level3" data-number="3.6.2">
+<h3 data-number="3.6.2" class="anchored" data-anchor-id="tables_manipiulations_pipeline"><span class="header-section-number">3.6.2</span> Конвейер манипуляций</h3>
+<p>В предыдущем параграфе было показано как найти регион-лидер в каждой группе по выбранному показателю. При этом, несмотря на то что интерес представляет только конечный результат, нам пришлось шесть раз осуществить запись промежуточного результата в соответствующую переменную. Чтобы избежать подобного многословия в программах, в <strong>R</strong> реализована возможность организации <strong>конвейера манипуляций</strong> (pipeline) посредством использования <em>пайп-оператора</em> <code>|&gt;</code>.</p>
+<p><strong>Пайп-оператор <code>|&gt;</code></strong> предназначен для компактной и наглядной записи <em>последовательностей</em> обработки данных. Работает он следующим образом:</p>
+<ul>
+<li><code>x |&gt; f</code> эквивалентно <code>f(x)</code></li>
+<li><code>x |&gt; f(y)</code> эквивалентно <code>f(x, y)</code></li>
+<li><code>x |&gt; f |&gt; g |&gt; h</code> эквивалентно <code>h(g(f(x)))</code></li>
+</ul>
+<p>Коротко говоря, пайп оператор берет результат вычисления выражения слева и подставляет его в качестве первого аргумента в выражение справа. С помощью этого оператора вышеприведенный код по нахождению региона-лидера можно записать так:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>regdf <span class="ot">=</span> rdf <span class="sc">|&gt;</span> </span>
+<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">okrug =</span> <span class="fu">if_else</span>(flt2, Region, <span class="cn">NA</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">fill</span>(okrug) <span class="sc">|&gt;</span> </span>
+<span id="cb116-4"><a href="#cb116-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(flt)</span>
+<span id="cb116-5"><a href="#cb116-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb116-6"><a href="#cb116-6" aria-hidden="true" tabindex="-1"></a>leaders <span class="ot">=</span> regdf <span class="sc">|&gt;</span> </span>
+<span id="cb116-7"><a href="#cb116-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(okrug) <span class="sc">|&gt;</span> </span>
+<span id="cb116-8"><a href="#cb116-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(y2015)) <span class="sc">|&gt;</span> </span>
+<span id="cb116-9"><a href="#cb116-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">row_number</span>() <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb116-10"><a href="#cb116-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb116-11"><a href="#cb116-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(leaders)</span>
+<span id="cb116-12"><a href="#cb116-12" aria-hidden="true" tabindex="-1"></a><span class="do">## # A tibble: 8 × 4</span></span>
+<span id="cb116-13"><a href="#cb116-13" aria-hidden="true" tabindex="-1"></a><span class="do">## # Groups:   okrug [8]</span></span>
+<span id="cb116-14"><a href="#cb116-14" aria-hidden="true" tabindex="-1"></a><span class="do">##   Region                y2010 y2015 okrug                              </span></span>
+<span id="cb116-15"><a href="#cb116-15" aria-hidden="true" tabindex="-1"></a><span class="do">##   &lt;chr&gt;                 &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                              </span></span>
+<span id="cb116-16"><a href="#cb116-16" aria-hidden="true" tabindex="-1"></a><span class="do">## 1 Иркутская область      80.4 117.  Сибирский федеральный округ        </span></span>
+<span id="cb116-17"><a href="#cb116-17" aria-hidden="true" tabindex="-1"></a><span class="do">## 2 Хабаровский край       70.2  59.6 Дальневосточный федеральный округ  </span></span>
+<span id="cb116-18"><a href="#cb116-18" aria-hidden="true" tabindex="-1"></a><span class="do">## 3 Архангельская область  39.4  57.6 Северо-Западный федеральный округ  </span></span>
+<span id="cb116-19"><a href="#cb116-19" aria-hidden="true" tabindex="-1"></a><span class="do">## 4 Пермский край          22.9  32.5 Приволжский федеральный округ      </span></span>
+<span id="cb116-20"><a href="#cb116-20" aria-hidden="true" tabindex="-1"></a><span class="do">## 5 Свердловская область   25.6  24.4 Уральский федеральный округ        </span></span>
+<span id="cb116-21"><a href="#cb116-21" aria-hidden="true" tabindex="-1"></a><span class="do">## 6 Костромская область    25.2  15.1 Центральный федеральный округ      </span></span>
+<span id="cb116-22"><a href="#cb116-22" aria-hidden="true" tabindex="-1"></a><span class="do">## 7 Волгоградская область   1.8   0.9 Южный федеральный округ            </span></span>
+<span id="cb116-23"><a href="#cb116-23" aria-hidden="true" tabindex="-1"></a><span class="do">## 8 Чеченская Республика    0.9   0.7 Северо-Кавказский федеральный округ</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Если бы мы попытались написать те же последовательности операций одним выражением в традиционной «матрешечной» парадигме, это выглядело так:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>regdf <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
+<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a>           tidyr<span class="sc">::</span><span class="fu">fill</span>(</span>
+<span id="cb117-3"><a href="#cb117-3" aria-hidden="true" tabindex="-1"></a>             <span class="fu">mutate</span>(</span>
+<span id="cb117-4"><a href="#cb117-4" aria-hidden="true" tabindex="-1"></a>               rdf,</span>
+<span id="cb117-5"><a href="#cb117-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">okrug =</span> <span class="fu">if_else</span>(flt2, Region, <span class="cn">NA</span>)</span>
+<span id="cb117-6"><a href="#cb117-6" aria-hidden="true" tabindex="-1"></a>             ),</span>
+<span id="cb117-7"><a href="#cb117-7" aria-hidden="true" tabindex="-1"></a>             okrug</span>
+<span id="cb117-8"><a href="#cb117-8" aria-hidden="true" tabindex="-1"></a>           ),</span>
+<span id="cb117-9"><a href="#cb117-9" aria-hidden="true" tabindex="-1"></a>           flt</span>
+<span id="cb117-10"><a href="#cb117-10" aria-hidden="true" tabindex="-1"></a>         )</span>
+<span id="cb117-11"><a href="#cb117-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-12"><a href="#cb117-12" aria-hidden="true" tabindex="-1"></a>result <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
+<span id="cb117-13"><a href="#cb117-13" aria-hidden="true" tabindex="-1"></a>           <span class="fu">arrange</span>(</span>
+<span id="cb117-14"><a href="#cb117-14" aria-hidden="true" tabindex="-1"></a>             <span class="fu">group_by</span>(</span>
+<span id="cb117-15"><a href="#cb117-15" aria-hidden="true" tabindex="-1"></a>               regdf, </span>
+<span id="cb117-16"><a href="#cb117-16" aria-hidden="true" tabindex="-1"></a>               okrug</span>
+<span id="cb117-17"><a href="#cb117-17" aria-hidden="true" tabindex="-1"></a>             ),</span>
+<span id="cb117-18"><a href="#cb117-18" aria-hidden="true" tabindex="-1"></a>             <span class="fu">desc</span>(y2015)</span>
+<span id="cb117-19"><a href="#cb117-19" aria-hidden="true" tabindex="-1"></a>           ),</span>
+<span id="cb117-20"><a href="#cb117-20" aria-hidden="true" tabindex="-1"></a>           <span class="fu">row_number</span>() <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb117-21"><a href="#cb117-21" aria-hidden="true" tabindex="-1"></a>         )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Выглядит несколько устрашающе. К тому же, читать такой код приходится задом наперед (изнутри наружу), чтобы понять последовательность действий. Таким образом, организация конвейера манипуляций с использованием пайп-оператора позволяет:</p>
+<ul>
+<li>упорядочить операции по обработке данных слева направо (в противоположность направлению изнутри наружу);</li>
+<li>избежать вложенных вызовов функций (матрёшки);</li>
+<li>минимизировать количество переменных для храненния промежуточных результатов;</li>
+<li>упростить добавление новых операций по обработке данных в любое место последовательности.</li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>Пайп-оператор <code>|&gt;</code> можно быстро набрать в RStudio</strong>, нажав клавиатурное сочетание <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> на помпьютерах Mac)</p>
+</blockquote>
+</section>
+<section id="tables_tidy" class="level3" data-number="3.6.3">
+<h3 data-number="3.6.3" class="anchored" data-anchor-id="tables_tidy"><span class="header-section-number">3.6.3</span> Преобразование структуры</h3>
+<p>Одни и те же данные можно предствить в табличной форме по-разному. Одна форма будет удобной для ручного заполнения таблицы. Другая форма будет удобной для программной обработки и анализа. Большинство же остальных форм не будут оптимальными ни для того, ни для другого. Наш курс посвящен автоматизированной обработке данных на языке R, поэтомы мы должны определить, какая форма таблицы удобна для этих целей.</p>
+<p>В экосистеме R такие данные принято называть «аккуратными», или по-английски <a href="https://www.jstatsoft.org/article/view/v059i10"><strong>tidy data</strong></a>. Аккуратные таблицы отвечают следующим требованиям:</p>
+<ol type="1">
+<li>Каждый столбец представляет переменную</li>
+<li>Каждая строка представляет измерение</li>
+<li>Каждая ячейка представляет значение</li>
+</ol>
+<p>С некоторой долей условности можно говорить, что это <a href="https://ru.wikipedia.org/wiki/Третья_нормальная_форма">третья нормальная форма</a> реляционного отношения.</p>
+<p>Таблицы, с которыми мы работали до настоящего момента в этой главе, не отвечают данным требованиям. В частности, данные по лесовосстановлению содержат столбцы, в которых приведены данные за соответствующие года. Это <strong>одна</strong> переменная, разбитая на несколько столбцов. При этом <em>год измерения</em> является второй переменной. Такая форма удобна для заполнения и визуального анализа, но неудобна для программной обработки. Предположим, что нам надо найти все регионы, у которых в промежутке между 2012 и 2015 годами лесовосстановительные работы хотя бы в один год не производились (их объем был равен нулю). В текущей форме таблицы нам придется сделать 4 условия — по одному на каждый год-столбец. Это при том, что мы должны быть уверены, что все промежуточные года в таблице присутствуют. Приведя таблицу к аккуратному виду, мы можем решить задачу более компактно, отправив всего 2 запроса: один на год измерения и второй на величину показателя.</p>
+<p>Приведение таблицы к аккуратному виду можно сделать, используя функции из пакета <a href="https://tidyr.tidyverse.org"><strong>tidyr</strong></a>. Основных функций в этом пакете всего две<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>:</p>
+<ul>
+<li><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html"><code>pivot_longer()</code></a> берет несколько колонок и преобразует их к виду «ключ—значение»: широкие таблицы становятся длинными.</li>
+<li><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html"><code>pivot_wider()</code></a> берет две колонки, соответствующие ключу и значению, и распределяет их на множество колонок: длинные таблицы становятся широкими.</li>
+</ul>
+<p>Помимо этого, есть еще 2 полезных функции, которые позволяют «распиливать» или «склеивать» колонки:</p>
+<ul>
+<li><code>separate()</code> разделяет колонку на несколько колонок, используя заданный символ-разделитель или позицию.</li>
+<li><code>unite()</code> скливает несколько колонок, используя заданный символ-разделитель.</li>
+</ul>
+<p>Функция <code>pivot_longer()</code> имеет четыре основных параметра:</p>
+<ul>
+<li><code>data</code> — входная таблица (фрейм данных или тиббл)</li>
+<li><code>cols</code> — перечисление столбцов, которые необходимо подвергнуть преобразованию</li>
+<li><code>names_to</code> — имя нового столбца, который будет хранить ключи (бывшие названия столбцов)</li>
+<li><code>values_to</code> — имя нового столбца, который будет хранить значения</li>
+</ul>
+<p>Рассмотрим на примере таблицы <em>reforest</em> приведение к аккуратному виду:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">reforest_tidy =</span> reforest <span class="sc">|&gt;</span> </span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> y2005<span class="sc">:</span>y2016, </span>
+<span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">names_to =</span> <span class="st">'year'</span>, </span>
+<span id="cb118-4"><a href="#cb118-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">values_to =</span> <span class="st">'value'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 712 × 3
+   Region                        year  value
+   &lt;chr&gt;                         &lt;chr&gt; &lt;dbl&gt;
+ 1 Российская Федерация          y2005 812. 
+ 2 Российская Федерация          y2010 812. 
+ 3 Российская Федерация          y2011 860  
+ 4 Российская Федерация          y2012 842. 
+ 5 Российская Федерация          y2013 872. 
+ 6 Российская Федерация          y2014 863  
+ 7 Российская Федерация          y2015 803. 
+ 8 Российская Федерация          y2016 840. 
+ 9 Центральный федеральный округ y2005  52.6
+10 Центральный федеральный округ y2010  62.7
+# ℹ 702 more rows</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Обратите внимание на то, что параметры <code>names_to</code> и <code>values_to</code> надо передавать как строки, поскольку они содержат еще <em>не существующие</em> объекты.</p>
+</blockquote>
+<p>Полученный результат еще не вполне пригоден для анализа, поскольку в переменной <code>year</code> мы имеем строковые значения, начинающиеся с <code>y</code>. Чтобы избавиться от этого префикса, можно при вызове <code>pivot_longer()</code> указать параметр <code>names_prefix</code>. Поскольку по умолчанию ключи конвертируются в строковый столбец, а год — это целочисленное значение, следует дополнительно указать параметр <code>names_ptypes</code>. Помимо этого, конвертации подвергаются все столбцы, <em>кроме</em> <code>Region</code> — это означает, что можно пойти от обратного в параметре <code>cols</code>. Резюмируя перечисленные соображения, вышеприведенный вызов можно оптимизировать следующим образом:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">reforest_tidy2 =</span> reforest <span class="sc">|&gt;</span> </span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>Region, </span>
+<span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">names_to =</span> <span class="st">'year'</span>,</span>
+<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">names_prefix =</span> <span class="st">'y'</span>,</span>
+<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">names_transform =</span> <span class="fu">list</span>(<span class="at">year =</span> as.integer),</span>
+<span id="cb120-6"><a href="#cb120-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">values_to =</span> <span class="st">'value'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 712 × 3
+   Region                         year value
+   &lt;chr&gt;                         &lt;int&gt; &lt;dbl&gt;
+ 1 Российская Федерация           2005 812. 
+ 2 Российская Федерация           2010 812. 
+ 3 Российская Федерация           2011 860  
+ 4 Российская Федерация           2012 842. 
+ 5 Российская Федерация           2013 872. 
+ 6 Российская Федерация           2014 863  
+ 7 Российская Федерация           2015 803. 
+ 8 Российская Федерация           2016 840. 
+ 9 Центральный федеральный округ  2005  52.6
+10 Центральный федеральный округ  2010  62.7
+# ℹ 702 more rows</code></pre>
+</div>
+</div>
+<p>Если по какой-то причине вам уже досталась таблица, в которой в ячейках сцеплены несколько сущностей, разделить их можно с помощью функции <code>separate()</code>. Вышеприведенный тиббл <code>reforest_tidy</code> можно “довести до ума” последовательным вызовом <code>separate()</code>, <code>select()</code> и <code>mutate()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">reforest_tidy =</span> reforest_tidy <span class="sc">|&gt;</span> </span>
+<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(year, <span class="fu">c</span>(<span class="st">'y'</span>, <span class="st">'year'</span>), <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb122-3"><a href="#cb122-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>y) <span class="sc">|&gt;</span> </span>
+<span id="cb122-4"><a href="#cb122-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">as.integer</span>(year)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 712 × 3
+   Region                         year value
+   &lt;chr&gt;                         &lt;int&gt; &lt;dbl&gt;
+ 1 Российская Федерация           2005 812. 
+ 2 Российская Федерация           2010 812. 
+ 3 Российская Федерация           2011 860  
+ 4 Российская Федерация           2012 842. 
+ 5 Российская Федерация           2013 872. 
+ 6 Российская Федерация           2014 863  
+ 7 Российская Федерация           2015 803. 
+ 8 Российская Федерация           2016 840. 
+ 9 Центральный федеральный округ  2005  52.6
+10 Центральный федеральный округ  2010  62.7
+# ℹ 702 more rows</code></pre>
+</div>
+</div>
+<p>Теперь можно выполнять любые запросы, комбинирующие год измерения и величину показателя. Найдем субъекты, в которых с 2012 по 2015 год не производились лесовосстановительные работы:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a>reforest_tidy <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(year <span class="sc">&gt;</span> <span class="dv">2011</span> <span class="sc">&amp;</span> year <span class="sc">&lt;</span> <span class="dv">2016</span> <span class="sc">&amp;</span> value <span class="sc">==</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  Region             year value
+  &lt;chr&gt;             &lt;int&gt; &lt;dbl&gt;
+1 Орловская область  2013     0
+2 Республика Адыгея  2014     0</code></pre>
+</div>
+</div>
+<p>“Длинная” форма данных удобна для программного анализа, но может быть неудобна для ручного редактирования, визуальной оценки или передачи в другие программы, ожидающие на входе данные в “широком” формате. В этих случаях будет полезна функция <code>pivot_wider()</code>, которая по своему действию противоположна <code>pivot_longer()</code>. Данная функция имеет три основных параметра:</p>
+<ul>
+<li><code>data</code> — входная таблица (фрейм данных или тиббл)</li>
+<li><code>names_from</code> — имя переменной, из которой будут браться названия столбцов</li>
+<li><code>values_from</code> — имя переменной, из которой будут браться значения в ячейках</li>
+</ul>
+<p>Преобразуем ранее удлиненную таблицу к “широкому” виду:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">reforest =</span> reforest_tidy <span class="sc">|&gt;</span> </span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> year, <span class="at">values_from =</span> value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 89 × 9
+   Region                `2005` `2010` `2011` `2012` `2013` `2014` `2015` `2016`
+   &lt;chr&gt;                  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+ 1 Российская Федерация   812.   812.   860    842.   872.   863    803.   840. 
+ 2 Центральный федераль…   52.6   62.7   60.9   60.3   70.9   71.2   72.6   77  
+ 3 Белгородская область     0.4    0.1    0.3    0.3    0.4    0.4    0.2    0.2
+ 4 Брянская область         2.9    2.8    3      3.2    3.5    3.3    3.1    3  
+ 5 Владимирская область     4.4    5.3    5.7    6      7.1    5.9    6      4.9
+ 6 Воронежская область      1.1    1.1    1.8    3      2.7    2.7    2.6    2.3
+ 7 Ивановская область       2.1    1.6    2.2    3.1    4      4.8    4.6    4.2
+ 8 Калужская область        2.2    2.3    2.3    2.5    2.4    3.1    3.2    3.2
+ 9 Костромская область     10     25.2   11     11.8   15.3   13.6   15.1   16.4
+10 Курская область          0.5    0.3    0.4    0.6    0.6    0.6    0.5    0.4
+# ℹ 79 more rows</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Обратите внимание на то, что параметры <code>names_from</code> и <code>values_from</code> можно задавать как имена переменных, а не как строки.</p>
+</blockquote>
+<p>В качестве примера операции с широкой таблицей вычислим разности по сравнению с предыдущим годом:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>diffs <span class="ot">=</span> reforest <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="st">`</span><span class="at">2011</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">2016</span><span class="st">`</span>) <span class="sc">-</span></span>
+<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a>        reforest <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="st">`</span><span class="at">2010</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">2015</span><span class="st">`</span>)</span>
+<span id="cb128-3"><a href="#cb128-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb128-4"><a href="#cb128-4" aria-hidden="true" tabindex="-1"></a>diffs <span class="sc">|&gt;</span> </span>
+<span id="cb128-5"><a href="#cb128-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Region =</span> reforest<span class="sc">$</span>Region) <span class="sc">|&gt;</span> </span>
+<span id="cb128-6"><a href="#cb128-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Region, <span class="st">`</span><span class="at">2011</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">2016</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb128-7"><a href="#cb128-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="co"># Посмотрим шапку таблицы</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         Region 2011  2012 2013 2014  2015 2016
+1          Российская Федерация 48.5 -18.3 30.6 -9.3 -60.1 37.0
+2 Центральный федеральный округ -1.8  -0.6 10.6  0.3   1.4  4.4
+3          Белгородская область  0.2   0.0  0.1  0.0  -0.2  0.0
+4              Брянская область  0.2   0.2  0.3 -0.2  -0.2 -0.1
+5          Владимирская область  0.4   0.3  1.1 -1.2   0.1 -1.1
+6           Воронежская область  0.7   1.2 -0.3  0.0  -0.1 -0.3</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="tables_join" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="tables_join"><span class="header-section-number">3.7</span> Соединение</h2>
+<p>Данные, с которыми мы работаем, часто распределены по нескольким таблицам. Если возникает задача их совместного использования (сравнения, вычисления производных показателей), таблицы необходимо соединить.</p>
+<p>В процессе <strong>соединения</strong> в обеих таблицах находятся строки, соответствующие одному и тому же измерению (например, региону). После этого столбцы второй таблицы пристыковываются к столбцам первой таблицы, а строки — к соответствующим строкам <em>(мутирующее соединение)</em>, либо же происходит фильтрация строк первой таблицы на основе нахождения соответствующих строк во второй таблице <em>(фильтрующее соединение)</em>.</p>
+<p>Чтобы найти соответствие, в обеих таблицах должен быть по крайней мере один столбец, идентифицирующий каждую строку. В первой таблице он называется <strong>первичным ключом</strong> <em>(primary key)</em>, во второй таблице — <strong>внешним ключом</strong> <em>(foreign key)</em>.</p>
+<p>Для выполнения соедининия в пакете dplyr имеется несколько функций.</p>
+<p><em>Мутирующее соединение:</em></p>
+<ul>
+<li><code>inner_join(x, y, by = )</code> возвращает все строки из <code>x</code>, для которых имеются соответствующие строки в <code>y</code>, а также все столбцы из <code>x</code> и <code>y</code>.</li>
+<li><code>left_join(x, y, by = )</code> возвращает все строки из <code>x</code>, а также все столбцы из <code>x</code> и <code>y</code>. Строки в <code>x</code>, для которых не найдены соответствия в <code>y</code>, будут иметь значения <code>NA</code> в присоединенных столбцах</li>
+<li><code>right_join(x, y, by = )</code> возвращает все строки из <code>y</code>, а также все столбцы из <code>x</code> и <code>y</code>. Строки в <code>y</code>, для которых не найдены соответствия в <code>x</code>, будут иметь значения <code>NA</code> в присоединенных столбцах</li>
+<li><code>full_join(x, y, by = )</code> возвращает все строки и колонки из <code>x</code> и <code>y</code>. В строках, для которых не найдено соответствие ячейки присоединяемых стольков будут заполнены значениями <code>NA</code></li>
+</ul>
+<p><em>Фильтрующее соединение:</em></p>
+<ul>
+<li><code>semi_join(x, y, by = )</code> возвращает все строки из <code>x</code>, для которых имеются соответствующие строки в <code>y</code>, а также все столбцы из <code>x</code></li>
+<li><code>anti_join(x, y, by = )</code> возвращает все строки из <code>x</code>, для которыхне найдены соответствующие строки в <code>y</code>, а также все столбцы из <code>x</code></li>
+</ul>
+<p>Рассмотрим соединение таблиц на примере данных по лесовосстановлению и заготовкам древесины. Наша задача — оценить количество гектаров восстанавливаемой лесной площади (в га) на тысячу кубометров лесозаготовок (и таким образом оценить эффективность лесовосстановительных мероприятий).</p>
+<p>Подгрузим таблицу по лесозаготовкам:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb130"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">timber =</span> <span class="fu">read_excel</span>(<span class="st">'data/timber.xlsx'</span>, </span>
+<span id="cb130-2"><a href="#cb130-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">col_types =</span> <span class="fu">c</span>(<span class="st">'text'</span>, <span class="fu">rep</span>(<span class="st">'numeric'</span>, <span class="dv">8</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb130-3"><a href="#cb130-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span>stringr<span class="sc">::</span><span class="fu">str_detect</span>(Регион, <span class="st">'Федерация|федеральный округ'</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in G13 / R13C7: got '…1)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in H13 / R13C8: got '…1)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in F14 / R14C6: got '…1)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in G14 / R14C7: got '…1)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in H14 / R14C8: got '…1)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in F19 / R19C6: got '…1)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in G19 / R19C7: got '-'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in H19 / R19C8: got '…1)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in F28 / R28C6: got '…1)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in B31 / R31C2: got '-'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in C31 / R31C3: got '-'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in E31 / R31C5: got '-'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in F31 / R31C6: got '…1)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in E37 / R37C5: got '-'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in F37 / R37C6: got '-'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in G37 / R37C7: got '-'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in F40 / R40C6: got '…1)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in G40 / R40C7: got '-'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in H40 / R40C8: got '…1)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in G41 / R41C7: got '…1)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in F42 / R42C6: got '-'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in G42 / R42C7: got '-'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in H42 / R42C8: got '-'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in F43 / R43C6: got '…1)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in G43 / R43C7: got '…1)'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expecting numeric in H43 / R43C8: got '…1)'</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 75 × 9
+   Регион               `2010` `2011` `2012` `2013` `2014` `2015` `2016` Место
+   &lt;chr&gt;                 &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+ 1 Белгородская область   30.4   39.6   27.7   37.4   34.1   45.6   30.4    60
+ 2 Брянская область      614.   616.   824.   850.   793.   739.   750.     27
+ 3 Владимирская область 1078   1335   1236   1142   1165   1272   1252      20
+ 4 Воронежская область    73.6   69.5   68.6   47.9   81.1   86.6   53.5    58
+ 5 Ивановская область    130.   140.   200.   199.   231.   326.   421.     38
+ 6 Калужская область     274.   244.   192.   198.   183    145.   204      44
+ 7 Костромская область  3000   3332   2797   2692   2564   2186   2515      14
+ 8 Курская область        22.8   55.4   49.7   50.1   65.9   74.6   80.7    55
+ 9 Липецкая область      163.   139     49.7   42.6   50.1   73.1   87.8    53
+10 Московская область    126.   265.   299.   108.    15.6   NA     NA      74
+# ℹ 65 more rows</code></pre>
+</div>
+</div>
+<p>Приведем ее к аккуратному виду, который соответствует виду таблицы по лесовосстановлению:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb158"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb158-1"><a href="#cb158-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">timber_tidy =</span> timber <span class="sc">|&gt;</span> </span>
+<span id="cb158-2"><a href="#cb158-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(year, harvest, <span class="st">`</span><span class="at">2010</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">2016</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb158-3"><a href="#cb158-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">Region =</span> Регион,</span>
+<span id="cb158-4"><a href="#cb158-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">year =</span> <span class="fu">as.numeric</span>(year),</span>
+<span id="cb158-5"><a href="#cb158-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">harvest =</span> harvest))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 525 × 3
+   Region                year harvest
+   &lt;chr&gt;                &lt;dbl&gt;   &lt;dbl&gt;
+ 1 Белгородская область  2010    30.4
+ 2 Брянская область      2010   614. 
+ 3 Владимирская область  2010  1078  
+ 4 Воронежская область   2010    73.6
+ 5 Ивановская область    2010   130. 
+ 6 Калужская область     2010   274. 
+ 7 Костромская область   2010  3000  
+ 8 Курская область       2010    22.8
+ 9 Липецкая область      2010   163. 
+10 Московская область    2010   126. 
+# ℹ 515 more rows</code></pre>
+</div>
+</div>
+<p>Теперь нам осталось присоединить данные по лесозаготовкам к таблице по лесовосстановлению, используя имя региона (<code>Region</code>) и год (<code>year</code>) в качестве ключевых полей.</p>
+<p>Для этого мы используем функцию <code>inner_join()</code>, поскольку нас интересует сравнение по тем годам, для которых имеются данные в обеих таблицах:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb160"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb160-1"><a href="#cb160-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">compare =</span> reforest_tidy <span class="sc">|&gt;</span> </span>
+<span id="cb160-2"><a href="#cb160-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(timber_tidy, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Region"</span> <span class="ot">=</span> <span class="st">"Region"</span>, <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"year"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 511 × 4
+   Region                year value harvest
+   &lt;chr&gt;                &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+ 1 Белгородская область  2010   0.1    30.4
+ 2 Белгородская область  2011   0.3    39.6
+ 3 Белгородская область  2012   0.3    27.7
+ 4 Белгородская область  2013   0.4    37.4
+ 5 Белгородская область  2014   0.4    34.1
+ 6 Белгородская область  2015   0.2    45.6
+ 7 Белгородская область  2016   0.2    30.4
+ 8 Брянская область      2010   2.8   614. 
+ 9 Брянская область      2011   3     616. 
+10 Брянская область      2012   3.2   824. 
+# ℹ 501 more rows</code></pre>
+</div>
+</div>
+<p>Наконец, вычислим искомое отношние и упорядочим регионы по году (возрастание) и отношению (убывание):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb162"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb162-1"><a href="#cb162-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">compare =</span> compare <span class="sc">|&gt;</span> </span>
+<span id="cb162-2"><a href="#cb162-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">ratio =</span> <span class="dv">1000</span> <span class="sc">*</span> value <span class="sc">/</span> harvest) <span class="sc">|&gt;</span> </span>
+<span id="cb162-3"><a href="#cb162-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">select</span>(Region, year, ratio, value, harvest) <span class="sc">|&gt;</span> </span>
+<span id="cb162-4"><a href="#cb162-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">arrange</span>(year, <span class="fu">desc</span>(ratio)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 511 × 5
+   Region                    year ratio value harvest
+   &lt;chr&gt;                    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+ 1 Ставропольский край       2010 182.    0.4     2.2
+ 2 Ростовская область        2010 149.    1.5    10.1
+ 3 Магаданская область       2010 118.    2.6    22  
+ 4 Сахалинская область       2010  63.8  12.7   199. 
+ 5 Республика Саха (Якутия)  2010  63.3  58     917. 
+ 6 Республика Тыва           2010  61.8   4.4    71.2
+ 7 Мурманская область        2010  52.2   3      57.5
+ 8 Волгоградская область     2010  48.4   1.8    37.2
+ 9 Камчатский  край          2010  38.9   5.2   134. 
+10 Амурская область          2010  38.5  29.8   773. 
+# ℹ 501 more rows</code></pre>
+</div>
+</div>
+<p>Из этой таблицы видно, что площадь восстанавливаемых лесов далеко не всегда пропорциональна объему заготовок необработанной древесины.</p>
+</section>
+<section id="tables_write" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="tables_write"><span class="header-section-number">3.8</span> Запись</h2>
+<p>Запись файлов <em>в текстовом формате</em> можно осуществить посредством функций из пакета <strong>readr</strong>, таких как <code>write_delim()</code>, <code>write_csv()</code> и <code>write_tsv()</code>. Базовый синтаксис их предельно прост:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb164"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb164-1"><a href="#cb164-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(compare, <span class="st">"data/output/timber_compare.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Для записи таблиц <em>Microsoft Excel</em> можно использовать возможности пакета <a href="https://cran.r-project.org/web/packages/writexl/index.html"><strong>writexl</strong></a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb165"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb165-1"><a href="#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_xlsx</span>(compare, <span class="st">"data/output/timber_compare.xlsx"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Каждая из этих функций содержит ряд дополнительных параметров, позволяющих управлять внешним видом выгружаемых таблиц. Более подробно с ними вы можете ознакомиться, вызвав справку для соответствующей функции.</p>
+</section>
+<section id="tables_rules" class="level2" data-number="3.9">
+<h2 data-number="3.9" class="anchored" data-anchor-id="tables_rules"><span class="header-section-number">3.9</span> Рекомендации по подготовке таблиц для чтения в R</h2>
+<p>Несмотря на то, что каких-то четких правил подготовки таблиц для программной обработки не существует, можно дать несколько полезных рекомендаций по данному поводу:</p>
+<ol type="1">
+<li>В первой строке таблицы должны располагаться названия столбцов.</li>
+<li>Во второй строке таблицы должны начинаться данные. Не допускайте многострочных заголовков.</li>
+<li>В названиях столбцов недопустимы объединенные ячейки, покрывающие несколько столбцов. Это может привести к неверному подсчету количества столбцов и, как следствие, некорректному чтению таблицы в целом.</li>
+<li>Названия столбцов должны состоять из латинских букв и цифр, начинаться с буквы и не содержать пробелов. Сложносочиненные названия выделяйте прописными буквами. Плохое название столбца: <code>Валовый внутренний продукт за 2015 г.</code>. Хорошее название столбца: <code>GDP2015</code>.</li>
+<li>Некоторые ошибки данных в таблицах (такие как неверные десятичные разделители), проще найти и исправить в табличном/текстовом редакторе, нежели после загрузки в <strong>R</strong>.</li>
+</ol>
+<p>Следование этим правилам значительно облегчит работу с табличными данными в среде <strong>R</strong>.</p>
+</section>
+<section id="tables_review" class="level2" data-number="3.10">
+<h2 data-number="3.10" class="anchored" data-anchor-id="tables_review"><span class="header-section-number">3.10</span> Краткий обзор</h2>
+<p>Для просмотра презентации щелкните на ней один раз левой кнопкой мыши и листайте, используя кнопки на клавиатуре:</p>
+<div class="cell">
+<iframe src="https://tsamsonov.github.io/r-geo-course-slides/03_Tables.html#1" width="672" height="390px" data-external="1">
+</iframe>
+</div>
+<blockquote class="blockquote">
+<p>Презентацию можно открыть в отдельном окне или вкладке браузере. Для этого щелкните по ней правой кнопкой мыши и выберите соответствующую команду.</p>
+</blockquote>
+</section>
+<section id="tables_questions" class="level2" data-number="3.11">
+<h2 data-number="3.11" class="anchored" data-anchor-id="tables_questions"><span class="header-section-number">3.11</span> Контрольные вопросы и упражнения</h2>
+<section id="tables_questions_questions" class="level3" data-number="3.11.1">
+<h3 data-number="3.11.1" class="anchored" data-anchor-id="tables_questions_questions"><span class="header-section-number">3.11.1</span> Вопросы</h3>
+<ol type="1">
+<li>Какая функция позволяет установить новый пакет в R?</li>
+<li>Как подключить пакет в текущую сессию R?</li>
+<li>Как вызвать функцию из пакета, не подключая его в текущей сессии R?</li>
+<li>Какие структуры данных используются для представления таблиц в среде R? Чем они отличаются друг от друга?</li>
+<li>Какая функция позволяет создавать тибблы по строкам, а не столбцам?</li>
+<li>Как загрузить в текущую сессию R набор данных из конкретного пакета? Под каким именем он будет доступен?</li>
+<li>Каковы основные принципы создания текстовых файлов с разделителем для хранения таблиц? Какой аббревиатурой они обозначаются?</li>
+<li>Чем отличаются файлы с фиксированной шириной столбца от файлов с разделителем? Какими спопообами можно указать границы колонок при чтении этих файлов?</li>
+<li>Перечислите функции из пакета <strong>readr</strong>, которые можно использовать для чтения текстовых файлов с табличными данными?</li>
+<li>Какой пакет позволяет читать данные в формате Microsoft Excel?</li>
+<li>Если прочитанный вами файл содержит нечитаемые символы, что это означает? Как решить проблему?</li>
+<li>Какие дополнительные параметры позволяют задавать функции чтения данных из пакетов <strong>readr</strong> и <strong>readxl</strong>, помимо имени файла?</li>
+<li>Перечислите основные возможности для отображения табличных данных в среде R?</li>
+<li>Можно ли заменять названия строк и столбцов таблицы? Если да, то какие функции для этого используются?</li>
+<li>Назовите возможные способы извлечения столбца (столбцов) из фрейма данных/тиббла. Какие из них приводят к получения вектора, а какие возвращают фрейм данных/тиббл?</li>
+<li>Как извлечь строки, удовлетворяющие некоторому критерию, используя стандартные средства <strong>R</strong>?</li>
+<li>Перечислите основные типы манипуляций над таблицами.</li>
+<li>Какой тип манипуляции всегда используется в сочетании с другими типами?</li>
+<li>Нужно ли заключать названия переменных в кавычки при использовании функций пакета <strong>dplyr</strong>?</li>
+<li>Какая функция <strong>dplyr</strong> позволяет выбирать нужные переменные? Как с помощью нее отобрать диапазон переменных? Можно ли пойти от обратного и исключить, а не выбрать переменные?</li>
+<li>Какая функция <strong>dplyr</strong> позволяет осуществлять фильтрацию строк? Как реализовать фильтрацию строк по нескольким условиям одновременно?</li>
+<li>Как найти строки, в которых встречаются заданные фрагменты текста? Какая функция позволяет это сделать?</li>
+<li>Назовите функцию <strong>dplyr</strong>, отвечающую за выполнение сортировки таблицы. Как с помощью нее упорядочить данные по нескольким столбцам? Сделать порядок сортировки по убыванию?</li>
+<li>Что такое мутирование и трансмутирование таблицы?</li>
+<li>Какая функция <strong>dplyr</strong> отвечает за добавление новых переменных? Можно ли с помощью нее добавить несколько переменных сразу? Как оставить только вновь создаваемые переменные?</li>
+<li>С помощью какой функции можно вычислить обобщающие статистики по всем строкам или группам строк?</li>
+<li>Как с помощью <strong>dplyr</strong> получить количество элементов и количество уникальных элементов в каждой группе?</li>
+<li>Как с помощью <strong>dplyr</strong> получить первый, последний и n-ный элемент в каждой группе?</li>
+<li>Что такое конвейер манипуляций и для чего он используется в R?</li>
+<li>Опишите приципы действия пайп-оператора. С помощью какого клавиатурного сочетания его можно быстро ввести в <strong>RStudio</strong>?</li>
+<li>Опишите требования, которым должны отвечать аккуратные табличные данные. Какой пакет <strong>R</strong> позволяет преборазовывать данные в такую форму?</li>
+<li>Какие две основных операции над таблицами позволяют добиться длинного и широкого вида таблицы? Можно ли говорить о том, что для всех задач удобна какая-то одна из этих двух форм?</li>
+<li>Как работают функции <code>pivot_longer()</code> и <code>pivot_wider()</code>?</li>
+<li>Что такое соединение таблиц? В каких случаях оно бывает необходимо? Какие разновидности соединения реализованы в <strong>dplyr</strong>?</li>
+<li>Каким требованиям должны отвечать таблицы для того чтобы их соединение было возможным?</li>
+<li>Что такое первичный и внешний ключ в операции соединения таблиц?</li>
+<li>Какие возможности существуют для записи табличных данных в текстовые файлы? Перечислите пакеты и функции, такие возможности реализующие.</li>
+<li>Опишите общие рекомендации для подготовки таблиц к чтению средствами R.</li>
+</ol>
+</section>
+<section id="tables_questions_tasks" class="level3" data-number="3.11.2">
+<h3 data-number="3.11.2" class="anchored" data-anchor-id="tables_questions_tasks"><span class="header-section-number">3.11.2</span> Упражнения</h3>
+<ol type="1">
+<li><p>Таблица <em>quakes</em> из пакета <strong>datasets</strong> содержит магнитуду землетрясений в поле <code>mag</code>. Используя функции <strong>dplyr</strong> и пайп-оператор, создайте на ее основе таблицу с частотой (количеством штук) землетрясений каждой магнитуды.</p>
+<blockquote class="blockquote">
+<p><strong>Подсказка:</strong> при выполнении агрегирования используйте функцию <code>n()</code>, которая возвращает количество строк в группе.</p>
+</blockquote></li>
+<li><p>Таблица <em>storms</em> из пакета <strong>dplyr</strong> содержит увлекательные данные трекинга тропических циклонов c 1975 по 2015 год. Используя функции <strong>dplyr</strong> и пайп-оператор, создайте таблицу в которой зафиксировано: название циклона, дата начала, дата окончания, продолжительность в днях, максимальная скорость ветра, минимальное давление. Отсортируйте циклоны сначала по максимальной скорости ветра (по убыванию), затем по давлению (по возрастанию). Оформите результат в виде одного конвейера манипуляций.</p>
+<blockquote class="blockquote">
+<p><strong>Подсказка:</strong> перед выполнением агрегирования на основе существующих полей создайте новое поле, в котором хранится дата события, имеющая тип <code>Date</code>. Это позволит вам правильно вычислить продолжительность в днях. Чтобы создать строку для преобразования в дату, используйте функцию <code>paste()</code>, подставив в нее поля, составляющие даты, и укажите необходимый разделитель в параметре <code>sep()</code>. После агрегирования данных и перед сортировкой вызовите <code>ungroup()</code>, иначе вы будете сортировать внутри каждой группы, а вам нужно сортировать результаты группировки.</p>
+</blockquote></li>
+<li><p>Загрузите <a href="https://raw.githubusercontent.com/tsamsonov/r-geo-course/master/data/wind_energy.txt">файл</a> с данными по энергии ветра вдоль Черноморского побережья на высотах 50 и 100 метров, который был использован в этой лекции. Данный файл имеет формат фиксированной ширины столбца (см. параграф @ref(tables-reading-text-fwf)). Произведите чтение данного файла и приведите его с помощью <strong>tidyr</strong> к аккуратному виду, разделив высоту и величину энергии на отдельные столбцы. Используя возможности <strong>dplyr</strong>, рассчитайте фрейм данных со средними значениями энергии на каждой высоте.</p></li>
+<li><p>Загрузите <a href="https://raw.githubusercontent.com/tsamsonov/r-geo-course/master/data/okruga.csv">файл CSV</a> с данными по населению федеральных округов России, который был использован в этой лекции. Прочтите данную таблицу, приведите ее с помощью <strong>tidyr</strong> к аккуратному виду (федеральный округ — год — население), а также вычислите в виде дополнительного столбца долю (в %), которую каждый округ занимает в общем населении России на каждый год (получится федеральный округ — год — население — доля). Оформите результат в виде одного конвейера манипуляций.</p>
+<blockquote class="blockquote">
+<p><strong>Подсказка:</strong> используйте <em>группировку таблицы по году</em> и вычислите поле с долей путем деления поля населения на <em>сумму</em> по полю населения.</p>
+</blockquote></li>
+</ol>
+<table class="table">
+<tbody>
+<tr class="odd">
+<td><em>Самсонов Т.Е.</em> <strong>Визуализация и анализ географических данных на языке R.</strong> М.: Географический факультет МГУ, 2023. DOI: <a href="https://doi.org/10.5281/zenodo.901911">10.5281/zenodo.901911</a></td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+</section>
+<aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Ранее вместо <code>pivot_longer()</code> и <code>pivot_wider()</code> использовались функции <code>gather()</code> и <code>spread()</code> соответственно. Новые функции имеют более очевидный синтаксис и более широкие возможности, поэтому использование <code>gather()</code> и <code>spread()</code> начиная с версии 1.0.0 пакета <strong>tidyr</strong> более не рекомендуется.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
+        }
+        return container.innerHTML
+      } else {
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        console.log("RESIZE");
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./02-DataStructures.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Структуры данных</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./04-Functions.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Функции</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
