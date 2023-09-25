@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.309">
+<meta name="generator" content="quarto-1.4.382">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -58,6 +58,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -106,6 +107,7 @@ div.csl-indent {
     "/",
     "s"
   ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -230,7 +232,7 @@ div.csl-indent {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./08-AdvStats.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Продвинутая статистика</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Временные ряды</span></span></a>
   </div>
 </li>
       </ul>
@@ -303,6 +305,7 @@ div.csl-indent {
 
 
 </header>
+
 
 <p><a href="https://github.com/tsamsonov/r-geo-course/blob/master/code/01-Basics.R">Программный код главы</a></p>
 <section id="data_types" class="level2" data-number="1.1">
@@ -620,18 +623,18 @@ div.csl-indent {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>current <span class="ot">=</span> <span class="fu">Sys.Date</span>()</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>current</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] "2023-09-22"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] "2023-09-25"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Даты можно вычитать. Результатом выполнения. Например, узнать продолжительность жизни в днях можно так:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>livedays <span class="ot">=</span> current <span class="sc">-</span> birth</span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>livedays</span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Time difference of 13730 days</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Time difference of 13733 days</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Вы также можете прибавить к текущей дате некоторое значение. Например, необходимо узнать, какая дата будет через 40 дней:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>current <span class="sc">+</span> <span class="dv">40</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] "2023-11-01"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] "2023-11-04"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Имея дату, вы можете легко извлечь из нее день, месяц и год. Существуют специальные функции для этих целей (описанные в главе 8), но прямо сейчас вы можете сделать это сначала преобразовав дату в строку, а затем выбрав из нее подстроку, соответствующую требуемой компоненте даты:</p>
 <div class="cell">
@@ -646,7 +649,7 @@ div.csl-indent {
 </div>
 <div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">substr</span>(cdate, <span class="dv">9</span>, <span class="dv">10</span>)  <span class="co"># День</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "22"</code></pre>
+<pre><code>[1] "25"</code></pre>
 </div>
 </div>
 <p>Более подробно о преобразованиях типов, аналогичных функции <code>as.character()</code>, используемой в данном примере, рассказано далее в настоящей главе.</p>
@@ -804,11 +807,9 @@ div.csl-indent {
 <p>Особое значение имеют функции проверки пустых переменных (имеющих значение <code>NA</code> - not available), которые могут получаться в результате несовместимых преобразований или соответствовать пропускам в исходных данных:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.integer</span>(<span class="st">'Привет!'</span>)</span>
-<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Warning: NAs introduced by coercion</span></span>
-<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] NA</span></span>
-<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="fu">is.na</span>(<span class="fu">as.integer</span>(<span class="st">'Привет!'</span>))</span>
-<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Warning: NAs introduced by coercion</span></span>
-<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] NA</span></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="fu">is.na</span>(<span class="fu">as.integer</span>(<span class="st">'Привет!'</span>))</span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -871,7 +872,7 @@ div.csl-indent {
 <span id="cb65-14"><a href="#cb65-14" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] "2 в степени 10 равно 1024"</span></span>
 <span id="cb65-15"><a href="#cb65-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb65-16"><a href="#cb65-16" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Сегодняшняя дата - "</span>, <span class="fu">Sys.Date</span>()))</span>
-<span id="cb65-17"><a href="#cb65-17" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] "Сегодняшняя дата -  2023-09-22"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb65-17"><a href="#cb65-17" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] "Сегодняшняя дата -  2023-09-25"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Функция <code>cat()</code> отличается от <code>print()</code> следующими особенностями:</p>
 <ul>
@@ -891,18 +892,18 @@ div.csl-indent {
 <span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a><span class="do">## 2 в степени 10 равно 1024</span></span>
 <span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Сегодняшнаяя дата -"</span>, <span class="fu">Sys.Date</span>())</span>
-<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Сегодняшнаяя дата - 19622</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Сегодняшнаяя дата - 19625</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Можно видеть, что в последнем случае <code>cat()</code> напечатала отнюдь не дату в ее привычном представлении, а некое число, которое является внутренним представлением даты в типе данных <code>Date</code>. Такие типы данных являются классами объектов в R, и у них есть своя функция <code>print()</code>, которая и выдает содержимое объекта в виде, который ожидается пользователем. Поэтому пользоваться функцией <code>cat()</code> надо с некоторой осторожностью.</p>
 <p>Заключительная возможность — вывод с помощью заключения выражения в круглые скобки — очень удобна на стадии отладки программы. При этом переменная, которая создается в выражении, остается доступной в программе:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">a =</span> <span class="fu">rnorm</span>(<span class="dv">5</span>)) <span class="co"># сгенерируем 5 случайных чисел, запишем их в переменную a и выведем на экран</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1]  0.2119023  0.8904139  0.9938032  1.9515102 -0.8626142</code></pre>
+<pre><code>[1] -0.24802167  0.82612133  0.04096498 -0.06615087  0.67884633</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">b =</span> <span class="dv">2</span> <span class="sc">*</span> a) <span class="co"># переменная a доступна, ее можно использовать и далее для вычислений</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1]  0.4238046  1.7808277  1.9876065  3.9030203 -1.7252284</code></pre>
+<pre><code>[1] -0.49604333  1.65224266  0.08192997 -0.13230174  1.35769265</code></pre>
 </div>
 </div>
 </section>
@@ -925,7 +926,7 @@ div.csl-indent {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">a =</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.5</code></pre>
+<pre><code>[1] 0.4</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (a <span class="sc">&lt;</span> <span class="dv">0</span>) {</span>
 <span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">'Получилось отрицательное число!'</span>)</span>
@@ -935,7 +936,7 @@ div.csl-indent {
 <span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">'Получился нуль!'</span>)</span>
 <span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Получилось отрицательное число!</code></pre>
+<pre><code>Получилось положительное число!</code></pre>
 </div>
 </div>
 <p>Условия можно использовать, в частности, для того чтобы обрабатывать пользовательский ввод в программе. Например, охарактеризуем положение точки относительно Полярного круга:</p>
@@ -1026,20 +1027,20 @@ div.csl-indent {
 <span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>b <span class="ot">=</span> a</span>
 <span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">'a:'</span>, <span class="fu">tracemem</span>(a), <span class="st">'</span><span class="sc">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>a: &lt;0x7ff14a1b3b30&gt; </code></pre>
+<pre><code>a: &lt;0x7f7a551935c0&gt; </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">'b:'</span>, <span class="fu">tracemem</span>(b), <span class="st">'</span><span class="sc">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>b: &lt;0x7ff14a1b3b30&gt; </code></pre>
+<pre><code>b: &lt;0x7f7a551935c0&gt; </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="dv">2</span></span>
 <span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">'a:'</span>, <span class="fu">tracemem</span>(a), <span class="st">'</span><span class="sc">\n</span><span class="st">'</span>) <span class="co"># объект скопирован в другую область памяти</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>a: &lt;0x7ff14a1b3820&gt; </code></pre>
+<pre><code>a: &lt;0x7f7a551932b0&gt; </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">'b:'</span>, <span class="fu">tracemem</span>(b), <span class="st">'</span><span class="sc">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>b: &lt;0x7ff14a1b3b30&gt; </code></pre>
+<pre><code>b: &lt;0x7f7a551935c0&gt; </code></pre>
 </div>
 </div>
 <blockquote class="blockquote">
@@ -1115,7 +1116,7 @@ div.csl-indent {
 </table>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-wickham:2019" class="csl-entry" role="listitem">
 Wickham, Hadley. 2019. <em>Advanced <span>R</span></em>. 2nd ed. <span>Chapman and Hall/CRC</span>.
 </div>
@@ -1392,7 +1393,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     window.addEventListener(
       "resize",
       throttle(() => {
-        console.log("RESIZE");
         elRect = undefined;
         if (selectedAnnoteEl) {
           selectCodeLines(selectedAnnoteEl);

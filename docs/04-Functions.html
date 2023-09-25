@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.309">
+<meta name="generator" content="quarto-1.4.382">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -87,6 +87,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "/",
     "s"
   ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -209,7 +210,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./08-AdvStats.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Продвинутая статистика</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Временные ряды</span></span></a>
   </div>
 </li>
       </ul>
@@ -266,6 +267,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
+
 <p>В настоящей главе мы кратко познакомимся с функциональным программированием и метапрограммированием, которые являются одними из основных техник программирования на R.</p>
 <section id="tech-fun" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="tech-fun"><span class="header-section-number">4.1</span> Функциональное программирование</h2>
@@ -304,7 +306,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>d31 <span class="ot">=</span> <span class="fu">sqrt</span>((x[<span class="dv">3</span>] <span class="sc">-</span> x[<span class="dv">4</span>]) <span class="sc">^</span> <span class="dv">2</span> <span class="sc">+</span> (y[<span class="dv">3</span>] <span class="sc">-</span> y[<span class="dv">4</span>]) <span class="sc">^</span> <span class="dv">2</span>)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(d12, d23, d31)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>2.368276 0.6114288 1.173652</code></pre>
+<pre><code>0.9886683 0.4877366 2.320559</code></pre>
 </div>
 </div>
 <p>В правой части этих выражений стоит один и тот же код, который я скопировал и вставил, а далее заменил названия переменных. Это плохо сразу по двум причинам: дублирование фрагментов программы и возрастание вероятности опечаток в скопированой копии. Улучшить код можно, введя функцию вычисления расстояний:</p>
@@ -318,7 +320,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>d31 <span class="ot">=</span> <span class="fu">distance</span>(x[<span class="dv">3</span>], y[<span class="dv">3</span>], x[<span class="dv">4</span>], y[<span class="dv">4</span>])</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(d12, d23, d31)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>2.368276 0.6114288 1.173652</code></pre>
+<pre><code>0.9886683 0.4877366 2.320559</code></pre>
 </div>
 </div>
 <p>Функция всегда возвращает один объект: значение, вектор, список и т.д. Например, мы можем сделать функцию следующего уровня, рассчитывающая сразу все расстояния для множества точек:</p>
@@ -330,7 +332,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">distances</span>(x, y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 2.3682758 0.6114288 1.1736523</code></pre>
+<pre><code>[1] 0.9886683 0.4877366 2.3205592</code></pre>
 </div>
 </div>
 <p>Можно пойти еще дальше, и сделать функцию, выполняющую вычисление длины линии, заданной координатами:</p>
@@ -341,7 +343,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">line_length</span>(x, y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 4.153357</code></pre>
+<pre><code>[1] 3.796964</code></pre>
 </div>
 </div>
 <p>Обратите внимание на то, как мы используем одну ранее написанную функцию при создании другой функции! Это весьма распространенная практика: одна и та же функция может быть как самостоятельно полезной (вызываться непосредственно в программе полтьзователя), так и применяться для решения задач внутри других функций. При этом иногда даже относительно простые фрагменты кода имеет смысл оформлять в виде функций, так как это может улучшить читаемость программы и пояснить смысл выполняемых операций. Так, например, <code>line_length(x, y)</code> в более явном виде обозначает операцию вычисления длины по координатам, нежели <code>sum(distances(x, y))</code>. В то же время, здесь важно не переусердствовать и оформлять короткие фрагменты кода в виде функций только если они будут применяться вами неоднократно.</p>
@@ -359,11 +361,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>result <span class="ot">=</span> <span class="fu">line_params</span>(x, y)</span>
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>result<span class="sc">$</span>length</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 4.153357</code></pre>
+<pre><code>[1] 3.796964</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>result<span class="sc">$</span>sinuosity</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 3.563356</code></pre>
+<pre><code>[1] 1.920336</code></pre>
 </div>
 </div>
 </section>
@@ -429,25 +431,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>(<span class="at">df =</span> <span class="fu">read_excel</span>(<span class="st">"data/sevzap.xlsx"</span>, <span class="at">col_types =</span> <span class="fu">c</span>(<span class="st">'text'</span>, <span class="fu">rep</span>(<span class="st">'numeric'</span>, <span class="dv">17</span>))))</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Warning: Expecting numeric in L6 / R6C12: got '…'</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Warning: Expecting numeric in L8 / R8C12: got '…'</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Warning: Expecting numeric in L9 / R9C12: got '…'</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Warning: Expecting numeric in L10 / R10C12: got '…'</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="do">## # A tibble: 10 × 18</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="do">##    city     pop birth death  labor salary livspace doctors  hosp assets business</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="do">##    &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="do">##  1 Петр…  277.   13    12.3   72.3 36268.     24.4    75      17 2.47e5    15856</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="do">##  2 Сыкт…  259.   14.5  10.4   84.1 39790      22.8    79.5    17 2.17e5    10068</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="do">##  3 Арха…  358.   11.8  11.6   97.9 40303.     22.7    82.3    19 2.79e5    13016</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="do">##  4 Нарь…   24.5  18.1   7.6   12.7 69884.     23.6    65.2     2 1.05e5      704</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="do">##  5 Воло…  313.   16.2  11.4   91   31483      24.7    60.9    18 8.27e5    21931</span></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="do">##  6 Кали…  460.   13.3  13.4  126.  34142      27.7    69.8    25 3.27e5    38013</span></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="do">##  7 Мурм…  302.   12.4  11.9   96.9 53240.     23.8    68.8    15 7.24e5    16041</span></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="do">##  8 Вели…  222.   13.8  13.8   74.1 32377.     24.1    78.9    14 1.59e5     9583</span></span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="do">##  9 Псков  208.   13.2  13.7   59.6 27405.     25      59      13 1.31e5     8752</span></span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="do">## 10 Санк… 5226.   13.6  11.9 2055.  44187      23.6    73.8   112 4.10e6   374999</span></span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="do">## # ℹ 7 more variables: minerals &lt;dbl&gt;, manufact &lt;dbl&gt;, engaswat &lt;dbl&gt;,</span></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="do">## #   construct &lt;dbl&gt;, apart &lt;dbl&gt;, retail &lt;dbl&gt;, invest &lt;dbl&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="do">## # A tibble: 10 × 18</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="do">##    city     pop birth death  labor salary livspace doctors  hosp assets business</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="do">##    &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="do">##  1 Петр…  277.   13    12.3   72.3 36268.     24.4    75      17 2.47e5    15856</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="do">##  2 Сыкт…  259.   14.5  10.4   84.1 39790      22.8    79.5    17 2.17e5    10068</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="do">##  3 Арха…  358.   11.8  11.6   97.9 40303.     22.7    82.3    19 2.79e5    13016</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="do">##  4 Нарь…   24.5  18.1   7.6   12.7 69884.     23.6    65.2     2 1.05e5      704</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="do">##  5 Воло…  313.   16.2  11.4   91   31483      24.7    60.9    18 8.27e5    21931</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="do">##  6 Кали…  460.   13.3  13.4  126.  34142      27.7    69.8    25 3.27e5    38013</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="do">##  7 Мурм…  302.   12.4  11.9   96.9 53240.     23.8    68.8    15 7.24e5    16041</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="do">##  8 Вели…  222.   13.8  13.8   74.1 32377.     24.1    78.9    14 1.59e5     9583</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="do">##  9 Псков  208.   13.2  13.7   59.6 27405.     25      59      13 1.31e5     8752</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="do">## 10 Санк… 5226.   13.6  11.9 2055.  44187      23.6    73.8   112 4.10e6   374999</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="do">## # ℹ 7 more variables: minerals &lt;dbl&gt;, manufact &lt;dbl&gt;, engaswat &lt;dbl&gt;,</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="do">## #   construct &lt;dbl&gt;, apart &lt;dbl&gt;, retail &lt;dbl&gt;, invest &lt;dbl&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>В данной таблице каждый столбец представляет независимую переменную со своими единицами измерения, поэтому ее необходимо оставить в “широкой” форме, не преобразуя в длинную. Используя <code>apply</code>, можно быстро получить максимальные значения каждой переменной:</p>
 <div class="cell">
@@ -504,28 +502,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Полученный объект является матрицей. Таким образом, можно видеть, что функционалы бывают полезны не только для агрегирования таблиц, но и для преобразования данных, когда структура таблицы остается прежней.</p>
 <p>В приведенном выше коде мы сознательно исключили первый столбец, поскольку он является текстовым. Можно сделать более мощную и универсальную функцию, которая будет нормировать все числовые столбцы таблицы, а текстовые оставлять в оригинале. Для этого проверку типа данных надо внести внутрь функции. Поскольку код функции при этом вырастает, целесообразно определить ее заранее. Поскольку в этом случае часть векторов будет символьной, а не числовой, необходимо применять функцию <code>lapply()</code>, которая вернет список из векторов, а не матрицу и таким образом сохранит типы каждого столбца:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'dplyr'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:stats':
-
-    filter, lag</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:base':
-
-    intersect, setdiff, setequal, union</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>normalize <span class="ot">=</span> <span class="cf">function</span>(X) {</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.numeric</span>(X)) </span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(X <span class="sc">/</span> <span class="fu">mean</span>(X, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">2</span>) </span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> X</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>(<span class="at">normalized_df =</span> df <span class="sc">|&gt;</span> <span class="fu">lapply</span>(normalize) <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>normalize <span class="ot">=</span> <span class="cf">function</span>(X) {</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.numeric</span>(X)) </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(X <span class="sc">/</span> <span class="fu">mean</span>(X, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">2</span>) </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> X</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>(<span class="at">normalized_df =</span> df <span class="sc">|&gt;</span> <span class="fu">lapply</span>(normalize) <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 18
    city      pop birth death labor salary livspace doctors  hosp assets business
@@ -554,8 +538,8 @@ Attaching package: 'dplyr'</code></pre>
 </ul>
 <p>Например, вышеприведенные операции можно осуществить средствами <strong>purrr</strong> вот так:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">map_dbl</span>(df[<span class="sc">-</span><span class="dv">1</span>], max)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">map_dbl</span>(df[<span class="sc">-</span><span class="dv">1</span>], max)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      pop     birth     death     labor    salary  livspace   doctors      hosp 
    5225.7      18.1      13.8    2055.3   69883.5      27.7      82.3     112.0 
@@ -564,7 +548,7 @@ Attaching package: 'dplyr'</code></pre>
    invest 
  521293.0 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> <span class="fu">map</span>(normalize) <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> <span class="fu">map</span>(normalize) <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 18
    city      pop birth death labor salary livspace doctors  hosp assets business
@@ -590,7 +574,7 @@ Attaching package: 'dplyr'</code></pre>
 <p>Метапрограммирование — это техника программирования, при которой программный код может генерировать другой код. Широкая поддержка и интенсивное использование метапрограммирования – одна из удивительных черт <strong>R</strong>, которая ставит его особняком на фоне многих других языков, включая Python. Метапрограммирование позволяет во многих случаях сделать код более компактным и подойти к решению задачи элегантным путем.</p>
 <p>Вы уже сталкивались с метапрограммированием, когда работали с функциями <code>dplyr</code>. Например, сравните следующие два способа извлечь столбец из фрейма данных:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"salary"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"salary"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 1
    salary
@@ -606,7 +590,7 @@ Attaching package: 'dplyr'</code></pre>
  9 27405.
 10 44187 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(df, salary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(df, salary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 1
    salary
@@ -632,18 +616,18 @@ Attaching package: 'dplyr'</code></pre>
 </ul>
 <p>R — это <em>функциональный</em> язык программирования. Любая программа на R состоит из вызовов функций, которые применяются к символам и константам. Привычные нам арифметические операции на самом деле тоже являются вызовами функций. Это выглядит довольно неожиданно:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="dv">78</span>     <span class="co"># стандартная запись</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">=</span><span class="st">`</span>(a, <span class="dv">78</span>) <span class="co"># функциональная запись</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>a <span class="sc">+</span> <span class="dv">4</span>     <span class="co"># стандартная запись</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="dv">78</span>     <span class="co"># стандартная запись</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">=</span><span class="st">`</span>(a, <span class="dv">78</span>) <span class="co"># функциональная запись</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>a <span class="sc">+</span> <span class="dv">4</span>     <span class="co"># стандартная запись</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 82</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">+</span><span class="st">`</span>(a, <span class="dv">4</span>) <span class="co"># функциональная запись</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">+</span><span class="st">`</span>(a, <span class="dv">4</span>) <span class="co"># функциональная запись</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 82</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'salary'</span>]      <span class="co"># стандартная запись</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'salary'</span>]      <span class="co"># стандартная запись</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 1
    salary
@@ -659,7 +643,7 @@ Attaching package: 'dplyr'</code></pre>
  9 27405.
 10 44187 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">[</span><span class="st">`</span>(df, <span class="st">'salary'</span>) <span class="co"># функциональная запись</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">[</span><span class="st">`</span>(df, <span class="st">'salary'</span>) <span class="co"># функциональная запись</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 1
    salary
@@ -685,30 +669,20 @@ Attaching package: 'dplyr'</code></pre>
 <p>Не все символы и выражения в программе необходимо оценивать. Некоторые из них необходимо <strong>квотировать</strong>, то есть использовать в качестве <em>имени</em> объекта. Квотацию можно условно рассматривать как простановку кавычек вокруг выражения. Для обозначения квотации в явном виде используются обратные кавычки: <code>`</code> Мы уже сталкивались с квотацией при вызове функции сложения: <code>`+`(a, 4)</code>. В данном случае квотация была нужна чтобы <code>+</code> интерпретировался как <em>имя</em> функции.</p>
 <p>Явная квотация бывает необходима, когда объекты R имеют недопустимые имена, например начинаются с цифры или содержат пробелы. Для начала рассмотрим искусственный пример:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">f + 17</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">87</span> <span class="co"># создаем объект с именем f + 17</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>f <span class="sc">+</span> <span class="dv">17</span> <span class="co"># ошибка: переменной f не существует</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">f + 17</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">87</span> <span class="co"># создаем объект с именем f + 17</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>f <span class="sc">+</span> <span class="dv">17</span> <span class="co"># ошибка: переменной f не существует</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in eval(expr, envir, enclos): object 'f' not found</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">f + 17</span><span class="st">`</span> <span class="co"># обращаемся к объекту путем явной квотации</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">f + 17</span><span class="st">`</span> <span class="co"># обращаемся к объекту путем явной квотации</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 87</code></pre>
 </div>
 </div>
 <p>Теперь более жизнеспособный пример: данные о населении федеральных округов:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>(<span class="at">okruga =</span> <span class="fu">read_csv</span>(<span class="st">'data/okruga.csv'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Rows: 8 Columns: 7
-── Column specification ────────────────────────────────────────────────────────
-Delimiter: ","
-chr (1): Регион
-dbl (6): №, 2005, 2010, 2011, 2012, 2013
-
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>(<span class="at">okruga =</span> <span class="fu">read_csv</span>(<span class="st">'data/okruga.csv'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 8 × 7
     `№` Регион            `2005` `2010` `2011` `2012` `2013`
@@ -725,7 +699,7 @@ dbl (6): №, 2005, 2010, 2011, 2012, 2013
 </div>
 <p>Обратите внимание на обратные кавычки вокруг названий столбцов. Они проставлены потому что числа в среде R по умолчанию <em>оцениваются</em>, и не могут использоваться в качестве символов для объектов. Чтобы разрешить это, используется принудительная квотация. Как мы уже знаем, чтобы обратиться к такому объекту, надо использовать обратные кавычки:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>okruga<span class="sc">$</span><span class="dv">2010</span>   <span class="co"># ошибка: 2010 - константа, которая оценивается</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>okruga<span class="sc">$</span><span class="dv">2010</span>   <span class="co"># ошибка: 2010 - константа, которая оценивается</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error: &lt;text&gt;:1:8: unexpected numeric constant
 1: okruga$2010
@@ -733,7 +707,7 @@ dbl (6): №, 2005, 2010, 2011, 2012, 2013
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>okruga<span class="sc">$</span><span class="st">`</span><span class="at">2010</span><span class="st">`</span> <span class="co"># правильно: `2010` -- символ, полученный путем квотации</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>okruga<span class="sc">$</span><span class="st">`</span><span class="at">2010</span><span class="st">`</span> <span class="co"># правильно: `2010` -- символ, полученный путем квотации</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 3761 3088 1446  390 2883 1860 2218  870</code></pre>
 </div>
@@ -744,13 +718,9 @@ dbl (6): №, 2005, 2010, 2011, 2012, 2013
 </blockquote>
 <p>Иногда бывает необходимо использовать строковые названия столбцов (например, если они записаны у вас в переменные). В таком случае можно использовать функцию <code>select_()</code> (с подчеркиванием в конце), которая будет выполнять оценку ее аргументов вместо квотации:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>f1 <span class="ot">=</span> <span class="st">'salary'</span></span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>f2 <span class="ot">=</span> <span class="st">'birth'</span></span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="fu">select_</span>(df, f1, f2)        <span class="co"># ОК</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: `select_()` was deprecated in dplyr 0.7.0.
-ℹ Please use `select()` instead.</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>f1 <span class="ot">=</span> <span class="st">'salary'</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>f2 <span class="ot">=</span> <span class="st">'birth'</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">select_</span>(df, f1, f2)        <span class="co"># ОК</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 2
    salary birth
@@ -766,18 +736,14 @@ dbl (6): №, 2005, 2010, 2011, 2012, 2013
  9 27405.  13.2
 10 44187   13.6</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select_</span>(df, salary, birth) <span class="co"># ошибка: функция пыьтается оценить несуществующие объекты salary и birth</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: `select_()` was deprecated in dplyr 0.7.0.
-ℹ Please use `select()` instead.</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select_</span>(df, salary, birth) <span class="co"># ошибка: функция пыьтается оценить несуществующие объекты salary и birth</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in eval(expr, envir, enclos): object 'salary' not found</code></pre>
 </div>
 </div>
 <p>Однако кавычки в данном случае усложняют внешний вид программы и затрудняют написание ее текста. Если вы передаете <em>константы</em> в качестве аргументов, они будут работать в обоих случаях:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(df, <span class="st">'salary'</span>, <span class="st">'birth'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(df, <span class="st">'salary'</span>, <span class="st">'birth'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 2
    salary birth
@@ -793,11 +759,7 @@ dbl (6): №, 2005, 2010, 2011, 2012, 2013
  9 27405.  13.2
 10 44187   13.6</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select_</span>(df, <span class="st">'salary'</span>, <span class="st">'birth'</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: `select_()` was deprecated in dplyr 0.7.0.
-ℹ Please use `select()` instead.</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select_</span>(df, <span class="st">'salary'</span>, <span class="st">'birth'</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 2
    salary birth
@@ -819,13 +781,13 @@ dbl (6): №, 2005, 2010, 2011, 2012, 2013
 </blockquote>
 <p>Иногда выражения бывает необходимо создать, а оценивать уже потом. Для этого существуеют <strong>объекты выражений</strong>, которые создаются с помощью функции <code>expression()</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">d =</span> <span class="fu">expression</span>(b<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">4</span><span class="sc">*</span>a)) <span class="co"># создаем выражение</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">d =</span> <span class="fu">expression</span>(b<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">4</span><span class="sc">*</span>a)) <span class="co"># создаем выражение</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>expression(b^2 - 4 * a)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="dv">2</span></span>
-<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>b <span class="ot">=</span> <span class="dv">7</span></span>
-<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="fu">eval</span>(d) <span class="co"># оцениваем значение выражения</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="dv">2</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>b <span class="ot">=</span> <span class="dv">7</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="fu">eval</span>(d) <span class="co"># оцениваем значение выражения</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 41</code></pre>
 </div>
@@ -1169,7 +1131,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     window.addEventListener(
       "resize",
       throttle(() => {
-        console.log("RESIZE");
         elRect = undefined;
         if (selectedAnnoteEl) {
           selectCodeLines(selectedAnnoteEl);
