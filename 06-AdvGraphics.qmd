@@ -1,3 +1,9 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
+
 # Продвинутая графика {#advgraphics}
 
 ## Предварительные требования {#advgraphics_prerequisites}
@@ -354,9 +360,8 @@ trades |>
   filter(sitc06 == 'Machinery and transport equipment',
          export > 10000,
          time == as.Date('2017-01-01')) |> 
-  ggplot(mapping = aes(x = '', y = export, fill = partner), 
-         color = 'black', linewidth = 0.5) +
-    geom_col() +
+  ggplot(mapping = aes(x = '', y = export, fill = partner)) +
+    geom_col(color = 'black', linewidth = 0.2) +
     coord_polar(theta = 'y')
 ```
 
@@ -524,6 +529,8 @@ ggplot(trades_type, mapping = aes(x = export, y = import, color = sitc06, size =
 Фасеты представляют собой множество графиков, каждый из которых отображает свою переменную или набор значений. Для разбиения на фасеты используется функция facet_wrap(), которой необходимо передать переменную разбиения с *тильдой*. Например, рассмотрим изменение структуры импорта по годам:
 
 ```{r}
+#| fig-width: 6
+#| fig-height: 8
 brks = c(0, 50, 100, 150, 200)
 trades |> 
   filter(sitc06 == 'Machinery and transport equipment',
