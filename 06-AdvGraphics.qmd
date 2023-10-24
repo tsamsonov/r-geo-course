@@ -11,9 +11,7 @@ editor_options:
 Для работы по теме текущей лекции вам понадобятся пакеты **ggplot2**, **dplyr** и **tidyr** из **tidyverse**. Помимо этого, мы будем работать напрямую с данными [**Евростата**](https://ec.europa.eu/eurostat/web/main/home), NASA [**POWER**](https://power.larc.nasa.gov/) и USDA NRCS [**Soil Data Access**](https://sdmdataaccess.nrcs.usda.gov/) к которым можно обращаться напрямую с использованием пакетов [`eurostat`](https://ropengov.github.io/eurostat/), [`nasapower`](https://docs.ropensci.org/nasapower/) и [`soildb`](http://ncss-tech.github.io/soilDB/docs/):
 
 ```{r}
-library(dplyr)
-library(tidyr)
-library(ggplot2)
+library(tidyverse)
 library(eurostat)
 library(nasapower)
 library(soilDB)
@@ -46,7 +44,7 @@ trades = lapply(tables, function(X) { # прочтем несколько таб
 }) |> 
   bind_rows() |> # объединим прочитанные таблицы в одну
   select(-geo) |> # убираем столбец с территорией торговли, т.к. там только Евросоюз
-  filter(stringr::str_detect(indic_et, 'Exports in|Imports in')) |> # оставим только экспорт и импорт
+  filter(str_detect(indic_et, 'Exports in|Imports in')) |> # оставим только экспорт и импорт
   pivot_wider(names_from = indic_et, values_from = values) |>  # вынесем данные по экспорту и импорту в отдельные переменные
   rename(export = `Exports in million of ECU/EURO`, # дадим им краткие названия
          import = `Imports in million of ECU/EURO`) |> 
