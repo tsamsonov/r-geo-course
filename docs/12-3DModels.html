@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>dmodels</title>
+<title>Визуализация и анализ географических данных на языке R - 12&nbsp; Трехмерные модели</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -57,33 +57,260 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="12-3DModels_files/libs/clipboard/clipboard.min.js"></script>
-<script src="12-3DModels_files/libs/quarto-html/quarto.js"></script>
-<script src="12-3DModels_files/libs/quarto-html/popper.min.js"></script>
-<script src="12-3DModels_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="12-3DModels_files/libs/quarto-html/anchor.min.js"></script>
-<link href="12-3DModels_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="12-3DModels_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="12-3DModels_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="12-3DModels_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="12-3DModels_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./11-ThematicMaps.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
 
 
 </head>
 
-<body class="fullcontent">
+<body class="nav-sidebar floating">
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./09-SpatialData.html">Пространственные данные и карты</a></li><li class="breadcrumb-item"><a href="./12-3DModels.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Трехмерные модели</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Визуализация и анализ географических данных на языке R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Введение</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Основы</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-Basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Типы данных</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-DataStructures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Структуры данных</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-Tables.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Таблицы</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-Functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Функции</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Графика и статистика</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-BaseGraphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Базовая графика</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-AdvGraphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Продвинутая графика</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-BaseStats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Основы статистики</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-AdvStats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Временные ряды</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Пространственные данные и карты</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-SpatialData.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Пространственные данные</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-Maps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Основы картографии</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-ThematicMaps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Тематические карты</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-3DModels.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Трехмерные модели</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Библиография</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#mapping3d_prerequisites" id="toc-mapping3d_prerequisites" class="nav-link active" data-scroll-target="#mapping3d_prerequisites"><span class="header-section-number">12.1</span> Предварительные условия</a></li>
+  <li><a href="#three_intro" id="toc-three_intro" class="nav-link" data-scroll-target="#three_intro"><span class="header-section-number">12.2</span> Введение</a></li>
+  <li><a href="#three_labels" id="toc-three_labels" class="nav-link" data-scroll-target="#three_labels"><span class="header-section-number">12.3</span> Создание трёхмерной сцены</a>
+  <ul class="collapse">
+  <li><a href="#three_lighting" id="toc-three_lighting" class="nav-link" data-scroll-target="#three_lighting"><span class="header-section-number">12.3.1</span> Освещение цифровой модели рельефа</a></li>
+  <li><a href="#three_add" id="toc-three_add" class="nav-link" data-scroll-target="#three_add"><span class="header-section-number">12.3.2</span> Векторные слои</a></li>
+  <li><a href="#подписи" id="toc-подписи" class="nav-link" data-scroll-target="#подписи"><span class="header-section-number">12.3.3</span> Подписи</a></li>
+  </ul></li>
+  <li><a href="#three_animation" id="toc-three_animation" class="nav-link" data-scroll-target="#three_animation"><span class="header-section-number">12.4</span> Анимация трёхмерной сцены</a>
+  <ul class="collapse">
+  <li><a href="#three_animation_circle" id="toc-three_animation_circle" class="nav-link" data-scroll-target="#three_animation_circle"><span class="header-section-number">12.4.1</span> Вращение относительно точки</a></li>
+  <li><a href="#three_animation_path" id="toc-three_animation_path" class="nav-link" data-scroll-target="#three_animation_path"><span class="header-section-number">12.4.2</span> Облёт по траектории</a></li>
+  </ul></li>
+  <li><a href="#questions_tasks_three" id="toc-questions_tasks_three" class="nav-link" data-scroll-target="#questions_tasks_three"><span class="header-section-number">12.5</span> Контрольные вопросы и упражнения</a>
+  <ul class="collapse">
+  <li><a href="#questions_three" id="toc-questions_three" class="nav-link" data-scroll-target="#questions_three"><span class="header-section-number">12.5.1</span> Вопросы</a></li>
+  <li><a href="#tasks_three" id="toc-tasks_three" class="nav-link" data-scroll-target="#tasks_three"><span class="header-section-number">12.5.2</span> Упражнения</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./09-SpatialData.html">Пространственные данные и карты</a></li><li class="breadcrumb-item"><a href="./12-3DModels.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Трехмерные модели</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="three" class="quarto-section-identifier"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Трехмерные модели</span></span></h1>
+</div>
 
 
 
-<section id="three" class="level1">
-<h1>Трехмерные модели</h1>
-<section id="mapping3d_prerequisites" class="level2">
-<h2 class="anchored" data-anchor-id="mapping3d_prerequisites">Предварительные условия</h2>
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="mapping3d_prerequisites" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="mapping3d_prerequisites"><span class="header-section-number">12.1</span> Предварительные условия</h2>
 <p>Для выполнения кода данной лекции вам понадобятся следующие пакеты:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
@@ -92,14 +319,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rayshader)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="three_intro" class="level2">
-<h2 class="anchored" data-anchor-id="three_intro">Введение</h2>
+<section id="three_intro" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="three_intro"><span class="header-section-number">12.2</span> Введение</h2>
 <p>Трехмерные модели местности могут использоваться в тех случаях, когда стандартное картографическое изображение недостаточно наглядно. Поскольку и построение трехмерных моделей и взаимодействие с ними сложнее, чем с обычными картами, они распространены не столь повсеместно.</p>
 </section>
-<section id="three_labels" class="level2">
-<h2 class="anchored" data-anchor-id="three_labels">Создание трёхмерной сцены</h2>
-<section id="three_lighting" class="level3">
-<h3 class="anchored" data-anchor-id="three_lighting">Освещение цифровой модели рельефа</h3>
+<section id="three_labels" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="three_labels"><span class="header-section-number">12.3</span> Создание трёхмерной сцены</h2>
+<section id="three_lighting" class="level3" data-number="12.3.1">
+<h3 data-number="12.3.1" class="anchored" data-anchor-id="three_lighting"><span class="header-section-number">12.3.1</span> Освещение цифровой модели рельефа</h3>
 <p>Построение трехмерной модели обычно начинается с создания изображения рельефа. В качестве примера рассмотрим ЦМР на территорию в окрестностях Хибин и Ловозёрских тундр в Мурманской области. Чтобы построить изображение рельефа, для начана надо получить матрицу со значениями цвета RGB, а затем вывести ее на экран посредством <code>plot_map()</code>. Градиентная окраска по высоте получается функцией <code>height_shade()</code>, аналитическая отмывка — через <code>sphere_shade()</code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dem <span class="ot">=</span> <span class="fu">read_stars</span>(<span class="st">'data/dem_khibiny.tif'</span>)</span>
@@ -209,8 +436,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>rgl<span class="sc">::</span><span class="fu">rgl.close</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="three_add" class="level3">
-<h3 class="anchored" data-anchor-id="three_add">Векторные слои</h3>
+<section id="three_add" class="level3" data-number="12.3.2">
+<h3 data-number="12.3.2" class="anchored" data-anchor-id="three_add"><span class="header-section-number">12.3.2</span> Векторные слои</h3>
 <p>Прочтем векторные данные:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>db <span class="ot">=</span> <span class="st">'data/khibiny.gpkg'</span></span>
@@ -342,8 +569,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>rgl<span class="sc">::</span><span class="fu">rgl.close</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="three_labels" class="level3">
-<h3 class="anchored" data-anchor-id="three_labels">Подписи</h3>
+<section id="подписи" class="level3" data-number="12.3.3">
+<h3 data-number="12.3.3" class="anchored" data-anchor-id="подписи"><span class="header-section-number">12.3.3</span> Подписи</h3>
 <p>Для размещения подписей следует использовать функцию <code>generate_label_overlay()</code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>popmajor <span class="ot">=</span> poppol <span class="sc">|&gt;</span></span>
@@ -404,11 +631,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<section id="three_animation" class="level2">
-<h2 class="anchored" data-anchor-id="three_animation">Анимация трёхмерной сцены</h2>
+<section id="three_animation" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="three_animation"><span class="header-section-number">12.4</span> Анимация трёхмерной сцены</h2>
 <p>Анимация с помощью пакета <strong>rayshader</strong> осуществляется покадрово. Для этого необходимо задать последовательность параметров камеры, каждый из которых будет определять кадр видеофильма, и определить эти параметры в функции <code>render_movie()</code>.</p>
-<section id="three_animation_circle" class="level3">
-<h3 class="anchored" data-anchor-id="three_animation_circle">Вращение относительно точки</h3>
+<section id="three_animation_circle" class="level3" data-number="12.4.1">
+<h3 data-number="12.4.1" class="anchored" data-anchor-id="three_animation_circle"><span class="header-section-number">12.4.1</span> Вращение относительно точки</h3>
 <p>Наиболее простой спобособ визуализации сцены — вращение относительно фиксированной точки. В этом случае необходимо менять только угол поворота камеры. По умолчанию <code>render_movie()</code> создает 12-секундный ролик с частотой 30 кадров в секунду (т.е. 360 кадров всего). Именно такой результат будет получен, если вызывать ее без параметров:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_3d</span>(plt, elev, <span class="at">zscale =</span> <span class="dv">30</span>, <span class="at">fov =</span> <span class="dv">0</span>,</span>
@@ -431,8 +658,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="three_animation_path" class="level3">
-<h3 class="anchored" data-anchor-id="three_animation_path">Облёт по траектории</h3>
+<section id="three_animation_path" class="level3" data-number="12.4.2">
+<h3 data-number="12.4.2" class="anchored" data-anchor-id="three_animation_path"><span class="header-section-number">12.4.2</span> Облёт по траектории</h3>
 <p>Для того чтобы территорию облететь по заданной траектории, необходимо эту траекторию создать. Проще всего такую задачу решить в настольной ГИС (ArcGIS, QGIS), оцифровав необходимую линию. Также можно создать объект через редактор пакета <a href="https://github.com/r-spatial/mapedit"><strong>mapedit</strong></a>. Подгрузим готовую траекторию из базы данных и посмотрим на ее контур:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>traj_line <span class="ot">=</span> <span class="fu">st_read</span>(db, <span class="st">'trajectory'</span>)</span>
@@ -509,18 +736,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="http://carto.geogr.msu.ru/r-geo-course/khibiny_traj.gif" class="img-fluid" style="width:100.0%"></p>
+<p><img src="https://carto.geogr.msu.ru/r-geo-course/khibiny_traj.gif" class="img-fluid" style="width:100.0%"></p>
 </div>
 </div>
 </section>
 </section>
-<section id="questions_tasks_three" class="level2">
-<h2 class="anchored" data-anchor-id="questions_tasks_three">Контрольные вопросы и упражнения</h2>
-<section id="questions_three" class="level3">
-<h3 class="anchored" data-anchor-id="questions_three">Вопросы</h3>
+<section id="questions_tasks_three" class="level2" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="questions_tasks_three"><span class="header-section-number">12.5</span> Контрольные вопросы и упражнения</h2>
+<section id="questions_three" class="level3" data-number="12.5.1">
+<h3 data-number="12.5.1" class="anchored" data-anchor-id="questions_three"><span class="header-section-number">12.5.1</span> Вопросы</h3>
 </section>
-<section id="tasks_three" class="level3">
-<h3 class="anchored" data-anchor-id="tasks_three">Упражнения</h3>
+<section id="tasks_three" class="level3" data-number="12.5.2">
+<h3 data-number="12.5.2" class="anchored" data-anchor-id="tasks_three"><span class="header-section-number">12.5.2</span> Упражнения</h3>
 <ol type="1">
 <li>Скачайте <a href="https://github.com/tsamsonov/r-geo-course/blob/master/data/Satino.gpkg">базу данных</a> и <a href="https://github.com/tsamsonov/r-geo-course/blob/master/data/Satino_DEM.zip">цифровую модель рельефа</a> на территорию Сатинского полигона МГУ. Постройте на их основе трехмерную модель местности и выполните ее круговую анимацию.</li>
 </ol>
@@ -531,12 +758,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-</section>
+
+
 </section>
 </section>
 
-</main>
-<!-- /main column -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -927,6 +1154,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./11-ThematicMaps.html" class="pagination-link  aria-label=" &lt;span="" карты&lt;="" span&gt;"="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Тематические карты</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="Библиография">
+        <span class="nav-page-text">Библиография</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 
