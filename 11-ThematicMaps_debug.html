@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.489">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>thematicmaps_debug</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="11-ThematicMaps_debug_files/libs/clipboard/clipboard.min.js"></script>
+<script src="11-ThematicMaps_debug_files/libs/quarto-html/quarto.js"></script>
+<script src="11-ThematicMaps_debug_files/libs/quarto-html/popper.min.js"></script>
+<script src="11-ThematicMaps_debug_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="11-ThematicMaps_debug_files/libs/quarto-html/anchor.min.js"></script>
+<link href="11-ThematicMaps_debug_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="11-ThematicMaps_debug_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="11-ThematicMaps_debug_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="11-ThematicMaps_debug_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="11-ThematicMaps_debug_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+
+<section id="mapping" class="level1">
+<h1>Тематические карты</h1>
+<section id="mapping_prerequisites" class="level2">
+<h2 class="anchored" data-anchor-id="mapping_prerequisites">Предварительные условия</h2>
+<p>Для выполнения кода данной лекции вам понадобятся следующие пакеты:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stars)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(geodata)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(WDI)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tmap)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mapsf)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mapview)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(classInt)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gapminder)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(googlesheets4)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">999</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="thematic_mapping_intro" class="level2">
+<h2 class="anchored" data-anchor-id="thematic_mapping_intro">Введение</h2>
+<p>Тематические карты представляют собой важный инструмент географических исследований. Таблицы и графики не дают полного представления о пространственном распределении изучаемого явления. Это знание способна дать исследователю карта.</p>
+<p>Разнообразие типов и видов карт достаточно велико. Комплексные картографические произведения, содержащие многослойный набор объектов, создаются, как правило, средствами геоинформационных пакетов. Такие карты требуют тщательной и кропотливой работы с легендой, устранения графических конфликтов между знаками, многократного редактирования входных данных, условий, фильтров и способов изображения в попытке достичь эстетичного и вместе с тем информативного результата.</p>
+<p>В то же время, гораздо большее количество создаваемых в повседневной практике карт носят простой аналитический характер. Такие карты показывают одно, максимум два явления, и могут иллюстрировать входные данные, результаты промежуточных или итоговых расчетов. Создание именно таких карт целесообразно автоматизировать средствами программирования. В этом разделе мы познакомимся с созданием тематических карт средствами пакетов <a href="https://cran.r-project.org/web/packages/tmap/index.html"><strong>tmap</strong></a> <strong>и <a href="https://cran.r-project.org/web/packages/mapsf/index.html">mapsf</a></strong>.</p>
+</section>
+<section id="данные-natural-earth" class="level2">
+<h2 class="anchored" data-anchor-id="данные-natural-earth">Данные Natural Earth</h2>
+<p>Для работы нам понадобятся слои базы данных Natural Earth. Загрузим их локально:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ne <span class="ot">=</span> <span class="st">'/Volumes/Data/Spatial/Natural Earth/natural_earth_vector.gpkg'</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>countries <span class="ot">=</span> <span class="fu">read_sf</span>(ne, <span class="st">'ne_110m_admin_0_countries'</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>coast <span class="ot">=</span> <span class="fu">read_sf</span>(ne, <span class="st">'ne_110m_coastline'</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>ocean <span class="ot">=</span> <span class="fu">read_sf</span>(ne, <span class="st">'ne_110m_ocean'</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>cities <span class="ot">=</span> <span class="fu">read_sf</span>(ne, <span class="st">'ne_110m_populated_places'</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>rivers <span class="ot">=</span> <span class="fu">read_sf</span>(ne, <span class="st">'ne_110m_rivers_lake_centerlines'</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>lakes <span class="ot">=</span> <span class="fu">read_sf</span>(ne, <span class="st">'ne_110m_lakes'</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>land <span class="ot">=</span> <span class="fu">read_sf</span>(ne, <span class="st">'ne_110m_land'</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>borders <span class="ot">=</span> <span class="fu">read_sf</span>(ne, <span class="st">'ne_110m_admin_0_boundary_lines_land'</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>lyr <span class="ot">=</span> <span class="fu">lst</span>(ocean, land, coast, countries, </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>          rivers, lakes, cities, borders)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="thematic_mapping_intro_wc" class="level3">
+<h3 class="anchored" data-anchor-id="thematic_mapping_intro_wc">Данные WorldClim</h3>
+<p><a href="http://www.worldclim.org/">WorldClim</a> — это открытые сеточные наборы климатических характеристик с пространственным разрешением от <span class="math inline">\(30''\)</span> (около 1 км) до <span class="math inline">\(10'\)</span> (около 20 км). Данные можно выгрузить в виде файлов GeoTiff, однако эту операцию можно сделать и программным путем через пакет <a href="https://cran.r-project.org/web/packages/geodata/index.html"><strong>geodata</strong></a> — используя функцию <code>worldclim_global()</code>.</p>
+<p>Выполним загрузку 10-минутного растра с суммарным количеством осадков за год:</p>
+<div class="cell" data-hash="11-ThematicMaps_debug_cache/html/unnamed-chunk-3_1d0d38b8190feacd19867d215b7d61fc">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>prec <span class="ot">=</span> geodata<span class="sc">::</span><span class="fu">worldclim_global</span>(<span class="at">var =</span> <span class="st">"prec"</span>, <span class="at">res =</span> <span class="dv">10</span>, <span class="at">path =</span> <span class="st">'data'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_stars</span>() <span class="co"># преобразуем в stars для удобства работы</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(prec) <span class="co"># это 12-канальный растр</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="11-ThematicMaps_debug_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" style="width:100.0%"></p>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Использовать программную загрузку целесообразно для небольших наборов данных. Если счет пошел на десятки мегабайт и выше, следует все-таки выкачать данные в виде файла и работать с ним.</p>
+</blockquote>
+<p>Выполним трансформирование данных в <a href="https://proj4.org/operations/projections/mill.html"><strong>проекцию Миллера</strong></a>. Для того чтобы карта не обрезалась по охвату растра (он не включает данные на Антарктиду), необходимо расширить его охват на весь земной шар. Для этого используем функцию <code>extend()</code> из пакета <strong>raster</strong>:</p>
+<div class="cell" data-hash="11-ThematicMaps_debug_cache/html/unnamed-chunk-4_dc70f66f69ffea4b8897c04166537906">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>precp <span class="ot">=</span> prec <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_warp</span>(<span class="at">crs =</span> <span class="st">"+proj=mill"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>lyrp <span class="ot">=</span> <span class="fu">lapply</span>(lyr, st_transform, <span class="at">crs =</span> <span class="st">"+proj=mill"</span>) <span class="co"># Цилиндрическая проекция Миллера</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Визуализируем полученные данные на карте:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Визуализируем данные на январь:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(precp[,,,<span class="dv">1</span>], </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">'Количество осадков в январе, мм'</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">reset =</span> <span class="cn">FALSE</span>) <span class="co"># разрешаем добавлять объекты на карту.</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(lyrp<span class="sc">$</span>ocean), <span class="at">border =</span> <span class="st">'steelblue'</span>, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">'lightblue'</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="11-ThematicMaps_debug_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" style="width:100.0%"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="тематические-карты-в-tmap" class="level2">
+<h2 class="anchored" data-anchor-id="тематические-карты-в-tmap">Тематические карты в <code>tmap</code></h2>
+<section id="thematic_mapping_tmap" class="level3">
+<h3 class="anchored" data-anchor-id="thematic_mapping_tmap">Способы изображения</h3>
+<blockquote class="blockquote">
+<p>В этом разделе изложение сосредоточено на параметрах способов изображения. Приведение легенд и компоновки карты в аккуратный вид рассматривается далее в разделе <a href="#thematic_mapping_layout">Компоновка</a>.</p>
+</blockquote>
+<p>Пакет <strong>tmap</strong> предоставляет простой в использовании и достаточно мощный механизм формирования тематических карт. Шаблон построения карты в этом пакете напоминает <em>ggplot</em> и выглядит следующим образом:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(<span class="sc">&lt;</span>DATA<span class="sc">&gt;</span>) <span class="sc">+</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  tm_<span class="sc">&lt;</span>METHOD<span class="sc">&gt;</span>(<span class="sc">&lt;</span>PARAMETERS<span class="sc">&gt;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>где:</p>
+<ul>
+<li><code>DATA</code> - объект пространственного типа (<code>sf</code>, <code>sp</code>, <code>stars</code> или <code>raster</code>)</li>
+<li><code>METHOD</code> - метод визуализации этого объекта (способ изображения)</li>
+<li><code>PARAMETERS</code> - параметры метода</li>
+</ul>
+</section>
+<section id="thematic_mapping_vectors" class="level3">
+<h3 class="anchored" data-anchor-id="thematic_mapping_vectors">Векторные данные</h3>
+<p>Для реализации качественного и количественного фона, а также картограмм используется метод <code>tm_polygons()</code>. Он автоматически определяет тип переменной и строит соответствующую шкалу:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">colnames</span>(lyrp<span class="sc">$</span>countries))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="do">##  [1] "featurecla" "scalerank"  "LABELRANK"  "SOVEREIGNT" "SOV_A3"    </span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="do">##  [6] "ADM0_DIF"   "LEVEL"      "TYPE"       "ADMIN"      "ADM0_A3"   </span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="do">## [11] "GEOU_DIF"   "GEOUNIT"    "GU_A3"      "SU_DIF"     "SUBUNIT"   </span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="do">## [16] "SU_A3"      "BRK_DIFF"   "NAME"       "NAME_LONG"  "BRK_A3"    </span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="do">## [21] "BRK_NAME"   "BRK_GROUP"  "ABBREV"     "POSTAL"     "FORMAL_EN" </span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="do">## [26] "FORMAL_FR"  "NAME_CIAWF" "NOTE_ADM0"  "NOTE_BRK"   "NAME_SORT" </span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="do">## [31] "NAME_ALT"   "MAPCOLOR7"  "MAPCOLOR8"  "MAPCOLOR9"  "MAPCOLOR13"</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="do">## [36] "POP_EST"    "POP_RANK"   "GDP_MD_EST" "POP_YEAR"   "LASTCENSUS"</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="do">## [41] "GDP_YEAR"   "ECONOMY"    "INCOME_GRP" "WIKIPEDIA"  "FIPS_10_"  </span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="do">## [46] "ISO_A2"     "ISO_A3"     "ISO_A3_EH"  "ISO_N3"     "UN_A3"     </span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="do">## [51] "WB_A2"      "WB_A3"      "WOE_ID"     "WOE_ID_EH"  "WOE_NOTE"  </span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="do">## [56] "ADM0_A3_IS" "ADM0_A3_US" "ADM0_A3_UN" "ADM0_A3_WB" "CONTINENT" </span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="do">## [61] "REGION_UN"  "SUBREGION"  "REGION_WB"  "NAME_LEN"   "LONG_LEN"  </span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="do">## [66] "ABBREV_LEN" "TINY"       "HOMEPART"   "MIN_ZOOM"   "MIN_LABEL" </span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="do">## [71] "MAX_LABEL"  "NE_ID"      "WIKIDATAID" "NAME_AR"    "NAME_BN"   </span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="do">## [76] "NAME_DE"    "NAME_EN"    "NAME_ES"    "NAME_FR"    "NAME_EL"   </span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="do">## [81] "NAME_HI"    "NAME_HU"    "NAME_ID"    "NAME_IT"    "NAME_JA"   </span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="do">## [86] "NAME_KO"    "NAME_NL"    "NAME_PL"    "NAME_PT"    "NAME_RU"   </span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="do">## [91] "NAME_SV"    "NAME_TR"    "NAME_VI"    "NAME_ZH"    "geom"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(lyrp<span class="sc">$</span>countries) <span class="sc">+</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="st">'ECONOMY'</span>) <span class="sc">+</span> <span class="co"># качественная переменная</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(lyrp<span class="sc">$</span>ocean)<span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">'azure'</span>) <span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">'steelblue'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="11-ThematicMaps_debug_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" style="width:100.0%"></p>
+</div>
+</div>
+<!-- **Количественный фон** или **картограммы** получаются при картографировании числового показателя применением той же функции `tm_polygons()`: -->
+<!-- ```{r, cache=TRUE} -->
+<!-- lifexp = WDI::WDI(indicator = 'SP.DYN.LE00.IN') -->
+<!-- gap = read_excel('data/gapminder.xlsx', 2) -->
+<!-- lifedf = left_join(gap,  -->
+<!--                    filter(lifexp, year == 2016),  -->
+<!--                    by = c('name' = 'country')) |> -->
+<!--   rename(lifexp = SP.DYN.LE00.IN) |>  -->
+<!--   mutate(geo = stringr::str_to_upper(geo)) -->
+<!-- coun = lyrp$countries |>  -->
+<!--   left_join(lifedf, by = c('adm0_a3' = 'geo')) -->
+<!-- tm_shape(coun) + -->
+<!--   tm_polygons('lifexp', border.col = 'gray20') + # количественная переменная -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'azure') + -->
+<!--   tm_borders(col = 'steelblue4') -->
+<!-- ``` -->
+<!-- Для реализации способа **картодиаграмм** используется геометрия `tm_bubbles()`. Чтобы оставить отображение границ полигонов, нам необходимо к одной геометрии применить несколько способов изображения: -->
+<!-- ```{r} -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'lightblue') + -->
+<!--   tm_borders(col = 'steelblue') + -->
+<!-- tm_shape(lyrp$countries) + -->
+<!--   tm_fill(col = 'white') + -->
+<!--   tm_borders(col = 'grey') + -->
+<!--   tm_bubbles('gdp_md_est',  -->
+<!--              scale = 3, -->
+<!--              col = 'red',  -->
+<!--              alpha = 0.5) # количественная переменная -->
+<!-- ``` -->
+<!-- Аналогичным образом реализуется **значковый способ** применительно к объектам, локализованным по точкам. Картографируем численность населения по крупнейшим городам: -->
+<!-- ```{r} -->
+<!-- tm_shape(lyrp$countries) + -->
+<!--   tm_fill(col = 'white') + -->
+<!--   tm_borders(col = 'grey') + -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'lightblue') + -->
+<!--   tm_borders(col = 'steelblue') + -->
+<!-- tm_shape(lyrp$cities) + -->
+<!--   tm_bubbles('POP2015', col = 'olivedrab', alpha = 0.8) -->
+<!-- ``` -->
+<!-- **Надписи** объектов на карте размещаются с помощью функции `tm_text`. Данная функция содержит весьма полезные параметры `remove.overlap` и `auto.placement`, которые позволяют убрать перекрывающиеся подписи и автоматически разместить из вокруг точек так, чтобы уменьшить перекрытия с самими знаками и другими подписями. Дополним предыдущую карту названиями городов: -->
+<!-- ```{r} -->
+<!-- tm_shape(lyrp$countries) + -->
+<!--   tm_fill(col = 'white') + -->
+<!--   tm_borders(col = 'grey') + -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'lightblue') + -->
+<!--   tm_borders(col = 'steelblue') + -->
+<!-- tm_shape(lyrp$cities) + -->
+<!--   tm_bubbles('POP2015', col = 'olivedrab', alpha = 0.8) + -->
+<!--   tm_text('name_ru', size = 0.5, remove.overlap = TRUE, auto.placement = TRUE) -->
+<!-- ``` -->
+<!-- ### Растровые данные {#thematic_mapping_rasters} -->
+<!-- При отображении растровых данных используется способ отображения `tm_raster()`. В случае отображения количественных растров Параметр `breaks` определяет границы интервалов, для которых будут использованы цвета, взятые из параметра `palette`: -->
+<!-- ```{r} -->
+<!-- # box = st_bbox(c(xmin = -180, xmax = 180, ymax = 90, ymin = -90), crs = st_crs(4326)) -->
+<!-- ramp = colorRampPalette(c('white', 'darkcyan')) -->
+<!-- tm_shape(precp[,,,1]) + -->
+<!--     tm_raster('prec1', -->
+<!--               breaks = c(0, 50, 100, 200, 500, 1000), -->
+<!--               palette = ramp(5)) + -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'lightblue') + -->
+<!--   tm_borders(col = 'steelblue') -->
+<!-- ``` -->
+<!-- Растровые данные могут хранить и качественную информацию: например, тип почв или вид землепользования. В качестве примера визуализируем типы земельного покрова (land cover) из растрового стека `land`, который есть в пакете **tmap**. Цвета здесь выбираются автоматически, их настройка рассматривается в следующем параграфе: -->
+<!-- ```{r} -->
+<!-- data(land, package = 'tmap') -->
+<!-- tm_shape(land) + -->
+<!--   tm_raster('cover') -->
+<!-- ``` -->
+<!-- ### Цветовые шкалы {#thematic_color_scales} -->
+<!-- Для изменения цветовой шкалы при определении способа изображения вы можете определить параметр `palette`. Пакет **tmap** позволяет работать с цветовыми палитрами *Color Brewer* или задавать цвета вручную. Очень удобным инструментом подбора шкалы является функция `palette_explorer()` из пакета **tmaptools**. При вызове функции открывается интерактивное приложение, позволяющее менять настройки цветовых палитр: -->
+<!-- ```{r, eval=FALSE} -->
+<!-- tmaptools::palette_explorer() -->
+<!-- ``` -->
+<!-- ![Приложение Palette Explorer из пакета **tmaptools**](images/palette_explorer.png) -->
+<!-- Данных палитр хватит для решения большинства задач по картографической визуализации. Применим категориальную палитру *Dark2*: -->
+<!-- ```{r} -->
+<!-- tm_shape(lyrp$countries) + -->
+<!--   tm_polygons('economy', palette = 'Dark2') + # качественная переменная -->
+<!-- tm_shape(lyrp$ocean)+ -->
+<!--   tm_fill(col = 'azure') + -->
+<!--   tm_borders(col = 'steelblue') -->
+<!-- ``` -->
+<!-- Для количественного показателя (количество осадков) применим палитру *PuBuGn*: -->
+<!-- ```{r, cache = TRUE} -->
+<!-- tm_shape(precp[,,,1]) + -->
+<!--     tm_raster('prec1', -->
+<!--               breaks = c(10, 50, 100, 200, 500, 1000), -->
+<!--               palette = 'PuBuGn') + -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'lightblue') + -->
+<!--   tm_borders(col = 'steelblue') -->
+<!-- ``` -->
+<!-- Вы всегда можете, конечно, определить цвета вручную. В этом случае их количество должно совпадать с количеством интервалов классификации: -->
+<!-- ```{r} -->
+<!-- tm_shape(precp[,,,1]) + -->
+<!--     tm_raster('prec1', -->
+<!--               breaks = c(10, 50, 100, 200, 500, 1000), -->
+<!--               palette = c('white', 'gray80', 'gray60', 'gray40', 'gray20')) + -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'lightblue') + -->
+<!--   tm_borders(col = 'steelblue') -->
+<!-- ``` -->
+<!-- Для категориальных данных необходимо тщательно подбирать цвета, стандартные шкалы тут могут не подойти (более подробно о шкалах --- далее). Для вышеприведенного примера с растром типов земельного покрова можно подобрать следующие цвета: -->
+<!-- ```{r} -->
+<!-- pal = c("#003200", "#3C9600", "#006E00", "#556E19", "#00C800", "#8CBE8C", -->
+<!--           "#467864", "#B4E664", "#9BC832", "#EBFF64", "#F06432", "#9132E6", -->
+<!--           "#E664E6", "#9B82E6", "#B4FEF0", "#646464", "#C8C8C8", "#FF0000", -->
+<!--           "#FFFFFF", "#5ADCDC") -->
+<!-- tm_shape(land) + -->
+<!--   tm_raster('cover', palette = pal) -->
+<!-- ``` -->
+<!-- ### Классификация {#thematic_mapping_class} -->
+<!-- #### Методы классификации {#thematic_mapping_class_methods} -->
+<!-- Классификация данных --- важнейший этап картографирования, который во многом определяет, как данные будут представлены на карте и какие географические выводы читатель сделает на ее основе. Существует множество методов классификации числовых рядов. Классифицировать данные автоматически можно с помощью функции `classIntervals()` из пакета `classInt`. Наберите в консоли `?classInt` чтобы прочитать справку о методах классификации. -->
+<!-- Посмотрим несколько методов классификации. Первый параметр функции `classInt` --- это числовой ряд. Число классов следует передать в параметр `n =`, метод классификации указывается в параметре `style =`. -->
+<!-- Для начала попробуем метод равных интервалов, который просто делит размах вариации (диапазон от минимума до максимум) на $n$ равных интервалов. Функция `plot()` применительно к созданной классификации рисует замечательный график, на котором показаны границы классов и эмпирическая функция распределения показателя. В параметр `pal` можно передать цветовую палитру: -->
+<!-- ```{r, collapse=TRUE} -->
+<!-- # Запишем число классов в переменную -->
+<!-- nclasses = 5 -->
+<!-- intervals = classIntervals(countries$POP_EST,  -->
+<!--                            n = nclasses,  -->
+<!--                            style = "equal") -->
+<!-- # извлечь полученные границы можно через $brks -->
+<!-- intervals$brks -->
+<!-- plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Равные интервалы MIN/MAX") -->
+<!-- ``` -->
+<!-- Созданные интервалы хоть и равны, но не аккуратны. Зато метод классификации `"pretty"` создает также равные интервалы, но может слегка расширить диапазон или добавить 1 класс, чтобы получить границы интервалов, округленные до целых чисел: -->
+<!-- ```{r, collapse=TRUE} -->
+<!-- intervals = classIntervals(countries$pop_est,  -->
+<!--                            n = nclasses,  -->
+<!--                            style = "pretty") -->
+<!-- intervals$brks -->
+<!-- plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Округленные равные интервалы") -->
+<!-- ``` -->
+<!-- Квантили --- равноколичественные интервалы. В каждом классе содержится одинаковое число объектов: -->
+<!-- ```{r, collapse=TRUE} -->
+<!-- intervals = classIntervals(countries$pop_est, n = nclasses, style = "quantile") -->
+<!-- intervals$brks -->
+<!-- plot(intervals, pal = ramp(nclasses),  -->
+<!--      cex=0.5, main = "Квантили (равноколичественные)") -->
+<!-- ``` -->
+<!-- Метод "естественных интервалов", или метод Фишера-Дженкса позволяет найти классы, максимально однородные внутри и при этом максимально отличающиеся друг от друга: -->
+<!-- ```{r, collapse=TRUE} -->
+<!-- intervals = classIntervals(countries$pop_est, n = nclasses, style = "jenks") -->
+<!-- intervals$brks -->
+<!-- plot(intervals, pal = ramp(nclasses), cex=0.5, main = "Естественные интервалы") -->
+<!-- ``` -->
+<!-- #### Применение на картах {#thematic_mapping_class_application} -->
+<!-- Чтобы использовать заранее вычисленные интервалы классификации, их необходимо подать в параметр `breaks` при построении карты: -->
+<!-- ```{r} -->
+<!-- brks = classIntervals(countries$pop_est,  -->
+<!--                       n = 7,  -->
+<!--                       style = "jenks")$brks -->
+<!-- tm_shape(lyrp$countries) + -->
+<!--   tm_polygons('pop_est',  -->
+<!--               border.col = 'gray20', -->
+<!--               palette = 'YlGn', -->
+<!--               breaks = brks) + # количественная переменная -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'azure') + -->
+<!--   tm_borders(col = 'steelblue4') -->
+<!-- ``` -->
+<!-- Аналогичным путем работают шкалы для растровых данных: -->
+<!-- ```{r} -->
+<!-- tm_shape(precp[,,,1]) + -->
+<!--     tm_raster('prec1', -->
+<!--               breaks = classIntervals(sample(precp[,,,1][[1]], 1000), n = 5, style = "jenks", na.rm = TRUE)$brks, -->
+<!--               palette = 'PuBuGn') + -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'lightblue') + -->
+<!--   tm_borders(col = 'steelblue') -->
+<!-- ``` -->
+<!-- > Учтите, что метод естественных интервалов --- ресурсоемкий в вычислительном плане. Поэтому если вы хотите с его помощью классифицировать растровые данные, целесообразно сделать выборку не более чем из нескольких тысяч пикселов. Иначе придется долго ждать. -->
+<!-- Для классификации естественными интервалами сделаем выборку в 2 000 значений с растра c помощью функции `sampleRandom()` из пакета **raster**: -->
+<!-- ```{r} -->
+<!-- smpl = sample(precp[,,,1][[1]], 2000)  -->
+<!-- tm_shape(precp[,,,1]) + -->
+<!--     tm_raster('prec1', -->
+<!--               breaks = classIntervals(smpl, n = 5, style = "jenks")$brks, -->
+<!--               palette = 'PuBuGn') + -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'lightblue') + -->
+<!--   tm_borders(col = 'steelblue') -->
+<!-- ``` -->
+<!-- ### Классификация при отображении -->
+<!-- Пакет **tmap** позволяет выполнять классификацию данных непосредственно при отображении. Это бывает удобно, когда одну и ту же классификацию не надо использовать несколько раз, и когда нет необходимости делать выборку значений (как в случае метода естественных интервалов). Для этого функции способов изображения предлагают несколько параметров: -->
+<!-- -   `n` --- количество классов -->
+<!-- -   `style` --- метод классификации (так же как и в `classIntervals()`) -->
+<!-- -   `breaks` --- значения границ интервалов (необходимы, если `style == fixed`) -->
+<!-- -   `interval.closure` --- замыкание интервала (по умолчанию стоит `left`, что означает, что в интервал включается нижняя граница, за исключением последнего интервала, включающего и нижнюю и верхнюю границу) -->
+<!-- -   `midpoint` --- нейтральное значение, которое используется для сопоставления с центральным цветом в расходящихся цветовых палитрах -->
+<!-- Построим карту продолжительности жизни, используя классификацию при отображении: -->
+<!-- ```{r} -->
+<!-- tm_shape(lyrp$countries) + -->
+<!--   tm_polygons('pop_est',  -->
+<!--               palette = 'YlGn', -->
+<!--               n = 5, -->
+<!--               style = 'fisher', -->
+<!--               border.col = 'gray20') + # количественная переменная -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'azure') + -->
+<!--   tm_borders(col = 'steelblue4') -->
+<!-- ``` -->
+<!-- Установка средней точки при классификации оказывается очень полезной в тех случаях, когда данные являются биполярными. Покажем это на примере данных WorldClim по температуре: -->
+<!-- ```{r, cache = TRUE} -->
+<!-- temp = geodata::worldclim_global(var = "tavg", res = 10,  -->
+<!--                                  path = 'data') |>  -->
+<!--   st_as_stars() |>  -->
+<!--   rename(tavg = 1) |>  -->
+<!--   st_warp(crs = "+proj=mill") -->
+<!-- ``` -->
+<!-- Визуализируем данные по температуре, используя классическую красно-бело-синюю палитру *RdBu* и нейтральную точку 0 градусов по Цельсию. По умолчанию в данной палитре красный цвет соответствует малым значениям. пакет **tmap** позволяет инвертировать цвета палитры, добавив знак минус перед ее названием. Помимо этого, для размещения положительных значений наверху выполним обратную сортировку элементов легенды, используя параметр `legend.reverse = TRUE`: -->
+<!-- ```{r} -->
+<!-- tm_shape(temp[,,,3]) + -->
+<!--     tm_raster('tavg', -->
+<!--               n = 11, -->
+<!--               midpoint = 0, -->
+<!--               style = 'pretty', -->
+<!--               legend.reverse = TRUE, -->
+<!--               palette = '-Spectral') + -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'azure') + -->
+<!--   tm_borders(col = 'steelblue') -->
+<!-- ``` -->
+<!-- ### Пропущенные данные {#thematic_mapping_na} -->
+<!-- Весьма важно отметить на карте области, для которых данные отсутствуют. Вы могли обратить внимание, что для способов изображения, применимых к векторным данным, *tmap* автоматически добавляет класс легенды, который отвечает за пропуски. Для растров, однако, он это не делает. Чтобы принудительно вывести в легенду и на карту символ, отвечающий за пропущенные значения, необходимо определить параметр `colorNA`. Обычно, в зависимости от цветовой палитры легенды, для этого используют серый или белый цвет: -->
+<!-- ```{r} -->
+<!-- tm_shape(temp[,,,1]) + -->
+<!--     tm_raster('tavg', -->
+<!--               colorNA = 'grey', # определяем цвет для пропущенных значений -->
+<!--               n = 11, -->
+<!--               midpoint = 0, -->
+<!--               style = 'pretty', -->
+<!--               legend.reverse = TRUE, -->
+<!--               palette = '-RdBu') + -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'azure') + -->
+<!--   tm_borders(col = 'steelblue') -->
+<!-- ``` -->
+<!-- ### Компоновка {#thematic_mapping_layouts} -->
+<!-- Пакет **tmap** предоставляет широкий набор настроек компоновки картографического изображения, который включает настройку легенды, заголовка карты и ряда других важных параметров. Большинство настроек компоновки осуществляется через функцию `tm_layout()`, однако часть из них, специфичная для конкретного слоя, определяется непосредственно при настройке способа изображения. -->
+<!-- В примере ниже показано, как: -->
+<!-- -   добавить заголовок карты (`main.title`), -->
+<!-- -   разместить легенду в нижнем левом углу (`legend.position = c('left', 'bottom')`) -->
+<!-- -   поместить ее легенду в полупрозрачный прямоугольник (параметры `legend<...>`), -->
+<!-- -   убрать заголовок легенды (`title`), -->
+<!-- -   заменить стандартный шрифт на *Open Sans* (`fontfamily`): -->
+<!-- ```{r} -->
+<!-- tm_shape(lyrp$countries) + -->
+<!--   tm_polygons('economy', title = '') + # убираем заголовок легенды -->
+<!-- tm_shape(lyrp$ocean)+ -->
+<!--   tm_fill(col = 'azure') + -->
+<!--   tm_borders(col = 'steelblue') + -->
+<!-- tm_layout(legend.position = c('left', 'bottom'), -->
+<!--           fontfamily = 'PT Sans', # шрифт -->
+<!--           main.title.size = 1.2,   # масштаб шрифта в заголовке -->
+<!--           main.title = 'Тип экономики', # заголовок -->
+<!--           legend.frame = TRUE, # рамка вокруг легенды -->
+<!--           legend.frame.lwd = 0.2, # толщина рамки вокруг легенды -->
+<!--           legend.bg.alpha = 0.8, # прозрачность фона в легенде -->
+<!--           legend.bg.color = 'white') # цвет фона легенды -->
+<!-- ``` -->
+<!-- Для того чтобы определить заголовок легенды размера значка или диаграммы, необходимо задать параметр `title.size`. Помимо этого, легенду можно пристыковать непосредственно к рамке карты, если задать значения параметра `legend.position` в верхнем регистре: -->
+<!-- ```{r} -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'lightblue') + -->
+<!--   tm_borders(col = 'steelblue') + -->
+<!-- tm_shape(lyrp$countries) + -->
+<!--   tm_fill(col = 'white') + -->
+<!--   tm_borders(col = 'grey') + -->
+<!--   tm_bubbles('gdp_md_est',  -->
+<!--              scale = 2.5, -->
+<!--              col = 'red',  -->
+<!--              alpha = 0.5, -->
+<!--              title.size = '$ млн') + # количественная переменная -->
+<!-- tm_layout(legend.position = c('LEFT', 'BOTTOM'), # верхний регистр — легенда встык -->
+<!--           fontfamily = 'Open Sans', # шрифт -->
+<!--           main.title.size = 1.2,   # масштаб шрифта в заголовке -->
+<!--           main.title = 'Валовый внутренний продукт стран мира', # заголовок -->
+<!--           frame.lwd = 2, -->
+<!--           legend.frame = TRUE, # рамка вокруг легенды -->
+<!--           legend.frame.lwd = 0.5, # толщина рамки вокруг легенды -->
+<!--           legend.bg.color = 'white') # цвет фона легенды -->
+<!-- ``` -->
+<!-- По умолчанию **tmap** размещает легенду внутри фрейма картографического изображения. Однако ее можно вынести и наружу, используя параметр `legend.outside` функции `tm_layout()`. В примере ниже показано также, как можно -->
+<!-- -   задать текст легенды для отсутствующих данных (`textNA`), -->
+<!-- -   отформатировать разделитель в легенде с интервалами значений (`legend.format`), -->
+<!-- -   убрать рамку карты (`frame`), -->
+<!-- -   сдвинуть заголовок вдоль строки, выровняв его с центром карты (`main.title.position`): -->
+<!-- ```{r} -->
+<!-- tm_shape(lyrp$countries) + -->
+<!--   tm_polygons('pop_est',  -->
+<!--               border.col = 'gray20',  -->
+<!--               palette = 'YlGn', -->
+<!--               n = 4, -->
+<!--               style = 'jenks', -->
+<!--               title = 'Чел.', -->
+<!--               colorNA = 'lightgray', -->
+<!--               textNA = 'Нет данных', -->
+<!--               legend.format = list(text.separator = '—')) + # количественная переменная -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'azure') + -->
+<!--   tm_borders(col = 'steelblue4') + -->
+<!-- tm_layout(frame = FALSE, -->
+<!--           main.title.position = 0.5, -->
+<!--           legend.outside = TRUE, -->
+<!--           legend.outside.position = 'right', -->
+<!--           fontfamily = 'Open Sans', -->
+<!--           main.title.size = 1.2, -->
+<!--           main.title = 'Численность населения', -->
+<!--           legend.bg.color = 'white') -->
+<!-- ``` -->
+<!-- Для отображения **координатной сетки** вы можете использовать функцию `tm_grid()`. По умолчанию она строит координатную сетку в единицах измерения проекции. Однако если требуется градусная сетка, то ее можно определить, используя параметр `projection = 4326`: -->
+<!-- ```{r} -->
+<!-- tm_shape(temp[,,,1]) + -->
+<!--   tm_raster('tavg', -->
+<!--             title = '°C', -->
+<!--             colorNA = 'grey', # определяем цвет для пропущенных значений -->
+<!--             textNA = 'Нет данных', -->
+<!--             legend.format = list(text.separator = '—'), -->
+<!--             n = 11, -->
+<!--             midpoint = 0, -->
+<!--             style = 'pretty', -->
+<!--             legend.reverse = TRUE, -->
+<!--             palette = '-RdBu') + -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'azure') + -->
+<!--   tm_borders(col = 'steelblue') + -->
+<!-- tm_layout(legend.position = c('left', 'bottom'), -->
+<!--           fontfamily = 'Open Sans', -->
+<!--           main.title.size = 1.2, -->
+<!--           main.title = 'Средняя температура января', -->
+<!--           legend.frame = TRUE, -->
+<!--           legend.frame.lwd = 0.2, -->
+<!--           legend.bg.alpha = 0.5, -->
+<!--           legend.bg.color = 'white') + -->
+<!-- tm_graticules(x = seq(-150, 150, by = 30), -->
+<!--         y = seq(-60, 60, by = 30), -->
+<!--         lwd = 0.2, -->
+<!--         col = "black") -->
+<!-- ``` -->
+<!-- Подписи сетки координат можно добавить и для более сложных проекций, однако располагаться они будут по-прежнему вдоль осей *X* и *Y*. В примере ниже также показано как можно увеличить расстояние между заголовком и картой, определив более крупный отступ от верхней стороны в параметре `inner.margins`: -->
+<!-- ```{r} -->
+<!-- tm_shape(coun, projection = '+proj=moll') + -->
+<!--   tm_polygons('lifexp',  -->
+<!--               palette = 'YlGn', -->
+<!--               n = 4, -->
+<!--               style = 'jenks', -->
+<!--               border.col = 'gray20',  -->
+<!--               title = 'Лет', -->
+<!--               colorNA = 'lightgray', -->
+<!--               textNA = 'Нет данных', -->
+<!--               legend.reverse = TRUE, -->
+<!--               legend.format = list(text.separator = '—')) + # количественная переменная -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'azure') + -->
+<!--   tm_borders(col = 'steelblue4') + -->
+<!-- tm_layout(frame = FALSE, -->
+<!--           main.title.position = 0.22, -->
+<!--           legend.outside = TRUE, -->
+<!--           legend.outside.position = 'right', -->
+<!--           fontfamily = 'Open Sans', -->
+<!--           main.title.size = 1.2, -->
+<!--           main.title = 'Продолжительность жизни', -->
+<!--           legend.bg.color = 'white', -->
+<!--           outer.margins = c(0.02, 0.05, 0.02, 0.02), -->
+<!--           inner.margins = c(0.02, 0.02, 0.07, 0.02)) + -->
+<!-- tm_graticules(x = seq(-150, 150, by = 30), -->
+<!--         y = seq(-60, 60, by = 30), -->
+<!--         lwd = 0.2, -->
+<!--         col = "black") -->
+<!-- ``` -->
+<!-- ### Фасеты и серии карт {#thematic_mapping_facets} -->
+<!-- Фасетная компоновка предполагает, упорядочение элементов в матричной форме на одной странице. Как правило, картографические фасеты идентичны по содержанию, но показывают одно и то же явление при различных заданных условиях: за разные года, по разным странам и т.д. Создание фасет с помощью **tmap** осуществляется с помощью специальной функции `tm_facets()`, которой необходимо передать название переменной, отвечающей за разделение. В свою очередь, это означает, что данные должны быть приведены к «длинной» форме (если информация за разные года содержится в разных столбцах, то нужно год записать в отдельную переменную). Здесь вам пригодится знание пакета **tidyr**. -->
+<!-- Рассмотрим создание фасет на примере данных Gapminder по средней продолжительности жизни c 1960 по 2010 г: -->
+<!-- ```{r, cache=TRUE} -->
+<!-- lifexp_dec = lifexp |>  -->
+<!--   filter(year %in% c(1960, 1970, 1980, 1990, 2000, 2010)) -->
+<!-- lifedf_dec = left_join(gap, lifexp_dec, by = c('name' = 'country')) |> -->
+<!--   rename(lifexp = SP.DYN.LE00.IN) |>  -->
+<!--   mutate(geo = stringr::str_to_upper(geo)) -->
+<!-- coun_dec = lyrp$countries |>   -->
+<!--   left_join(lifedf_dec, by = c('ADM0_A3' = 'geo')) -->
+<!-- ``` -->
+<!-- Создадим серию карт за разные года: -->
+<!-- ```{r, fig.height = 10, fig.width=7} -->
+<!-- tm_shape(coun_dec) + -->
+<!--   tm_polygons('lifexp',  -->
+<!--               palette = 'YlGnBu', -->
+<!--               n = 3, -->
+<!--               style = 'pretty', -->
+<!--               border.col = 'gray20',  -->
+<!--               title = 'Лет', -->
+<!--               colorNA = 'lightgray', -->
+<!--               textNA = 'Нет данных', -->
+<!--               legend.reverse = TRUE, -->
+<!--               legend.format = list(text.separator = '—')) + # количественная переменная -->
+<!--   tm_facets(by = 'year', -->
+<!--             free.coords = FALSE, -->
+<!--             drop.units = TRUE, -->
+<!--             drop.NA.facets = TRUE, -->
+<!--             ncol = 2) + -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'azure') + -->
+<!--   tm_borders(col = 'steelblue4') + -->
+<!-- tm_layout(frame = FALSE, -->
+<!--           legend.outside = TRUE, -->
+<!--           legend.outside.position = 'bottom', -->
+<!--           fontfamily = 'Open Sans', -->
+<!--           main.title.size = 1.2, -->
+<!--           main.title = 'Средняя продолжительность жизни', -->
+<!--           legend.bg.color = 'white', -->
+<!--           outer.margins = c(0.02, 0.1, 0.02, 0.02), -->
+<!--           inner.margins = c(0.02, 0.02, 0.07, 0.02)) -->
+<!-- ``` -->
+<!-- Фасетные карты по растровым данным в настоящий момент не поддерживаются в пакете **tmap**, но вы можете создать их, используя функцию `tmap_arrange()`, которая принимает на вход список из карт **tmap** и упорядочивает их в фасетной компоновке. -->
+<!-- В примере ниже показано, как: -->
+<!-- -   вычислить равноступенную шкалу, единую для всех карт --- используя максимум и минимум по всем растрам из стека, а также функцию `fullseq()` из пакета [**scales**](https://cran.r-project.org/web/packages/scales/index.html), заведомо накрывающую указанный диапазон значений интервалами заданного размера. -->
+<!-- -   применить функционал `map2()`из пакета [**purrr**](https://purrr.tidyverse.org/) (входит в **tidyverse**) для одновременной итерации по двум спискам: названий растров в стеке (`X`) и названий месяцев (`Y`), которые нужны для формирования заголовков -->
+<!-- -   упорядочить карты по регулярной сетке с двумя столбцами и полями отступа каждой фасеты (параметр `outer.margins`), используя `tmap_arrange()` -->
+<!-- ```{r, fig.height = 25, fig.width = 11, cache = TRUE} -->
+<!-- minval = min(temp[[1]], na.rm = TRUE) -->
+<!-- maxval = max(temp[[1]], na.rm = TRUE) -->
+<!-- brks = scales::fullseq(c(minval, maxval), 10) -->
+<!-- months = c('Январь', 'Февраль', 'Март', 'Апрель',  -->
+<!--            'Март', 'Июнь', 'Июль', 'Август',  -->
+<!--            'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь') -->
+<!-- tm_shape(temp) + -->
+<!--     tm_raster('tavg', -->
+<!--               title = '°C', -->
+<!--               colorNA = 'grey', # определяем цвет для пропущенных значений -->
+<!--               textNA = 'Нет данных', -->
+<!--               legend.format = list(text.separator = '—'), -->
+<!--               breaks = brks, -->
+<!--               midpoint = 0, -->
+<!--               style = 'fixed', -->
+<!--               legend.reverse = TRUE, -->
+<!--               palette = '-RdBu') + -->
+<!--   tm_shape(lyrp$ocean) + -->
+<!--     tm_fill(col = 'azure') + -->
+<!--     tm_borders(col = 'steelblue') + -->
+<!--   tm_layout(legend.position = c('LEFT', 'BOTTOM'), -->
+<!--             fontfamily = 'Open Sans', -->
+<!--             main.title.size = 1.2, -->
+<!--             main.title = 'Среднемесячная температура', -->
+<!--             legend.frame = TRUE, -->
+<!--             legend.frame.lwd = 0.2, -->
+<!--             legend.bg.alpha = 0.8, -->
+<!--             legend.bg.color = 'white', -->
+<!--             inner.margins = c(0, 0, 0, 0)) + -->
+<!--   tm_graticules(x = seq(-150, 150, by = 30), -->
+<!--         y = seq(-60, 60, by = 30), -->
+<!--         lwd = 0.2, -->
+<!--         col = "black") -->
+<!-- # tmap_arrange(maps, asp = NA, ncol = 2, -->
+<!-- #              outer.margins = 0.05) -->
+<!-- ``` -->
+<!-- ### Картографические анимации {#thematic_mapping_animations} -->
+<!-- Картографические анимации вы пакете **tmap** создаются путем следующей последовательности действий: -->
+<!-- 1.  Добавить в построение карты функцию `tm_facets(along = "name")`, где `name` --- название атрибута, значения которого отвечают за каждый кадр анимации. -->
+<!-- 2.  Записать созданную карту в переменную (условно назовем ее `map`). -->
+<!-- 3.  Вызвать для созданной переменной функцию `tmap_animation(map, filename = "filename.gif", delay = 25)`, определив имя файла и задержку в миллисекундах между кадрами. -->
+<!-- > **Внимание:** для того чтобы работало построение анимаций средствами **tmap**, на вашем компьютере должна быть установлена библиотека [**ImageMagick**](https://www.imagemagick.org/). -->
+<!-- Для примера построим анимацию по данным изменения средней продолжительности жизни: -->
+<!-- ```{r, eval = FALSE} -->
+<!-- map = tm_shape(coun_dec) + -->
+<!--   tm_polygons('lifexp',  -->
+<!--               palette = 'YlGnBu', -->
+<!--               n = 3, -->
+<!--               style = 'pretty', -->
+<!--               border.col = 'gray20',  -->
+<!--               title = 'Лет', -->
+<!--               colorNA = 'lightgray', -->
+<!--               textNA = 'Нет данных', -->
+<!--               legend.reverse = TRUE, -->
+<!--               legend.format = list(text.separator = '—')) + # количественная переменная -->
+<!--   tm_facets(along = 'year', -->
+<!--             free.coords = FALSE, -->
+<!--             drop.units = TRUE) + -->
+<!-- tm_shape(lyrp$ocean) + -->
+<!--   tm_fill(col = 'azure') + -->
+<!--   tm_borders(col = 'steelblue4')  -->
+<!-- tmap_animation(map, 'images/lifexp.gif', delay = 100) -->
+<!-- ``` -->
+<!-- ![](images/lifexp.gif) -->
+<!-- ### Интерактивные карты {#thematic_mapping_interactive} -->
+<!-- Любую карту tmap можно перевести в интерактивный режим с помощью функции `tmap_mode()` с параметром `'view'`. Управлять дополнительными параметрами, специфичными для интерактивного режима, можно используя функцию `tm_view()`. В частности, можно установить координаты центра карты и масштабный уровень в параметре `set.view` и ограничить диапазон масштабных уровней в параметре `set.zoom.limits`. Состав полей, значения которых отображаются во всплывающем окне при щелчке на символе, определяются параметром `popup.vars`: -->
+<!-- ```{r, eval=FALSE} -->
+<!-- tmap_mode('view') -->
+<!-- tmap_options(check.and.fix = TRUE) -->
+<!-- sf::sf_use_s2(FALSE) -->
+<!-- tm_shape(coun) + -->
+<!--   tm_polygons('lifexp',  -->
+<!--               border.col = 'gray20',  -->
+<!--               palette = 'YlGn', -->
+<!--               n = 4, -->
+<!--               style = 'jenks', -->
+<!--               title = 'Лет', -->
+<!--               colorNA = 'lightgray', -->
+<!--               textNA = 'Нет данных', -->
+<!--               legend.format = list(text.separator = '—'), -->
+<!--               popup.vars = c('sovereignt', 'lifexp')) + # поля для всплывающего окна -->
+<!-- tm_view(set.view = c(20, 45, 2),    # центр карты и масштабный уровень -->
+<!--         set.zoom.limits = c(1, 4)) -->
+<!-- ``` -->
+<!-- Чтобы добавить карту-подложку, необходимо предварительно вызвать функцию `tm_basemap()`, передав ей название картографического сервиса. В примере ниже также показано, как можно сделать размер кружка постоянным во всех масштабах (параметр `symbol.size.fixed`): -->
+<!-- ```{r, eval=FALSE} -->
+<!-- tmap_mode('view') -->
+<!-- tmap_options(check.and.fix = TRUE) -->
+<!-- coun = coun |> mutate(gdp_scaled = round(0.001 * gdp_md_est)) -->
+<!-- tm_basemap("OpenStreetMap") + -->
+<!-- tm_shape(coun) + -->
+<!--   tm_borders(col = 'black', alpha = 0.5, lwd = 0.3) + -->
+<!-- tm_shape(st_point_on_surface(coun)) + # делаем точки, чтобы диаграммы были точно внутри -->
+<!--   tm_bubbles('gdp_scaled',  -->
+<!--              scale = 3, -->
+<!--              col = 'violetred',  -->
+<!--              alpha = 0.5, -->
+<!--              popup.vars = c('sovereignt', 'gdp_scaled')) + -->
+<!--   tm_text('gdp_scaled', size = 'gdp_scaled',  -->
+<!--           remove.overlap = TRUE, -->
+<!--           size.lowerbound = 0.2, -->
+<!--           scale = 2) + -->
+<!-- tm_view(set.view = c(20, 45, 3), -->
+<!--         set.zoom.limits = c(2, 4), -->
+<!--         symbol.size.fixed = TRUE, -->
+<!--         text.size.variable = TRUE) -->
+<!-- ``` -->
+<!-- ## Тематические карты в `mapsf` -->
+<!-- Пакет mapsf предлагает альтернативный подход к составлению -->
+<!-- ## Контрольные вопросы и упражнения {#questions_tasks_tmap} -->
+<!-- ### Вопросы {#questions_tmap} -->
+<!-- 1.  Опишите шаблон построения тематической карты средствами **tmap**. Что из себя представляют его три основные компоненты? -->
+<!-- 2.  Могут ли на одной тематической карте комбинироваться пространственные данные в разных проекциях? -->
+<!-- 3.  Перечислите названия функций, отвечающих за отображение полигонов, линий и окружностей средствами tmap. -->
+<!-- 4.  Чему должно быть равно значение параметра `col` при отображении одноканального растра в случае если классификация и цвета определяются посредством параметров `breaks` и `palette`? -->
+<!-- 5.  Опишите порядок использования функции `classIntervals()` и ее основные параметры. -->
+<!-- 6.  Перечислите методы классификации, доступные в `classIntervals()`, а также принципы и работы. Какой из методов наиболее трудоемок в вычислительном плане? -->
+<!-- 7.  В каком соотношении должно быть количество граничных классов и количество цветов при классификации? -->
+<!-- 8.  График какой функции отображается при вызове функции `plot()` применительно к результату выполнения `classIntervals()`? -->
+<!-- 9.  Какие возможности существуют для применения классификации при построении карт средствами tmap? Обязательно ли заранее определять количество классов? В каком случае это может быть полезно. -->
+<!-- 10. Как можно изменить порядок размещения элементов легенды в tmap? -->
+<!-- 11. Опишите возможности управления расположением и внутренним форматированием легенды средствами tmap. -->
+<!-- 12. С помощью какой функции можно построить координатную сетку на карте tmap? -->
+<!-- 13. Как добавить значки градусов в подписи выходов сетки координат на карте tmap? -->
+<!-- 14. Какие параметры позволяют управлять внешними и внутренними полями карты tmap? -->
+<!-- 15. Опишите последовательность действий, которую необходимо реализовать для построения фасетной карты средствами tmap. Как можно реализовать построение таких карт на основе растровых данных? -->
+<!-- 16. Опишите последовательность действий, которую необходимо реализовать для построения картографических анимаций средствами tmap. Какая библиотека должна быть установлена для этого на компьютере пользователя? -->
+<!-- 17. Каким образом можно перевести отображение карт tmap в интерактивный режим? А обратно в статичный? -->
+<!-- 18. Расскажите, что вы знаете о данных Natural Earth. На каком сайте они размещены? Сколько существует масштабных уровней? В каких форматах доступны данные? Как получить доступ к ним программным путем непосредственно из среды R? -->
+<!-- ### Упражнения {#tasks_tmap} -->
+<!-- 1.  Используя возможности пакетов **rnaturalearth** и **tmap**, создайте карту мира, в которой страны раскрашены в соответствии с континентом (переменная *continent*). Визуализируйте ее в статичном и интерактивном режиме. -->
+<!-- 2.  Скачайте [цифровую модель рельефа GEBCO](https://github.com/tsamsonov/r-geo-course/blob/master/data/world/gebco.tif). Используя слои `ocean` и `land` из масштаба `110` данных Natural Earth, разделите ее на два растра, отвечающих за рельефа суши и моря соответственно. Подберите для них классификации и создайте физическую карту мира, которая будет содержать помимо рельефа также основные объекты гидрографии. -->
+<!-- 3.  Выполните выборку стран из набора данных *Natural Earth* масштаба $50$ на Европейский континент. Трансформируйте данные о странах в коническую равнопромежуточную проекцию. Визуализируйте численность населения по странам (переменная *pop_est*) способом картодиаграмм. Добавьте на карту реки, озера и города, используя возможности `ne_download()`. -->
+<!-- |                                                                                                                                                                                                                  | -->
+<!-- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| -->
+<!-- | *Самсонов Т.Е.* **Визуализация и анализ географических данных на языке R.** М.: Географический факультет МГУ, `lubridate::year(Sys.Date())`. DOI: [10.5281/zenodo.901911](https://doi.org/10.5281/zenodo.901911) | -->
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    const typesetMath = (el) => {
+      if (window.MathJax) {
+        // MathJax Typeset
+        window.MathJax.typeset([el]);
+      } else if (window.katex) {
+        // KaTeX Render
+        var mathElements = el.getElementsByClassName("math");
+        var macros = [];
+        for (var i = 0; i < mathElements.length; i++) {
+          var texText = mathElements[i].firstChild;
+          if (mathElements[i].tagName == "SPAN") {
+            window.katex.render(texText.data, mathElements[i], {
+              displayMode: mathElements[i].classList.contains('display'),
+              throwOnError: false,
+              macros: macros,
+              fleqn: false
+            });
+          }
+        }
+      }
+    }
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
+        }
+        typesetMath(container);
+        return container.innerHTML
+      } else {
+        typesetMath(note);
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      typesetMath(note);
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
