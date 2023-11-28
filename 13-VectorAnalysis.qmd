@@ -512,48 +512,41 @@ selected_poi
 
 В данном разделе мы решим следующую задачу: разбить всю изучаемую территорию на зоны окружения станций метро и подсчитать количество пунктов питания, попадающих в каждую зону. Полученные зоны должны быть конкурентными: любая точка, находящаяся в зоне окружения конкретной станции метро, должна быть ближе к этой станции, чем к любой другой станции.
 
-Ранее мы говорили о том, что конкурентные зоны окружения по расстоянию можно реализовать с помощью диаграммы Вороного. Применим функцию `voronoi()` из пакета **dismo**, чтобы посмотреть, как выглядит диаграмма Вороного для точек станций метро. Нам потребуется для этого конвертировать объекты в тип `Spatial`, а результат преобразовать вернуть обратно в `sf`:
+Ранее мы говорили о том, что конкурентные зоны окружения по расстоянию можно реализовать с помощью диаграммы Вороного. Применим функцию `st_voronoi()` из пакета **sf**, чтобы посмотреть, как выглядит диаграмма Вороного для точек станций метро:
 
 ```{r, collapse=TRUE}
 
 ## АНАЛИЗ КОНКУРЕНТНЫХ ЗОН ОКРУЖЕНИЯ -------------------------------------
 
-zones = stations |>  
-  as('Spatial') |> 
-  dismo::voronoi() |> 
-  st_as_sf() |> 
+zones = stations |> 
+  st_combine() |> 
+  st_voronoi() |> 
+  st_collection_extract() |> 
   st_crop(frame)
   
-
-plot(zones |> st_geometry())
-plot(stations, add = TRUE, pch = 19, col = 'black')
+mf_base(zones)
+mf_base(stations, add = TRUE, pch = 19, col = 'black')
 ```
 
 Для визуализации результатов мы будем использовать метод картодиаграмм (пропорциональных символов), реализованный в функции `propSymbolsLayer()` пакета `cartography`. Размером кружка покажем количество пунктов питания, оказавшихся в каждой зоне окружения:
 
 ```{r, collapse = TRUE}
 # Агрегруем данные по каждой зоне
-zones.poi = aggregate(poi.food['count'], zones, sum)
+zones_poi = aggregate(poi_food['count'], zones, sum)
 
 # Визуализируем результат
 
-plotBasemap()
-
-plot(zones |> st_geometry(),
-     col = adjustcolor("white", alpha.f = 0.5),
-     add = TRUE)
-
-propSymbolsLayer(zones.poi, 
-                 var = "count", 
-                 symbols = "circle",
-                 col = adjustcolor("turquoise3", alpha.f = 0.5),
-                 border = F,
-                 legend.title.txt = "Заведений\nпитания")
-
-text(zones |> st_centroid() %>% st_coordinates(), 
-     labels = zones.poi$count,
+basemap2()
+mf_base(zones, col = adjustcolor("white", alpha.f = 0.5),
+        add = TRUE)
+mf_map(zones_poi, var = 'count', type = 'prop', 
+       col = adjustcolor("turquoise3", alpha.f = 0.5),
+       border = F,
+       leg_title = "Заведений\nпитания")
+mf_label(zones_poi, 
+     var = 'count',
      col = "turquoise4",
-     cex = log(zones.poi$count)/4)
+     cex = log(zones_poi$count)/4)
 ```
 
 ## Интерполяция по ареалам {#areal_interpolation}
