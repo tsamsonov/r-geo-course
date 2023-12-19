@@ -279,6 +279,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Интерполяция геополей</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16-NetworkAnalysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Сетевой анализ</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item">
@@ -371,7 +377,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>d31 <span class="ot">=</span> <span class="fu">sqrt</span>((x[<span class="dv">3</span>] <span class="sc">-</span> x[<span class="dv">4</span>]) <span class="sc">^</span> <span class="dv">2</span> <span class="sc">+</span> (y[<span class="dv">3</span>] <span class="sc">-</span> y[<span class="dv">4</span>]) <span class="sc">^</span> <span class="dv">2</span>)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(d12, d23, d31)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.708583 1.27947 2.199118</code></pre>
+<pre><code>1.78599 1.780432 2.739223</code></pre>
 </div>
 </div>
 <p>В правой части этих выражений стоит один и тот же код, который я скопировал и вставил, а далее заменил названия переменных. Это плохо сразу по двум причинам: дублирование фрагментов программы и возрастание вероятности опечаток в скопированой копии. Улучшить код можно, введя функцию вычисления расстояний:</p>
@@ -385,7 +391,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>d31 <span class="ot">=</span> <span class="fu">distance</span>(x[<span class="dv">3</span>], y[<span class="dv">3</span>], x[<span class="dv">4</span>], y[<span class="dv">4</span>])</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(d12, d23, d31)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.708583 1.27947 2.199118</code></pre>
+<pre><code>1.78599 1.780432 2.739223</code></pre>
 </div>
 </div>
 <p>Функция всегда возвращает один объект: значение, вектор, список и т.д. Например, мы можем сделать функцию следующего уровня, рассчитывающая сразу все расстояния для множества точек:</p>
@@ -397,7 +403,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">distances</span>(x, y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.708583 1.279470 2.199118</code></pre>
+<pre><code>[1] 1.785990 1.780432 2.739223</code></pre>
 </div>
 </div>
 <p>Можно пойти еще дальше, и сделать функцию, выполняющую вычисление длины линии, заданной координатами:</p>
@@ -408,7 +414,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">line_length</span>(x, y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 5.187172</code></pre>
+<pre><code>[1] 6.305645</code></pre>
 </div>
 </div>
 <p>Обратите внимание на то, как мы используем одну ранее написанную функцию при создании другой функции! Это весьма распространенная практика: одна и та же функция может быть как самостоятельно полезной (вызываться непосредственно в программе полтьзователя), так и применяться для решения задач внутри других функций. При этом иногда даже относительно простые фрагменты кода имеет смысл оформлять в виде функций, так как это может улучшить читаемость программы и пояснить смысл выполняемых операций. Так, например, <code>line_length(x, y)</code> в более явном виде обозначает операцию вычисления длины по координатам, нежели <code>sum(distances(x, y))</code>. В то же время, здесь важно не переусердствовать и оформлять короткие фрагменты кода в виде функций только если они будут применяться вами неоднократно.</p>
@@ -426,11 +432,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>result <span class="ot">=</span> <span class="fu">line_params</span>(x, y)</span>
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>result<span class="sc">$</span>length</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 5.187172</code></pre>
+<pre><code>[1] 6.305645</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>result<span class="sc">$</span>sinuosity</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 8.328622</code></pre>
+<pre><code>[1] 4.907202</code></pre>
 </div>
 </div>
 </section>
